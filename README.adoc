@@ -17,7 +17,7 @@ Example values for the form might be:
 * *Authorization callback URL* - This needs to point back to your application's OAuth endpoint.
 For development it might be http://localhost:8080/login/oauth2/github
 If you are needing to test receiving GitHub events, you will probably want to setup https://ngrok.com/#download[ngrok].
-If you are using ngrok, the URL would look something like https://123456.ngrok.io/
+If you are using ngrok, the URL would look something like https://123456.ngrok.io/login/oauth2/github
 
 After clicking *Register application* you should make the application aware of the *Client ID* and the *Client Secret*.
 
