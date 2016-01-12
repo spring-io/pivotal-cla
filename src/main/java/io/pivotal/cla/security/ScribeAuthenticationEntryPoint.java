@@ -44,6 +44,8 @@ public class ScribeAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
 		String secretState = statePrefix() + UUID.randomUUID().toString();
 
+		request.getSession().setAttribute("state", secretState);
+
 		final OAuthService service = factory
 				.serviceBuilder(request).state(secretState)
 				.scope(scope)

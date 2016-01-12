@@ -19,12 +19,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.UserRepository;
@@ -45,7 +49,11 @@ public class OAuthController {
 	@RequestMapping("/login/oauth2/github")
 	public void oauth(HttpServletRequest request, HttpServletResponse response, @RequestParam String code,
 			@RequestParam String state) throws Exception {
-		// FIXME verify state
+		String actualState = (String) request.getSession().getAttribute("state");
+		if(actualState == null || !actualState.equals(state)) {
+			throw new InvalidSecretState();
+		}
+
 		boolean admin = ScribeAuthenticationEntryPoint.isAdmin(state);
 
 		User user = admin ? github.getCurrentAdmin(request, code) : github.getCurrentUser(request, code);
@@ -56,4 +64,13 @@ public class OAuthController {
 
 		success.onAuthenticationSuccess(request, response, authentication);
 	}
+
+	@ExceptionHandler
+	@ResponseStatus(code= HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public String handleInvalidSecretState(InvalidSecretState error) {
+		return "Invalid Secret State";
+	}
+
+	static class InvalidSecretState extends RuntimeException {}
 }

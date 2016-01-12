@@ -29,6 +29,7 @@ import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -128,5 +129,23 @@ public class SecurityTests extends BaseWebDriverTests {
 		verify(mockGithub).findRepositoryNames(anyString());
 
 		verifyNoMoreInteractions(mockGithub);
+	}
+
+	@Test
+	public void loginVerifiesSecretState() throws Exception {
+		User currentUser = WithAdminUserFactory.create();
+		when(mockGithub.getCurrentUser(any(HttpServletRequest.class), anyString())).thenReturn(currentUser, (User) null);
+		MockHttpSession session = new MockHttpSession();
+		String redirect = mockMvc.perform(get("/").session(session))
+				.andExpect(status().is3xxRedirection())
+				.andReturn().getResponse().getRedirectedUrl();
+
+		redirect = mockMvc.perform(get(redirect))
+			.andReturn().getResponse().getRedirectedUrl();
+
+		// change the expected secret state
+		session.setAttribute("state", "INVALID");
+		mockMvc.perform(get(redirect).session(session))
+			.andExpect(status().isBadRequest());
 	}
 }
