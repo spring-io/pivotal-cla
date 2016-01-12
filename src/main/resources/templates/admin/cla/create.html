@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/main">
+	<head>
+		<title>Create CLA</title>
+	</head>
+	<body>
+		<div layout:fragment="content">
+			<form th:action="@{/admin/cla/create}" th:object="${contributorLicenseAgreeement}" method="post">
+				<div class="form-group" th:class="${#fields.hasErrors('name')}? 'has-error form-group' : form-group">
+					<label class="control-label" for="name">Agreement Name</label>
+					<input type="text" class="form-control" th:field="*{name}" placeholder="(i.e. apache)">
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('name')}" id="err-name">
+						<p th:each="err : ${#fields.errors('name')}" th:text="${err}">Input is incorrect</p>
+					</div>
+				</div>
+				<div class="form-group" th:class="${#fields.hasErrors('individualContent')}? 'has-error form-group' : form-group">
+					<label class="control-label" for="individualContent">Individual Contributor Text</label>
+					<textarea class="form-control" th:field="*{individualContent}"></textarea>
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('individualContent')}" id="err-individualContent">
+						<p th:each="err : ${#fields.errors('individualContent')}" th:text="${err}">Input is incorrect</p>
+					</div>
+				</div>
+				<div class="form-group" th:class="${#fields.hasErrors('corporateContent')}? 'has-error form-group' : form-group">
+					<label class="control-label" for="corporateContent">Corporate Contributor Text</label>
+					<textarea class="form-control" th:field="*{corporateContent}"></textarea>
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('corporateContent')}" id="err-corporateContent">
+						<p th:each="err : ${#fields.errors('corporateContent')}" th:text="${err}">Input is incorrect</p>
+					</div>
+				</div>
+				<button id="create-submit" type="submit" class="btn btn-success">I Agree</button>
+			</form>
+		</div>
+	</body>
+</html>

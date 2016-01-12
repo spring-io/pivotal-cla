@@ -1,0 +1,10 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layouts/main">
+<head>
+<title>Home</title>
+</head>
+<body>
+	<div layout:fragment="content">
+		<p th:text="${currentUser.githubLogin}">Welcome</p>
+	</div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/main">
+	<head>
+		<title>Manage CLAs</title>
+	</head>
+	<body>
+		<div layout:fragment="content">
+			<div class="text-right"><a id="create" th:href="@{/admin/cla/create}">Create New</a></div>
+			<table class="table table-stripped">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Edit</th>
+						<th>Delete</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="cla : ${clas}">
+						<td th:text="${cla.name}"></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>

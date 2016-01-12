@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/main">
+	<head>
+		<title>Sign</title>
+	</head>
+	<body>
+		<div class="container" layout:fragment="content">
+			<div th:if="${signClaForm.signed}" class="alert alert-success" id="success">
+				Thank you for signing the Agreement!
+				<span th:if="${signClaForm.repositoryId != null}">
+					The contributor license agreement checks on
+					<a th:href="@{'https://github.com/' + ${signClaForm.repositoryId} + '/pull/' + ${signClaForm.pullRequestId}}" th:text="${signClaForm.repositoryId} + '/pull/' + ${signClaForm.pullRequestId}">your pull request</a>
+					should now pass.
+				</span>
+			</div>
+			<div class="form-group">
+				<label for="cla">
+					Contributor Agreement
+				</label>
+				<div id="individual-cla" th:text="${cla.individualContent}" style="white-space: pre;max-height: 300px;overflow-y:scroll">
+
+				</div>
+			</div>
+			<form th:if="${!signClaForm.signed}" th:action="@{/sign/}" method="post" th:object="${signClaForm}">
+				<div class="form-group" th:class="${#fields.hasErrors('name')}? 'has-error form-group' : form-group">
+					<label for="name">
+						Name
+					</label>
+					<input class="form-control"  type="text" th:field="*{name}"/>
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('email')}" id="err-name">
+						<p th:each="err : ${#fields.errors('name')}" th:text="${err}">Input is incorrect</p>
+					</div>
+				</div>
+				<div class="form-group" th:class="${#fields.hasErrors('email')}? 'has-error form-group' : form-group">
+					<label for="email">
+						Email
+					</label>
+					<select class="form-control" th:field="*{email}">
+						<option value=""></option>
+						<option th:each="e : ${currentUser.emails}" th:value="${e}" th:text="${e}"></option>
+					</select>
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('email')}" id="err-email">
+						<p th:each="err : ${#fields.errors('email')}" th:text="${err}">Input is incorrect</p>
+					</div>
+				</div>
+				<div class="form-group" th:class="${#fields.hasErrors('mailingAddress')}? 'has-error form-group' : form-group">
+					<label for="mailingAddress">
+						Mailing Address
+					</label>
+					<input class="form-control" type="text" th:field="*{mailingAddress}"/>
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('mailingAddress')}" id="err-mailingAddress">
+						<p th:each="err : ${#fields.errors('mailingAddress')}" th:text="${err}">Input is incorrect</p>
+					</div>
+				</div>
+				<div class="form-group" th:class="${#fields.hasErrors('country')}? 'has-error form-group' : form-group">
+					<label for="country">
+						Country
+					</label>
+					<input class="form-control" type="text" th:field="*{country}"/>
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('country')}" id="err-country">
+						<p th:each="err : ${#fields.errors('country')}" th:text="${err}">Input is incorrect</p>
+					</div>
+				</div>
+				<div class="form-group" th:class="${#fields.hasErrors('telephone')}? 'has-error form-group' : form-group">
+					<label for="telephone">
+						Telephone
+					</label>
+					<input class="form-control" type="text" th:field="*{telephone}"/>
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('telephone')}" id="err-telephone">
+						<p th:each="err : ${#fields.errors('telephone')}" th:text="${err}">Input is incorrect</p>
+					</div>
+				</div>
+
+				<input type="hidden" th:field="*{claId}"/>
+				<input type="hidden" th:field="*{repositoryId}"/>
+				<input type="hidden" th:field="*{pullRequestId}"/>
+				<button id="sign" type="submit" class="btn btn-success">I Agree</button>
+			</form>
+		</div>
+	</body>
+</html>

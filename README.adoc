@@ -1,0 +1,43 @@
+This tool is intended to allow managing GitHub Contributor License Agreements.
+
+= Setup
+
+Below are the steps that are necessary to set this project up.
+
+== Register a new OAuth application with GitHub
+
+This application uses https://developer.github.com/v3/oauth/[OAuth to access GitHub's APIs].
+The first step is to https://github.com/settings/applications/new[Register a new OAuth application] with GitHub.
+
+Example values for the form might be:
+
+* *Application Name* - Pivotal CLA
+* *Homepage URL* - https://pivotal.io
+* *Application description* - Allows managing Contributor License Agreements for contributions to Pivotal sponsored projects
+* *Authorization callback URL* - This needs to point back to your application's OAuth endpoint.
+For development it might be http://localhost:8080/login/oauth2/github
+If you are needing to test receiving GitHub events, you will probably want to setup https://ngrok.com/#download[ngrok].
+If you are using ngrok, the URL would look something like https://123456.ngrok.io/
+
+After clicking *Register application* you should make the application aware of the *Client ID* and the *Client Secret*.
+
+Create a new file named *application-local.properties*
+
+.src/main/resources/application-local.properties
+[source]
+----
+# Replace values from registered application at https://github.com/settings/developers
+# See the README for additional detail
+security.oauth2.client.id=Value from Client ID
+security.oauth2.client.client-secret=Value from Client Secret
+----
+
+== Setup ngrok
+
+If you are needing to test receiving GitHub events, you will probably want to setup https://ngrok.com/#download[ngrok].
+If there is no need to test reciving the GitHub events from GitHub, then you can skip this step.
+
+== Open the Application
+
+You can open the application at a context root of "/".
+If you are running, the default URL is at http://localhost:8080/
