@@ -34,27 +34,26 @@ import org.eclipse.egit.github.core.service.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.github.scribejava.core.model.Token;
-import com.github.scribejava.core.model.Verifier;
-import com.github.scribejava.core.oauth.OAuthService;
-
+import io.pivotal.cla.ClaOAuthConfig;
 import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.egit.github.core.ContextCommitStatus;
 import io.pivotal.cla.egit.github.core.Email;
 import io.pivotal.cla.egit.github.core.EventsRepositoryHook;
+import io.pivotal.cla.egit.github.core.service.AccessTokenService;
 import io.pivotal.cla.egit.github.core.service.ContextCommitService;
 import io.pivotal.cla.egit.github.core.service.EmailService;
-import io.pivotal.cla.scribe.ScribeOAuthFactory;
+import io.pivotal.cla.mvc.util.UrlBuilder;
 
 @Component
 public class MylynGithubService implements GitHubService {
-	@Autowired
-	ScribeOAuthFactory oauthFactory;
 
 	@Autowired
 	AccessTokenRepository tokenRepo;
+
+	@Autowired
+	ClaOAuthConfig oauthConfig;
 
 	@Override
 	public List<String> findRepositoryNames(String accessToken) throws IOException {
@@ -103,19 +102,19 @@ public class MylynGithubService implements GitHubService {
 	}
 
 	public User getCurrentUser(HttpServletRequest request, String code) {
-		Verifier verifier = new Verifier(code);
-		OAuthService service = oauthFactory.serviceBuilder(request).build();
-
-		final Token accessToken = service.getAccessToken(null, verifier);
-		String token = accessToken.getToken();
-
-		GitHubClient client = createClient(token);
-
-		org.eclipse.egit.github.core.service.UserService githubUsers = new org.eclipse.egit.github.core.service.UserService(
-				client);
-		EmailService emailService = EmailService.forOAuth(token);
+		AccessTokenService tokenService = new AccessTokenService();
+		String state = (String) request.getSession().getAttribute("state");
+		String callbackUrl = UrlBuilder.fromRequest(request).callbackUrl();
 
 		try {
+			String token = tokenService.getToken(oauthConfig.getMain(), code, state, callbackUrl);
+
+
+			GitHubClient client = createClient(token);
+
+			org.eclipse.egit.github.core.service.UserService githubUsers = new org.eclipse.egit.github.core.service.UserService(
+					client);
+			EmailService emailService = EmailService.forOAuth(token);
 			List<String> verifiedEmails = emailService.getEmails().stream().filter(e -> e.isVerified())
 					.map(Email::getEmail).collect(Collectors.toList());
 			org.eclipse.egit.github.core.User githubUser = githubUsers.getUser();

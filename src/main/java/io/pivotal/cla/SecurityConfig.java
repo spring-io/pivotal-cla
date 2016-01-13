@@ -28,13 +28,12 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import io.pivotal.cla.scribe.ScribeOAuthFactory;
 import io.pivotal.cla.security.ScribeAuthenticationEntryPoint;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
-	ScribeOAuthFactory factory;
+	ClaOAuthConfig oauthConfig;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -56,9 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private AuthenticationEntryPoint entryPoint() {
 		LinkedHashMap<RequestMatcher, AuthenticationEntryPoint> entryPoints = new LinkedHashMap<>();
-		entryPoints.put(new AntPathRequestMatcher("/admin/**"), new ScribeAuthenticationEntryPoint("user:email,repo:status,admin:repo_hook,admin:org_hook,read:org", factory));
+		entryPoints.put(new AntPathRequestMatcher("/admin/**"), new ScribeAuthenticationEntryPoint(oauthConfig.getMain(), "user:email,repo:status,admin:repo_hook,admin:org_hook,read:org"));
 		DelegatingAuthenticationEntryPoint entryPoint = new DelegatingAuthenticationEntryPoint(entryPoints);
-		entryPoint.setDefaultEntryPoint(new ScribeAuthenticationEntryPoint("user:email", factory));
+		entryPoint.setDefaultEntryPoint(new ScribeAuthenticationEntryPoint(oauthConfig.getMain(), "user:email"));
 		return entryPoint;
 	}
 }

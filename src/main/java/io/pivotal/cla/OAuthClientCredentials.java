@@ -15,16 +15,10 @@
  */
 package io.pivotal.cla;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+public class OAuthClientCredentials {
 
-@Configuration
-public class OAuthConfig {
-
-	@Value("${security.oauth2.client.client-secret}")
 	private String clientSecret;
 
-	@Value("${security.oauth2.client.id}")
 	private String clientId;
 
 	/**

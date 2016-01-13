@@ -24,19 +24,19 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import com.github.scribejava.core.oauth.OAuthService;
-
-import io.pivotal.cla.scribe.ScribeOAuthFactory;
+import io.pivotal.cla.ClaOAuthConfig;
+import io.pivotal.cla.OAuthClientCredentials;
+import io.pivotal.cla.mvc.util.UrlBuilder;
 
 public class ScribeAuthenticationEntryPoint implements AuthenticationEntryPoint {
 	private String scope;
+	private OAuthClientCredentials config;
 
-	private ScribeOAuthFactory factory;
-
-	public ScribeAuthenticationEntryPoint(String scope, ScribeOAuthFactory factory) {
+	public ScribeAuthenticationEntryPoint(OAuthClientCredentials config, String scope) {
+		this.config = config;
 		this.scope = scope;
-		this.factory = factory;
 	}
 
 	public void commence(HttpServletRequest request, HttpServletResponse response,
@@ -46,12 +46,14 @@ public class ScribeAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
 		request.getSession().setAttribute("state", secretState);
 
-		final OAuthService service = factory
-				.serviceBuilder(request).state(secretState)
-				.scope(scope)
-				.build();
-
-		String redirectUrl = service.getAuthorizationUrl(null);
+		String callbackUrl = UrlBuilder.fromRequest(request).callbackUrl();
+		String redirectUrl = UriComponentsBuilder.fromHttpUrl("https://github.com/login/oauth/authorize")
+			.queryParam("client_id", config.getClientId())
+			.queryParam("redirect_uri", callbackUrl)
+			.queryParam("state", secretState)
+			.queryParam("scope", scope)
+			.build()
+			.toUriString();
 
 		response.sendRedirect(redirectUrl);
 	}
