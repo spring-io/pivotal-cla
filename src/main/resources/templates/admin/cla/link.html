@@ -11,7 +11,7 @@
   max-height: 350px;
   overflow-y: auto;
 }
-			peahead,
+.typeahead,
 .tt-query,
 .tt-hint {
   padding: 0px 12px;
@@ -199,55 +199,62 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 			</form>
 		</div>
 		<div layout:fragment="javascript">
-			<script src="//twitter.github.com/typeahead.js/releases/latest/typeahead.bundle.js" type="text/javascript"></script>
+            <!-- See twitter typeahead fork, see https://github.com/twitter/typeahead.js/pull/1356 -->
+			<script th:src="@{/js/typeahead.bundle.min.js}" type="text/javascript"></script>
 			<script src="//sliptree.github.io/bootstrap-tokenfield/dist/bootstrap-tokenfield.js" type="text/javascript"></script>
-					<script type="text/javascript">
-						// constructs the suggestion engine
-						var tokenizer = function(str) {
-						    return str ? str.split(/[\/\-]/) : [];
-						}
-						var repositories = new Bloodhound({
-						  datumTokenizer: tokenizer,
-						  queryTokenizer: tokenizer,
-						  prefetch: './link/repositories.json'
-						});
-						repositories.initialize();
+            <script type="text/javascript">
+                // constructs the suggestion engine
+                var tokenizer = function(str) {
+                    return str ? str.split(/[\/\-]/) : [];
+                }
+                var repositories = new Bloodhound({
+                  datumTokenizer: tokenizer,
+                  queryTokenizer: tokenizer,
+                  prefetch: './link/repositories.json'
+                });
+                repositories.initialize();
 
-						var tf = $('#repositories').tokenfield({
-							typeahead: [
-								{
-								  highlight: true,
-								  limit: 15,
-								  autoselect: true
-								},
-								{
-									source: repositories.ttAdapter()
-								}
-							]
-						});
-						$('#form').on('keyup keypress', function(e) {
-							var code = e.keyCode || e.which;
-							if (code == 13) {
-								e.preventDefault();
-								return false;
-							}
-						});
+                var tf = $('#repositories').tokenfield({
+                    typeahead: [
+                        {
+                          highlight: true,
+                          limit: 15,
+                          autoSelect: true
+                        },
+                        {
+                            source: repositories.ttAdapter()
+                        }
+                    ]
+                });
+                $('#repositories').on('tokenfield:createtoken', function (e) {
+                    var entry = e.attrs.value;
+                    if(repositories.get(entry).length == 0) {
+                        return false;
+                    }
+                });
+                $('#form').on('keyup keypress', function(e) {
+                    var code = e.keyCode || e.which;
+                    if (code == 13) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
 
-						var openDataUrls = function() {
-							var urls = $(this).data("urls").split(',');
-							$.each(urls, function(i, u) {
-								window.open(u);
-							});
-							return false;
-						};
+                var openDataUrls = function() {
+                    var urls = $(this).data("urls").split(',');
+                    $.each(urls, function(i, u) {
+                        window.open(u);
+                    });
+                    return false;
+                };
 
-						$('#open-hook-urls').click(openDataUrls);
-						$('#new-contributing-md-urls').click(openDataUrls);
-						$('#edit-contributing-md-urls').click(openDataUrls);
-						$('#new-contributing-adoc-urls').click(openDataUrls);
-						$('#edit-contributing-adoc-urls').click(openDataUrls);
+                $('#open-hook-urls').click(openDataUrls);
+                $('#new-contributing-md-urls').click(openDataUrls);
+                $('#edit-contributing-md-urls').click(openDataUrls);
+                $('#new-contributing-adoc-urls').click(openDataUrls);
+                $('#edit-contributing-adoc-urls').click(openDataUrls);
 
-		</script>
+            </script>
 
 		</div>
 	</body>
