@@ -25,7 +25,7 @@ public interface GitHubService {
 
 	List<String> findRepositoryNames(String accessToken) throws IOException;
 
-	List<String> createPullRequestHooks(String accessToken, List<String> repositoryIds, String githubEventUrl)
+	List<String> createPullRequestHooks(CreatePullRequestHookRequest request)
 			throws IOException;
 
 	User getCurrentUser(CurrentUserRequest request);

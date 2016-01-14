@@ -134,15 +134,19 @@ public class MylynGithubService implements GitHubService {
 	}
 
 	@Override
-	public List<String> createPullRequestHooks(String accessToken, List<String> repositoryIds, String githubEventUrl)
+	public List<String> createPullRequestHooks(CreatePullRequestHookRequest request)
 			throws IOException {
+		String accessToken = request.getAccessToken();
+		List<String> repositoryIds = request.getRepositoryIds();
+		String githubEventUrl = request.getGithubEventUrl();
+
 		GitHubClient client = createClient(accessToken);
 		RepositoryService service = new RepositoryService(client);
 		List<String> hookUrls = new ArrayList<>();
 
 		for (String repository : repositoryIds) {
 			AccessToken token = new AccessToken();
-			token.setGithubId(repository);
+			token.setId(repository);
 			token.setToken(accessToken);
 
 			tokenRepo.save(token);

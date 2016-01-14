@@ -35,6 +35,7 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.mvc.util.UrlBuilder;
+import io.pivotal.cla.service.CreatePullRequestHookRequest;
 import io.pivotal.cla.service.GitHubService;
 
 @Controller
@@ -97,8 +98,12 @@ public class AdminClaController {
 		String pullRequestHookUrl = urlBuilder.path("/github/hooks/pull_request/" + linkClaForm.getClaName()).build();
 		String signClaUrl = urlBuilder.path("/sign/" + linkClaForm.getClaName()).build();
 
-		List<String> hookUrls = github.createPullRequestHooks(user.getAccessToken(), linkClaForm.getRepositories(),
-				pullRequestHookUrl);
+		CreatePullRequestHookRequest createPullRequest = new CreatePullRequestHookRequest();
+		createPullRequest.setAccessToken(user.getAccessToken());
+		createPullRequest.setRepositoryIds(linkClaForm.getRepositories());
+		createPullRequest.setGithubEventUrl(pullRequestHookUrl);
+
+		List<String> hookUrls = github.createPullRequestHooks(createPullRequest);
 
 		String accessTokensUrl = "https://github.com/settings/applications";
 		attrs.addFlashAttribute("signClaUrl", signClaUrl);
