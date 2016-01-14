@@ -18,8 +18,6 @@ package io.pivotal.cla.service;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import io.pivotal.cla.data.User;
 
 public interface GitHubService {
@@ -30,7 +28,5 @@ public interface GitHubService {
 	List<String> createPullRequestHooks(String accessToken, List<String> repositoryIds, String githubEventUrl)
 			throws IOException;
 
-	User getCurrentUser(HttpServletRequest request, String code);
-
-	User getCurrentAdmin(HttpServletRequest request, String code);
+	User getCurrentUser(CurrentUserRequest request);
 }

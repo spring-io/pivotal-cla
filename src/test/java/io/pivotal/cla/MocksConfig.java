@@ -52,7 +52,7 @@ public class MocksConfig {
 	}
 
 	@Controller
-	static class GithubController {
+	static class GithubOAuthAuthorizeController {
 
 		@RequestMapping("/login/oauth/authorize")
 		public String response(@RequestParam String state) {

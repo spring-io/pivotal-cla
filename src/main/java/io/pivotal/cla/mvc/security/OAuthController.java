@@ -32,9 +32,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.UserRepository;
+import io.pivotal.cla.mvc.util.UrlBuilder;
+import io.pivotal.cla.security.GithubAuthenticationEntryPoint;
 import io.pivotal.cla.security.Login;
-import io.pivotal.cla.security.ScribeAuthenticationEntryPoint;
+import io.pivotal.cla.service.CurrentUserRequest;
 import io.pivotal.cla.service.GitHubService;
+import io.pivotal.cla.service.OAuthAccessTokenParams;
 
 @Controller
 public class OAuthController {
@@ -54,9 +57,18 @@ public class OAuthController {
 			throw new InvalidSecretState();
 		}
 
-		boolean admin = ScribeAuthenticationEntryPoint.isAdmin(state);
+		boolean admin = GithubAuthenticationEntryPoint.isAdmin(state);
 
-		User user = admin ? github.getCurrentAdmin(request, code) : github.getCurrentUser(request, code);
+		OAuthAccessTokenParams params = new OAuthAccessTokenParams();
+		params.setCallbackUrl(UrlBuilder.fromRequest(request).callbackUrl());
+		params.setCode(code);
+		params.setState(actualState);
+
+		CurrentUserRequest userRequest = new CurrentUserRequest();
+		userRequest.setOauthParams(params);
+		userRequest.setRequestAdminAccess(admin);
+
+		User user = github.getCurrentUser(userRequest);
 
 		users.save(user);
 

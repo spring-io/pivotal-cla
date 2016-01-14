@@ -57,7 +57,7 @@ public class UrlBuilder {
 		String url = UriComponentsBuilder
 				.fromHttpRequest(new ServletServerHttpRequest(request))
 				.replacePath(path)
-				.queryParams(params)
+				.replaceQueryParams(params)
 				.build()
 				.toUriString();
 

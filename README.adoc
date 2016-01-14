@@ -28,8 +28,36 @@ Create a new file named *application-local.properties*
 ----
 # Replace values from registered application at https://github.com/settings/developers
 # See the README for additional detail
-security.oauth2.client.id=Value from Client ID
-security.oauth2.client.client-secret=Value from Client Secret
+security.oauth2.main.clientId=Value from Client ID
+security.oauth2.main.clientSecret=Value from Client Secret
+----
+
+In order to ensure that stored access tokens for managing the github hooks are not accidentally down graded in scope, we need to Register another OAuth application for the admin portion of the application.
+Repeat the above steps with the following values:
+
+Example values for the form might be:
+
+* *Application Name* - Pivotal CLA Admin
+* *Homepage URL* - https://pivotal.io
+* *Application description* - Allows managing Contributor License Agreements for contributions to Pivotal sponsored projects
+* *Authorization callback URL* - This needs to point back to your application's OAuth endpoint.
+For development it might be http://localhost:8080/login/oauth2/github
+If you are needing to test receiving GitHub events, you will probably want to setup https://ngrok.com/#download[ngrok].
+If you are using ngrok, the URL would look something like https://123456.ngrok.io/
+
+After clicking *Register application* you should make the application aware of the *Client ID* and the *Client Secret*.
+
+Modify *application-local.properties*
+
+.src/main/resources/application-local.properties
+[source]
+----
+# Replace values from registered application at https://github.com/settings/developers
+# See the README for additional detail
+security.oauth2.admin.clientId=Value from Client ID
+security.oauth2.admin.clientSecret=Value from Client Secret
+security.oauth2.main.clientId=Value from Client ID
+security.oauth2.main.clientSecret=Value from Client Secret
 ----
 
 == Setup ngrok

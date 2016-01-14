@@ -26,15 +26,14 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import io.pivotal.cla.ClaOAuthConfig;
 import io.pivotal.cla.OAuthClientCredentials;
 import io.pivotal.cla.mvc.util.UrlBuilder;
 
-public class ScribeAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class GithubAuthenticationEntryPoint implements AuthenticationEntryPoint {
 	private String scope;
 	private OAuthClientCredentials config;
 
-	public ScribeAuthenticationEntryPoint(OAuthClientCredentials config, String scope) {
+	public GithubAuthenticationEntryPoint(OAuthClientCredentials config, String scope) {
 		this.config = config;
 		this.scope = scope;
 	}

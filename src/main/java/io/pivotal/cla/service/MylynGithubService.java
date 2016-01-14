@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.egit.github.core.CommitStatus;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryHook;
@@ -41,10 +39,8 @@ import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.egit.github.core.ContextCommitStatus;
 import io.pivotal.cla.egit.github.core.Email;
 import io.pivotal.cla.egit.github.core.EventsRepositoryHook;
-import io.pivotal.cla.egit.github.core.service.AccessTokenService;
 import io.pivotal.cla.egit.github.core.service.ContextCommitService;
 import io.pivotal.cla.egit.github.core.service.EmailService;
-import io.pivotal.cla.mvc.util.UrlBuilder;
 
 @Component
 public class MylynGithubService implements GitHubService {
@@ -54,6 +50,9 @@ public class MylynGithubService implements GitHubService {
 
 	@Autowired
 	ClaOAuthConfig oauthConfig;
+
+	@Autowired
+	AccessTokenService tokenService;
 
 	@Override
 	public List<String> findRepositoryNames(String accessToken) throws IOException {
@@ -101,15 +100,12 @@ public class MylynGithubService implements GitHubService {
 		return client;
 	}
 
-	public User getCurrentUser(HttpServletRequest request, String code) {
-		AccessTokenService tokenService = new AccessTokenService();
-		String state = (String) request.getSession().getAttribute("state");
-		String callbackUrl = UrlBuilder.fromRequest(request).callbackUrl();
-
+	public User getCurrentUser(CurrentUserRequest request) {
+		AccessTokenRequest tokenRequest = new AccessTokenRequest();
+		tokenRequest.setCredentials(request.isRequestAdminAccess() ? oauthConfig.getAdmin() : oauthConfig.getMain());
+		tokenRequest.setOauthParams(request.getOauthParams());
+		String token = tokenService.getToken(tokenRequest);
 		try {
-			String token = tokenService.getToken(oauthConfig.getMain(), code, state, callbackUrl);
-
-
 			GitHubClient client = createClient(token);
 
 			org.eclipse.egit.github.core.service.UserService githubUsers = new org.eclipse.egit.github.core.service.UserService(
@@ -125,7 +121,7 @@ public class MylynGithubService implements GitHubService {
 			user.setAvatarUrl(githubUser.getAvatarUrl());
 			user.setEmails(new HashSet<>(verifiedEmails));
 			user.setGithubLogin(githubUser.getLogin());
-
+			user.setAdmin(request.isRequestAdminAccess() && hasAdminEmail(user));
 			return user;
 
 		} catch (IOException fail) {
@@ -133,10 +129,8 @@ public class MylynGithubService implements GitHubService {
 		}
 	}
 
-	public User getCurrentAdmin(HttpServletRequest request, String code) {
-		User admin = getCurrentUser(request, code);
-		admin.setAdmin(admin.getEmails().stream().anyMatch(e -> e.endsWith("@pivotal.io")));
-		return admin;
+	private boolean hasAdminEmail(User user) {
+		return user.getEmails().stream().anyMatch(e -> e.endsWith("@pivotal.io"));
 	}
 
 	@Override

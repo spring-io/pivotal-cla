@@ -28,7 +28,7 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import io.pivotal.cla.security.ScribeAuthenticationEntryPoint;
+import io.pivotal.cla.security.GithubAuthenticationEntryPoint;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -55,9 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private AuthenticationEntryPoint entryPoint() {
 		LinkedHashMap<RequestMatcher, AuthenticationEntryPoint> entryPoints = new LinkedHashMap<>();
-		entryPoints.put(new AntPathRequestMatcher("/admin/**"), new ScribeAuthenticationEntryPoint(oauthConfig.getMain(), "user:email,repo:status,admin:repo_hook,admin:org_hook,read:org"));
+		entryPoints.put(new AntPathRequestMatcher("/admin/**"), new GithubAuthenticationEntryPoint(oauthConfig.getAdmin(), "user:email,repo:status,admin:repo_hook,admin:org_hook,read:org"));
 		DelegatingAuthenticationEntryPoint entryPoint = new DelegatingAuthenticationEntryPoint(entryPoints);
-		entryPoint.setDefaultEntryPoint(new ScribeAuthenticationEntryPoint(oauthConfig.getMain(), "user:email"));
+		entryPoint.setDefaultEntryPoint(new GithubAuthenticationEntryPoint(oauthConfig.getMain(), "user:email"));
 		return entryPoint;
 	}
 }
