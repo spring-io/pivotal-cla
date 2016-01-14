@@ -18,12 +18,14 @@ package io.pivotal.cla;
 import java.util.LinkedHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -49,12 +51,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.csrf()
 			.ignoringAntMatchers("/github/hooks/**").and()
 		.authorizeRequests()
-			.antMatchers("/login/**", "/github/hooks/**").permitAll().antMatchers("/admin/**").hasRole("ADMIN")
+			.antMatchers("/login/**").permitAll()
+			.antMatchers("/github/hooks/**").access("@oauth.check(request.getParameter('access_token'))")
+			.antMatchers("/admin/**").hasRole("ADMIN")
 			.anyRequest().authenticated();
 	}
 
 	private AuthenticationEntryPoint entryPoint() {
 		LinkedHashMap<RequestMatcher, AuthenticationEntryPoint> entryPoints = new LinkedHashMap<>();
+		entryPoints.put(new AntPathRequestMatcher("/github/hooks/**"), new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
 		entryPoints.put(new AntPathRequestMatcher("/admin/**"), new GithubAuthenticationEntryPoint(oauthConfig.getAdmin(), "user:email,repo:status,admin:repo_hook,admin:org_hook,read:org"));
 		DelegatingAuthenticationEntryPoint entryPoint = new DelegatingAuthenticationEntryPoint(entryPoints);
 		entryPoint.setDefaultEntryPoint(new GithubAuthenticationEntryPoint(oauthConfig.getMain(), "user:email"));

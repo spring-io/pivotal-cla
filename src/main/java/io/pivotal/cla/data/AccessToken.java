@@ -20,33 +20,50 @@ import javax.persistence.Id;
 
 @Entity
 public class AccessToken {
+	public static String CLA_ACCESS_TOKEN_ID = "this";
 
 	@Id
-	private String githubId;
+	private String id;
 
 	private String token;
 
 	public AccessToken() {
 	}
 
-	public AccessToken(String githubId, String token) {
-		this.githubId = githubId;
+	public AccessToken(String id, String token) {
+		this.id = id;
 		this.token = token;
 	}
 
 	/**
+	 * <p>
+	 * Get's the id for the access token.
+	 * </p>
+	 * <p>
+	 * For GitHub repositories this is represented using the relative identifier
+	 * of the repository. For example, for the repository
+	 * https://github.com/spring-projects/spring-security the id would be
+	 * spring-projects/spring-security.
+	 * </p>
+	 * <p>
+	 * For accessing the AccessToken used to make requests to this application
+	 * (i.e. when GitHub's pull request hook makes calls back into the
+	 * application) the {@link AccessToken#CLA_ACCESS_TOKEN_ID} is used for the
+	 * id.
+	 * </p>
+	 *
 	 * @return the githubId
 	 */
-	public String getGithubId() {
-		return githubId;
+	public String getId() {
+		return id;
 	}
 
 	/**
 	 * @param githubId
 	 *            the githubId to set
 	 */
-	public void setGithubId(String githubId) {
-		this.githubId = githubId;
+	public void setId(String githubId) {
+		this.id = githubId;
 	}
 
 	/**

@@ -15,16 +15,23 @@
  */
 package io.pivotal.cla.webdriver.admin;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.ContributorLicenseAgreeement;
+import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithAdminUser;
+import io.pivotal.cla.service.CreatePullRequestHookRequest;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
 import io.pivotal.cla.webdriver.pages.HomePage;
 import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
@@ -69,7 +76,7 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 		link = link.link("test/this", "", AdminLinkClaPage.class);
 
 		link.assertRepositories().hasNoErrors().hasValue("test/this");
-		;
+
 		link.assertClaName().hasRequiredError();
 	}
 
@@ -81,5 +88,25 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 
 		link.assertRepositories().hasRequiredError();
 		link.assertClaName().hasNoErrors().hasValue("apache");
+	}
+
+	@Test
+	public void linkClaValidationRepositories() throws Exception {
+		when(mockTokenRepo.findOne(AccessToken.CLA_ACCESS_TOKEN_ID)).thenReturn(new AccessToken(AccessToken.CLA_ACCESS_TOKEN_ID, "abc123"));
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		AdminLinkClaPage link = AdminLinkClaPage.to(getDriver());
+
+		link = link.link("test/this", "apache", AdminLinkClaPage.class);
+
+		link.assertRepositories().hasNoErrors();
+		link.assertClaName().hasNoErrors();
+
+		ArgumentCaptor<CreatePullRequestHookRequest> requestCaptor = ArgumentCaptor.forClass(CreatePullRequestHookRequest.class);
+		verify(mockGithub).createPullRequestHooks(requestCaptor.capture());
+		CreatePullRequestHookRequest request = requestCaptor.getValue();
+		assertThat(request.getAccessToken()).isEqualTo(user.getAccessToken());
+		assertThat(request.getRepositoryIds()).containsOnly("test/this");
+		assertThat(request.getGithubEventUrl()).isEqualTo("http://localhost/github/hooks/pull_request/apache?access_token=abc123");
 	}
 }

@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.ContributorLicenseAgreeement;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
@@ -93,9 +94,11 @@ public class AdminClaController {
 			return "admin/cla/link";
 		}
 
+		AccessToken accessToken = tokenRepo.findOne(AccessToken.CLA_ACCESS_TOKEN_ID);
+
 		UrlBuilder urlBuilder = UrlBuilder.fromRequest(request);
 
-		String pullRequestHookUrl = urlBuilder.path("/github/hooks/pull_request/" + linkClaForm.getClaName()).build();
+		String pullRequestHookUrl = urlBuilder.path("/github/hooks/pull_request/" + linkClaForm.getClaName()).param("access_token", accessToken.getToken()).build();
 		String signClaUrl = urlBuilder.path("/sign/" + linkClaForm.getClaName()).build();
 
 		CreatePullRequestHookRequest createPullRequest = new CreatePullRequestHookRequest();
