@@ -13,24 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cla.mvc.security;
+package io.pivotal.cla.webdriver.pages;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import io.pivotal.cla.data.User;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
-@ControllerAdvice
-public class SecurityControllerAdvice {
+public class SignedPage extends BasePage {
+	WebElement success;
 
-	@ModelAttribute("currentUser")
-	User currentUser(@AuthenticationPrincipal User currentUser) {
-		return currentUser;
+	public SignedPage(WebDriver driver) {
+		super(driver);
 	}
 
-	@ModelAttribute("isAdmin")
-	boolean isAdmin(@AuthenticationPrincipal User currentUser) {
-		return currentUser == null ? false : currentUser.isAdmin();
+	public void asserSigned() {
+		assertThat(success.isDisplayed()).isTrue();
 	}
+
+	public void assertAt() {
+		assertThat(getDriver().getTitle()).endsWith("- Sign");
+	}
+
 }

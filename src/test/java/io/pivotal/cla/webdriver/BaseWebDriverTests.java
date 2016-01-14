@@ -32,8 +32,11 @@ import org.springframework.test.web.servlet.htmlunit.webdriver.MockMvcHtmlUnitDr
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.pivotal.cla.data.ContributorLicenseAgreeement;
+import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
+import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.data.repository.UserRepository;
 import io.pivotal.cla.service.GitHubService;
 
@@ -45,12 +48,16 @@ public abstract class BaseWebDriverTests {
 	WebApplicationContext wac;
 	protected GitHubService mockGithub;
 	protected ContributorLicenseAgreementRepository mockClaRepository;
+	protected IndividualSignatureRepository mockIndividualSignatureRepository;
 	protected AccessTokenRepository mockTokenRepo;
 	protected UserRepository userRepo;
 
 	protected WebDriver driver;
 
 	protected MockMvc mockMvc;
+
+	protected ContributorLicenseAgreeement cla;
+	protected IndividualSignature individualSignature;
 
 	@Before
 	public void setup() {
@@ -64,6 +71,20 @@ public abstract class BaseWebDriverTests {
 				.mockMvcSetup(mockMvc)
 				.useMockMvcForHosts("github.com")
 				.build();
+
+		cla = new ContributorLicenseAgreeement();
+		cla.setName("apache");
+		cla.setCorporateContent("Corporate");
+		cla.setIndividualContent("Individual");
+		cla.setId(1L);
+
+		individualSignature = new IndividualSignature();
+		individualSignature.setCla(cla);
+		individualSignature.setGithubLogin("rwinch");
+		individualSignature.setEmail("rob@gmail.com");
+		individualSignature.setName("Rob Winch");
+		individualSignature.setMailingAddress("123 Seasame Street");
+		individualSignature.setTelephone("123.456.7890");
 	}
 
 	@Autowired
@@ -82,6 +103,12 @@ public abstract class BaseWebDriverTests {
 	public void setMockTokenRepo(AccessTokenRepository mockTokenRepo) {
 		reset(mockTokenRepo);
 		this.mockTokenRepo = mockTokenRepo;
+	}
+
+	@Autowired
+	public void setMockIndividualSignatureRepository(IndividualSignatureRepository mockIndividualSignatureRepository) {
+		reset(mockIndividualSignatureRepository);
+		this.mockIndividualSignatureRepository = mockIndividualSignatureRepository;
 	}
 
 	protected WebDriver getDriver() {

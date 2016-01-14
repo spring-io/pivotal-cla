@@ -59,7 +59,7 @@ public class ClaController {
 			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
 			Map<String, Object> model) {
 		IndividualSignature signed = individual.findByClaNameAndEmailIn(claName, user.getEmails());
-		ContributorLicenseAgreeement cla = clas.findByName(claName);
+		ContributorLicenseAgreeement cla = signed == null ? clas.findByName(claName) : signed.getCla();
 		SignClaForm form = new SignClaForm();
 		form.setSigned(signed != null);
 		form.setName(user.getName());

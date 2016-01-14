@@ -17,6 +17,7 @@ package io.pivotal.cla.webdriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anySet;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -26,6 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -38,13 +40,12 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import io.pivotal.cla.ClaOAuthConfig;
-import io.pivotal.cla.data.ContributorLicenseAgreeement;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithAdminUserFactory;
 import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.service.CurrentUserRequest;
 import io.pivotal.cla.service.OAuthAccessTokenParams;
-import io.pivotal.cla.webdriver.pages.HomePage;
+import io.pivotal.cla.webdriver.pages.DashboardPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
 
@@ -55,8 +56,9 @@ public class SecurityTests extends BaseWebDriverTests {
 
 	@Test
 	public void requiresAuthenticationAndCreatesValidOAuthTokenRequest() throws Exception {
-		String redirect = mockMvc.perform(get("/")).andExpect(status().is3xxRedirection()).andReturn().getResponse()
-				.getRedirectedUrl();
+		String redirect = mockMvc.perform(get("/dashboard"))
+				.andExpect(status().is3xxRedirection())
+				.andReturn().getResponse().getRedirectedUrl();
 
 		UriComponents redirectComponent = UriComponentsBuilder.fromHttpUrl(redirect).build();
 
@@ -105,7 +107,7 @@ public class SecurityTests extends BaseWebDriverTests {
 
 		when(mockGithub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
 
-		HomePage home = HomePage.go(driver);
+		DashboardPage home = DashboardPage.go(driver);
 		home.assertAt();
 
 		ArgumentCaptor<CurrentUserRequest> userCaptor = ArgumentCaptor.forClass(CurrentUserRequest.class);
@@ -135,6 +137,7 @@ public class SecurityTests extends BaseWebDriverTests {
 		assertThat(oauthParams.getCode()).isEqualTo("abc");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void userUrlWithAdminUserThenAdminUrl() throws Exception {
 		User currentUser = WithAdminUserFactory.create();
@@ -150,11 +153,11 @@ public class SecurityTests extends BaseWebDriverTests {
 			}
 		});
 
-		HomePage home = HomePage.go(driver);
-		home.assertAt();
+		when(mockIndividualSignatureRepository.findByEmailIn(anySet())).thenReturn(Collections.emptyList());
 
-		ContributorLicenseAgreeement cla = new ContributorLicenseAgreeement();
-		cla.setName("apache");
+		DashboardPage dashboard = DashboardPage.go(driver);
+		dashboard.assertAt();
+
 		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
 		when(mockGithub.findRepositoryNames(anyString())).thenReturn(Arrays.asList("test/this"));
 
@@ -174,13 +177,16 @@ public class SecurityTests extends BaseWebDriverTests {
 		User currentUser = WithAdminUserFactory.create();
 		when(mockGithub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(currentUser);
 		MockHttpSession session = new MockHttpSession();
-		String redirect = mockMvc.perform(get("/").session(session)).andExpect(status().is3xxRedirection()).andReturn()
-				.getResponse().getRedirectedUrl();
+		String redirect = mockMvc.perform(get("/dashboard").session(session))
+				.andExpect(status().is3xxRedirection())
+				.andReturn().getResponse().getRedirectedUrl();
 
-		redirect = mockMvc.perform(get(redirect)).andReturn().getResponse().getRedirectedUrl();
+		redirect = mockMvc.perform(get(redirect))
+				.andReturn().getResponse().getRedirectedUrl();
 
 		// change the expected secret state
 		session.setAttribute("state", "INVALID");
-		mockMvc.perform(get(redirect).session(session)).andExpect(status().isBadRequest());
+		mockMvc.perform(get(redirect).session(session))
+			.andExpect(status().isBadRequest());
 	}
 }

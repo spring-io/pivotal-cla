@@ -28,7 +28,6 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import io.pivotal.cla.data.AccessToken;
-import io.pivotal.cla.data.ContributorLicenseAgreeement;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithAdminUser;
 import io.pivotal.cla.service.CreatePullRequestHookRequest;
@@ -41,8 +40,6 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 
 	@Before
 	public void claFormData() throws Exception {
-		ContributorLicenseAgreeement cla = new ContributorLicenseAgreeement();
-		cla.setName("apache");
 		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
 		when(mockGithub.findRepositoryNames(anyString())).thenReturn(Arrays.asList("test/this"));
 	}

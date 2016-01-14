@@ -31,6 +31,8 @@ import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
 public abstract class BasePage {
 	private WebDriver driver;
 
+	private WebElement dashboard;
+
 	private WebElement manage;
 
 	private WebElement link;
@@ -108,6 +110,11 @@ public abstract class BasePage {
 		private Select select() {
 			return new Select(input);
 		}
+	}
+
+	public DashboardPage dashboard() {
+		dashboard.click();
+		return PageFactory.initElements(driver, DashboardPage.class);
 	}
 
 	public AdminListClasPage manage() {

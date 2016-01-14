@@ -15,6 +15,7 @@
  */
 package io.pivotal.cla.data.repository;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.repository.CrudRepository;
@@ -24,4 +25,6 @@ import io.pivotal.cla.data.IndividualSignature;
 public interface IndividualSignatureRepository extends CrudRepository<IndividualSignature, Long> {
 
 	IndividualSignature findByClaNameAndEmailIn(String name, Set<String> email);
+
+	List<IndividualSignature> findByEmailIn(Set<String> email);
 }
