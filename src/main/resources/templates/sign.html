@@ -27,7 +27,7 @@
 						Name
 					</label>
 					<input class="form-control"  type="text" th:field="*{name}"/>
-					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('email')}" id="err-name">
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('name')}" id="err-name">
 						<p th:each="err : ${#fields.errors('name')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
@@ -72,8 +72,8 @@
 				</div>
 
 				<input type="hidden" th:field="*{claId}"/>
-				<input type="hidden" th:field="*{repositoryId}"/>
-				<input type="hidden" th:field="*{pullRequestId}"/>
+				<input type="hidden" th:if="${signClaForm.repositoryId != null}" th:field="*{repositoryId}"/>
+				<input type="hidden" th:if="${signClaForm.pullRequestId != null}" th:field="*{pullRequestId}"/>
 				<button id="sign" type="submit" class="btn btn-success">I Agree</button>
 			</form>
 		</div>

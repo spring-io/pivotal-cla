@@ -18,46 +18,215 @@ package io.pivotal.cla.webdriver;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.util.Date;
-
-import org.junit.Before;
 import org.junit.Test;
 
-import io.pivotal.cla.data.ContributorLicenseAgreeement;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.webdriver.pages.SignClaPage;
+import io.pivotal.cla.webdriver.pages.SignClaPage.Form;
 
 @WithSigningUser
 public class ClaControllerTests extends BaseWebDriverTests {
 
-	private ContributorLicenseAgreeement agreement;
-
-	@Before
-	public void agreement() {
-		agreement = new ContributorLicenseAgreeement();
-		agreement.setName("apache");
-		agreement.setCorporateContent("Corp");
-		agreement.setIndividualContent("Individual");
-		agreement.setId(1L);
-		agreement.setCreated(new Date());
-	}
-
 	@Test
 	public void view() {
-		when(mockClaRepository.findByName(agreement.getName())).thenReturn(agreement);
+		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
 
-		SignClaPage signPage = SignClaPage.go(getDriver(), agreement.getName());
+		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
 
-		assertThat(signPage.getIndividualCla()).isEqualTo(agreement.getIndividualContent());
+		assertThat(signPage.getIndividualCla()).isEqualTo(cla.getIndividualContent());
 	}
 
 	@Test
-	public void sign() {
+	public void signNameRequired() {
+		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
-		when(mockClaRepository.findByName(agreement.getName())).thenReturn(agreement);
+		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
 
-		SignClaPage signPage = SignClaPage.go(getDriver(), agreement.getName());
+		Form form = signPage.form();
 
-		assertThat(signPage.getIndividualCla()).isEqualTo(agreement.getIndividualContent());
+		signPage = form
+			.email("rob@gmail.com")
+			.mailingAddress("123 Seasame St")
+			.country("USA")
+			.telephone("123.456.7890")
+			.sign(SignClaPage.class);
+
+		signPage.assertAt();
+		form = signPage.form();
+		form.assertName().hasRequiredError();
+		form.assertEmail().hasNoErrors();
+		form.assertMailingAddress().hasNoErrors();
+		form.assertCountry().hasNoErrors();
+		form.assertTelephone().hasNoErrors();
+	}
+
+	@Test
+	public void signEmailRequired() {
+		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+
+		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
+
+		Form form = signPage.form();
+
+		signPage = form
+			.name("Rob Winch")
+			.mailingAddress("123 Seasame St")
+			.country("USA")
+			.telephone("123.456.7890")
+			.sign(SignClaPage.class);
+
+		signPage.assertAt();
+		form = signPage.form();
+		form.assertName().hasNoErrors();
+		form.assertEmail().hasRequiredError();
+		form.assertMailingAddress().hasNoErrors();
+		form.assertCountry().hasNoErrors();
+		form.assertTelephone().hasNoErrors();
+	}
+
+	@Test
+	public void signMailingAddressRequired() {
+		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+
+		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
+
+		Form form = signPage.form();
+
+		signPage = form
+			.name("Rob Winch")
+			.email("rob@gmail.com")
+			.country("USA")
+			.telephone("123.456.7890")
+			.sign(SignClaPage.class);
+
+		signPage.assertAt();
+		form = signPage.form();
+		form.assertName().hasNoErrors();
+		form.assertEmail().hasNoErrors();
+		form.assertMailingAddress().hasRequiredError();
+		form.assertCountry().hasNoErrors();
+		form.assertTelephone().hasNoErrors();
+	}
+
+	@Test
+	public void signCountryRequired() {
+		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+
+		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
+
+		Form form = signPage.form();
+
+		signPage = form
+			.name("Rob Winch")
+			.email("rob@gmail.com")
+			.mailingAddress("123 Seasame St")
+			.telephone("123.456.7890")
+			.sign(SignClaPage.class);
+
+		signPage.assertAt();
+		form = signPage.form();
+		form.assertName().hasNoErrors();
+		form.assertEmail().hasNoErrors();
+		form.assertMailingAddress().hasNoErrors();
+		form.assertCountry().hasRequiredError();
+		form.assertTelephone().hasNoErrors();
+	}
+
+	@Test
+	public void signTelephoneRequired() {
+		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+
+		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
+
+		Form form = signPage.form();
+
+		signPage = form
+			.name("Rob Winch")
+			.email("rob@gmail.com")
+			.mailingAddress("123 Seasame St")
+			.country("USA")
+			.sign(SignClaPage.class);
+
+		signPage.assertAt();
+		form = signPage.form();
+		form.assertName().hasNoErrors();
+		form.assertEmail().hasNoErrors();
+		form.assertMailingAddress().hasNoErrors();
+		form.assertCountry().hasNoErrors();
+		form.assertTelephone().hasRequiredError();
+	}
+
+	@Test
+	public void fieldsRepopulatedOnError() {
+		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+
+		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
+
+		signPage = signPage.form()
+			.name("Rob Winch")
+			.email("rob@gmail.com")
+			.mailingAddress("123 Seasame St")
+			.country("USA")
+			.sign(SignClaPage.class);
+
+		signPage.assertAt();
+
+		Form form = signPage.form();
+		form.assertName().hasValue("Rob Winch");
+		form.assertEmail().hasValue("rob@gmail.com");
+		form.assertMailingAddress().hasValue("123 Seasame St");
+		form.assertCountry().hasValue("USA");
+
+		signPage = SignClaPage.go(getDriver(), cla.getName());
+
+		signPage = signPage.form()
+			.telephone("123.456.7890")
+			.sign(SignClaPage.class);
+
+		signPage.form()
+			.assertTelephone().hasValue("123.456.7890");
+	}
+
+	@Test
+	public void signNoRepositoryIdAndNoPullRequestId() {
+		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+
+		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
+
+		signPage = signPage.form()
+			.name("Rob Winch")
+			.email("rob@gmail.com")
+			.mailingAddress("123 Seasame St")
+			.country("USA")
+			.telephone("123.456.7890")
+ 			.sign(SignClaPage.class);
+
+		signPage.assertAt();
+	}
+
+
+	@Test
+	public void signNoRepositoryIdWithPullRequestId() {
+		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+
+		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName(), "rwinch/176_test", 2);
+
+		signPage = signPage.form()
+			.name("Rob Winch")
+			.email("rob@gmail.com")
+			.mailingAddress("123 Seasame St")
+			.country("USA")
+			.telephone("123.456.7890")
+ 			.sign(SignClaPage.class);
+
+		signPage.assertAt();
 	}
 }

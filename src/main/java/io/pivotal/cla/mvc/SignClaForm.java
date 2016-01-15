@@ -15,18 +15,28 @@
  */
 package io.pivotal.cla.mvc;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class SignClaForm {
 
+	@NotNull
 	private Long claId;
 
+	@NotEmpty(message = "This is required")
 	private String name;
 
+	@NotEmpty(message = "This is required")
 	private String email;
 
+	@NotEmpty(message = "This is required")
 	private String mailingAddress;
 
+	@NotEmpty(message = "This is required")
 	private String country;
 
+	@NotEmpty(message = "This is required")
 	private String telephone;
 
 	private String repositoryId;

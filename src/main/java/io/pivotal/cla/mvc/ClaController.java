@@ -28,6 +28,7 @@ import org.eclipse.egit.github.core.service.PullRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -74,7 +75,12 @@ public class ClaController {
 	}
 
 	@RequestMapping(value = "/sign/", method = RequestMethod.POST)
-	public String signCla(@AuthenticationPrincipal User user, @Valid SignClaForm signClaForm) throws IOException {
+	public String signCla(@AuthenticationPrincipal User user, @Valid SignClaForm signClaForm, BindingResult result, Map<String, Object> model) throws IOException {
+		if(result.hasErrors()) {
+			ContributorLicenseAgreeement cla = clas.findOne(signClaForm.getClaId());
+			model.put("cla", cla);
+			return "sign";
+		}
 		ContributorLicenseAgreeement cla = clas.findOne(signClaForm.getClaId());
 		IndividualSignature signature = new IndividualSignature();
 		signature.setCla(cla);
@@ -90,6 +96,9 @@ public class ClaController {
 
 		String repositoryId = signClaForm.getRepositoryId();
 		Integer pullRequestId = signClaForm.getPullRequestId();
+		if(repositoryId == null || pullRequestId == null) {
+			return "redirect:/sign/" +cla.getName() +"?success";
+		}
 
 		AccessToken token = tokenRepo.findOne(repositoryId);
 		if (token != null) {
