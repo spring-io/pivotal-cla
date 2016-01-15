@@ -10,6 +10,23 @@
 
     <title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE">Pivotal CLA</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <style type="text/css">
+.navbar-default, .btn-success, .btn-success:hover, .btn-success:focus  {
+	background-color: #03786e;
+	color: #fff;
+}
+.navbar-default .navbar-brand, .navbar-default .navbar-nav>li>a {
+	color: #fff;
+}
+
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-brand:hover {
+	color: #aaa;
+}
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover, .dropdown-menu>li>a:focus, .dropdown-menu>li>a:hover {
+	background-color: #13887e;
+	color: #fff;
+}
+    </style>
   </head>
   <body>
     <div class="container">
