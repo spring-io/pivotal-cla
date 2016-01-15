@@ -55,6 +55,12 @@ public class SecurityTests extends BaseWebDriverTests {
 	ClaOAuthConfig config;
 
 	@Test
+	public void webjarsPublic() throws Exception {
+		mockMvc.perform(get("/webjars/bootstrap/css/bootstrap.min.css"))
+			.andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
 	public void requiresAuthenticationAndCreatesValidOAuthTokenRequest() throws Exception {
 		String redirect = mockMvc.perform(get("/dashboard"))
 				.andExpect(status().is3xxRedirection())
