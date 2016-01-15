@@ -15,15 +15,21 @@
  */
 package io.pivotal.cla.mvc.github;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anySet;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import io.pivotal.cla.data.AccessToken;
+import io.pivotal.cla.service.CommitStatus;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
 
 public class GithubHooksControllerTests extends BaseWebDriverTests {
@@ -58,6 +64,17 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 
 		mockMvc.perform(hookRequest().content(PAYLOAD))
 			.andExpect(status().isOk());
+
+		ArgumentCaptor<CommitStatus> statusCaptor = ArgumentCaptor.forClass(CommitStatus.class);
+		verify(mockGithub).save(statusCaptor.capture());
+
+		CommitStatus status = statusCaptor.getValue();
+		assertThat(status.getCla()).isEqualTo(cla.getName());
+		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
+		assertThat(status.getPullRequestId()).isEqualTo(2);
+		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
+		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/apache?repositoryId=rwinch/176_test&pullRequestId=2");
+		assertThat(status.isSuccess()).isFalse();
 	}
 
 	@Test
@@ -65,7 +82,7 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		accessToken = null;
 
 		when(mockTokenRepo.findOne("rwinch/176_test"))
-		.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
+			.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
 
 		mockMvc.perform(hookRequest().content(PAYLOAD))
 			.andExpect(status().isUnauthorized());
@@ -85,6 +102,28 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		mockMvc.perform(hookRequest()
 				.content(PAYLOAD))
 				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void markCommitStatusSuccess() throws Exception {
+		when(mockTokenRepo.findOne("rwinch/176_test"))
+			.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
+		when(mockIndividualSignatureRepository.findByClaNameAndEmailIn(anyString(), anySet())).thenReturn(individualSignature);
+
+		mockMvc.perform(hookRequest().content(PAYLOAD))
+			.andExpect(status().isOk());
+
+		ArgumentCaptor<CommitStatus> statusCaptor = ArgumentCaptor.forClass(CommitStatus.class);
+		verify(mockGithub).save(statusCaptor.capture());
+
+		CommitStatus status = statusCaptor.getValue();
+		assertThat(status.getCla()).isEqualTo(cla.getName());
+		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
+		assertThat(status.getPullRequestId()).isEqualTo(2);
+		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
+		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/apache?repositoryId=rwinch/176_test&pullRequestId=2");
+		assertThat(status.isSuccess()).isTrue();
 	}
 
 	private MockHttpServletRequestBuilder hookRequest() {
