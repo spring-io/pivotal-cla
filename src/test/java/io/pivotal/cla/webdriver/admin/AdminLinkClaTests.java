@@ -89,7 +89,8 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 
 	@Test
 	public void linkClaValidationRepositories() throws Exception {
-		when(mockTokenRepo.findOne(AccessToken.CLA_ACCESS_TOKEN_ID)).thenReturn(new AccessToken(AccessToken.CLA_ACCESS_TOKEN_ID, "abc123"));
+		AccessToken token = new AccessToken(AccessToken.CLA_ACCESS_TOKEN_ID, "linkClaValidationRepositories_access_token_abc123");
+		when(mockTokenRepo.findOne(AccessToken.CLA_ACCESS_TOKEN_ID)).thenReturn(token);
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		AdminLinkClaPage link = AdminLinkClaPage.to(getDriver());
@@ -104,6 +105,7 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 		CreatePullRequestHookRequest request = requestCaptor.getValue();
 		assertThat(request.getAccessToken()).isEqualTo(user.getAccessToken());
 		assertThat(request.getRepositoryIds()).containsOnly("test/this");
-		assertThat(request.getGithubEventUrl()).isEqualTo("http://localhost/github/hooks/pull_request/apache?access_token=abc123");
+		assertThat(request.getGithubEventUrl()).isEqualTo("http://localhost/github/hooks/pull_request/apache?access_token="+token.getToken());
+		assertThat(driver.getPageSource()).doesNotContain(token.getToken());
 	}
 }

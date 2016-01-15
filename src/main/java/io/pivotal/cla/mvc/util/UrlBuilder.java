@@ -61,6 +61,8 @@ public class UrlBuilder {
 				.build()
 				.toUriString();
 
+		this.path = null;
+		this.params.clear();
 		if (url.contains("ngrok.io")) {
 			url = url.replaceFirst(":80", "");
 			url = url.replaceFirst("http:", "https:");
