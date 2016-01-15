@@ -15,6 +15,7 @@
  */
 package io.pivotal.cla.mvc.admin;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,11 +37,17 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.mvc.util.UrlBuilder;
+import io.pivotal.cla.service.ContributingUrlsResponse;
 import io.pivotal.cla.service.CreatePullRequestHookRequest;
 import io.pivotal.cla.service.GitHubService;
 
 @Controller
 public class AdminClaController {
+
+	/**
+	 *
+	 */
+	private static final String ACCESS_TOKENS_URL = "https://github.com/settings/applications";
 
 	@Autowired
 	GitHubService github;
@@ -77,6 +84,7 @@ public class AdminClaController {
 	public String linkClaForm(@AuthenticationPrincipal User user, Map<String, Object> model) throws Exception {
 		model.put("linkClaForm", new LinkClaForm());
 		model.put("licenses", claRepo.findAll());
+		model.put("accessTokensUrl", ACCESS_TOKENS_URL);
 		return "admin/cla/link";
 	}
 
@@ -91,6 +99,7 @@ public class AdminClaController {
 			BindingResult result, RedirectAttributes attrs) throws Exception {
 		if (result.hasErrors()) {
 			model.put("licenses", claRepo.findAll());
+			model.put("accessTokensUrl", ACCESS_TOKENS_URL);
 			return "admin/cla/link";
 		}
 
@@ -103,16 +112,18 @@ public class AdminClaController {
 
 		CreatePullRequestHookRequest createPullRequest = new CreatePullRequestHookRequest();
 		createPullRequest.setAccessToken(user.getAccessToken());
-		createPullRequest.setRepositoryIds(linkClaForm.getRepositories());
+		List<String> repositoryIds = linkClaForm.getRepositories();
+		createPullRequest.setRepositoryIds(repositoryIds);
 		createPullRequest.setGithubEventUrl(pullRequestHookUrl);
 
+		ContributingUrlsResponse contributingUrls = github.getContributingUrls(repositoryIds);
 		List<String> hookUrls = github.createPullRequestHooks(createPullRequest);
-
-		String accessTokensUrl = "https://github.com/settings/applications";
 		attrs.addFlashAttribute("signClaUrl", signClaUrl);
 		attrs.addFlashAttribute("hookUrls", hookUrls);
-		attrs.addFlashAttribute("accessTokensUrl", accessTokensUrl);
+		attrs.addFlashAttribute("success", true);
+		attrs.addFlashAttribute("editContributingAdocUrls", contributingUrls.getAsciidoc());
+		attrs.addFlashAttribute("editContributingMdUrls", contributingUrls.getMarkdown());
 
-		return "redirect:/admin/cla/link?success";
+		return "redirect:/admin/cla/link";
 	}
 }

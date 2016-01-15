@@ -83,35 +83,40 @@
 	<body>
 		<div layout:fragment="content">
 			<div th:if="${success}" class="alert alert-success">
-				You have successfully linked your repository to a contributor agreement.
-				<a href="#" class="glyphicon glyphicon-question-sign" data-toggle="modal" data-target="#what-happened"></a>
+				You have successfully linked your repository to a contributor agreement. Specifically:
+
+				<ul>
+					<li>Created a pull request hook for each linked repository <a href="#" class="glyphicon glyphicon-question-sign" data-toggle="modal" data-target="#what-happened"></a></li>
+					<li>Will use your OAuth access token to update the commit status of the linked repositories <a class="glyphicon glyphicon-question-sign" href="#" data-toggle="modal" data-target="#what-happened"></a></li>
+				</ul>
 			</div>
 			<div class="container" th:if="${success}">
 				<h3>Next Steps</h3>
 				<p>The next step is to update all of the contributor guide lines in your repositories to include a link to the
-					contributor license agreement. Most projects use either a .md or .adoc extension.</p>
-				<h4>CONTRIBUTING.md</h4>
-				<p>
-					To make things easier you can open tabs for each repository to
-					<a id="edit-contributing-md-urls" th:attr="data-urls=${#strings.listJoin(editContributingMdUrls,',')}" href="#">edit existing</a> or
-					<a id="new-contributing-md-urls" th:attr="data-urls=${#strings.listJoin(newContributingMdUrls,',')}" href="#">create new</a>
-					CONTRIBUTING.md for each repository that was linked. You can use the following as a template for updating the contributor guidelines.
+					contributor license agreement.</p>
+				<div th:if="${not #lists.isEmpty(editContributingMdUrls)}">
+					<h4>CONTRIBUTING.md</h4>
+					<p>
+						To make things easier you can edit each CONTRIBUTING.md by <a id="contributing-md-urls" th:attr="data-urls=${#strings.listJoin(editContributingMdUrls,',')}" href="#">clicking here</a>. You can use the following as a template for updating the
+						contributor guidelines.
 					</p>
-				<pre><code>
+					<pre><code>
 If you have not previously done so, please fill out and
 submit the [Contributor License Agreement](<div th:remove="tag" th:utext="${signClaUrl}"></div>).</code>
-				</pre>
-				<h4>CONTRIBUTING.adoc</h4>
-				<p>
-					To make things easier you can open tabs for each repository to
-					<a id="edit-contributing-adoc-urls" th:attr="data-urls=${#strings.listJoin(editContributingAdocUrls,',')}" href="#">edit existing</a> or
-					<a id="new-contributing-adoc-urls" th:attr="data-urls=${#strings.listJoin(newContributingAdocUrls,',')}" href="#">create new</a>
-					CONTRIBUTING.adoc for each repository that was linked. You can use the following as a template for updating the contributor guidelines.
+					</pre>
+				</div>
+				<div th:if="${not #lists.isEmpty(editContributingAdocUrls)}">
+					<h4>CONTRIBUTING.adoc</h4>
+					<p>
+						To make things easier you can edit each CONTRIBUTING.adoc by <a id="contributing-adoc-urls" th:attr="data-urls=${#strings.listJoin(editContributingAdocUrls,',')}" href="#">clicking here</a>. You can use the following as a template for updating the
+						contributor guidelines.
 					</p>
-				<pre><code>
+					<pre><code>
 If you have not previously done so, please fill out and
 submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor License Agreement].</code>
-				</pre>
+					</pre>
+				</div>
+				<h3>Link more Contributor Agreements</h3>
 			</div>
 			<div class="modal fade" tabindex="-1" role="dialog" id="what-happened">
 				<div class="modal-dialog">
@@ -249,10 +254,8 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
                 };
 
                 $('#open-hook-urls').click(openDataUrls);
-                $('#new-contributing-md-urls').click(openDataUrls);
-                $('#edit-contributing-md-urls').click(openDataUrls);
-                $('#new-contributing-adoc-urls').click(openDataUrls);
-                $('#edit-contributing-adoc-urls').click(openDataUrls);
+                $('#contributing-md-urls').click(openDataUrls);
+                $('#contributing-adoc-urls').click(openDataUrls);
 
             </script>
 

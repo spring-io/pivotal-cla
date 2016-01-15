@@ -29,4 +29,6 @@ public interface GitHubService {
 			throws IOException;
 
 	User getCurrentUser(CurrentUserRequest request);
+
+	ContributingUrlsResponse getContributingUrls(List<String> repositoryIds);
 }

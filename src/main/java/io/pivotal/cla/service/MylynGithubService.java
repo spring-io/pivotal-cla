@@ -17,10 +17,12 @@ package io.pivotal.cla.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.egit.github.core.CommitStatus;
@@ -30,7 +32,10 @@ import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import io.pivotal.cla.ClaOAuthConfig;
 import io.pivotal.cla.data.AccessToken;
@@ -53,6 +58,8 @@ public class MylynGithubService implements GitHubService {
 
 	@Autowired
 	AccessTokenService tokenService;
+
+	RestTemplate rest = new RestTemplate();
 
 	@Override
 	public List<String> findRepositoryNames(String accessToken) throws IOException {
@@ -153,10 +160,56 @@ public class MylynGithubService implements GitHubService {
 
 			EventsRepositoryHook hook = createHook(githubEventUrl);
 			RepositoryHook createdHook = service.createHook(RepositoryId.createFromId(repository), hook);
-			String hookUrl = createdHook.getUrl();
-			hookUrls.add(hookUrl);
+			long hookId = createdHook.getId();
+			hookUrls.add("https://github.com/" + repository + "/settings/hooks/" + hookId);
 		}
 		return hookUrls;
+	}
+
+	public ContributingUrlsResponse getContributingUrls(List<String> repositoryIds) {
+		Set<String> remainingRepositoryIds = new HashSet<>(repositoryIds);
+
+		Map<String,String> mdUrls = createEditLinks(remainingRepositoryIds, "CONTRIBUTING.md");
+		remainingRepositoryIds.removeAll(mdUrls.keySet());
+		Map<String,String> adocUrls = createEditLinks(remainingRepositoryIds, "CONTRIBUTING.adoc");
+		remainingRepositoryIds.removeAll(adocUrls.keySet());
+		List<String> newUrls = createNewLinks(remainingRepositoryIds, "CONTRIBUTING.adoc");
+
+		ContributingUrlsResponse response = new ContributingUrlsResponse();
+		response.setMarkdown(mdUrls.values());
+		response.setAsciidoc(adocUrls.values());
+		response.getAsciidoc().addAll(newUrls);
+
+		return response;
+	}
+
+	private Map<String,String> createEditLinks(Collection<String> repoIds, String fileName) {
+		Map<String,String> urls = new HashMap<>();
+		for(String id : repoIds) {
+			String url = "https://github.com/"+ id +"/edit/master/" + fileName;
+			if(urlExists(url)) {
+				urls.put(id, url);
+			}
+		}
+		return urls;
+	}
+
+	private List<String> createNewLinks(Collection<String> repoIds, String fileName) {
+		List<String> urls = new ArrayList<>();
+		for(String id : repoIds) {
+			String url = "https://github.com/"+ id +"/new/master?filename=" + fileName;
+			urls.add(url);
+		}
+		return urls;
+	}
+
+	private boolean urlExists(String url) {
+		try {
+			rest.getForEntity(url, String.class);
+			return true;
+		}catch(HttpClientErrorException notFound) {
+			return false;
+		}
 	}
 
 	private EventsRepositoryHook createHook(String url) {
