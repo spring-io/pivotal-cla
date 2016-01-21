@@ -39,7 +39,7 @@ public class WithSigningUserFactory implements WithSecurityContextFactory<WithSi
 		user.setAccessToken("mocked_access_token");
 		user.setAvatarUrl("https://avatars.githubusercontent.com/u/362503?v=3");
 		user.setEmails(Collections.singleton("rob@gmail.com"));
-		user.setGithubLogin("rob");
+		user.setGithubLogin("robwinch");
 		return user;
 	}
 

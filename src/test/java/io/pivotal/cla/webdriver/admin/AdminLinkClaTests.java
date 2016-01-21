@@ -16,6 +16,7 @@
 package io.pivotal.cla.webdriver.admin;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,6 +31,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithAdminUser;
+import io.pivotal.cla.service.ContributingUrlsResponse;
 import io.pivotal.cla.service.CreatePullRequestHookRequest;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
 import io.pivotal.cla.webdriver.pages.HomePage;
@@ -88,9 +90,11 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 	}
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void linkClaValidationRepositories() throws Exception {
 		AccessToken token = new AccessToken(AccessToken.CLA_ACCESS_TOKEN_ID, "linkClaValidationRepositories_access_token_abc123");
 		when(mockTokenRepo.findOne(AccessToken.CLA_ACCESS_TOKEN_ID)).thenReturn(token);
+		when(mockGithub.getContributingUrls(anyList())).thenReturn(new ContributingUrlsResponse());
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		AdminLinkClaPage link = AdminLinkClaPage.to(getDriver());

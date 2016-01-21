@@ -50,7 +50,7 @@ public abstract class BaseWebDriverTests {
 	protected ContributorLicenseAgreementRepository mockClaRepository;
 	protected IndividualSignatureRepository mockIndividualSignatureRepository;
 	protected AccessTokenRepository mockTokenRepo;
-	protected UserRepository userRepo;
+	protected UserRepository mockUserRepo;
 
 	protected WebDriver driver;
 
@@ -85,6 +85,14 @@ public abstract class BaseWebDriverTests {
 		individualSignature.setName("Rob Winch");
 		individualSignature.setMailingAddress("123 Seasame Street");
 		individualSignature.setTelephone("123.456.7890");
+	}
+
+
+
+	@Autowired
+	public void setMockUserRepository(UserRepository mockUserRepo) {
+		reset(mockUserRepo);
+		this.mockUserRepo = mockUserRepo;
 	}
 
 	@Autowired

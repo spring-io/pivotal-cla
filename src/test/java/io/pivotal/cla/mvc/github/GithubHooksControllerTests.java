@@ -29,6 +29,8 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import io.pivotal.cla.data.AccessToken;
+import io.pivotal.cla.data.User;
+import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.service.CommitStatus;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
 
@@ -107,6 +109,8 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void markCommitStatusSuccess() throws Exception {
+		User user = WithSigningUserFactory.create();
+		when(mockUserRepo.findOne(anyString())).thenReturn(user);
 		when(mockTokenRepo.findOne("rwinch/176_test"))
 			.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
 		when(mockIndividualSignatureRepository.findByClaNameAndEmailIn(anyString(), anySet())).thenReturn(individualSignature);
