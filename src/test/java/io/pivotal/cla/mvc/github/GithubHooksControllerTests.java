@@ -128,6 +128,7 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
 		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/apache?repositoryId=rwinch/176_test&pullRequestId=2");
 		assertThat(status.isSuccess()).isTrue();
+		assertThat(status.getGithubUsername()).isEqualTo(user.getGithubLogin());
 	}
 
 	private MockHttpServletRequestBuilder hookRequest() {

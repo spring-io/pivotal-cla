@@ -115,6 +115,7 @@ public class ClaController {
 				status.setRepoId(repositoryId);
 				status.setSha(pullRequest.getHead().getSha());
 				status.setSuccess(true);
+				status.setGithubUsername(user.getGithubLogin());
 				github.save(status);
 			}
 		}

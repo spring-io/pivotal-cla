@@ -15,6 +15,7 @@
  */
 package io.pivotal.cla;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -26,9 +27,26 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix="security.oauth2")
 public class ClaOAuthConfig {
 
+	@Value("${security.oauth2.pivotal-cla.token}")
+	private String pivotalClaAccessToken;
+
 	private OAuthClientCredentials admin;
 
 	private OAuthClientCredentials main;
+
+	/**
+	 * @return the pivotalClaAccessToken
+	 */
+	public String getPivotalClaAccessToken() {
+		return pivotalClaAccessToken;
+	}
+
+	/**
+	 * @param pivotalClaAccessToken the pivotalClaAccessToken to set
+	 */
+	public void setPivotalClaAccessToken(String pivotalClaAccessToken) {
+		this.pivotalClaAccessToken = pivotalClaAccessToken;
+	}
 
 	/**
 	 * @return the admin

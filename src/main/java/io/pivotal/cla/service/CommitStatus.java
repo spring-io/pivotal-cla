@@ -22,6 +22,21 @@ public class CommitStatus {
 	private String cla;
 	private boolean success;
 	private String url;
+	private String githubUsername;
+
+	/**
+	 * @return the githubUsername
+	 */
+	public String getGithubUsername() {
+		return githubUsername;
+	}
+
+	/**
+	 * @param githubUsername the githubUsername to set
+	 */
+	public void setGithubUsername(String githubUsername) {
+		this.githubUsername = githubUsername;
+	}
 
 	/**
 	 * @return the pullRequestId

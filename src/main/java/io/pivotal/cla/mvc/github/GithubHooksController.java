@@ -75,12 +75,15 @@ public class GithubHooksController {
 		IndividualSignature signedIndividual = user == null ? null
 				: individualRepo.findByClaNameAndEmailIn(cla, user.getEmails());
 
+		boolean success = signedIndividual != null;
+
 		CommitStatus status = new CommitStatus();
+		status.setGithubUsername(login);
 		status.setPullRequestId(pullRequest.getNumber());
 		status.setCla(cla);
 		status.setRepoId(repoId.generateId());
 		status.setSha(pullRequest.getHead().getSha());
-		status.setSuccess(signedIndividual != null);
+		status.setSuccess(success);
 		String url = UrlBuilder
 			.fromRequest(request)
 			.path("/sign/"+cla)

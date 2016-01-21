@@ -25,11 +25,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.eclipse.egit.github.core.Comment;
 import org.eclipse.egit.github.core.CommitStatus;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryHook;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.client.GitHubClient;
+import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -97,6 +99,33 @@ public class MylynGithubService implements GitHubService {
 		try {
 			commitService.createStatus(id, commitStatus.getSha(), status);
 		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
+
+		GitHubClient commentClient = new GitHubClient();
+		commentClient.setOAuth2Token(oauthConfig.getPivotalClaAccessToken());
+		IssueService issues = new IssueService(commentClient);
+		long claUserCommentCount = getCommentsByClaUser(issues, id, commitStatus);
+		if(success) {
+			try {
+				issues.createComment(id, commitStatus.getPullRequestId(), "@" + commitStatus.getGithubUsername() + " Thank you for signing the [Contributor License Agreement](" + status.getUrl() + ")!");
+			} catch(IOException e) {
+				throw new RuntimeException(e);
+			}
+		} else if(claUserCommentCount < 1) {
+			try {
+				issues.createComment(id, commitStatus.getPullRequestId(), "@" + commitStatus.getGithubUsername() + " Please sign the [Contributor License Agreement](" + status.getUrl() + ")!");
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
+	private long getCommentsByClaUser(IssueService issues, RepositoryId id, io.pivotal.cla.service.CommitStatus commitStatus) {
+		try {
+			return issues.getComments(id, commitStatus.getPullRequestId()).stream().filter( c -> "pivotal-cla".equals(c.getUser().getLogin())).count();
+		}catch(IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
