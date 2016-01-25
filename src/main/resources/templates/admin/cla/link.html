@@ -29,6 +29,11 @@
     width: 100%;
 }
 
+#repositories[disabled] {
+    background-color: #eee !important;
+    opacity: 1;
+}
+
 .typeahead {
   background-color: #fff;
 }
@@ -239,11 +244,11 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
                     return str ? str.split(/[\/\-]/) : [];
                 }
                 var repositories = new Bloodhound({
+                  initialize: false,
                   datumTokenizer: tokenizer,
                   queryTokenizer: tokenizer,
                   prefetch: './link/repositories.json'
                 });
-                repositories.initialize();
                 $('#repositories').typeahead(
                         {
                             highlight: true,
@@ -254,6 +259,13 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
                             name: 'repositories',
                             source: repositories
                         });
+                $('#repositories').typeahead('val', 'Loading...');
+                $('#repositories').prop('disabled', true);
+                var searchInit = repositories.initialize();
+                searchInit.done(function() {
+                    $('#repositories').typeahead('val', '');
+                    $('#repositories').removeProp('disabled');
+                });
                 $('#repositories').bind('typeahead:select', function (ev, suggestion) {
                     var alreadySelected = $("#tags div[data-id='" + suggestion + "']").length != 0;
                     if(alreadySelected) {
