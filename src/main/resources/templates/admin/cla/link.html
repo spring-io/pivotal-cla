@@ -33,6 +33,10 @@
     background-color: #eee !important;
     opacity: 1;
 }
+.twitter-typeahead .tt-menu {
+    max-height: 150px;
+    overflow-y: auto;
+}
 
 .typeahead {
   background-color: #fff;
@@ -253,11 +257,11 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
                         {
                             highlight: true,
                             minLength: 2,
-                            limit: 15,
                             autoSelect: true
                         }, {
                             name: 'repositories',
-                            source: repositories
+                            source: repositories,
+                            limit: 15
                         });
                 $('#repositories').typeahead('val', 'Loading...');
                 $('#repositories').prop('disabled', true);
