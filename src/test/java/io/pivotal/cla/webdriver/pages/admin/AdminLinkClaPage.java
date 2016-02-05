@@ -17,6 +17,7 @@ package io.pivotal.cla.webdriver.pages.admin;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
@@ -46,7 +47,9 @@ public class AdminLinkClaPage extends BasePage {
 	public <T extends BasePage> T link(String repositoryName, String licenseName, Class<T> page) {
 		Select cla = new Select(claName);
 
+		((JavascriptExecutor)getDriver()).executeScript("arguments[0].disabled = false;", repositories);
 		repositories.sendKeys(repositoryName);
+		System.out.println(getDriver().getPageSource());
 		cla.selectByVisibleText(licenseName);
 		submit.click();
 		return PageFactory.initElements(getDriver(), page);

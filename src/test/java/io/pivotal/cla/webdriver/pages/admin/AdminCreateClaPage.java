@@ -25,7 +25,9 @@ import org.openqa.selenium.support.PageFactory;
 import io.pivotal.cla.webdriver.pages.BasePage;
 
 public class AdminCreateClaPage extends BasePage {
+	@FindBy(id = "individualContent.markdown")
 	WebElement individualContent;
+	@FindBy(id = "corporateContent.markdown")
 	WebElement corporateContent;
 	WebElement name;
 	@FindBy(id = "create-submit")

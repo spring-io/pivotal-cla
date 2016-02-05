@@ -33,7 +33,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 
 		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
 
-		assertThat(signPage.getIndividualCla()).isEqualTo(cla.getIndividualContent());
+		assertThat(signPage.getIndividualCla()).isEqualTo(cla.getIndividualContent().getHtml());
 	}
 
 	@Test

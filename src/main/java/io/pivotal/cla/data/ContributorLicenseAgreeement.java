@@ -17,11 +17,16 @@ package io.pivotal.cla.data;
 
 import java.util.Date;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Version;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -39,13 +44,19 @@ public class ContributorLicenseAgreeement {
 	@Version
 	private Date created = new Date();
 
-	@NotEmpty(message = "This is required")
 	@Lob
-	private String individualContent;
+	@NotNull(message = "This is required")
+	@Valid
+	@AttributeOverrides({ @AttributeOverride(name = "markdown", column = @Column(name = "individual_markdown") ),
+			@AttributeOverride(name = "html", column = @Column(name = "individual_html") ) })
+	private MarkdownContent individualContent;
 
-	@NotEmpty(message = "This is required")
 	@Lob
-	private String corporateContent;
+	@Valid
+	@NotNull(message = "This is required")
+	@AttributeOverrides({ @AttributeOverride(name = "markdown", column = @Column(name = "corporate_markdown") ),
+			@AttributeOverride(name = "html", column = @Column(name = "corporate_html") ) })
+	private MarkdownContent corporateContent;
 
 	/**
 	 * @return the id
@@ -95,7 +106,7 @@ public class ContributorLicenseAgreeement {
 	/**
 	 * @return the individualContent
 	 */
-	public String getIndividualContent() {
+	public MarkdownContent getIndividualContent() {
 		return individualContent;
 	}
 
@@ -103,14 +114,14 @@ public class ContributorLicenseAgreeement {
 	 * @param individualContent
 	 *            the individualContent to set
 	 */
-	public void setIndividualContent(String individualContent) {
+	public void setIndividualContent(MarkdownContent individualContent) {
 		this.individualContent = individualContent;
 	}
 
 	/**
 	 * @return the corporateContent
 	 */
-	public String getCorporateContent() {
+	public MarkdownContent getCorporateContent() {
 		return corporateContent;
 	}
 
@@ -118,7 +129,8 @@ public class ContributorLicenseAgreeement {
 	 * @param corporateContent
 	 *            the corporateContent to set
 	 */
-	public void setCorporateContent(String corporateContent) {
+	public void setCorporateContent(MarkdownContent corporateContent) {
 		this.corporateContent = corporateContent;
 	}
+
 }

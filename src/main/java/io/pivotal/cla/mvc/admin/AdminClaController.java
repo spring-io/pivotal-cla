@@ -32,6 +32,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.ContributorLicenseAgreeement;
+import io.pivotal.cla.data.MarkdownContent;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
@@ -70,11 +71,22 @@ public class AdminClaController {
 	}
 
 	@RequestMapping(value = "/admin/cla/create", method = RequestMethod.POST)
-	public String createCla(@Valid ContributorLicenseAgreeement contributorLicenseAgreeement, BindingResult result)
+	public String createCla(@AuthenticationPrincipal User user, @Valid ContributorLicenseAgreeement contributorLicenseAgreeement, BindingResult result)
 			throws Exception {
 		if (result.hasErrors()) {
 			return "admin/cla/create";
 		}
+
+		String accessToken = user.getAccessToken();
+
+		MarkdownContent individual = contributorLicenseAgreeement.getIndividualContent();
+		String individualHtml = github.markdownToHtml(accessToken, individual.getMarkdown());
+		individual.setHtml(individualHtml);
+
+		MarkdownContent corporate = contributorLicenseAgreeement.getCorporateContent();
+		String corperateHtml = github.markdownToHtml(accessToken, corporate.getMarkdown());
+		corporate.setHtml(corperateHtml);
+
 		claRepo.save(contributorLicenseAgreeement);
 		return "redirect:/admin/cla/?success";
 	}

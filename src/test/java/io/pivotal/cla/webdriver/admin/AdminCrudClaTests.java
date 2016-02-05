@@ -17,12 +17,14 @@ package io.pivotal.cla.webdriver.admin;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import io.pivotal.cla.data.ContributorLicenseAgreeement;
 import io.pivotal.cla.security.WithAdminUser;
+import io.pivotal.cla.security.WithAdminUserFactory;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
 import io.pivotal.cla.webdriver.pages.HomePage;
 import io.pivotal.cla.webdriver.pages.admin.AdminCreateClaPage;
@@ -70,7 +72,6 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 		create = create.create("Name", "", "Corporate", AdminCreateClaPage.class);
 
 		create.assertName().hasNoErrors().hasValue("Name");
-		;
 		create.assertCorporateContent().hasNoErrors();
 		create.assertIndividualContent().hasRequiredError();
 	}
@@ -90,9 +91,18 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 
 	@Test
 	public void createClaSuccess() {
+		String individualMd = cla.getIndividualContent().getMarkdown();
+		String individualHtml = cla.getIndividualContent().getHtml();
+		String corporateMd = cla.getCorporateContent().getMarkdown();
+		String corporateHtml = cla.getCorporateContent().getHtml();
+
+		String accessToken = WithAdminUserFactory.create().getAccessToken();
+		when(mockGithub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
+		when(mockGithub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
+
 		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
 
-		AdminListClasPage successPage = create.create("Eclipse", "Individual", "Corporate", AdminListClasPage.class);
+		AdminListClasPage successPage = create.create("Eclipse", individualMd, corporateMd, AdminListClasPage.class);
 		successPage.assertAt();
 
 		ArgumentCaptor<ContributorLicenseAgreeement> captor = ArgumentCaptor
@@ -101,7 +111,9 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 
 		ContributorLicenseAgreeement cla = captor.getValue();
 		assertThat(cla.getName()).isEqualTo("Eclipse");
-		assertThat(cla.getIndividualContent()).isEqualTo("Individual");
-		assertThat(cla.getCorporateContent()).isEqualTo("Corporate");
+		assertThat(cla.getIndividualContent().getHtml()).isEqualTo(individualHtml);
+		assertThat(cla.getIndividualContent().getMarkdown()).isEqualTo(individualMd);
+		assertThat(cla.getCorporateContent().getHtml()).isEqualTo(corporateHtml);
+		assertThat(cla.getCorporateContent().getMarkdown()).isEqualTo(corporateMd);
 	}
 }

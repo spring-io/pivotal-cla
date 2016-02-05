@@ -39,9 +39,13 @@ public class DataTests {
 
 	@Test
 	public void workflow() {
+		MarkdownContent corporate = new MarkdownContent();
+		corporate.setMarkdown("Corporate");
+		MarkdownContent individual = new MarkdownContent();
+		individual.setMarkdown("Individual");
 		ContributorLicenseAgreeement cla = new ContributorLicenseAgreeement();
-		cla.setCorporateContent("Corporate");
-		cla.setIndividualContent("Individual");
+		cla.setCorporateContent(corporate);
+		cla.setIndividualContent(individual);
 		cla.setName("spring");
 
 		ContributorLicenseAgreeement springCla = clas.save(cla);

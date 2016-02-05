@@ -31,6 +31,7 @@ import org.eclipse.egit.github.core.RepositoryHook;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.IssueService;
+import org.eclipse.egit.github.core.service.MarkdownService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -208,6 +209,16 @@ public class MylynGithubService implements GitHubService {
 		response.getAsciidoc().addAll(newUrls);
 
 		return response;
+	}
+
+	@Override
+	public String markdownToHtml(String accessToken, String markdown) {
+		MarkdownService markdownService = new MarkdownService(createClient(accessToken));
+		try {
+			return markdownService.getHtml(markdown, "gfm");
+		} catch(IOException e) {
+			throw new RuntimeException("Couldn't convert markdown", e);
+		}
 	}
 
 	private Map<String,String> createEditLinks(Collection<String> repoIds, String fileName) {

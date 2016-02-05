@@ -173,9 +173,6 @@ public class SecurityTests extends BaseWebDriverTests {
 		ArgumentCaptor<CurrentUserRequest> userCaptor = ArgumentCaptor.forClass(CurrentUserRequest.class);
 		verify(mockGithub,times(2)).getCurrentUser(userCaptor.capture());
 		assertThat(userCaptor.getAllValues()).extracting(CurrentUserRequest::isRequestAdminAccess).containsOnly(false, true);
-		verify(mockGithub).findRepositoryNames(anyString());
-
-		verifyNoMoreInteractions(mockGithub);
 	}
 
 	@Test

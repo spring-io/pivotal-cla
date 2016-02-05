@@ -13,18 +13,18 @@
 						<p th:each="err : ${#fields.errors('name')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('individualContent')}? 'has-error form-group' : form-group">
-					<label class="control-label" for="individualContent">Individual Contributor Text</label>
-					<textarea class="form-control" th:field="*{individualContent}"></textarea>
-					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('individualContent')}" id="err-individualContent">
-						<p th:each="err : ${#fields.errors('individualContent')}" th:text="${err}">Input is incorrect</p>
+				<div class="form-group" th:class="${#fields.hasErrors('individualContent.markdown')}? 'has-error form-group' : form-group">
+					<label class="control-label" for="individualContent.markdown">Individual Contributor Text</label>
+					<textarea class="form-control" th:field="*{individualContent.markdown}"></textarea>
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('individualContent.markdown')}" id="err-individualContent.markdown">
+						<p th:each="err : ${#fields.errors('individualContent.markdown')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('corporateContent')}? 'has-error form-group' : form-group">
-					<label class="control-label" for="corporateContent">Corporate Contributor Text</label>
-					<textarea class="form-control" th:field="*{corporateContent}"></textarea>
-					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('corporateContent')}" id="err-corporateContent">
-						<p th:each="err : ${#fields.errors('corporateContent')}" th:text="${err}">Input is incorrect</p>
+				<div class="form-group" th:class="${#fields.hasErrors('corporateContent.markdown')}? 'has-error form-group' : form-group">
+					<label class="control-label" for="corporateContent.markdown">Corporate Contributor Text</label>
+					<textarea class="form-control" th:field="*{corporateContent.markdown}"></textarea>
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('corporateContent.markdown')}" id="err-corporateContent.markdown">
+						<p th:each="err : ${#fields.errors('corporateContent.markdown')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
 				<button id="create-submit" type="submit" class="btn btn-success">I Agree</button>

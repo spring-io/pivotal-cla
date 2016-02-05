@@ -33,6 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.pivotal.cla.data.ContributorLicenseAgreeement;
 import io.pivotal.cla.data.IndividualSignature;
+import io.pivotal.cla.data.MarkdownContent;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
@@ -71,10 +72,17 @@ public abstract class BaseWebDriverTests {
 				.useMockMvcForHosts("github.com")
 				.build();
 
+		MarkdownContent corporate = new MarkdownContent();
+		corporate.setMarkdown("# Corporate");
+		corporate.setHtml("[h1]Corporate[/h1]");
+		MarkdownContent individual = new MarkdownContent();
+		individual.setMarkdown("# Individual");
+		individual.setHtml("[h1]Individual[/h1]");
+
 		cla = new ContributorLicenseAgreeement();
 		cla.setName("apache");
-		cla.setCorporateContent("Corporate");
-		cla.setIndividualContent("Individual");
+		cla.setCorporateContent(corporate);
+		cla.setIndividualContent(individual);
 		cla.setId(1L);
 
 		individualSignature = new IndividualSignature();
