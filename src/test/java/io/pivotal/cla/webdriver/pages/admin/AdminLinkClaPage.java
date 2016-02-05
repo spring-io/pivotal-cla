@@ -51,7 +51,6 @@ public class AdminLinkClaPage extends BasePage {
 
 		waitForRepositories();
 		repositories.sendKeys(repositoryName);
-		System.out.println(getDriver().getPageSource());
 		cla.selectByVisibleText(licenseName);
 		submit.click();
 		return PageFactory.initElements(getDriver(), page);
