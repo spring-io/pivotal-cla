@@ -17,11 +17,13 @@ package io.pivotal.cla.webdriver.pages.admin;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.google.common.base.Predicate;
 
 import io.pivotal.cla.webdriver.pages.BasePage;
 
@@ -47,12 +49,21 @@ public class AdminLinkClaPage extends BasePage {
 	public <T extends BasePage> T link(String repositoryName, String licenseName, Class<T> page) {
 		Select cla = new Select(claName);
 
-		((JavascriptExecutor)getDriver()).executeScript("arguments[0].disabled = false;", repositories);
+		waitForRepositories();
 		repositories.sendKeys(repositoryName);
 		System.out.println(getDriver().getPageSource());
 		cla.selectByVisibleText(licenseName);
 		submit.click();
 		return PageFactory.initElements(getDriver(), page);
+	}
+
+	public void waitForRepositories() {
+		new WebDriverWait(getDriver(), 3).until(new Predicate<WebDriver>() {
+			@Override
+			public boolean apply(WebDriver input) {
+				return repositories.isEnabled();
+			}
+		});
 	}
 
 	public void assertAt() {
