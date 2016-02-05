@@ -18,6 +18,7 @@ package io.pivotal.cla.egit.github.core.event;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.event.PullRequestPayload;
 
+@SuppressWarnings("serial")
 public class RepositoryPullRequestPayload extends PullRequestPayload {
 	private Repository repository;
 

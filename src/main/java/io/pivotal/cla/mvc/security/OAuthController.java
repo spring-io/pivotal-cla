@@ -84,5 +84,6 @@ public class OAuthController {
 		return "Invalid Secret State";
 	}
 
+	@SuppressWarnings("serial")
 	static class InvalidSecretState extends RuntimeException {}
 }

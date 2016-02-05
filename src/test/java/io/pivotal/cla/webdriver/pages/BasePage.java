@@ -98,7 +98,7 @@ public abstract class BasePage {
 		}
 
 		public void hasOptionTexts(String... texts) {
-			assertThat(select().getOptions()).extracting("text").contains(texts);
+			assertThat(select().getOptions()).extracting("text").contains((Object[])texts);
 		}
 
 		@Override
