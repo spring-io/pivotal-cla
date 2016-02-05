@@ -85,6 +85,17 @@ security.oauth2.pivotal-cla.token=A Personal Access Token with public_repo scope
 If you are needing to test receiving GitHub events, you will probably want to setup https://ngrok.com/#download[ngrok].
 If there is no need to test reciving the GitHub events from GitHub, then you can skip this step.
 
+= Running the Application
+
+== Gradle
+
+You can run the application using:
+
+[source,bash]
+----
+$ ./gradlew bootRun
+----
+
 == Open the Application
 
 You can open the application at a context root of "/".
