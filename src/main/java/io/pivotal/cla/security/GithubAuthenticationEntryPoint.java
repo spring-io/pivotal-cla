@@ -28,15 +28,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import io.pivotal.cla.OAuthClientCredentials;
 import io.pivotal.cla.mvc.util.UrlBuilder;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class GithubAuthenticationEntryPoint implements AuthenticationEntryPoint {
-	private String scope;
 	private OAuthClientCredentials config;
-
-	public GithubAuthenticationEntryPoint(OAuthClientCredentials config, String scope) {
-		this.config = config;
-		this.scope = scope;
-	}
+	private String scope;
 
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException, ServletException {

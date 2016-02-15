@@ -37,6 +37,7 @@ dependencies {
 	compile('org.webjars:jquery:1.11.3')
 	compile('com.h2database:h2')
 	compile('net.sourceforge.nekohtml:nekohtml')
+	compile('org.projectlombok:lombok:1.16.6')
 	testCompile('org.springframework.boot:spring-boot-configuration-processor')
 	testCompile('org.springframework.boot:spring-boot-devtools')
 	testCompile('org.springframework.security:spring-security-test')

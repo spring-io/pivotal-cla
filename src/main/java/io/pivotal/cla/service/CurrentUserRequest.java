@@ -15,40 +15,16 @@
  */
 package io.pivotal.cla.service;
 
+import lombok.Data;
+
 /**
  * @author Rob Winch
  *
  */
+@Data
 public class CurrentUserRequest {
 	private OAuthAccessTokenParams oauthParams;
 
 	private boolean requestAdminAccess;
 
-	/**
-	 * @return the requestAdminAccess
-	 */
-	public boolean isRequestAdminAccess() {
-		return requestAdminAccess;
-	}
-
-	/**
-	 * @param requestAdminAccess the requestAdminAccess to set
-	 */
-	public void setRequestAdminAccess(boolean requestAdminAccess) {
-		this.requestAdminAccess = requestAdminAccess;
-	}
-
-	/**
-	 * @return the oauthParams
-	 */
-	public OAuthAccessTokenParams getOauthParams() {
-		return oauthParams;
-	}
-
-	/**
-	 * @param oauthParams the oauthParams to set
-	 */
-	public void setOauthParams(OAuthAccessTokenParams oauthParams) {
-		this.oauthParams = oauthParams;
-	}
 }

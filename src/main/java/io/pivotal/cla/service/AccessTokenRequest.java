@@ -16,42 +16,17 @@
 package io.pivotal.cla.service;
 
 import io.pivotal.cla.OAuthClientCredentials;
+import lombok.Data;
 
 /**
  * @author Rob Winch
  *
  */
+@Data
 public class AccessTokenRequest {
 
 	private OAuthClientCredentials credentials;
 
 	private OAuthAccessTokenParams oauthParams;
 
-	/**
-	 * @return the credentials
-	 */
-	public OAuthClientCredentials getCredentials() {
-		return credentials;
-	}
-
-	/**
-	 * @param credentials the credentials to set
-	 */
-	public void setCredentials(OAuthClientCredentials credentials) {
-		this.credentials = credentials;
-	}
-
-	/**
-	 * @return the oauthParams
-	 */
-	public OAuthAccessTokenParams getOauthParams() {
-		return oauthParams;
-	}
-
-	/**
-	 * @param oauthParams the oauthParams to set
-	 */
-	public void setOauthParams(OAuthAccessTokenParams oauthParams) {
-		this.oauthParams = oauthParams;
-	}
 }

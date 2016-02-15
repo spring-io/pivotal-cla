@@ -15,10 +15,13 @@
  */
 package io.pivotal.cla.service;
 
+import lombok.Data;
+
 /**
  * @author Rob Winch
  *
  */
+@Data
 public class OAuthAccessTokenParams {
 
 	private String state;
@@ -26,48 +29,6 @@ public class OAuthAccessTokenParams {
 	private String callbackUrl;
 
 	private String code;
-
-	/**
-	 * @return the state
-	 */
-	public String getState() {
-		return state;
-	}
-
-	/**
-	 * @param state the state to set
-	 */
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	/**
-	 * @return the callbackUrl
-	 */
-	public String getCallbackUrl() {
-		return callbackUrl;
-	}
-
-	/**
-	 * @param callbackUrl the callbackUrl to set
-	 */
-	public void setCallbackUrl(String callbackUrl) {
-		this.callbackUrl = callbackUrl;
-	}
-
-	/**
-	 * @return the code
-	 */
-	public String getCode() {
-		return code;
-	}
-
-	/**
-	 * @param code the code to set
-	 */
-	public void setCode(String code) {
-		this.code = code;
-	}
 
 
 }

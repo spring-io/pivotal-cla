@@ -19,12 +19,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import lombok.Data;
+
 /**
  * @author Rob Winch
  *
  */
 @Component
 @ConfigurationProperties(prefix="security.oauth2")
+@Data
 public class ClaOAuthConfig {
 
 	@Value("${security.oauth2.pivotal-cla.token}")
@@ -34,45 +37,4 @@ public class ClaOAuthConfig {
 
 	private OAuthClientCredentials main;
 
-	/**
-	 * @return the pivotalClaAccessToken
-	 */
-	public String getPivotalClaAccessToken() {
-		return pivotalClaAccessToken;
-	}
-
-	/**
-	 * @param pivotalClaAccessToken the pivotalClaAccessToken to set
-	 */
-	public void setPivotalClaAccessToken(String pivotalClaAccessToken) {
-		this.pivotalClaAccessToken = pivotalClaAccessToken;
-	}
-
-	/**
-	 * @return the admin
-	 */
-	public OAuthClientCredentials getAdmin() {
-		return admin;
-	}
-
-	/**
-	 * @param admin the admin to set
-	 */
-	public void setAdmin(OAuthClientCredentials admin) {
-		this.admin = admin;
-	}
-
-	/**
-	 * @return the main
-	 */
-	public OAuthClientCredentials getMain() {
-		return main;
-	}
-
-	/**
-	 * @param main the main to set
-	 */
-	public void setMain(OAuthClientCredentials main) {
-		this.main = main;
-	}
 }

@@ -17,23 +17,13 @@ package io.pivotal.cla.egit.github.core;
 
 import org.eclipse.egit.github.core.CommitStatus;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper=false)
 public class ContextCommitStatus extends CommitStatus {
 	private String context;
-
-	/**
-	 * @return the context
-	 */
-	public String getContext() {
-		return context;
-	}
-
-	/**
-	 * @param context
-	 *            the context to set
-	 */
-	public void setContext(String context) {
-		this.context = context;
-	}
 
 	private static final long serialVersionUID = -1578730338049714284L;
 }

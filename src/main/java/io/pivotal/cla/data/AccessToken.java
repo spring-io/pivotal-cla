@@ -18,7 +18,14 @@ package io.pivotal.cla.data;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AccessToken {
 	public static String CLA_ACCESS_TOKEN_ID = "this";
 
@@ -26,14 +33,6 @@ public class AccessToken {
 	private String id;
 
 	private String token;
-
-	public AccessToken() {
-	}
-
-	public AccessToken(String id, String token) {
-		this.id = id;
-		this.token = token;
-	}
 
 	/**
 	 * <p>
@@ -56,28 +55,5 @@ public class AccessToken {
 	 */
 	public String getId() {
 		return id;
-	}
-
-	/**
-	 * @param githubId
-	 *            the githubId to set
-	 */
-	public void setId(String githubId) {
-		this.id = githubId;
-	}
-
-	/**
-	 * @return the token
-	 */
-	public String getToken() {
-		return token;
-	}
-
-	/**
-	 * @param token
-	 *            the token to set
-	 */
-	public void setToken(String token) {
-		this.token = token;
 	}
 }

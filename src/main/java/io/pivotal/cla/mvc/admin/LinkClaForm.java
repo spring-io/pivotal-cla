@@ -19,6 +19,9 @@ import java.util.List;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import lombok.Data;
+
+@Data
 public class LinkClaForm {
 	@NotEmpty(message = "This is required")
 	private List<String> repositories;
@@ -26,43 +29,4 @@ public class LinkClaForm {
 	@NotEmpty(message = "This is required")
 	private String claName;
 
-	/**
-	 * @return the repositories
-	 */
-	public List<String> getRepositories() {
-		return repositories;
-	}
-
-	/**
-	 * @param repositories
-	 *            the repositories to set
-	 */
-	public void setRepositories(List<String> repositories) {
-		this.repositories = repositories;
-	}
-
-	/**
-	 * @return the claName
-	 */
-	public String getClaName() {
-		return claName;
-	}
-
-	/**
-	 * @param claName
-	 *            the claName to set
-	 */
-	public void setClaName(String claName) {
-		this.claName = claName;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "LinkClaForm [repositories=" + repositories + ", claName=" + claName + "]";
-	}
 }

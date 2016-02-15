@@ -17,10 +17,13 @@ package io.pivotal.cla.service;
 
 import java.util.List;
 
+import lombok.Data;
+
 /**
  * @author Rob Winch
  *
  */
+@Data
 public class CreatePullRequestHookRequest {
 
 	private String accessToken;
@@ -29,45 +32,4 @@ public class CreatePullRequestHookRequest {
 
 	private String githubEventUrl;
 
-	/**
-	 * @return the accessToken
-	 */
-	public String getAccessToken() {
-		return accessToken;
-	}
-
-	/**
-	 * @param accessToken the accessToken to set
-	 */
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
-	}
-
-	/**
-	 * @return the repositoryIds
-	 */
-	public List<String> getRepositoryIds() {
-		return repositoryIds;
-	}
-
-	/**
-	 * @param repositoryIds the repositoryIds to set
-	 */
-	public void setRepositoryIds(List<String> repositoryIds) {
-		this.repositoryIds = repositoryIds;
-	}
-
-	/**
-	 * @return the githubEventUrl
-	 */
-	public String getGithubEventUrl() {
-		return githubEventUrl;
-	}
-
-	/**
-	 * @param githubEventUrl the githubEventUrl to set
-	 */
-	public void setGithubEventUrl(String githubEventUrl) {
-		this.githubEventUrl = githubEventUrl;
-	}
 }

@@ -17,7 +17,12 @@ package io.pivotal.cla.data;
 
 import javax.persistence.Entity;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 @Entity
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class CorporateSignature extends IndividualSignature {
 
 	private String companyName;
@@ -26,48 +31,4 @@ public class CorporateSignature extends IndividualSignature {
 
 	private String domain;
 
-	/**
-	 * @return the companyName
-	 */
-	public String getCompanyName() {
-		return companyName;
-	}
-
-	/**
-	 * @param companyName
-	 *            the companyName to set
-	 */
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
-
-	/**
-	 * @return the title
-	 */
-	public String getTitle() {
-		return title;
-	}
-
-	/**
-	 * @param title
-	 *            the title to set
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	/**
-	 * @return the domain
-	 */
-	public String getDomain() {
-		return domain;
-	}
-
-	/**
-	 * @param domain
-	 *            the domain to set
-	 */
-	public void setDomain(String domain) {
-		this.domain = domain;
-	}
 }

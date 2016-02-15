@@ -23,7 +23,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
+import lombok.Data;
+
 @Entity
+@Data
 public class IndividualSignature {
 	@Id
 	@GeneratedValue
@@ -47,138 +50,4 @@ public class IndividualSignature {
 
 	private String githubLogin;
 
-	/**
-	 * @return the githubLogin
-	 */
-	public String getGithubLogin() {
-		return githubLogin;
-	}
-
-	/**
-	 * @param githubLogin
-	 *            the githubLogin to set
-	 */
-	public void setGithubLogin(String githubLogin) {
-		this.githubLogin = githubLogin;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return the cla
-	 */
-	public ContributorLicenseAgreeement getCla() {
-		return cla;
-	}
-
-	/**
-	 * @param cla
-	 *            the cla to set
-	 */
-	public void setCla(ContributorLicenseAgreeement cla) {
-		this.cla = cla;
-	}
-
-	/**
-	 * @return the dateOfSignature
-	 */
-	public Date getDateOfSignature() {
-		return dateOfSignature;
-	}
-
-	/**
-	 * @param dateOfSignature
-	 *            the dateOfSignature to set
-	 */
-	public void setDateOfSignature(Date dateOfSignature) {
-		this.dateOfSignature = dateOfSignature;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return email;
-	}
-
-	/**
-	 * @param email
-	 *            the email to set
-	 */
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	/**
-	 * @return the mailingAddress
-	 */
-	public String getMailingAddress() {
-		return mailingAddress;
-	}
-
-	/**
-	 * @param mailingAddress
-	 *            the mailingAddress to set
-	 */
-	public void setMailingAddress(String mailingAddress) {
-		this.mailingAddress = mailingAddress;
-	}
-
-	/**
-	 * @return the country
-	 */
-	public String getCountry() {
-		return country;
-	}
-
-	/**
-	 * @param country
-	 *            the country to set
-	 */
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	/**
-	 * @return the telephone
-	 */
-	public String getTelephone() {
-		return telephone;
-	}
-
-	/**
-	 * @param telephone
-	 *            the telephone to set
-	 */
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
-	}
 }

@@ -17,42 +17,17 @@ package io.pivotal.cla.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+
+import lombok.Data;
 
 /**
  * @author Rob Winch
  *
  */
+@Data
 public class ContributingUrlsResponse {
 	private Collection<String> markdown = new ArrayList<>();
 
 	private Collection<String> asciidoc = new ArrayList<>();
 
-	/**
-	 * @return the markdown
-	 */
-	public Collection<String> getMarkdown() {
-		return markdown;
-	}
-
-	/**
-	 * @param markdown the markdown to set
-	 */
-	public void setMarkdown(Collection<String> markdown) {
-		this.markdown = new HashSet<>(markdown);
-	}
-
-	/**
-	 * @return the asciidoc
-	 */
-	public Collection<String> getAsciidoc() {
-		return asciidoc;
-	}
-
-	/**
-	 * @param asciidoc the asciidoc to set
-	 */
-	public void setAsciidoc(Collection<String> asciidoc) {
-		this.asciidoc = new HashSet<>(asciidoc);
-	}
 }

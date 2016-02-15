@@ -30,7 +30,10 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import lombok.Data;
+
 @Entity
+@Data
 public class ContributorLicenseAgreeement {
 
 	@Id
@@ -57,80 +60,5 @@ public class ContributorLicenseAgreeement {
 	@AttributeOverrides({ @AttributeOverride(name = "markdown", column = @Column(name = "corporate_markdown") ),
 			@AttributeOverride(name = "html", column = @Column(name = "corporate_html") ) })
 	private MarkdownContent corporateContent;
-
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the created
-	 */
-	public Date getCreated() {
-		return created;
-	}
-
-	/**
-	 * @param created
-	 *            the created to set
-	 */
-	public void setCreated(Date created) {
-		this.created = created;
-	}
-
-	/**
-	 * @return the individualContent
-	 */
-	public MarkdownContent getIndividualContent() {
-		return individualContent;
-	}
-
-	/**
-	 * @param individualContent
-	 *            the individualContent to set
-	 */
-	public void setIndividualContent(MarkdownContent individualContent) {
-		this.individualContent = individualContent;
-	}
-
-	/**
-	 * @return the corporateContent
-	 */
-	public MarkdownContent getCorporateContent() {
-		return corporateContent;
-	}
-
-	/**
-	 * @param corporateContent
-	 *            the corporateContent to set
-	 */
-	public void setCorporateContent(MarkdownContent corporateContent) {
-		this.corporateContent = corporateContent;
-	}
 
 }

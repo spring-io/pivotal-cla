@@ -15,6 +15,9 @@
  */
 package io.pivotal.cla.service;
 
+import lombok.Data;
+
+@Data
 public class CommitStatus {
 	private int pullRequestId;
 	private String repoId;
@@ -24,94 +27,6 @@ public class CommitStatus {
 	private String url;
 	private String githubUsername;
 
-	/**
-	 * @return the githubUsername
-	 */
-	public String getGithubUsername() {
-		return githubUsername;
-	}
-
-	/**
-	 * @param githubUsername the githubUsername to set
-	 */
-	public void setGithubUsername(String githubUsername) {
-		this.githubUsername = githubUsername;
-	}
-
-	/**
-	 * @return the pullRequestId
-	 */
-	public int getPullRequestId() {
-		return pullRequestId;
-	}
-
-	/**
-	 * @param pullRequestId
-	 *            the pullRequestId to set
-	 */
-	public void setPullRequestId(int pullRequestId) {
-		this.pullRequestId = pullRequestId;
-	}
-
-	/**
-	 * @return the repoId
-	 */
-	public String getRepoId() {
-		return repoId;
-	}
-
-	/**
-	 * @param repoId
-	 *            the repoId to set
-	 */
-	public void setRepoId(String repoId) {
-		this.repoId = repoId;
-	}
-
-	/**
-	 * @return the sha
-	 */
-	public String getSha() {
-		return sha;
-	}
-
-	/**
-	 * @param sha
-	 *            the sha to set
-	 */
-	public void setSha(String sha) {
-		this.sha = sha;
-	}
-
-	/**
-	 * @return the cla
-	 */
-	public String getCla() {
-		return cla;
-	}
-
-	/**
-	 * @param cla
-	 *            the cla to set
-	 */
-	public void setCla(String cla) {
-		this.cla = cla;
-	}
-
-	/**
-	 * @return the success
-	 */
-	public boolean isSuccess() {
-		return success;
-	}
-
-	/**
-	 * @param success
-	 *            the success to set
-	 */
-	public void setSuccess(boolean success) {
-		this.success = success;
-	}
 
 	/**
 	 * The URL used to instruct the user of how to resolve the commit status. For example,
@@ -122,13 +37,4 @@ public class CommitStatus {
 	public String getUrl() {
 		return url;
 	}
-
-	/**
-	 * @param url the url to set
-	 */
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-
 }

@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.pivotal.cla.OAuthClientCredentials;
+import lombok.Data;
 
 /**
  * @author Rob Winch
@@ -52,47 +53,13 @@ public class AccessTokenService {
 		return token.getBody().getAccessToken();
 	}
 
+	@Data
 	static class AccessToken {
 		@JsonProperty("access_token")
 		private String accessToken;
 		@JsonProperty("token_type")
 		private String tokenType;
 		private String scope;
-		/**
-		 * @return the accessToken
-		 */
-		public String getAccessToken() {
-			return accessToken;
-		}
-		/**
-		 * @param accessToken the accessToken to set
-		 */
-		public void setAccessToken(String accessToken) {
-			this.accessToken = accessToken;
-		}
-		/**
-		 * @return the tokenType
-		 */
-		public String getTokenType() {
-			return tokenType;
-		}
-		/**
-		 * @param tokenType the tokenType to set
-		 */
-		public void setTokenType(String tokenType) {
-			this.tokenType = tokenType;
-		}
-		/**
-		 * @return the scope
-		 */
-		public String getScope() {
-			return scope;
-		}
-		/**
-		 * @param scope the scope to set
-		 */
-		public void setScope(String scope) {
-			this.scope = scope;
-		}
+
 	}
 }

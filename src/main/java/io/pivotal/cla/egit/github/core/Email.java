@@ -15,40 +15,13 @@
  */
 package io.pivotal.cla.egit.github.core;
 
+import lombok.Data;
+
+@Data
 public class Email {
 
 	private String email;
 
 	private boolean verified;
-
-	/**
-	 * @return the value
-	 */
-	public String getEmail() {
-		return email;
-	}
-
-	/**
-	 * @param value
-	 *            the value to set
-	 */
-	public void setEmail(String value) {
-		this.email = value;
-	}
-
-	/**
-	 * @return the verified
-	 */
-	public boolean isVerified() {
-		return verified;
-	}
-
-	/**
-	 * @param verified
-	 *            the verified to set
-	 */
-	public void setVerified(boolean verified) {
-		this.verified = verified;
-	}
 
 }

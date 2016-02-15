@@ -20,11 +20,14 @@ import javax.persistence.Lob;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import lombok.Data;
+
 /**
  * @author Rob Winch
  *
  */
 @Embeddable
+@Data
 public class MarkdownContent {
 	@NotEmpty(message = "This is required")
 	@Lob
@@ -33,31 +36,4 @@ public class MarkdownContent {
 	@Lob
 	private String html;
 
-	/**
-	 * @return the markdown
-	 */
-	public String getMarkdown() {
-		return markdown;
-	}
-
-	/**
-	 * @param markdown the markdown to set
-	 */
-	public void setMarkdown(String markdown) {
-		this.markdown = markdown;
-	}
-
-	/**
-	 * @return the html
-	 */
-	public String getHtml() {
-		return html;
-	}
-
-	/**
-	 * @param html the html to set
-	 */
-	public void setHtml(String html) {
-		this.html = html;
-	}
 }
