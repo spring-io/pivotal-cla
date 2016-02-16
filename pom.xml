@@ -66,11 +66,21 @@
 		</dependency>
 		<dependency>
 			<groupId>org.webjars</groupId>
+			<artifactId>select2</artifactId>
+			<version>4.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
 			<artifactId>webjars-locator</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.mylyn.github</groupId>
