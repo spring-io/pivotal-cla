@@ -56,7 +56,7 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 	}
 
 	@Test
-	public void linkClaValidationBothRequred() throws Exception {
+	public void linkClaValidationBothRequired() throws Exception {
 		AdminLinkClaPage link = AdminLinkClaPage.to(getDriver());
 
 		link = link.link("", "", AdminLinkClaPage.class);

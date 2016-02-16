@@ -35,6 +35,7 @@ dependencies {
 	compile('org.webjars:webjars-locator')
 	compile('org.webjars:bootstrap:3.3.6')
 	compile('org.webjars:jquery:1.11.3')
+	compile('org.webjars:select2:4.0.0')
 	compile('com.h2database:h2')
 	compile('net.sourceforge.nekohtml:nekohtml')
 	compile('org.projectlombok:lombok:1.16.6')

@@ -27,6 +27,8 @@ import com.google.common.base.Predicate;
 
 import io.pivotal.cla.webdriver.pages.BasePage;
 
+import org.springframework.util.StringUtils;
+
 public class AdminLinkClaPage extends BasePage {
 	WebElement submit;
 
@@ -42,15 +44,17 @@ public class AdminLinkClaPage extends BasePage {
 		return assertSelect(claName);
 	}
 
-	public InputAssert assertRepositories() {
-		return assertInput(repositories);
+	public SelectAssert assertRepositories() {
+		return assertSelect(repositories);
 	}
 
 	public <T extends BasePage> T link(String repositoryName, String licenseName, Class<T> page) {
 		Select cla = new Select(claName);
 
 		waitForRepositories();
-		repositories.sendKeys(repositoryName);
+		if(StringUtils.hasText(repositoryName)) {
+			new Select(repositories).selectByValue(repositoryName);
+		}
 		cla.selectByVisibleText(licenseName);
 		submit.click();
 		return PageFactory.initElements(getDriver(), page);
