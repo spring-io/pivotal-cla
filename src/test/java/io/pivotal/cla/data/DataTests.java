@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.internal.util.collections.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import io.pivotal.cla.GithubClaApplication;
@@ -30,6 +31,7 @@ import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(GithubClaApplication.class)
+@TestPropertySource("/application-test.properties")
 public class DataTests {
 	@Autowired
 	ContributorLicenseAgreementRepository clas;

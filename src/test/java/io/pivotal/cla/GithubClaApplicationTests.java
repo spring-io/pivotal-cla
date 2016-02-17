@@ -17,16 +17,15 @@ package io.pivotal.cla;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.web.WebAppConfiguration;
-
-import io.pivotal.cla.GithubClaApplication;
-
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = GithubClaApplication.class)
 @WebAppConfiguration
+@TestPropertySource("/application-test.properties")
 public class GithubClaApplicationTests {
 
 	@Test
