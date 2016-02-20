@@ -143,7 +143,6 @@ public final class EnqueueResourcesMockWebServer implements TestRule {
 	private MockResponse getResponse(String resourceName) {
 		InputStream in = input(resourceName);
 		if (in == null) {
-			System.out.println("No resource for " + resourceName);
 			return null;
 		}
 		try {
@@ -158,7 +157,7 @@ public final class EnqueueResourcesMockWebServer implements TestRule {
 	}
 
 	private String getResourceBaseName(Description description) {
-		return (description.getTestClass().getSimpleName() + "_okhttp3/" + description.getMethodName() + "/")
+		return "/"+(description.getTestClass().getName() + "_okhttp3/" + description.getMethodName() + "/")
 				.replaceAll("\\.", "/");
 	}
 }
