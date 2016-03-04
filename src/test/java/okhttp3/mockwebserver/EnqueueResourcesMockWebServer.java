@@ -134,10 +134,18 @@ public final class EnqueueResourcesMockWebServer implements TestRule {
 
 			MockResponse response = getResponse(resourceName);
 			if (response == null) {
+				server.enqueue(tooManyRequests(resourceName));
 				break;
 			}
 			server.enqueue(response);
 		}
+	}
+
+	private MockResponse tooManyRequests(String resourceName) {
+		MockResponse result = new MockResponse();
+		result.setStatus("HTTP/1.1 400 Bad Request");
+		result.setBody("You have made too many requests. Reduce your requests or provide a resource at "+resourceName);
+		return result;
 	}
 
 	private MockResponse getResponse(String resourceName) {
