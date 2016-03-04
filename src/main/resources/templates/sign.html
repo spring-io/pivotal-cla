@@ -40,33 +40,6 @@
 						<p th:each="err : ${#fields.errors('email')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('mailingAddress')}? 'has-error form-group' : form-group">
-					<label for="mailingAddress">
-						Mailing Address
-					</label>
-					<input class="form-control" type="text" th:field="*{mailingAddress}"/>
-					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('mailingAddress')}" id="err-mailingAddress">
-						<p th:each="err : ${#fields.errors('mailingAddress')}" th:text="${err}">Input is incorrect</p>
-					</div>
-				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('country')}? 'has-error form-group' : form-group">
-					<label for="country">
-						Country
-					</label>
-					<input class="form-control" type="text" th:field="*{country}"/>
-					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('country')}" id="err-country">
-						<p th:each="err : ${#fields.errors('country')}" th:text="${err}">Input is incorrect</p>
-					</div>
-				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('telephone')}? 'has-error form-group' : form-group">
-					<label for="telephone">
-						Telephone
-					</label>
-					<input class="form-control" type="text" th:field="*{telephone}"/>
-					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('telephone')}" id="err-telephone">
-						<p th:each="err : ${#fields.errors('telephone')}" th:text="${err}">Input is incorrect</p>
-					</div>
-				</div>
 
 				<input type="hidden" th:field="*{claId}"/>
 				<input type="hidden" th:if="${signClaForm.repositoryId != null}" th:field="*{repositoryId}"/>

@@ -47,18 +47,12 @@ public class ClaControllerTests extends BaseWebDriverTests {
 
 		signPage = form
 			.email("rob@gmail.com")
-			.mailingAddress("123 Seasame St")
-			.country("USA")
-			.telephone("123.456.7890")
 			.sign(SignClaPage.class);
 
 		signPage.assertAt();
 		form = signPage.form();
 		form.assertName().hasRequiredError();
 		form.assertEmail().hasNoErrors();
-		form.assertMailingAddress().hasNoErrors();
-		form.assertCountry().hasNoErrors();
-		form.assertTelephone().hasNoErrors();
 	}
 
 	@Test
@@ -72,93 +66,12 @@ public class ClaControllerTests extends BaseWebDriverTests {
 
 		signPage = form
 			.name("Rob Winch")
-			.mailingAddress("123 Seasame St")
-			.country("USA")
-			.telephone("123.456.7890")
 			.sign(SignClaPage.class);
 
 		signPage.assertAt();
 		form = signPage.form();
 		form.assertName().hasNoErrors();
 		form.assertEmail().hasRequiredError();
-		form.assertMailingAddress().hasNoErrors();
-		form.assertCountry().hasNoErrors();
-		form.assertTelephone().hasNoErrors();
-	}
-
-	@Test
-	public void signMailingAddressRequired() {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
-		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-
-		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
-
-		Form form = signPage.form();
-
-		signPage = form
-			.name("Rob Winch")
-			.email("rob@gmail.com")
-			.country("USA")
-			.telephone("123.456.7890")
-			.sign(SignClaPage.class);
-
-		signPage.assertAt();
-		form = signPage.form();
-		form.assertName().hasNoErrors();
-		form.assertEmail().hasNoErrors();
-		form.assertMailingAddress().hasRequiredError();
-		form.assertCountry().hasNoErrors();
-		form.assertTelephone().hasNoErrors();
-	}
-
-	@Test
-	public void signCountryRequired() {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
-		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-
-		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
-
-		Form form = signPage.form();
-
-		signPage = form
-			.name("Rob Winch")
-			.email("rob@gmail.com")
-			.mailingAddress("123 Seasame St")
-			.telephone("123.456.7890")
-			.sign(SignClaPage.class);
-
-		signPage.assertAt();
-		form = signPage.form();
-		form.assertName().hasNoErrors();
-		form.assertEmail().hasNoErrors();
-		form.assertMailingAddress().hasNoErrors();
-		form.assertCountry().hasRequiredError();
-		form.assertTelephone().hasNoErrors();
-	}
-
-	@Test
-	public void signTelephoneRequired() {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
-		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-
-		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
-
-		Form form = signPage.form();
-
-		signPage = form
-			.name("Rob Winch")
-			.email("rob@gmail.com")
-			.mailingAddress("123 Seasame St")
-			.country("USA")
-			.sign(SignClaPage.class);
-
-		signPage.assertAt();
-		form = signPage.form();
-		form.assertName().hasNoErrors();
-		form.assertEmail().hasNoErrors();
-		form.assertMailingAddress().hasNoErrors();
-		form.assertCountry().hasNoErrors();
-		form.assertTelephone().hasRequiredError();
 	}
 
 	@Test
@@ -170,27 +83,21 @@ public class ClaControllerTests extends BaseWebDriverTests {
 
 		signPage = signPage.form()
 			.name("Rob Winch")
-			.email("rob@gmail.com")
-			.mailingAddress("123 Seasame St")
-			.country("USA")
 			.sign(SignClaPage.class);
 
 		signPage.assertAt();
 
-		Form form = signPage.form();
-		form.assertName().hasValue("Rob Winch");
-		form.assertEmail().hasValue("rob@gmail.com");
-		form.assertMailingAddress().hasValue("123 Seasame St");
-		form.assertCountry().hasValue("USA");
+		signPage.form()
+			.assertName().hasValue("Rob Winch");
 
 		signPage = SignClaPage.go(getDriver(), cla.getName());
 
 		signPage = signPage.form()
-			.telephone("123.456.7890")
+			.email("rob@gmail.com")
 			.sign(SignClaPage.class);
 
 		signPage.form()
-			.assertTelephone().hasValue("123.456.7890");
+			.assertEmail().hasValue("rob@gmail.com");
 	}
 
 	@Test
@@ -203,9 +110,6 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		signPage = signPage.form()
 			.name("Rob Winch")
 			.email("rob@gmail.com")
-			.mailingAddress("123 Seasame St")
-			.country("USA")
-			.telephone("123.456.7890")
  			.sign(SignClaPage.class);
 
 		signPage.assertAt();
@@ -222,9 +126,6 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		signPage = signPage.form()
 			.name("Rob Winch")
 			.email("rob@gmail.com")
-			.mailingAddress("123 Seasame St")
-			.country("USA")
-			.telephone("123.456.7890")
  			.sign(SignClaPage.class);
 
 		signPage.assertAt();

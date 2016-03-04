@@ -84,11 +84,8 @@ public class ClaController {
 		ContributorLicenseAgreeement cla = clas.findOne(signClaForm.getClaId());
 		IndividualSignature signature = new IndividualSignature();
 		signature.setCla(cla);
-		signature.setCountry(signClaForm.getCountry());
 		signature.setEmail(signClaForm.getEmail());
-		signature.setMailingAddress(signClaForm.getMailingAddress());
 		signature.setDateOfSignature(new Date());
-		signature.setTelephone(signClaForm.getTelephone());
 		signature.setGithubLogin(user.getGithubLogin());
 		individual.save(signature);
 
