@@ -13,35 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cla.data;
+package io.pivotal.cla.mvc;
 
 import java.util.List;
-import java.util.Set;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import org.hibernate.validator.constraints.NotEmpty;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import groovy.transform.EqualsAndHashCode;
 import lombok.Data;
 
-@Entity
 @Data
-public class User {
-	@Id
-	private String githubLogin;
+@EqualsAndHashCode(callSuper = false)
+public class SignCorporateClaForm extends SignClaForm {
+	@NotEmpty(message = "This is required")
+	private String companyName;
+	@NotEmpty(message = "This is required")
+	private String organization;
 
-	private String name;
-
-	private String accessToken;
-
-	@JsonProperty("avatar_url")
-	private String avatarUrl;
-
-	@ElementCollection
-	private Set<String> emails;
-
-	private boolean admin;
-
+	private List<String> organizations;
 }

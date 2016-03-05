@@ -15,10 +15,15 @@
  */
 package io.pivotal.cla.data.repository;
 
+import java.util.Collection;
+import java.util.Set;
+
 import org.springframework.data.repository.CrudRepository;
 
 import io.pivotal.cla.data.CorporateSignature;
+import io.pivotal.cla.data.IndividualSignature;
 
 public interface CorporateSignatureRepository extends CrudRepository<CorporateSignature, Long> {
 
+	CorporateSignature findByClaNameAndOrganizationIn(String name, Collection<String> organizations);
 }

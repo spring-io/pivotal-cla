@@ -27,8 +27,6 @@ public class CorporateSignature extends IndividualSignature {
 
 	private String companyName;
 
-	private String title;
-
-	private String domain;
+	private String organization;
 
 }

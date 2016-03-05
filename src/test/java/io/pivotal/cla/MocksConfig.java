@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
+import io.pivotal.cla.data.repository.CorporateSignatureRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.data.repository.UserRepository;
 import io.pivotal.cla.service.GitHubService;
@@ -51,6 +52,12 @@ public class MocksConfig {
 	@Primary
 	public IndividualSignatureRepository mockIndividualSignature() {
 		return mock(IndividualSignatureRepository.class);
+	}
+
+	@Bean
+	@Primary
+	public CorporateSignatureRepository mockCorporateSignature() {
+		return mock(CorporateSignatureRepository.class);
 	}
 
 	@Bean

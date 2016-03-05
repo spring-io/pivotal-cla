@@ -15,6 +15,8 @@
  */
 package io.pivotal.cla.mvc.github;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.egit.github.core.PullRequest;
@@ -29,9 +31,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 
+import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
+import io.pivotal.cla.data.repository.CorporateSignatureRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.data.repository.UserRepository;
 import io.pivotal.cla.egit.github.core.event.RepositoryPullRequestPayload;
@@ -50,6 +54,9 @@ public class GithubHooksController {
 
 	@Autowired
 	IndividualSignatureRepository individualRepo;
+
+	@Autowired
+	CorporateSignatureRepository corporate;
 
 	@Autowired
 	GitHubService github;
@@ -76,6 +83,11 @@ public class GithubHooksController {
 				: individualRepo.findByClaNameAndEmailIn(cla, user.getEmails());
 
 		boolean success = signedIndividual != null;
+		if(!success) {
+			List<String> organizations = github.getOrganizations(login);
+			CorporateSignature corporateSignature = corporate.findByClaNameAndOrganizationIn(cla, organizations);
+			success = corporateSignature != null;
+		}
 
 		CommitStatus status = new CommitStatus();
 		status.setGithubUsername(login);

@@ -23,6 +23,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -108,12 +110,38 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void markCommitStatusSuccess() throws Exception {
+	public void markCommitStatusSuccessIndividual() throws Exception {
 		User user = WithSigningUserFactory.create();
 		when(mockUserRepo.findOne(anyString())).thenReturn(user);
 		when(mockTokenRepo.findOne("rwinch/176_test"))
 			.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
 		when(mockIndividualSignatureRepository.findByClaNameAndEmailIn(anyString(), anySet())).thenReturn(individualSignature);
+
+		mockMvc.perform(hookRequest().content(PAYLOAD))
+			.andExpect(status().isOk());
+
+		ArgumentCaptor<CommitStatus> statusCaptor = ArgumentCaptor.forClass(CommitStatus.class);
+		verify(mockGithub).save(statusCaptor.capture());
+
+		CommitStatus status = statusCaptor.getValue();
+		assertThat(status.getCla()).isEqualTo(cla.getName());
+		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
+		assertThat(status.getPullRequestId()).isEqualTo(2);
+		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
+		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/apache?repositoryId=rwinch/176_test&pullRequestId=2");
+		assertThat(status.isSuccess()).isTrue();
+		assertThat(status.getGithubUsername()).isEqualTo(user.getGithubLogin());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void markCommitStatusSuccessCorporate() throws Exception {
+		User user = WithSigningUserFactory.create();
+		when(mockUserRepo.findOne(anyString())).thenReturn(user);
+		when(mockTokenRepo.findOne("rwinch/176_test"))
+			.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
+		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("organization"));
+		when(mockCorporateSignatureRepository.findByClaNameAndOrganizationIn(anyString(), anySet())).thenReturn(corporateSignature);
 
 		mockMvc.perform(hookRequest().content(PAYLOAD))
 			.andExpect(status().isOk());

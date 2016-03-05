@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.eclipse.egit.github.core.CommitStatus;
@@ -32,6 +33,7 @@ import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.MarkdownService;
+import org.eclipse.egit.github.core.service.OrganizationService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -154,7 +156,7 @@ public class MylynGithubService implements GitHubService {
 			user.setName(githubUser.getName());
 			user.setAccessToken(token);
 			user.setAvatarUrl(githubUser.getAvatarUrl());
-			user.setEmails(new HashSet<>(verifiedEmails));
+			user.setEmails(new TreeSet<>(verifiedEmails));
 			user.setGithubLogin(githubUser.getLogin());
 			user.setAdmin(request.isRequestAdminAccess() && hasAdminEmail(user));
 			return user;
@@ -162,6 +164,12 @@ public class MylynGithubService implements GitHubService {
 		} catch (IOException fail) {
 			throw new RuntimeException(fail);
 		}
+	}
+
+	public List<String> getOrganizations(String username) throws IOException {
+		OrganizationService orgs = new OrganizationService(createClient(oauthConfig.getPivotalClaAccessToken()));
+		List<org.eclipse.egit.github.core.User> organizations = orgs.getOrganizations(username);
+		return organizations.stream().map( o -> o.getLogin()).sorted(String.CASE_INSENSITIVE_ORDER).collect(Collectors.toList());
 	}
 
 	private boolean hasAdminEmail(User user) {
@@ -205,7 +213,7 @@ public class MylynGithubService implements GitHubService {
 
 		ContributingUrlsResponse response = new ContributingUrlsResponse();
 		response.setMarkdown(mdUrls.values());
-		response.setAsciidoc(adocUrls.values());
+		response.setAsciidoc(new ArrayList<>(adocUrls.values()));
 		response.getAsciidoc().addAll(newUrls);
 
 		return response;
