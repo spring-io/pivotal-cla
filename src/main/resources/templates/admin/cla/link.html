@@ -117,7 +117,8 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 			<form id="form" th:action="@{/admin/cla/link}" method="post" th:object="${linkClaForm}">
 				<div class="form-group" th:class="${#fields.hasErrors('repositories')}? 'has-error form-group' : form-group">
 					<label for="repositories">
-						Repository
+						Repository <a href="#" id="reload-repo-list" title="refresh list of repositories">
+                        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> refresh list</a>
 					</label>
 					<select class="form-control" multiple="multiple" th:field="*{repositories}">
                         <option th:each="repo : *{repositories}"
@@ -150,20 +151,23 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 
 			<script th:src="@{/webjars/select2/dist/js/select2.min.js}" type="text/javascript"></script>
             <script type="text/javascript">
-                $('#repositories').prop('disabled', true);
-                if (sessionStorage.getItem("repositories")) {
-                    $("#repositories").select2({
-                        data: JSON.parse(sessionStorage.getItem("repositories"))
-                    });
-                    $('#repositories').removeProp('disabled');
-                }
-                else {
+                var reloadRepositoryList = function() {
+                    $('#repositories').prop('disabled', true);
                     $.getJSON('./link/repositories.json')
                             .done(function (data) {
                                 $("#repositories").select2({data: data});
                                 sessionStorage.setItem("repositories", JSON.stringify(data));
                                 $('#repositories').removeProp('disabled');
                             });
+                }
+
+                if (sessionStorage.getItem("repositories")) {
+                    $("#repositories").select2({
+                        data: JSON.parse(sessionStorage.getItem("repositories"))
+                    });
+                }
+                else {
+                    reloadRepositoryList();
                 }
 
                 var openDataUrls = function() {
@@ -174,6 +178,7 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
                     return false;
                 };
 
+                $('#reload-repo-list').click(reloadRepositoryList);
                 $('#open-hook-urls').click(openDataUrls);
                 $('#contributing-md-urls').click(openDataUrls);
                 $('#contributing-adoc-urls').click(openDataUrls);
