@@ -33,8 +33,6 @@ public class ClaOAuthConfig {
 	@Value("${security.oauth2.pivotal-cla.token}")
 	private String pivotalClaAccessToken;
 
-	private OAuthClientCredentials admin;
-
 	private OAuthClientCredentials main;
 
 	private String scheme = "https";

@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -158,7 +157,7 @@ public class MylynGithubService implements GitHubService {
 
 	public User getCurrentUser(CurrentUserRequest request) {
 		AccessTokenRequest tokenRequest = new AccessTokenRequest();
-		tokenRequest.setCredentials(request.isRequestAdminAccess() ? oauthConfig.getAdmin() : oauthConfig.getMain());
+		tokenRequest.setCredentials(oauthConfig.getMain());
 		tokenRequest.setOauthParams(request.getOauthParams());
 		String accessToken = tokenService.getToken(tokenRequest);
 		try {

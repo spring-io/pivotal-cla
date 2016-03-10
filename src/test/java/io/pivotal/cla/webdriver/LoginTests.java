@@ -88,7 +88,7 @@ public class LoginTests extends BaseWebDriverTests {
 		assertThat(redirectComponent.getScheme()).isEqualTo("https");
 		assertThat(redirectComponent.getHost()).isEqualTo("github.com");
 		MultiValueMap<String, String> params = redirectComponent.getQueryParams();
-		assertThat(params.getFirst("client_id")).isEqualTo(config.getAdmin().getClientId());
+		assertThat(params.getFirst("client_id")).isEqualTo(config.getMain().getClientId());
 		assertThat(urlDecode(params.getFirst("redirect_uri"))).isEqualTo("http://localhost/login/oauth2/github");
 		assertThat(params.getFirst("state")).isNotNull();
 

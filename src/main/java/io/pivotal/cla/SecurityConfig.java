@@ -61,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private AuthenticationEntryPoint entryPoint() {
 		LinkedHashMap<RequestMatcher, AuthenticationEntryPoint> entryPoints = new LinkedHashMap<>();
 		entryPoints.put(new AntPathRequestMatcher("/github/hooks/**"), new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-		entryPoints.put(new AntPathRequestMatcher("/admin/**"), new GithubAuthenticationEntryPoint(oauthConfig.getAdmin(), "user:email,repo:status,admin:repo_hook,admin:org_hook,read:org"));
+		entryPoints.put(new AntPathRequestMatcher("/admin/**"), new GithubAuthenticationEntryPoint(oauthConfig.getMain(), "user:email,repo:status,admin:repo_hook,admin:org_hook,read:org"));
 		BasicAuthenticationEntryPoint basicEntryPoint = new BasicAuthenticationEntryPoint();
 		basicEntryPoint.setRealmName("Pivotal CLA");
 		entryPoints.put(new AntPathRequestMatcher("/manage/**"), basicEntryPoint);
