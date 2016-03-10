@@ -30,6 +30,7 @@ import org.eclipse.egit.github.core.util.EncodingUtils;
 
 import com.google.gson.reflect.TypeToken;
 
+import io.pivotal.cla.ClaOAuthConfig;
 import io.pivotal.cla.egit.github.core.Email;
 
 public class EmailService extends GitHubService {
@@ -46,12 +47,18 @@ public class EmailService extends GitHubService {
 		super(client);
 	}
 
-	public static EmailService forOAuth(String token) {
-		return new EmailService(new EmailGitHubClient().setOAuth2Token(token));
+	public static EmailService forOAuth(String token, ClaOAuthConfig config) {
+		return new EmailService(new EmailGitHubClient(config.getHost(), config.getPort(), config.getScheme()).setOAuth2Token(token));
 	}
 
 	private static final class EmailGitHubClient extends GitHubClient {
 		private String credentials;
+
+
+		public EmailGitHubClient(String hostname, int port, String scheme) {
+			super(hostname, port, scheme);
+		}
+
 
 		public GitHubClient setCredentials(String user, String password) {
 			super.setCredentials(user, password);

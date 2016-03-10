@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,21 +54,26 @@ import io.pivotal.cla.egit.github.core.service.EmailService;
 @Component
 public class MylynGithubService implements GitHubService {
 
-	@Autowired
 	AccessTokenRepository tokenRepo;
 
-	@Autowired
 	ClaOAuthConfig oauthConfig;
 
-	@Autowired
 	AccessTokenService tokenService;
 
 	RestTemplate rest = new RestTemplate();
 
+	@Autowired
+	public MylynGithubService(AccessTokenRepository tokenRepo, ClaOAuthConfig oauthConfig,
+			AccessTokenService tokenService) {
+		super();
+		this.tokenRepo = tokenRepo;
+		this.oauthConfig = oauthConfig;
+		this.tokenService = tokenService;
+	}
+
 	@Override
 	public List<String> findRepositoryNames(String accessToken) throws IOException {
-		GitHubClient client = new GitHubClient();
-		client.setOAuth2Token(accessToken);
+		GitHubClient client = createClient(accessToken);
 
 		RepositoryService service = new RepositoryService(client);
 		List<Repository> repositories = service.getRepositories();
@@ -77,6 +83,12 @@ public class MylynGithubService implements GitHubService {
 			repoSlugs.add(owner.getLogin() + "/" + r.getName());
 		}
 		return repoSlugs;
+	}
+
+	private GitHubClient createClient(String accessToken) {
+		GitHubClient client = new GitHubClient(oauthConfig.getHost(), oauthConfig.getPort(), oauthConfig.getScheme());
+		client.setOAuth2Token(accessToken);
+		return client;
 	}
 
 	public void save(io.pivotal.cla.service.CommitStatus commitStatus) {
@@ -103,38 +115,38 @@ public class MylynGithubService implements GitHubService {
 			throw new RuntimeException(e);
 		}
 
-
-		GitHubClient commentClient = new GitHubClient();
-		commentClient.setOAuth2Token(oauthConfig.getPivotalClaAccessToken());
+		GitHubClient commentClient = createClient(oauthConfig.getPivotalClaAccessToken());
 		IssueService issues = new IssueService(commentClient);
-		long claUserCommentCount = getCommentsByClaUser(issues, id, commitStatus);
+		List<String> claUserComments = getCommentsByClaUser(issues, id, commitStatus);
 		if(success) {
+			String body = "@" + commitStatus.getGithubUsername() + " Thank you for signing the [Contributor License Agreement](" + status.getUrl() + ")!";
+			if(claUserComments.contains(body)) {
+				return;
+			}
 			try {
 				issues.createComment(id, commitStatus.getPullRequestId(), "@" + commitStatus.getGithubUsername() + " Thank you for signing the [Contributor License Agreement](" + status.getUrl() + ")!");
 			} catch(IOException e) {
 				throw new RuntimeException(e);
 			}
-		} else if(claUserCommentCount < 1) {
+		} else {
+			String body = "@" + commitStatus.getGithubUsername() + " Please sign the [Contributor License Agreement](" + status.getUrl() + ")!";
+			if(claUserComments.contains(body)) {
+				return;
+			}
 			try {
-				issues.createComment(id, commitStatus.getPullRequestId(), "@" + commitStatus.getGithubUsername() + " Please sign the [Contributor License Agreement](" + status.getUrl() + ")!");
+				issues.createComment(id, commitStatus.getPullRequestId(), body);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		}
 	}
 
-	private long getCommentsByClaUser(IssueService issues, RepositoryId id, io.pivotal.cla.service.CommitStatus commitStatus) {
+	private List<String> getCommentsByClaUser(IssueService issues, RepositoryId id, io.pivotal.cla.service.CommitStatus commitStatus) {
 		try {
-			return issues.getComments(id, commitStatus.getPullRequestId()).stream().filter( c -> "pivotal-cla".equals(c.getUser().getLogin())).count();
+			return issues.getComments(id, commitStatus.getPullRequestId()).stream().filter( c -> "pivotal-cla".equals(c.getUser().getLogin())).map(c-> c.getBody()).collect(Collectors.toList());
 		}catch(IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private GitHubClient createClient(String accessToken) {
-		GitHubClient client = new GitHubClient();
-		client.setOAuth2Token(accessToken);
-		return client;
 	}
 
 	public User getCurrentUser(CurrentUserRequest request) {
@@ -147,7 +159,7 @@ public class MylynGithubService implements GitHubService {
 
 			org.eclipse.egit.github.core.service.UserService githubUsers = new org.eclipse.egit.github.core.service.UserService(
 					client);
-			EmailService emailService = EmailService.forOAuth(token);
+			EmailService emailService = EmailService.forOAuth(token, oauthConfig);
 			List<String> verifiedEmails = emailService.getEmails().stream().filter(e -> e.isVerified())
 					.map(Email::getEmail).collect(Collectors.toList());
 			org.eclipse.egit.github.core.User githubUser = githubUsers.getUser();
@@ -203,7 +215,7 @@ public class MylynGithubService implements GitHubService {
 	}
 
 	public ContributingUrlsResponse getContributingUrls(List<String> repositoryIds) {
-		Set<String> remainingRepositoryIds = new HashSet<>(repositoryIds);
+		Set<String> remainingRepositoryIds = new LinkedHashSet<>(repositoryIds);
 
 		Map<String,String> mdUrls = createEditLinks(remainingRepositoryIds, "CONTRIBUTING.md");
 		remainingRepositoryIds.removeAll(mdUrls.keySet());
@@ -232,7 +244,7 @@ public class MylynGithubService implements GitHubService {
 	private Map<String,String> createEditLinks(Collection<String> repoIds, String fileName) {
 		Map<String,String> urls = new HashMap<>();
 		for(String id : repoIds) {
-			String url = "https://github.com/"+ id +"/edit/master/" + fileName;
+			String url = oauthConfig.getBaseUrl() + id +"/edit/master/" + fileName;
 			if(urlExists(url)) {
 				urls.put(id, url);
 			}
@@ -243,7 +255,7 @@ public class MylynGithubService implements GitHubService {
 	private List<String> createNewLinks(Collection<String> repoIds, String fileName) {
 		List<String> urls = new ArrayList<>();
 		for(String id : repoIds) {
-			String url = "https://github.com/"+ id +"/new/master?filename=" + fileName;
+			String url = oauthConfig.getBaseUrl() + id +"/new/master?filename=" + fileName;
 			urls.add(url);
 		}
 		return urls;

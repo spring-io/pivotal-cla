@@ -37,4 +37,17 @@ public class ClaOAuthConfig {
 
 	private OAuthClientCredentials main;
 
+	private String scheme = "https";
+
+	private int port = 443;
+
+	private String host = "api.github.com";
+
+	private String accessTokenHost = "github.com";
+
+	public String getBaseUrl() {
+		return scheme + "://" + host + ":" + port + "/";
+	}
+
+
 }

@@ -18,12 +18,14 @@ package io.pivotal.cla.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.pivotal.cla.ClaOAuthConfig;
 import io.pivotal.cla.OAuthClientCredentials;
 import lombok.Data;
 
@@ -33,9 +35,16 @@ import lombok.Data;
  */
 @Component
 public class AccessTokenService {
-	public static String AUTHORIZE_URI = "https://github.com/login/oauth/access_token";
+	private static final String AUTHORIZE_URI = "/login/oauth/access_token";
 
 	private RestTemplate rest = new RestTemplate();
+
+	private String authorizeUrl;
+
+	@Autowired
+	public AccessTokenService(ClaOAuthConfig config) {
+		this.authorizeUrl = config.getScheme() + "://" + config.getAccessTokenHost() + ":" + config.getPort() + AUTHORIZE_URI;
+	}
 
 	public String getToken(AccessTokenRequest request) {
 		OAuthAccessTokenParams oauthParams = request.getOauthParams();
@@ -48,7 +57,7 @@ public class AccessTokenService {
 		params.put("state", oauthParams.getState());
 		params.put("redirect_url", oauthParams.getCallbackUrl());
 
-		ResponseEntity<AccessToken> token = rest.postForEntity(AUTHORIZE_URI, params, AccessToken.class);
+		ResponseEntity<AccessToken> token = rest.postForEntity(this.authorizeUrl, params, AccessToken.class);
 
 		return token.getBody().getAccessToken();
 	}
