@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.eclipse.egit.github.core.Comment;
 import org.eclipse.egit.github.core.CommitStatus;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryHook;
@@ -142,8 +143,14 @@ public class MylynGithubService implements GitHubService {
 	}
 
 	private List<String> getCommentsByClaUser(IssueService issues, RepositoryId id, io.pivotal.cla.service.CommitStatus commitStatus) {
+
 		try {
-			return issues.getComments(id, commitStatus.getPullRequestId()).stream().filter( c -> "pivotal-cla".equals(c.getUser().getLogin())).map(c-> c.getBody()).collect(Collectors.toList());
+			String username = getCurrentGithubUser(oauthConfig.getPivotalClaAccessToken()).getLogin();
+			List<Comment> comments = issues.getComments(id, commitStatus.getPullRequestId());
+			return comments.stream()
+					.filter( c -> username.equals(c.getUser().getLogin()))
+					.map(c-> c.getBody())
+					.collect(Collectors.toList());
 		}catch(IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -153,20 +160,17 @@ public class MylynGithubService implements GitHubService {
 		AccessTokenRequest tokenRequest = new AccessTokenRequest();
 		tokenRequest.setCredentials(request.isRequestAdminAccess() ? oauthConfig.getAdmin() : oauthConfig.getMain());
 		tokenRequest.setOauthParams(request.getOauthParams());
-		String token = tokenService.getToken(tokenRequest);
+		String accessToken = tokenService.getToken(tokenRequest);
 		try {
-			GitHubClient client = createClient(token);
 
-			org.eclipse.egit.github.core.service.UserService githubUsers = new org.eclipse.egit.github.core.service.UserService(
-					client);
-			EmailService emailService = EmailService.forOAuth(token, oauthConfig);
+			EmailService emailService = EmailService.forOAuth(accessToken, oauthConfig);
 			List<String> verifiedEmails = emailService.getEmails().stream().filter(e -> e.isVerified())
 					.map(Email::getEmail).collect(Collectors.toList());
-			org.eclipse.egit.github.core.User githubUser = githubUsers.getUser();
+			org.eclipse.egit.github.core.User githubUser = getCurrentGithubUser(accessToken);
 
 			User user = new User();
 			user.setName(githubUser.getName());
-			user.setAccessToken(token);
+			user.setAccessToken(accessToken);
 			user.setAvatarUrl(githubUser.getAvatarUrl());
 			user.setEmails(new TreeSet<>(verifiedEmails));
 			user.setGithubLogin(githubUser.getLogin());
@@ -176,6 +180,14 @@ public class MylynGithubService implements GitHubService {
 		} catch (IOException fail) {
 			throw new RuntimeException(fail);
 		}
+	}
+
+	private org.eclipse.egit.github.core.User getCurrentGithubUser(String accessToken) throws IOException {
+		GitHubClient client = createClient(accessToken);
+
+		org.eclipse.egit.github.core.service.UserService githubUsers = new org.eclipse.egit.github.core.service.UserService(
+				client);
+		return githubUsers.getUser();
 	}
 
 	public List<String> getOrganizations(String username) throws IOException {
