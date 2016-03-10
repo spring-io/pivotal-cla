@@ -114,6 +114,10 @@ public final class EnqueueResourcesMockWebServer implements TestRule {
 		return server;
 	}
 
+	public String getServerUrl() {
+		return "http://" + server.getHostName()+ ":" + server.getPort();
+	}
+
 	@Override
 	public Statement apply(Statement base, final Description description) {
 		final Statement serverStatement = server.apply(base, description);

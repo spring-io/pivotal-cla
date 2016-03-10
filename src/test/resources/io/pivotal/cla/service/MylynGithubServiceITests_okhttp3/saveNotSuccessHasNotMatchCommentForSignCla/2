@@ -1,0 +1,33 @@
+HTTP/1.1 200 OK
+X-RateLimit-Limit: 5000
+X-RateLimit-Remaining: 4999
+
+[
+  {
+    "id": 1,
+    "url": "https://api.github.com/repos/spring-projects/spring-security/issues/comments/1",
+    "html_url": "https://github.com/spring-projects/spring-security/issues/1347#issuecomment-1",
+    "body": "We should expect a comment from pivotal-cla",
+    "user": {
+      "login": "pivotal-cla",
+      "id": 1,
+      "avatar_url": "https://github.com/images/error/rwinch_happy.gif",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/rwinch",
+      "html_url": "https://github.com/rwinch",
+      "followers_url": "https://api.github.com/users/rwinch/followers",
+      "following_url": "https://api.github.com/users/rwinch/following{/other_user}",
+      "gists_url": "https://api.github.com/users/rwinch/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/rwinch/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/rwinch/subscriptions",
+      "organizations_url": "https://api.github.com/users/rwinch/orgs",
+      "repos_url": "https://api.github.com/users/rwinch/repos",
+      "events_url": "https://api.github.com/users/rwinch/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/rwinch/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "created_at": "2011-04-14T16:00:49Z",
+    "updated_at": "2011-04-14T16:00:49Z"
+  }
+]
