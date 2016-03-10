@@ -33,6 +33,7 @@ import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.webdriver.pages.DashboardPage;
 import io.pivotal.cla.webdriver.pages.DashboardPage.Signature;
 import io.pivotal.cla.webdriver.pages.HomePage;
+import io.pivotal.cla.webdriver.pages.SignClaPage;
 import io.pivotal.cla.webdriver.pages.SignedPage;
 
 public class HomeControllerTests extends BaseWebDriverTests {
@@ -47,6 +48,17 @@ public class HomeControllerTests extends BaseWebDriverTests {
 	public void home() throws Exception {
 		HomePage home = HomePage.go(driver);
 		home.assertAt();
+	}
+
+	@Test
+	@WithSigningUser
+	public void pivotalClaLink() {
+		cla.setName("pivotal");
+		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+
+		HomePage home = HomePage.go(driver);
+		SignClaPage claPage = home.pivotalCla(SignClaPage.class);
+		claPage.assertAt();
 	}
 
 	@Test

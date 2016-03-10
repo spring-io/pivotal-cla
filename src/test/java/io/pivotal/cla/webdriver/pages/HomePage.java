@@ -18,12 +18,22 @@ package io.pivotal.cla.webdriver.pages;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 public class HomePage extends BasePage {
+	@FindBy(id="pivotal-cla-link")
+	WebElement pivotalClaLink;
 
 	public HomePage(WebDriver driver) {
 		super(driver);
+	}
+
+
+	public <T extends BasePage> T pivotalCla(Class<T> page) {
+		pivotalClaLink.click();
+		return PageFactory.initElements(getDriver(), page);
 	}
 
 	public void assertAt() {
