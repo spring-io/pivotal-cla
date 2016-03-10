@@ -26,6 +26,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -41,26 +42,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		AuthenticationEntryPoint entryPoint = entryPoint();
 		http
-		.exceptionHandling()
-			.authenticationEntryPoint(entryPoint)
-			.accessDeniedHandler( (request, response, accessDeniedException) -> {
-					new HttpSessionRequestCache().saveRequest(request, response);
-					entryPoint.commence(request, response, new InsufficientAuthenticationException("Additional OAuth Scopes required", accessDeniedException));
-				})
-			.and()
-		.csrf()
-			.ignoringAntMatchers("/github/hooks/**").and()
-		.authorizeRequests()
-			.antMatchers("/login/**", "/", "/webjars/**").permitAll()
-			.antMatchers("/github/hooks/**").access("@oauth.check(request.getParameter('access_token'))")
-			.antMatchers("/admin/**").hasRole("ADMIN")
-			.anyRequest().authenticated();
+			.exceptionHandling()
+				.authenticationEntryPoint(entryPoint)
+				.accessDeniedHandler( (request, response, accessDeniedException) -> {
+						new HttpSessionRequestCache().saveRequest(request, response);
+						entryPoint.commence(request, response, new InsufficientAuthenticationException("Additional OAuth Scopes required", accessDeniedException));
+					})
+				.and()
+			.csrf()
+				.ignoringAntMatchers("/github/hooks/**").and()
+			.authorizeRequests()
+				.antMatchers("/login/**", "/", "/webjars/**").permitAll()
+				.antMatchers("/github/hooks/**").access("@oauth.check(request.getParameter('access_token'))")
+				.antMatchers("/admin/**","/manage/**").hasRole("ADMIN")
+				.anyRequest().authenticated();
 	}
 
 	private AuthenticationEntryPoint entryPoint() {
 		LinkedHashMap<RequestMatcher, AuthenticationEntryPoint> entryPoints = new LinkedHashMap<>();
 		entryPoints.put(new AntPathRequestMatcher("/github/hooks/**"), new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
 		entryPoints.put(new AntPathRequestMatcher("/admin/**"), new GithubAuthenticationEntryPoint(oauthConfig.getAdmin(), "user:email,repo:status,admin:repo_hook,admin:org_hook,read:org"));
+		BasicAuthenticationEntryPoint basicEntryPoint = new BasicAuthenticationEntryPoint();
+		basicEntryPoint.setRealmName("Pivotal CLA");
+		entryPoints.put(new AntPathRequestMatcher("/manage/**"), basicEntryPoint);
 		DelegatingAuthenticationEntryPoint entryPoint = new DelegatingAuthenticationEntryPoint(entryPoints);
 		entryPoint.setDefaultEntryPoint(new GithubAuthenticationEntryPoint(oauthConfig.getMain(), "user:email"));
 		return entryPoint;

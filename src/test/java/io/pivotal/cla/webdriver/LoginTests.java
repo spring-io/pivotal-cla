@@ -48,7 +48,7 @@ import io.pivotal.cla.webdriver.pages.DashboardPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
 
-public class SecurityTests extends BaseWebDriverTests {
+public class LoginTests extends BaseWebDriverTests {
 
 	@Autowired
 	ClaOAuthConfig config;
