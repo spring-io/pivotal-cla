@@ -19,11 +19,11 @@ import java.util.List;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import groovy.transform.EqualsAndHashCode;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class SignCorporateClaForm extends SignClaForm {
 	@NotEmpty(message = "This is required")
 	private String companyName;

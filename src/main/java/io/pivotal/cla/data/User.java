@@ -15,7 +15,6 @@
  */
 package io.pivotal.cla.data;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.ElementCollection;
