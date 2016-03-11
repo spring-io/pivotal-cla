@@ -43,6 +43,8 @@ public abstract class BasePage {
 	@FindBy(id = "sign-out")
 	private WebElement signout;
 
+	private WebElement profile;
+
 	@FindBy(id = "user-menu")
 	private WebElement userMenu;
 
@@ -149,6 +151,12 @@ public abstract class BasePage {
 		userMenu();
 		signout.click();
 		return PageFactory.initElements(driver, HomePage.class);
+	}
+
+	public ProfilePage profile() {
+		userMenu();
+		profile.click();
+		return PageFactory.initElements(driver, ProfilePage.class);
 	}
 
 	protected String getMessage() {

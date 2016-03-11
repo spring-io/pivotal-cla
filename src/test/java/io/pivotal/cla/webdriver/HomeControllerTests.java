@@ -108,4 +108,11 @@ public class HomeControllerTests extends BaseWebDriverTests {
 		view.assertAt();
 		view.asserSigned();
 	}
+
+	@Test
+	@WithSigningUser
+	public void profile() {
+		HomePage homePage = HomePage.go(driver);
+		homePage.profile();
+	}
 }
