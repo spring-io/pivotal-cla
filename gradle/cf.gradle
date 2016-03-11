@@ -10,8 +10,8 @@ cloudfoundry {
 
 cfPush.doFirst {
 	cloudfoundry.env = [
-		"SECURITY_OAUTH2_MAIN_CLIENTID": project.ext.'security.oauth2.main.clientId',
-		"SECURITY_OAUTH2_MAIN_CLIENTSECRET": project.ext.'security.oauth2.main.clientSecret',
-		"SECURITY_OAUTH2_PIVOTAL-CLA_TOKENSECRET": project.ext.'security.oauth2.pivotal-cla.tokenSecret',
+		"SECURITY_OAUTH2_MAIN_CLIENT_ID": project.ext.'security.oauth2.main.clientId',
+		"SECURITY_OAUTH2_MAIN_CLIENT_SECRET": project.ext.'security.oauth2.main.clientSecret',
+		"SECURITY_OAUTH2_PIVOTAL-CLA_TOKEN_SECRET": project.ext.'security.oauth2.pivotal-cla.tokenSecret',
 	]
 }
