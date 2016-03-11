@@ -40,6 +40,10 @@ public class HomePage extends BasePage {
 		assertThat(getDriver().getTitle()).endsWith("- Home");
 	}
 
+	public void assertLogoutSuccess() {
+		assertThat(getMessage()).isEqualTo("You have been signed out.");
+	}
+
 	public static HomePage go(WebDriver driver) {
 		get(driver, "/");
 		return PageFactory.initElements(driver, HomePage.class);

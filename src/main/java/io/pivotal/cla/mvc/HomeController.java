@@ -41,6 +41,12 @@ public class HomeController {
 		return "index";
 	}
 
+	@RequestMapping(value="/",params="logout")
+	public String logoutSuccess(Map<String,Object> model) throws Exception {
+		model.put("message", "You have been signed out.");
+		return "index";
+	}
+
 	@RequestMapping("/dashboard")
 	public String dashboard(@AuthenticationPrincipal User currentUser, Map<String,Object> model) throws Exception {
 		List<IndividualSignature> signatures = individual.findByEmailIn(currentUser.getEmails());

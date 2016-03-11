@@ -55,7 +55,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/login/**", "/", "/webjars/**").permitAll()
 				.antMatchers("/github/hooks/**").access("@oauth.check(request.getParameter('access_token'))")
 				.antMatchers("/admin/**","/manage/**").hasRole("ADMIN")
-				.anyRequest().authenticated();
+				.anyRequest().authenticated()
+				.and()
+			.logout()
+				.logoutSuccessUrl("/?logout");
 	}
 
 	private AuthenticationEntryPoint entryPoint() {

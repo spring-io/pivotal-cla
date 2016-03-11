@@ -26,6 +26,7 @@
 	background-color: #13887e;
 	color: #fff;
 }
+
     </style>
   </head>
   <body>
@@ -64,17 +65,19 @@
             </ul>
             <ul class="nav navbar-nav navbar-right" th:if="${currentUser != null}">
              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img th:src="${currentUser.avatarUrl}" height="20" width="20"> <span class="caret"></span></a>
+                <a id="user-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img th:src="${currentUser.avatarUrl}" height="20" width="20"> <span class="caret"></span></a>
 	              <ul class="dropdown-menu">
 	                  <li class="dropdown-header" th:text="${currentUser.githubLogin}">the_username</li>
-	                  <li><a href="#">Sign out</a></li>
+	                  <li><a id="sign-out" th:href="@{/logout}">Sign Out</a><form id="sign-out-form" th:action="@{/logout}" method="post" class="form form-inline"></form></li>
 	              </ul>
               </li>
             </ul>
           </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->
       </nav>
+      <div id="message" th:if="${message != null}" th:text="${message}" class="alert alert-success">
 
+      </div>
       <!-- Main component for a primary marketing message or call to action -->
       <div layout:fragment="content">
         <!-- ============================================================================ -->
@@ -102,5 +105,15 @@
     <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
     <div layout:fragment="javascript">
     </div>
+    <script type="text/javascript">
+    //<!--
+    $(function() {
+        $('#sign-out').click(function(e) {
+            e.preventDefault();
+            $('#sign-out-form').submit();
+        });
+    });
+    //-->
+    </script>
   </body>
 </html>

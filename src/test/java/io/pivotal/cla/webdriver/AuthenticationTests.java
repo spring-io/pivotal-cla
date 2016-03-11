@@ -34,6 +34,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.test.context.TestSecurityContextHolder;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -41,14 +42,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 import io.pivotal.cla.ClaOAuthConfig;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithAdminUserFactory;
+import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.service.CurrentUserRequest;
 import io.pivotal.cla.service.OAuthAccessTokenParams;
 import io.pivotal.cla.webdriver.pages.DashboardPage;
+import io.pivotal.cla.webdriver.pages.HomePage;
 import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
 
-public class LoginTests extends BaseWebDriverTests {
+public class AuthenticationTests extends BaseWebDriverTests {
 
 	@Autowired
 	ClaOAuthConfig config;
@@ -190,5 +193,22 @@ public class LoginTests extends BaseWebDriverTests {
 		session.setAttribute("state", "INVALID");
 		mockMvc.perform(get(redirect).session(session))
 			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	@WithSigningUser
+	@SuppressWarnings("unchecked")
+	public void signOut() throws Exception {
+		when(mockIndividualSignatureRepository.findByEmailIn(anySet())).thenReturn(Arrays.asList(individualSignature));
+
+		DashboardPage dashboardPage = DashboardPage.go(getDriver());
+		dashboardPage.assertAt();
+
+		TestSecurityContextHolder.clearContext();
+
+		HomePage signOut = dashboardPage.signOut();
+		signOut.assertAt();
+
+		signOut.assertLogoutSuccess();
 	}
 }

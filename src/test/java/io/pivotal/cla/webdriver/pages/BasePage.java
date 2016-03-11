@@ -22,8 +22,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
@@ -36,6 +39,15 @@ public abstract class BasePage {
 	private WebElement manage;
 
 	private WebElement link;
+
+	@FindBy(id = "sign-out")
+	private WebElement signout;
+
+	@FindBy(id = "user-menu")
+	private WebElement userMenu;
+
+	@FindBy(id = "message")
+	private WebElement message;
 
 	protected BasePage(WebDriver driver) {
 		this.driver = driver;
@@ -122,8 +134,24 @@ public abstract class BasePage {
 		return PageFactory.initElements(driver, AdminListClasPage.class);
 	}
 
+	protected void userMenu() {
+		userMenu.click();
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(signout.getAttribute("id"))));
+	}
+
 	public AdminLinkClaPage link() {
 		link.click();
 		return PageFactory.initElements(driver, AdminLinkClaPage.class);
+	}
+
+	public HomePage signOut() {
+		userMenu();
+		signout.click();
+		return PageFactory.initElements(driver, HomePage.class);
+	}
+
+	protected String getMessage() {
+		return message.getText();
 	}
 }
