@@ -16,3 +16,8 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+
+after_success: |
+  if [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_SECURE_ENV_VARS == 'true' ]] ; then
+    ./gradlew cfPush -Psecurity.oauth2.main.clientId=$CLIENT_ID -Psecurity.oauth2.main.clientSecret=$CLIENT_SECRET -Psecurity.oauth2.pivotal-cla.tokenSecret=$TOKEN_SECRET -PcfUsername=$CF_USERNAME -PcfPassword=$CF_PASSWORD
+  fi

@@ -1,0 +1,17 @@
+apply plugin: 'cloudfoundry'
+
+cloudfoundry {
+	target = "https://api.run.pivotal.io"
+	space = "contributor-license-agreements"
+	uri = "pivotal-cla.cfapps.io"
+	memory = 1024
+	instances = 1
+}
+
+cfPush.doFirst {
+	cloudfoundry.env = [
+		"SECURITY_OAUTH2_MAIN_CLIENTID": project.ext.'security.oauth2.main.clientId',
+		"SECURITY_OAUTH2_MAIN_CLIENTSECRET": project.ext.'security.oauth2.main.clientSecret',
+		"SECURITY_OAUTH2_PIVOTAL-CLA_TOKENSECRET": project.ext.'security.oauth2.pivotal-cla.tokenSecret',
+	]
+}

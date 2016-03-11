@@ -30,7 +30,7 @@ import lombok.Data;
 @Data
 public class ClaOAuthConfig {
 
-	@Value("${security.oauth2.pivotal-cla.token}")
+	@Value("${security.oauth2.pivotal-cla.tokenSecret}")
 	private String pivotalClaAccessToken;
 
 	private OAuthClientCredentials main;
