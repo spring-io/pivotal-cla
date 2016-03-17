@@ -42,6 +42,12 @@ public class IndividualSignature {
 
 	private String email;
 
+	private String mailingAddress;
+
+	private String country;
+
+	private String telephone;
+
 	private String githubLogin;
 
 }

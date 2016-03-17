@@ -33,6 +33,15 @@ public class SignClaForm {
 	@NotEmpty(message = "This is required")
 	private String email;
 
+	@NotEmpty(message = "This is required")
+	private String mailingAddress;
+
+	@NotEmpty(message = "This is required")
+	private String country;
+
+	@NotEmpty(message = "This is required")
+	private String telephone;
+
 	private String repositoryId;
 
 	private Integer pullRequestId;

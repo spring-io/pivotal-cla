@@ -94,12 +94,16 @@ public abstract class BaseWebDriverTests {
 		individualSignature.setGithubLogin("rwinch");
 		individualSignature.setEmail("rob@gmail.com");
 		individualSignature.setName("Rob Winch");
+		individualSignature.setMailingAddress("123 Seasame Street");
+		individualSignature.setTelephone("123.456.7890");
 
 		corporateSignature = new CorporateSignature();
 		corporateSignature.setCla(cla);
 		corporateSignature.setGithubLogin("rwinch");
 		corporateSignature.setEmail("rob@gmail.com");
 		corporateSignature.setName("Rob Winch");
+		corporateSignature.setMailingAddress("123 Seasame Street");
+		corporateSignature.setTelephone("123.456.7890");
 		corporateSignature.setOrganization("organization");
 	}
 

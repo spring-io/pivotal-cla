@@ -64,6 +64,12 @@ public class SignClaPage extends BasePage {
 
 		WebElement email;
 
+		WebElement mailingAddress;
+
+		WebElement country;
+
+		WebElement telephone;
+
 		public <T extends BasePage> T sign(Class<T> page) {
 			sign.click();
 			return PageFactory.initElements(getDriver(), page);
@@ -84,6 +90,33 @@ public class SignClaPage extends BasePage {
 
 		public Form email(String email) {
 			new Select(this.email).selectByValue(email);
+			return this;
+		}
+
+		public InputAssert assertMailingAddress() {
+			return assertInput(mailingAddress);
+		}
+
+		public Form mailingAddress(String address) {
+			this.mailingAddress.sendKeys(address);
+			return this;
+		}
+
+		public InputAssert assertCountry() {
+			return assertInput(country);
+		}
+
+		public Form country(String country) {
+			this.country.sendKeys(country);
+			return this;
+		}
+
+		public InputAssert assertTelephone() {
+			return assertInput(telephone);
+		}
+
+		public Form telephone(String telephone) {
+			this.telephone.sendKeys(telephone);
 			return this;
 		}
 	}

@@ -54,8 +54,11 @@ public class DataTests {
 
 		IndividualSignature signature = new IndividualSignature();
 		signature.setCla(springCla);
+		signature.setCountry("USA");
 		signature.setEmail("rwinch@pivotal.io");
+		signature.setMailingAddress("123 Seasame Street");
 		signature.setName("Rob Winch");
+		signature.setTelephone("1234567890");
 
 		IndividualSignature robsSignature = signatures.save(signature);
 
