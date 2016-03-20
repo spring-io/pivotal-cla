@@ -1,0 +1,64 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layouts/main">
+<head>
+<title>Home</title>
+</head>
+<body>
+	<div layout:fragment="content">
+		<h1>Our Contributor License Agreements</h1>
+		<p>
+			Pivotal uses various licenses to distribute software and documentation.
+			To accept contributions, we generally require individuals or the organizations they are working for complete and sign Contributor License Agreements (“CLA”) based on the Apache Software License 2.0 CLAs.
+			In all cases, contributors retain full rights to their contributions outside of Pivotal, while at the same time providing Pivotal the right to distribute and build upon such contributions in the Pivotal projects.
+			Our CLAs establish a few things:
+		</p>
+		<ul>
+			<li>Individuals (or their organizations) grant a copyright license for their contributions to Pivotal</li>
+			<li>Individuals (or their organizations) grant a patent license for their contributions to Pivotal</li>
+			<li>The contribution is the individual’s or organization’s original creation, and the contributors remain free to do whatever they want with their contributions outside of Pivotal</li>
+			<li>Individuals (or their organizations) are not expected to provide support for their contributions.</li>
+		</ul>
+		<p>
+			With CLAs, we can encourage broad participation from the community while minimizing risks to Pivotal and our end-users resulting from insufficiently-licensed contributions coming into Pivotal’s open source projects.
+		</p>
+		<h1 id="obvious-fixes">Obvious Fixes</h1>
+		<p>
+			In certain cases described below, Pivotal may accept very minor contributions without requiring a CLA.
+			This is designed for contributions that are minor enough (e.g. spelling errors, grammar mistakes, typos, formatting mistakes, etc.) to not be considered by you to be intellectual property that is independently protectable (an “Obvious Fix”).
+			The purpose of this exception is to lower the barrier for new contributors to make helpful and necessary contributions to Pivotal projects while retaining the integrity of the project and our community.
+		</p>
+		<h2>What qualifies as an Obvious Fix</h2>
+		<p>
+			An obvious fix is a pull request that does not contain creative expression.
+			We rely on your judgment to determine what is “obvious”; if you’re not sure, please ask the project owners or email <a href="mailto:cla@pivotal.io">la@pivotal.io</a>
+			We generally consider Obvious Fixes to be changes that do not introduce any new functionality or creativity, for example:
+		</p>
+		<ul>
+			<li>Spelling/grammar mistakes</li>
+			<li>Typos</li>
+			<li>Comments clean-up</li>
+			<li>White-space or formatting changes</li>
+			<li>Logging messages or debug output</li>
+			<li>Changes to ‘metadata’ files that do not impact existing external dependencies such as .gitignore</li>
+			<li>Build script errors</li>
+			<li>Example configuration files</li>
+			<li>Project structure changes like renaming a build directory or changing a constant</li>
+			<li>Re-ordering of objects, variables or methods within a source file</li>
+			<li>Moving source files from one directory to another without code changes</li>
+			<li>Refactoring a source file into multiple source files or consolidating multiple source files a single source file without changing functionality</li>
+		</ul>
+		<p>
+			On the contrary, here are some contributions that would require a signed CLA before pull requests can be submitted/accepted:
+		</p>
+		<ul>
+			<li>Anything that results in a change in functionality</li>
+			<li>A new feature</li>
+			<li>A translation or refactor</li>
+			<li>Extensive or creative comments, README/docs changes, etc.</li>
+		</ul>
+		<h2>How to submit an Obvious Fix</h2>
+		<p>
+			If your contribution is an Obvious Fix, please add “Obvious Fix” to the pull request description.
+		</p>
+	</div>
+</body>
+</html>
