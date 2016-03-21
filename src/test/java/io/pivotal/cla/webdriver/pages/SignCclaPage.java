@@ -57,16 +57,23 @@ public class SignCclaPage extends BasePage {
 	}
 
 	public class Form {
-
 		WebElement sign;
 
 		WebElement name;
 
 		WebElement email;
 
+		WebElement mailingAddress;
+
+		WebElement country;
+
+		WebElement telephone;
+
 		WebElement companyName;
 
 		WebElement organization;
+
+		WebElement title;
 
 		public <T extends BasePage> T sign(Class<T> page) {
 			sign.click();
@@ -91,6 +98,33 @@ public class SignCclaPage extends BasePage {
 			return this;
 		}
 
+		public InputAssert assertMailingAddress() {
+			return assertInput(mailingAddress);
+		}
+
+		public Form mailingAddress(String address) {
+			this.mailingAddress.sendKeys(address);
+			return this;
+		}
+
+		public InputAssert assertCountry() {
+			return assertInput(country);
+		}
+
+		public Form country(String country) {
+			this.country.sendKeys(country);
+			return this;
+		}
+
+		public InputAssert assertTelephone() {
+			return assertInput(telephone);
+		}
+
+		public Form telephone(String telephone) {
+			this.telephone.sendKeys(telephone);
+			return this;
+		}
+
 		public InputAssert assertCompanyName() {
 			return assertInput(companyName);
 		}
@@ -107,6 +141,15 @@ public class SignCclaPage extends BasePage {
 		public Form organization(String organization) {
 			new Select(this.organization).selectByValue(organization);
 			return this;
+		}
+
+		public Form title(String country) {
+			this.title.sendKeys(country);
+			return this;
+		}
+
+		public InputAssert assertTitle() {
+			return assertInput(title);
 		}
 	}
 }

@@ -39,7 +39,6 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		assertThat(signPage.getCorporate()).isEqualTo(cla.getCorporateContent().getHtml());
 	}
 
-
 	@Test
 	public void signNameRequired() throws Exception {
 		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
@@ -52,8 +51,12 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 		signPage = form
 			.email("rob@gmail.com")
+			.mailingAddress("123 Seasame St")
+			.country("USA")
+			.telephone("123.456.7890")
 			.companyName("Pivotal")
 			.organization("pivotal")
+			.title("Director")
 			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
@@ -76,8 +79,12 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 		signPage = form
 			.name("Rob Winch")
+			.mailingAddress("123 Seasame St")
+			.country("USA")
+			.telephone("123.456.7890")
 			.companyName("Pivotal")
 			.organization("pivotal")
+			.title("Director")
 			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
@@ -86,6 +93,94 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		form.assertEmail().hasRequiredError();
 		form.assertCompanyName().hasNoErrors();
 		form.assertOrganization().hasNoErrors();
+	}
+
+
+	@Test
+	public void signMailingAddressRequired() throws Exception {
+		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
+
+		Form form = signPage.form();
+
+		signPage = form
+			.name("Rob Winch")
+			.email("rob@gmail.com")
+			.country("USA")
+			.telephone("123.456.7890")
+			.companyName("Pivotal")
+			.organization("pivotal")
+			.title("Director")
+			.sign(SignCclaPage.class);
+
+		signPage.assertAt();
+		form = signPage.form();
+		form.assertName().hasNoErrors();
+		form.assertEmail().hasNoErrors();
+		form.assertMailingAddress().hasRequiredError();
+		form.assertCountry().hasNoErrors();
+		form.assertTelephone().hasNoErrors();
+	}
+
+	@Test
+	public void signCountryRequired() throws Exception {
+		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
+
+		Form form = signPage.form();
+
+		signPage = form
+			.name("Rob Winch")
+			.email("rob@gmail.com")
+			.mailingAddress("123 Seasame St")
+			.telephone("123.456.7890")
+			.companyName("Pivotal")
+			.organization("pivotal")
+			.title("Director")
+			.sign(SignCclaPage.class);
+
+		signPage.assertAt();
+		form = signPage.form();
+		form.assertName().hasNoErrors();
+		form.assertEmail().hasNoErrors();
+		form.assertMailingAddress().hasNoErrors();
+		form.assertCountry().hasRequiredError();
+		form.assertTelephone().hasNoErrors();
+	}
+
+	@Test
+	public void signTelephoneRequired() throws Exception {
+		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
+
+		Form form = signPage.form();
+
+		signPage = form
+			.name("Rob Winch")
+			.email("rob@gmail.com")
+			.mailingAddress("123 Seasame St")
+			.country("USA")
+			.companyName("Pivotal")
+			.organization("pivotal")
+			.title("Director")
+			.sign(SignCclaPage.class);
+
+		signPage.assertAt();
+		form = signPage.form();
+		form.assertName().hasNoErrors();
+		form.assertEmail().hasNoErrors();
+		form.assertMailingAddress().hasNoErrors();
+		form.assertCountry().hasNoErrors();
+		form.assertTelephone().hasRequiredError();
 	}
 
 	@Test
@@ -99,9 +194,13 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		Form form = signPage.form();
 
 		signPage = form
-			.email("rob@gmail.com")
 			.name("Rob Winch")
+			.email("rob@gmail.com")
+			.mailingAddress("123 Seasame St")
+			.country("USA")
+			.telephone("123.456.7890")
 			.organization("pivotal")
+			.title("Director")
 			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
@@ -123,9 +222,13 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		Form form = signPage.form();
 
 		signPage = form
-			.email("rob@gmail.com")
-			.companyName("Pivotal")
 			.name("Rob Winch")
+			.email("rob@gmail.com")
+			.mailingAddress("123 Seasame St")
+			.country("USA")
+			.telephone("123.456.7890")
+			.companyName("Pivotal")
+			.title("Director")
 			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
@@ -146,25 +249,33 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 		signPage = signPage.form()
 			.email("rob@gmail.com")
+			.mailingAddress("123 Seasame St")
+			.country("USA")
+			.telephone("123.456.7890")
 			.companyName("Pivotal")
-			.name("Rob Winch")
+			.organization("pivotal")
+			.title("Director")
 			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
 
 		Form form = signPage.form();
 		form.assertEmail().hasValue("rob@gmail.com");
+		form.assertMailingAddress().hasValue("123 Seasame St");
+		form.assertCountry().hasValue("USA");
+		form.assertTelephone().hasValue("123.456.7890");
 		form.assertCompanyName().hasValue("Pivotal");
-		form.assertName().hasValue("Rob Winch");
+		form.assertOrganization().hasValue("pivotal");
+		form.assertTitle().hasValue("Director");
 
 		signPage = SignCclaPage.go(getDriver(), cla.getName());
 
 		signPage = signPage.form()
-			.organization("pivotal")
+			.name("Rob Winch")
 			.sign(SignCclaPage.class);
 
 		signPage.form()
-			.assertOrganization().hasValue("pivotal");
+			.assertName().hasValue("Rob Winch");
 	}
 
 	@Test

@@ -90,6 +90,7 @@ public class CclaController {
 		signature.setDateOfSignature(new Date());
 		signature.setGithubLogin(user.getGithubLogin());
 		signature.setOrganization(signCorporateClaForm.getOrganization());
+		signature.setTitle(signCorporateClaForm.getTitle());
 		corporate.save(signature);
 
 		// update github

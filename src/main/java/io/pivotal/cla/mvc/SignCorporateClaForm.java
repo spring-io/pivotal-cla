@@ -29,6 +29,8 @@ public class SignCorporateClaForm extends SignClaForm {
 	private String companyName;
 	@NotEmpty(message = "This is required")
 	private String organization;
+	@NotEmpty(message = "This is required")
+	private String title;
 
 	private List<String> organizations;
 }
