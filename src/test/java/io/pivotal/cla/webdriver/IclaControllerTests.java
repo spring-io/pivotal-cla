@@ -25,7 +25,7 @@ import io.pivotal.cla.webdriver.pages.SignIclaPage;
 import io.pivotal.cla.webdriver.pages.SignIclaPage.Form;
 
 @WithSigningUser
-public class ClaControllerTests extends BaseWebDriverTests {
+public class IclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void view() {
