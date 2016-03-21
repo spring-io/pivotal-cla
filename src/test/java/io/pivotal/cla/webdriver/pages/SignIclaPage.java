@@ -23,17 +23,17 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 
-public class CorporateSignClaPage extends BasePage {
-	@FindBy(id = "corporate-cla")
-	WebElement corporateCla;
+public class SignIclaPage extends BasePage {
+	@FindBy(id = "individual-cla")
+	WebElement individualCla;
 
 
-	public CorporateSignClaPage(WebDriver driver) {
+	public SignIclaPage(WebDriver driver) {
 		super(driver);
 	}
 
-	public String getCorporate() {
-		return corporateCla.getText();
+	public String getIndividualCla() {
+		return individualCla.getText();
 	}
 
 	public Form form() {
@@ -43,17 +43,17 @@ public class CorporateSignClaPage extends BasePage {
 	}
 
 	public void assertAt() {
-		assertThat(getDriver().getTitle()).endsWith("- Sign");
+		assertThat(getDriver().getTitle()).endsWith("- Sign ICLA");
 	}
 
-	public static CorporateSignClaPage go(WebDriver driver, String cla) {
-		get(driver, "/cla/corporate/sign/" + cla);
-		return PageFactory.initElements(driver, CorporateSignClaPage.class);
+	public static SignIclaPage go(WebDriver driver, String cla) {
+		get(driver, "/sign/" + cla + "/icla");
+		return PageFactory.initElements(driver, SignIclaPage.class);
 	}
 
-	public static CorporateSignClaPage go(WebDriver driver, String cla, String repositoryId, long pullRequestId) {
-		get(driver, "/cla/corporate/sign/" + cla + "?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId);
-		return PageFactory.initElements(driver, CorporateSignClaPage.class);
+	public static SignIclaPage go(WebDriver driver, String cla, String repositoryId, long pullRequestId) {
+		get(driver, "/sign/" + cla + "/icla?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId);
+		return PageFactory.initElements(driver, SignIclaPage.class);
 	}
 
 	public class Form {
@@ -64,9 +64,11 @@ public class CorporateSignClaPage extends BasePage {
 
 		WebElement email;
 
-		WebElement companyName;
+		WebElement mailingAddress;
 
-		WebElement organization;
+		WebElement country;
+
+		WebElement telephone;
 
 		public <T extends BasePage> T sign(Class<T> page) {
 			sign.click();
@@ -91,21 +93,30 @@ public class CorporateSignClaPage extends BasePage {
 			return this;
 		}
 
-		public InputAssert assertCompanyName() {
-			return assertInput(companyName);
+		public InputAssert assertMailingAddress() {
+			return assertInput(mailingAddress);
 		}
 
-		public Form companyName(String name) {
-			this.companyName.sendKeys(name);
+		public Form mailingAddress(String address) {
+			this.mailingAddress.sendKeys(address);
 			return this;
 		}
 
-		public SelectAssert assertOrganization() {
-			return assertSelect(organization);
+		public InputAssert assertCountry() {
+			return assertInput(country);
 		}
 
-		public Form organization(String organization) {
-			new Select(this.organization).selectByValue(organization);
+		public Form country(String country) {
+			this.country.sendKeys(country);
+			return this;
+		}
+
+		public InputAssert assertTelephone() {
+			return assertInput(telephone);
+		}
+
+		public Form telephone(String telephone) {
+			this.telephone.sendKeys(telephone);
 			return this;
 		}
 	}

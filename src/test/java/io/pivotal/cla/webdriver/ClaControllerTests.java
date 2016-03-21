@@ -21,8 +21,8 @@ import static org.mockito.Mockito.when;
 import org.junit.Test;
 
 import io.pivotal.cla.security.WithSigningUser;
-import io.pivotal.cla.webdriver.pages.SignClaPage;
-import io.pivotal.cla.webdriver.pages.SignClaPage.Form;
+import io.pivotal.cla.webdriver.pages.SignIclaPage;
+import io.pivotal.cla.webdriver.pages.SignIclaPage.Form;
 
 @WithSigningUser
 public class ClaControllerTests extends BaseWebDriverTests {
@@ -31,7 +31,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 	public void view() {
 		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
 
-		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
 		assertThat(signPage.getIndividualCla()).isEqualTo(cla.getIndividualContent().getHtml());
 	}
@@ -41,7 +41,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
-		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
 		Form form = signPage.form();
 
@@ -50,7 +50,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 			.mailingAddress("123 Seasame St")
 			.country("USA")
 			.telephone("123.456.7890")
-			.sign(SignClaPage.class);
+			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
 		form = signPage.form();
@@ -66,7 +66,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
-		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
 		Form form = signPage.form();
 
@@ -75,7 +75,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 			.mailingAddress("123 Seasame St")
 			.country("USA")
 			.telephone("123.456.7890")
-			.sign(SignClaPage.class);
+			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
 		form = signPage.form();
@@ -91,7 +91,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
-		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
 		Form form = signPage.form();
 
@@ -100,7 +100,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 			.email("rob@gmail.com")
 			.country("USA")
 			.telephone("123.456.7890")
-			.sign(SignClaPage.class);
+			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
 		form = signPage.form();
@@ -116,7 +116,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
-		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
 		Form form = signPage.form();
 
@@ -125,7 +125,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 			.email("rob@gmail.com")
 			.mailingAddress("123 Seasame St")
 			.telephone("123.456.7890")
-			.sign(SignClaPage.class);
+			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
 		form = signPage.form();
@@ -141,7 +141,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
-		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
 		Form form = signPage.form();
 
@@ -150,7 +150,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 			.email("rob@gmail.com")
 			.mailingAddress("123 Seasame St")
 			.country("USA")
-			.sign(SignClaPage.class);
+			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
 		form = signPage.form();
@@ -166,14 +166,14 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
-		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
 		signPage = signPage.form()
 			.name("Rob Winch")
 			.email("rob@gmail.com")
 			.mailingAddress("123 Seasame St")
 			.country("USA")
-			.sign(SignClaPage.class);
+			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
 
@@ -183,11 +183,11 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		form.assertMailingAddress().hasValue("123 Seasame St");
 		form.assertCountry().hasValue("USA");
 
-		signPage = SignClaPage.go(getDriver(), cla.getName());
+		signPage = SignIclaPage.go(getDriver(), cla.getName());
 
 		signPage = signPage.form()
 			.telephone("123.456.7890")
-			.sign(SignClaPage.class);
+			.sign(SignIclaPage.class);
 
 		signPage.form()
 			.assertTelephone().hasValue("123.456.7890");
@@ -198,7 +198,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
-		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName());
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
 		signPage = signPage.form()
 			.name("Rob Winch")
@@ -206,7 +206,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 			.mailingAddress("123 Seasame St")
 			.country("USA")
 			.telephone("123.456.7890")
- 			.sign(SignClaPage.class);
+ 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
 	}
@@ -217,7 +217,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
-		SignClaPage signPage = SignClaPage.go(getDriver(), cla.getName(), "rwinch/176_test", 2);
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName(), "rwinch/176_test", 2);
 
 		signPage = signPage.form()
 			.name("Rob Winch")
@@ -225,7 +225,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 			.mailingAddress("123 Seasame St")
 			.country("USA")
 			.telephone("123.456.7890")
- 			.sign(SignClaPage.class);
+ 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
 	}

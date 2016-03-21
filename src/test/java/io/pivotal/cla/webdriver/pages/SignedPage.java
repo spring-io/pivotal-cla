@@ -32,7 +32,7 @@ public class SignedPage extends BasePage {
 	}
 
 	public void assertAt() {
-		assertThat(getDriver().getTitle()).endsWith("- Sign");
+		assertThat(getDriver().getTitle()).endsWith("- Sign ICLA");
 	}
 
 }

@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cla.mvc;
+package io.pivotal.cla.webdriver.pages;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@Controller
-public class ClaController {
+import org.openqa.selenium.WebDriver;
 
-	@RequestMapping("/sign/{claName}")
-	public String signIndex(String claName) {
-		return "index";
+public class AboutPage extends BasePage {
+
+	public AboutPage(WebDriver driver) {
+		super(driver);
 	}
+
+	public void assertAt() {
+		assertThat(getDriver().getTitle()).endsWith("- About");
+	}
+
 }

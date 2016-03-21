@@ -17,7 +17,7 @@
 				<tbody>
 					<tr th:each="cla : ${clas}">
 						<td th:text="${cla.name}"></td>
-						<td><a th:href="@{'/sign/' + ${cla.name}}">View</a></td>
+						<td><a th:href="@{/sign/{name}/icla(name=${cla.name})}">View</a></td>
 					</tr>
 				</tbody>
 			</table>

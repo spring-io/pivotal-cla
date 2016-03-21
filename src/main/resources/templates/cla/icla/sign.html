@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html layout:decorator="layouts/main">
 	<head>
-		<title>Sign</title>
+		<title>Sign ICLA</title>
 	</head>
 	<body>
 		<div class="container" layout:fragment="content">
@@ -18,7 +18,7 @@
 
 				</div>
 			</div>
-			<form th:if="${!signClaForm.signed}" th:action="@{/sign/}" method="post" th:object="${signClaForm}">
+			<form th:if="${!signClaForm.signed}" th:action="@{/sign/{claName}/icla(claName=${cla.name})}" method="post" th:object="${signClaForm}">
 				<div class="form-group" th:class="${#fields.hasErrors('name')}? 'has-error form-group' : form-group">
 					<label for="name">
 						Name

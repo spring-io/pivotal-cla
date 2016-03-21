@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cla.mvc;
+package io.pivotal.cla.webdriver;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Controller
-public class ClaController {
+import org.junit.Test;
 
-	@RequestMapping("/sign/{claName}")
-	public String signIndex(String claName) {
-		return "index";
+public class AboutControllerTests extends BaseWebDriverTests {
+
+	@Test
+	public void aboutPermitAll() throws Exception {
+		mockMvc.perform(get("/about"))
+			.andExpect(status().isOk());
 	}
 }

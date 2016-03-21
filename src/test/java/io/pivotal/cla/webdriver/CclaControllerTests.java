@@ -24,17 +24,17 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import io.pivotal.cla.security.WithSigningUser;
-import io.pivotal.cla.webdriver.pages.CorporateSignClaPage;
-import io.pivotal.cla.webdriver.pages.CorporateSignClaPage.Form;
+import io.pivotal.cla.webdriver.pages.SignCclaPage;
+import io.pivotal.cla.webdriver.pages.SignCclaPage.Form;
 
 @WithSigningUser
-public class CorporateClaControllerTests extends BaseWebDriverTests {
+public class CclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void view() {
 		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
 
-		CorporateSignClaPage signPage = CorporateSignClaPage.go(getDriver(), cla.getName());
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
 		assertThat(signPage.getCorporate()).isEqualTo(cla.getCorporateContent().getHtml());
 	}
@@ -46,7 +46,7 @@ public class CorporateClaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
-		CorporateSignClaPage signPage = CorporateSignClaPage.go(getDriver(), cla.getName());
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
 		Form form = signPage.form();
 
@@ -54,7 +54,7 @@ public class CorporateClaControllerTests extends BaseWebDriverTests {
 			.email("rob@gmail.com")
 			.companyName("Pivotal")
 			.organization("pivotal")
-			.sign(CorporateSignClaPage.class);
+			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
 		form = signPage.form();
@@ -70,7 +70,7 @@ public class CorporateClaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
-		CorporateSignClaPage signPage = CorporateSignClaPage.go(getDriver(), cla.getName());
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
 		Form form = signPage.form();
 
@@ -78,7 +78,7 @@ public class CorporateClaControllerTests extends BaseWebDriverTests {
 			.name("Rob Winch")
 			.companyName("Pivotal")
 			.organization("pivotal")
-			.sign(CorporateSignClaPage.class);
+			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
 		form = signPage.form();
@@ -94,7 +94,7 @@ public class CorporateClaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
-		CorporateSignClaPage signPage = CorporateSignClaPage.go(getDriver(), cla.getName());
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
 		Form form = signPage.form();
 
@@ -102,7 +102,7 @@ public class CorporateClaControllerTests extends BaseWebDriverTests {
 			.email("rob@gmail.com")
 			.name("Rob Winch")
 			.organization("pivotal")
-			.sign(CorporateSignClaPage.class);
+			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
 		form = signPage.form();
@@ -118,7 +118,7 @@ public class CorporateClaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
-		CorporateSignClaPage signPage = CorporateSignClaPage.go(getDriver(), cla.getName());
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
 		Form form = signPage.form();
 
@@ -126,7 +126,7 @@ public class CorporateClaControllerTests extends BaseWebDriverTests {
 			.email("rob@gmail.com")
 			.companyName("Pivotal")
 			.name("Rob Winch")
-			.sign(CorporateSignClaPage.class);
+			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
 		form = signPage.form();
@@ -142,13 +142,13 @@ public class CorporateClaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
-		CorporateSignClaPage signPage = CorporateSignClaPage.go(getDriver(), cla.getName());
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
 		signPage = signPage.form()
 			.email("rob@gmail.com")
 			.companyName("Pivotal")
 			.name("Rob Winch")
-			.sign(CorporateSignClaPage.class);
+			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
 
@@ -157,11 +157,11 @@ public class CorporateClaControllerTests extends BaseWebDriverTests {
 		form.assertCompanyName().hasValue("Pivotal");
 		form.assertName().hasValue("Rob Winch");
 
-		signPage = CorporateSignClaPage.go(getDriver(), cla.getName());
+		signPage = SignCclaPage.go(getDriver(), cla.getName());
 
 		signPage = signPage.form()
 			.organization("pivotal")
-			.sign(CorporateSignClaPage.class);
+			.sign(SignCclaPage.class);
 
 		signPage.form()
 			.assertOrganization().hasValue("pivotal");
@@ -173,12 +173,12 @@ public class CorporateClaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
-		CorporateSignClaPage signPage = CorporateSignClaPage.go(getDriver(), cla.getName());
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
 		signPage = signPage.form()
 			.name("Rob Winch")
 			.email("rob@gmail.com")
- 			.sign(CorporateSignClaPage.class);
+ 			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
 	}
@@ -189,12 +189,12 @@ public class CorporateClaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
-		CorporateSignClaPage signPage = CorporateSignClaPage.go(getDriver(), cla.getName(), "rwinch/176_test", 2);
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName(), "rwinch/176_test", 2);
 
 		signPage = signPage.form()
 			.name("Rob Winch")
 			.email("rob@gmail.com")
- 			.sign(CorporateSignClaPage.class);
+ 			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
 	}

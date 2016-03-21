@@ -45,8 +45,7 @@ import io.pivotal.cla.service.CommitStatus;
 import io.pivotal.cla.service.GitHubService;
 
 @Controller
-@RequestMapping("/cla/corporate/sign")
-public class CorporateClaController {
+public class CclaController {
 	@Autowired
 	ContributorLicenseAgreementRepository clas;
 	@Autowired
@@ -56,7 +55,7 @@ public class CorporateClaController {
 	@Autowired
 	AccessTokenRepository tokenRepo;
 
-	@RequestMapping("/{claName}")
+	@RequestMapping("/sign/{claName}/ccla")
 	public String claForm(@AuthenticationPrincipal User user, @PathVariable String claName,
 			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
 			Map<String, Object> model) throws Exception {
@@ -73,16 +72,16 @@ public class CorporateClaController {
 		model.put("signCorporateClaForm", form);
 		model.put("cla", cla);
 
-		return "cla/corporate/sign";
+		return "cla/ccla/sign";
 	}
 
-	@RequestMapping(value = "/", method = RequestMethod.POST)
+	@RequestMapping(value = "/sign/{claName}/ccla", method = RequestMethod.POST)
 	public String signCla(@AuthenticationPrincipal User user, @Valid SignCorporateClaForm signCorporateClaForm, BindingResult result, Map<String, Object> model) throws IOException {
 		if(result.hasErrors()) {
 			ContributorLicenseAgreeement cla = clas.findOne(signCorporateClaForm.getClaId());
 			model.put("cla", cla);
 			signCorporateClaForm.setOrganizations(github.getOrganizations(user.getGithubLogin()));
-			return "cla/corporate/sign";
+			return "cla/ccla/sign";
 		}
 		ContributorLicenseAgreeement cla = clas.findOne(signCorporateClaForm.getClaId());
 		CorporateSignature signature = new CorporateSignature();
@@ -98,7 +97,7 @@ public class CorporateClaController {
 		String repositoryId = signCorporateClaForm.getRepositoryId();
 		Integer pullRequestId = signCorporateClaForm.getPullRequestId();
 		if(repositoryId == null || pullRequestId == null) {
-			return "redirect:/cla/corporate/sign/" +cla.getName() +"?success";
+			return "redirect:/sign/" +cla.getName() +"/ccla?success";
 		}
 
 		AccessToken token = tokenRepo.findOne(repositoryId);
@@ -121,7 +120,7 @@ public class CorporateClaController {
 			}
 		}
 
-		return "redirect:/cla/corporate/sign/" + cla.getName() + "?success&repositoryId=" + repositoryId + "&pullRequestId="
+		return "redirect:/sign/" + cla.getName() + "/ccla?success&repositoryId=" + repositoryId + "&pullRequestId="
 				+ pullRequestId;
 	}
 }

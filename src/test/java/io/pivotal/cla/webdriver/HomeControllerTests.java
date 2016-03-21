@@ -30,10 +30,12 @@ import org.junit.Test;
 
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.security.WithSigningUser;
+import io.pivotal.cla.webdriver.pages.AboutPage;
 import io.pivotal.cla.webdriver.pages.DashboardPage;
 import io.pivotal.cla.webdriver.pages.DashboardPage.Signature;
 import io.pivotal.cla.webdriver.pages.HomePage;
-import io.pivotal.cla.webdriver.pages.SignClaPage;
+import io.pivotal.cla.webdriver.pages.SignCclaPage;
+import io.pivotal.cla.webdriver.pages.SignIclaPage;
 import io.pivotal.cla.webdriver.pages.SignedPage;
 
 public class HomeControllerTests extends BaseWebDriverTests {
@@ -52,13 +54,32 @@ public class HomeControllerTests extends BaseWebDriverTests {
 
 	@Test
 	@WithSigningUser
-	public void pivotalClaLink() {
+	public void learnMoreLink() {
+		HomePage home = HomePage.go(driver);
+		AboutPage aboutPage = home.learnMore();
+		aboutPage.assertAt();
+	}
+
+	@Test
+	@WithSigningUser
+	public void signIcla() {
 		cla.setName("pivotal");
 		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
 
 		HomePage home = HomePage.go(driver);
-		SignClaPage claPage = home.pivotalCla(SignClaPage.class);
-		claPage.assertAt();
+		SignIclaPage sign = home.signIcla(SignIclaPage.class);
+		sign.assertAt();
+	}
+
+	@Test
+	@WithSigningUser
+	public void signCcla() {
+		cla.setName("pivotal");
+		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+
+		HomePage home = HomePage.go(driver);
+		SignCclaPage sign = home.signCcla(SignCclaPage.class);
+		sign.assertAt();
 	}
 
 	@Test

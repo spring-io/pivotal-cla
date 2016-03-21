@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.csrf()
 				.ignoringAntMatchers("/github/hooks/**").and()
 			.authorizeRequests()
-				.antMatchers("/login/**", "/", "/webjars/**").permitAll()
+				.antMatchers("/login/**", "/", "/about", "/webjars/**").permitAll()
 				.antMatchers("/github/hooks/**").access("@oauth.check(request.getParameter('access_token'))")
 				.antMatchers("/admin/**","/manage/**").hasRole("ADMIN")
 				.anyRequest().authenticated()

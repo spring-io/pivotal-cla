@@ -23,17 +23,30 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 public class HomePage extends BasePage {
-	@FindBy(id="pivotal-cla-link")
-	WebElement pivotalClaLink;
+	@FindBy(id="learn-more")
+	WebElement learnMoreLink;
+	@FindBy(id="icla-link")
+	WebElement iclaLink;
+	@FindBy(id="ccla-link")
+	WebElement cclaLink;
 
 	public HomePage(WebDriver driver) {
 		super(driver);
 	}
 
+	public AboutPage learnMore() {
+		learnMoreLink.click();
+		return PageFactory.initElements(getDriver(), AboutPage.class);
+	}
 
-	public <T extends BasePage> T pivotalCla(Class<T> page) {
-		pivotalClaLink.click();
-		return PageFactory.initElements(getDriver(), page);
+	public <T extends BasePage> T signIcla(Class<T> page) {
+		iclaLink.click();
+		return (T) PageFactory.initElements(getDriver(), page);
+	}
+
+	public <T extends BasePage> T signCcla(Class<T> page) {
+		cclaLink.click();
+		return (T) PageFactory.initElements(getDriver(), page);
 	}
 
 	public void assertAt() {
