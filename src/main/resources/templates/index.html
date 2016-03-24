@@ -11,7 +11,7 @@
 				This page will help you navigate the automated process of completing the contributor license agreements that enable Pivotal to accept, use, and distribute your contributions to Pivotal open source projects.
 			</p>
 			<div class="container">
-				<a id="learn-more" class="btn btn-default btn-lg" href="./about">Learn more »</a>
+				<a id="learn-more" class="btn btn-default btn-lg" th:href="@{/about}">Learn more »</a>
 			</div>
 		</div>
 		<div class="container">
@@ -22,7 +22,7 @@
 						Sign the Individual Contributor License Agreement (ICLA) if you are agreeing to the terms for only yourself.
 					</p>
 					<p>
-						<a id="icla-link" class="btn btn-success btn-lg" href="./sign/pivotal/icla">Sign Individual CLA</a>
+						<a id="icla-link" class="btn btn-success btn-lg" th:href="@{/sign/pivotal/icla}">Sign Individual CLA</a>
 					</p>
 				</div>
 				<div class="col-md-6">
@@ -31,7 +31,7 @@
 						Sign the Corporate Contributor License Agreement (CCLA) if you are agreeing to the terms on behalf of an entire organization or company.
 					</p>
 					<p>
-						<a id="ccla-link" class="btn btn-success btn-lg" href="./sign/pivotal/ccla">Sign Corporate CLA</a>
+						<a id="ccla-link" class="btn btn-success btn-lg" th:href="@{/sign/pivotal/ccla}">Sign Corporate CLA</a>
 					</p>
 				</div>
 			</div>
