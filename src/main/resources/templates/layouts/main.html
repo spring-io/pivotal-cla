@@ -10,6 +10,8 @@
 
     <title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE">Pivotal CLA</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+
+    <link rel="stylesheet" th:href="@{/css/sticky-footer-navbar.css}">
     <style type="text/css">
 .navbar-default, .btn-success, .btn-success:hover, .btn-success:focus  {
 	background-color: #03786e;
@@ -26,12 +28,19 @@
 	background-color: #13887e;
 	color: #fff;
 }
-
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    color: #fff;
+    background-color: #03786e;
+    color: #eee;
+    padding: 20px 0;
+}
     </style>
   </head>
   <body>
-    <div class="container">
-
       <!-- Static navbar -->
       <nav class="navbar navbar-default">
         <div class="container-fluid">
@@ -77,6 +86,9 @@
           </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->
       </nav>
+       <div class="container">
+
+
       <div id="message" th:if="${message != null}" th:text="${message}" class="alert alert-success">
 
       </div>
@@ -96,9 +108,12 @@
           Phasellus et placerat elit.
         </p>
       </div>
-
     </div> <!-- /container -->
-
+	<footer class="footer">
+      <div class="container">
+        <p class="text-center">Powered by <a href="https://run.pivotal.io">Pivotal Web Services</a></p>
+      </div>
+    </footer>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
