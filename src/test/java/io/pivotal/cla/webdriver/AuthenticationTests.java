@@ -39,7 +39,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import io.pivotal.cla.ClaOAuthConfig;
+import io.pivotal.cla.config.ClaOAuthConfig;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithAdminUserFactory;
 import io.pivotal.cla.security.WithSigningUser;

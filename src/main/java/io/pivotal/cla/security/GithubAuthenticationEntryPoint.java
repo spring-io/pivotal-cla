@@ -26,7 +26,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import io.pivotal.cla.OAuthClientCredentials;
+import io.pivotal.cla.config.OAuthClientCredentials;
 import io.pivotal.cla.mvc.util.UrlBuilder;
 import lombok.AllArgsConstructor;
 

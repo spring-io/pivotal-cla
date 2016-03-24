@@ -25,8 +25,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.pivotal.cla.ClaOAuthConfig;
-import io.pivotal.cla.OAuthClientCredentials;
+import io.pivotal.cla.config.ClaOAuthConfig;
+import io.pivotal.cla.config.OAuthClientCredentials;
 import lombok.Data;
 
 /**

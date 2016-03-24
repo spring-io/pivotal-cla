@@ -15,7 +15,7 @@
  */
 package io.pivotal.cla.service;
 
-import io.pivotal.cla.OAuthClientCredentials;
+import io.pivotal.cla.config.OAuthClientCredentials;
 import lombok.Data;
 
 /**

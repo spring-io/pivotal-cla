@@ -30,7 +30,7 @@ import org.eclipse.egit.github.core.util.EncodingUtils;
 
 import com.google.gson.reflect.TypeToken;
 
-import io.pivotal.cla.ClaOAuthConfig;
+import io.pivotal.cla.config.ClaOAuthConfig;
 import io.pivotal.cla.egit.github.core.Email;
 
 public class EmailService extends GitHubService {
