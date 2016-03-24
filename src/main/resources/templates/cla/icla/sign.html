@@ -5,6 +5,11 @@
 	</head>
 	<body>
 		<div class="container" layout:fragment="content">
+			<ol class="breadcrumb">
+				<li><a th:href="@{/sign/{claName}(claName=${cla.name})}">CLA</a></li>
+				<li class="active">Individual Contributor License Agreement</li>
+			</ol>
+
 			<div th:if="${signClaForm.signed}" class="alert alert-success" id="success">
 				Thank you for signing the Agreement!
 				<span th:if="${signClaForm.repositoryId != null}">
