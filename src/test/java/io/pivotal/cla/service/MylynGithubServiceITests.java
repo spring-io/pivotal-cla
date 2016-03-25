@@ -158,7 +158,6 @@ public class MylynGithubServiceITests {
 		when(tokenRepository.findOne(anyString())).thenReturn(token);
 
 		CommitStatus commitStatus = new CommitStatus();
-		commitStatus.setCla("spring");
 		commitStatus.setGithubUsername("rwinch");
 		commitStatus.setPullRequestId(1);
 		commitStatus.setRepoId("spring-projects/spring-security");
@@ -198,7 +197,6 @@ public class MylynGithubServiceITests {
 		when(tokenRepository.findOne(anyString())).thenReturn(token);
 
 		CommitStatus commitStatus = new CommitStatus();
-		commitStatus.setCla("spring");
 		commitStatus.setGithubUsername("rwinch");
 		commitStatus.setPullRequestId(1);
 		commitStatus.setRepoId("spring-projects/spring-security");
@@ -246,7 +244,6 @@ public class MylynGithubServiceITests {
 		when(tokenRepository.findOne(anyString())).thenReturn(token);
 
 		CommitStatus commitStatus = new CommitStatus();
-		commitStatus.setCla("spring");
 		commitStatus.setGithubUsername("rwinch");
 		commitStatus.setPullRequestId(1);
 		commitStatus.setRepoId("spring-projects/spring-security");
@@ -286,7 +283,6 @@ public class MylynGithubServiceITests {
 		when(tokenRepository.findOne(anyString())).thenReturn(token);
 
 		CommitStatus commitStatus = new CommitStatus();
-		commitStatus.setCla("spring");
 		commitStatus.setGithubUsername("rwinch");
 		commitStatus.setPullRequestId(1);
 		commitStatus.setRepoId("spring-projects/spring-security");

@@ -111,7 +111,6 @@ public class CclaController {
 			PullRequest pullRequest = service.getPullRequest(id, pullRequestId);
 			if (pullRequest.getUser().getLogin().equals(user.getGithubLogin())) {
 				CommitStatus status = new CommitStatus();
-				status.setCla(cla.getName());
 				status.setPullRequestId(pullRequest.getNumber());
 				status.setRepoId(repositoryId);
 				status.setSha(pullRequest.getHead().getSha());

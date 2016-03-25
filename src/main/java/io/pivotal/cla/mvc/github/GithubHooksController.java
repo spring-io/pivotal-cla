@@ -92,7 +92,6 @@ public class GithubHooksController {
 		CommitStatus status = new CommitStatus();
 		status.setGithubUsername(login);
 		status.setPullRequestId(pullRequest.getNumber());
-		status.setCla(cla);
 		status.setRepoId(repoId.generateId());
 		status.setSha(pullRequest.getHead().getSha());
 		status.setSuccess(success);

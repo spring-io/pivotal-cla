@@ -22,7 +22,6 @@ public class CommitStatus {
 	private int pullRequestId;
 	private String repoId;
 	private String sha;
-	private String cla;
 	private boolean success;
 	private String url;
 	private String githubUsername;

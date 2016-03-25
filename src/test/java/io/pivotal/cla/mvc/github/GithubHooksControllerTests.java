@@ -73,7 +73,6 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		verify(mockGithub).save(statusCaptor.capture());
 
 		CommitStatus status = statusCaptor.getValue();
-		assertThat(status.getCla()).isEqualTo(cla.getName());
 		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
 		assertThat(status.getPullRequestId()).isEqualTo(2);
 		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
@@ -124,7 +123,6 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		verify(mockGithub).save(statusCaptor.capture());
 
 		CommitStatus status = statusCaptor.getValue();
-		assertThat(status.getCla()).isEqualTo(cla.getName());
 		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
 		assertThat(status.getPullRequestId()).isEqualTo(2);
 		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
@@ -150,7 +148,6 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		verify(mockGithub).save(statusCaptor.capture());
 
 		CommitStatus status = statusCaptor.getValue();
-		assertThat(status.getCla()).isEqualTo(cla.getName());
 		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
 		assertThat(status.getPullRequestId()).isEqualTo(2);
 		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
