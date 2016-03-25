@@ -43,6 +43,12 @@ public class ContributorLicenseAgreement {
 	@NotEmpty(message = "This is required")
 	private String name;
 
+	/**
+	 * Allows differentiating agreements from one another. This is currently
+	 * only able to be filled out via sql import.
+	 */
+	private String description;
+
 	// TODO java 8?
 	@Version
 	private Date created = new Date();
