@@ -60,7 +60,7 @@ public class CclaController {
 			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
 			Map<String, Object> model) throws Exception {
 		CorporateSignature signed = null;//corporate.findByClaNameAndEmailIn(claName, user.getEmails());
-		ContributorLicenseAgreement cla = clas.findByName(claName);//signed == null ? clas.findByName(claName) : signed.getCla();
+		ContributorLicenseAgreement cla = clas.findByNameAndPrimaryTrue(claName);//signed == null ? clas.findByName(claName) : signed.getCla();
 		SignCorporateClaForm form = new SignCorporateClaForm();
 		form.setSigned(signed != null);
 		form.setName(user.getName());

@@ -29,7 +29,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void view() {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
@@ -38,7 +38,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signNameRequired() {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
@@ -63,7 +63,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signEmailRequired() {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
@@ -88,7 +88,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signMailingAddressRequired() {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
@@ -113,7 +113,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signCountryRequired() {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
@@ -138,7 +138,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signTelephoneRequired() {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
@@ -163,7 +163,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void fieldsRepopulatedOnError() {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
@@ -195,7 +195,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signNoRepositoryIdAndNoPullRequestId() {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
@@ -214,7 +214,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signNoRepositoryIdWithPullRequestId() {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName(), "rwinch/176_test", 2);

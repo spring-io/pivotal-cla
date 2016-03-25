@@ -1,4 +1,4 @@
-insert into contributor_license_agreement (id,name,created,individual_markdown,individual_html,corporate_markdown,corporate_html) values (1, 'pivotal',null,'### Pivotal Software, Inc.
+insert into contributor_license_agreement (id,name,primary_cla,created,individual_markdown,individual_html,corporate_markdown,corporate_html) values (1, 'pivotal',true,null,'### Pivotal Software, Inc.
 
 ### Individual Contributor License Agreement
 

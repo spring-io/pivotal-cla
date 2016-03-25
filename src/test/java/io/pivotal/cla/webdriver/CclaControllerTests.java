@@ -32,7 +32,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void view() {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
@@ -41,7 +41,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signNameRequired() throws Exception {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
@@ -69,7 +69,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signEmailRequired() throws Exception {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
@@ -98,7 +98,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signMailingAddressRequired() throws Exception {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
@@ -127,7 +127,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signCountryRequired() throws Exception {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
@@ -156,7 +156,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signTelephoneRequired() throws Exception {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
@@ -185,7 +185,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signCompanyNameRequired() throws Exception {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
@@ -213,7 +213,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signOrganizationRequired() throws Exception {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
@@ -241,7 +241,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void fieldsRepopulatedOnError() throws Exception {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
@@ -280,7 +280,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signNoRepositoryIdAndNoPullRequestId() throws Exception {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
@@ -297,7 +297,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signNoRepositoryIdWithPullRequestId() {
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName(), "rwinch/176_test", 2);

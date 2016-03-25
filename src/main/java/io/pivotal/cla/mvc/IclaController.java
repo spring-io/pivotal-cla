@@ -60,7 +60,7 @@ public class IclaController {
 			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
 			Map<String, Object> model) {
 		IndividualSignature signed = individual.findByClaNameAndEmailIn(claName, user.getEmails());
-		ContributorLicenseAgreement cla = signed == null ? clas.findByName(claName) : signed.getCla();
+		ContributorLicenseAgreement cla = signed == null ? clas.findByNameAndPrimaryTrue(claName) : signed.getCla();
 		SignClaForm form = new SignClaForm();
 		form.setSigned(signed != null);
 		form.setName(user.getName());

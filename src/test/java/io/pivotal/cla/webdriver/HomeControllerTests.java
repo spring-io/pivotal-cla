@@ -64,7 +64,7 @@ public class HomeControllerTests extends BaseWebDriverTests {
 	@WithSigningUser
 	public void signIcla() {
 		cla.setName("pivotal");
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 
 		HomePage home = HomePage.go(driver);
 		SignIclaPage sign = home.signIcla(SignIclaPage.class);
@@ -75,7 +75,7 @@ public class HomeControllerTests extends BaseWebDriverTests {
 	@WithSigningUser
 	public void signCcla() {
 		cla.setName("pivotal");
-		when(mockClaRepository.findByName(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 
 		HomePage home = HomePage.go(driver);
 		SignCclaPage sign = home.signCcla(SignCclaPage.class);

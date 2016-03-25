@@ -49,6 +49,14 @@ public class ContributorLicenseAgreement {
 	 */
 	private String description;
 
+	/**
+	 * Allows defining if the is the primary agreement. There may be additional
+	 * agreements that have the same name, but are older versions of the
+	 * agreement, variations of the agreement for different companies, etc.
+	 */
+	@Column(name = "primary_cla")
+	private boolean primary;
+
 	// TODO java 8?
 	@Version
 	private Date created = new Date();
