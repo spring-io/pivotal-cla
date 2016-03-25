@@ -34,6 +34,18 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
+		signPage.assertClaLink(cla.getName(), null);
+		assertThat(signPage.getIndividualCla()).isEqualTo(cla.getIndividualContent().getHtml());
+		assertThat(signPage.isSigned()).isFalse();
+	}
+
+	@Test
+	public void viewLegacy() {
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName(), "spring");
+
+		signPage.assertClaLink(cla.getName(), "spring");
 		assertThat(signPage.getIndividualCla()).isEqualTo(cla.getIndividualContent().getHtml());
 		assertThat(signPage.isSigned()).isFalse();
 	}
@@ -41,7 +53,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 	@Test
 	public void alreadySigned() {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
-		when(mockIndividualSignatureRepository.findByClaNameAndEmailIn(cla.getName(), WithSigningUserFactory.create().getEmails())).thenReturn(individualSignature);
+		when(mockIndividualSignatureRepository.getSignature(WithSigningUserFactory.create(), cla.getName(), null)).thenReturn(individualSignature);
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
@@ -50,10 +62,11 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signedLegacy() {
+		String claName = cla.getName()+"-notsigned";
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
-		when(mockIndividualSignatureRepository.findByClaNameAndEmailIn(cla.getName(), WithSigningUserFactory.create().getEmails())).thenReturn(individualSignature);
+		when(mockIndividualSignatureRepository.getSignature(WithSigningUserFactory.create(), claName, cla.getName())).thenReturn(individualSignature);
 
-		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName()+"-notsigned", cla.getName());
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), claName, cla.getName());
 
 		assertThat(signPage.isSigned()).isTrue();
 	}
@@ -228,7 +241,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 			.mailingAddress("123 Seasame St")
 			.country("USA")
 			.telephone("123.456.7890")
- 			.sign(SignIclaPage.class);
+			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
 	}
@@ -247,7 +260,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 			.mailingAddress("123 Seasame St")
 			.country("USA")
 			.telephone("123.456.7890")
- 			.sign(SignIclaPage.class);
+			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
 	}

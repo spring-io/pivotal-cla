@@ -31,10 +31,21 @@ public class SignIclaPage extends BasePage {
 	@FindBy(id = "success")
 	WebElement success;
 
+	@FindBy(id = "breadcrumb-cla-link")
+	WebElement claLink;
+
 	Form form;
 
 	public SignIclaPage(WebDriver driver) {
 		super(driver);
+	}
+
+	public void assertClaLink(String claName, String legacy) {
+		if(legacy == null) {
+			assertThat(claLink.getAttribute("href")).endsWith("/sign/"+claName);
+		} else {
+			assertThat(claLink.getAttribute("href")).endsWith("/sign/"+claName+"?legacy="+legacy);
+		}
 	}
 
 	public boolean isSigned() {

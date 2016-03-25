@@ -4,6 +4,9 @@
 </head>
 <body>
 	<div layout:fragment="content">
+		<div th:if="${signed}" class="alert alert-success" id="signed">
+			Thank you for signing the Agreement!
+		</div>
 		<div class="jumbotron">
 			<h1>Contributing to Pivotal Open Source Projects</h1>
 			<p>
@@ -22,7 +25,7 @@
 						Sign the Individual Contributor License Agreement (ICLA) if you are agreeing to the terms for only yourself.
 					</p>
 					<p>
-						<a id="icla-link" class="btn btn-success btn-lg" th:href="@{/sign/pivotal/icla}">Sign Individual CLA</a>
+						<a id="icla-link" class="btn btn-success btn-lg" th:href="${legacy} == null ? @{/sign/{claName}/icla(claName=${claName})} : @{/sign/{claName}/icla(claName=${claName},legacy=${legacy})}">Sign Individual CLA</a>
 					</p>
 				</div>
 				<div class="col-md-6">
@@ -31,7 +34,7 @@
 						Sign the Corporate Contributor License Agreement (CCLA) if you are agreeing to the terms on behalf of an entire organization or company.
 					</p>
 					<p>
-						<a id="ccla-link" class="btn btn-success btn-lg" th:href="@{/sign/pivotal/ccla}">Sign Corporate CLA</a>
+						<a id="ccla-link" class="btn btn-success btn-lg" th:href="${legacy} == null ? @{/sign/{claName}/ccla(claName=${claName})} : @{/sign/{claName}/ccla(claName=${claName},legacy=${legacy})}">Sign Corporate CLA</a>
 					</p>
 				</div>
 			</div>

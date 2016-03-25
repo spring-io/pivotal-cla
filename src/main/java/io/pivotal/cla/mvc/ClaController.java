@@ -15,14 +15,31 @@
  */
 package io.pivotal.cla.mvc;
 
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import io.pivotal.cla.data.IndividualSignature;
+import io.pivotal.cla.data.User;
+import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 
 @Controller
 public class ClaController {
 
+	@Autowired
+	IndividualSignatureRepository individual;
+
 	@RequestMapping("/sign/{claName}")
-	public String signIndex(String claName) {
+	public String signIndex(@AuthenticationPrincipal User user, @PathVariable String claName, @RequestParam(required=false) String legacy, Map<String,Object> model) {
+		IndividualSignature individualSignature = individual.getSignature(user, claName, legacy);
+		model.put("signed", individualSignature != null);
+		model.put("claName", claName);
+		model.put("legacy", legacy);
 		return "index";
 	}
 }

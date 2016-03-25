@@ -147,10 +147,10 @@ public abstract class BasePage {
 		return PageFactory.initElements(driver, AdminLinkClaPage.class);
 	}
 
-	public HomePage signOut() {
+	public SignClaPage signOut() {
 		userMenu();
 		signout.click();
-		return PageFactory.initElements(driver, HomePage.class);
+		return PageFactory.initElements(driver, SignClaPage.class);
 	}
 
 	public ProfilePage profile() {

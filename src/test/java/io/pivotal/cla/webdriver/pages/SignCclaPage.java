@@ -27,6 +27,8 @@ public class SignCclaPage extends BasePage {
 	@FindBy(id = "corporate-cla")
 	WebElement corporateCla;
 
+	@FindBy(id = "breadcrumb-cla-link")
+	WebElement claLink;
 
 	public SignCclaPage(WebDriver driver) {
 		super(driver);
@@ -34,6 +36,14 @@ public class SignCclaPage extends BasePage {
 
 	public String getCorporate() {
 		return corporateCla.getText();
+	}
+
+	public void assertClaLink(String claName, String legacy) {
+		if(legacy == null) {
+			assertThat(claLink.getAttribute("href")).endsWith("/sign/"+claName);
+		} else {
+			assertThat(claLink.getAttribute("href")).endsWith("/sign/"+claName+"?legacy="+legacy);
+		}
 	}
 
 	public Form form() {

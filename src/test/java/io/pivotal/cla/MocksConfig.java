@@ -51,7 +51,8 @@ public class MocksConfig {
 	@Bean
 	@Primary
 	public IndividualSignatureRepository mockIndividualSignature() {
-		return mock(IndividualSignatureRepository.class);
+		IndividualSignatureRepository individual = mock(IndividualSignatureRepository.class);
+		return individual;
 	}
 
 	@Bean

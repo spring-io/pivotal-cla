@@ -15,46 +15,20 @@
  */
 package io.pivotal.cla.webdriver.pages;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class HomePage extends BasePage {
-	@FindBy(id="learn-more")
-	WebElement learnMoreLink;
-	@FindBy(id="icla-link")
-	WebElement iclaLink;
-	@FindBy(id="ccla-link")
-	WebElement cclaLink;
+/**
+ * @author Rob Winch
+ *
+ */
+public class HomePage extends SignClaPage {
 
+	/**
+	 * @param driver
+	 */
 	public HomePage(WebDriver driver) {
 		super(driver);
-	}
-
-	public AboutPage learnMore() {
-		learnMoreLink.click();
-		return PageFactory.initElements(getDriver(), AboutPage.class);
-	}
-
-	public <T extends BasePage> T signIcla(Class<T> page) {
-		iclaLink.click();
-		return (T) PageFactory.initElements(getDriver(), page);
-	}
-
-	public <T extends BasePage> T signCcla(Class<T> page) {
-		cclaLink.click();
-		return (T) PageFactory.initElements(getDriver(), page);
-	}
-
-	public void assertAt() {
-		assertThat(getDriver().getTitle()).endsWith("- Home");
-	}
-
-	public void assertLogoutSuccess() {
-		assertThat(getMessage()).isEqualTo("You have been signed out.");
 	}
 
 	public static HomePage go(WebDriver driver) {

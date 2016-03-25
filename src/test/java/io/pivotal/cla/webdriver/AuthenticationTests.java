@@ -47,7 +47,7 @@ import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.service.CurrentUserRequest;
 import io.pivotal.cla.service.OAuthAccessTokenParams;
 import io.pivotal.cla.webdriver.pages.DashboardPage;
-import io.pivotal.cla.webdriver.pages.HomePage;
+import io.pivotal.cla.webdriver.pages.SignClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
 
@@ -206,7 +206,7 @@ public class AuthenticationTests extends BaseWebDriverTests {
 
 		TestSecurityContextHolder.clearContext();
 
-		HomePage signOut = dashboardPage.signOut();
+		SignClaPage signOut = dashboardPage.signOut();
 		signOut.assertAt();
 
 		signOut.assertLogoutSuccess();

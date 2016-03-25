@@ -17,6 +17,7 @@ package io.pivotal.cla.webdriver;
 
 import static org.mockito.Mockito.reset;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -68,7 +69,7 @@ public abstract class BaseWebDriverTests {
 		mockMvc = MockMvcBuilders
 				.webAppContextSetup(wac)
 				.apply(springSecurity())
-				// .alwaysDo(print())
+//				.alwaysDo(print())
 				.build();
 
 		driver = MockMvcHtmlUnitDriverBuilder

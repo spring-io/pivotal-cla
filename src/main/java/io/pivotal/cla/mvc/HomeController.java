@@ -37,12 +37,14 @@ public class HomeController {
 	ContributorLicenseAgreementRepository clas;
 
 	@RequestMapping("/")
-	public String home() throws Exception {
+	public String home(Map<String,Object> model) throws Exception {
+		model.put("claName", "pivotal");
 		return "index";
 	}
 
 	@RequestMapping(value="/",params="logout")
 	public String logoutSuccess(Map<String,Object> model) throws Exception {
+		model.put("claName", "pivotal");
 		model.put("message", "You have been signed out.");
 		return "index";
 	}

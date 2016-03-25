@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.webdriver.pages.SignCclaPage;
+import io.pivotal.cla.webdriver.pages.SignIclaPage;
 import io.pivotal.cla.webdriver.pages.SignCclaPage.Form;
 
 @WithSigningUser
@@ -36,8 +37,21 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
+		signPage.assertClaLink(cla.getName(), null);
 		assertThat(signPage.getCorporate()).isEqualTo(cla.getCorporateContent().getHtml());
 	}
+
+	@Test
+	public void viewLegacy() {
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName(), "spring");
+
+		signPage.assertClaLink(cla.getName(), "spring");
+		assertThat(signPage.getIndividualCla()).isEqualTo(cla.getIndividualContent().getHtml());
+		assertThat(signPage.isSigned()).isFalse();
+	}
+
 
 	@Test
 	public void signNameRequired() throws Exception {
@@ -289,7 +303,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		signPage = signPage.form()
 			.name("Rob Winch")
 			.email("rob@gmail.com")
- 			.sign(SignCclaPage.class);
+			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
 	}
@@ -305,7 +319,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		signPage = signPage.form()
 			.name("Rob Winch")
 			.email("rob@gmail.com")
- 			.sign(SignCclaPage.class);
+			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
 	}

@@ -6,7 +6,7 @@
 	<body>
 		<div class="container" layout:fragment="content">
 			<ol class="breadcrumb">
-				<li><a th:href="@{/sign/{claName}(claName=${cla.name})}">CLA</a></li>
+				<li><a id="breadcrumb-cla-link" th:href="${legacy == null} ? @{/sign/{claName}(claName=${cla.name})} :  @{/sign/{claName}(claName=${cla.name},legacy=${legacy})}">CLA</a></li>
 				<li class="active">Corporate Contributor License Agreement</li>
 			</ol>
 			<div th:if="${signCorporateClaForm.signed}" class="alert alert-success" id="success">
