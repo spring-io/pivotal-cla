@@ -85,7 +85,7 @@ public class GithubHooksController {
 		boolean success = signedIndividual != null;
 		if(!success) {
 			List<String> organizations = github.getOrganizations(login);
-			CorporateSignature corporateSignature = corporate.findByClaNameAndOrganizationIn(cla, organizations);
+			CorporateSignature corporateSignature = corporate.findByClaNameAndGitHubOrganizationIn(cla, organizations);
 			success = corporateSignature != null;
 		}
 

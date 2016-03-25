@@ -67,7 +67,7 @@ public class CclaController {
 		form.setClaId(cla.getId());
 		form.setRepositoryId(repositoryId);
 		form.setPullRequestId(pullRequestId);
-		form.setOrganizations(github.getOrganizations(user.getGithubLogin()));
+		form.setGitHubOrganizations(github.getOrganizations(user.getGithubLogin()));
 
 		model.put("signCorporateClaForm", form);
 		model.put("cla", cla);
@@ -80,7 +80,7 @@ public class CclaController {
 		if(result.hasErrors()) {
 			ContributorLicenseAgreement cla = clas.findOne(signCorporateClaForm.getClaId());
 			model.put("cla", cla);
-			signCorporateClaForm.setOrganizations(github.getOrganizations(user.getGithubLogin()));
+			signCorporateClaForm.setGitHubOrganizations(github.getOrganizations(user.getGithubLogin()));
 			return "cla/ccla/sign";
 		}
 		ContributorLicenseAgreement cla = clas.findOne(signCorporateClaForm.getClaId());
@@ -89,7 +89,7 @@ public class CclaController {
 		signature.setEmail(signCorporateClaForm.getEmail());
 		signature.setDateOfSignature(new Date());
 		signature.setGithubLogin(user.getGithubLogin());
-		signature.setOrganization(signCorporateClaForm.getOrganization());
+		signature.setGitHubOrganization(signCorporateClaForm.getGitHubOrganization());
 		signature.setTitle(signCorporateClaForm.getTitle());
 		corporate.save(signature);
 

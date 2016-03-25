@@ -55,7 +55,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 			.country("USA")
 			.telephone("123.456.7890")
 			.companyName("Pivotal")
-			.organization("pivotal")
+			.gitHubOrganization("pivotal")
 			.title("Director")
 			.sign(SignCclaPage.class);
 
@@ -64,7 +64,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		form.assertName().hasRequiredError();
 		form.assertEmail().hasNoErrors();
 		form.assertCompanyName().hasNoErrors();
-		form.assertOrganization().hasNoErrors();
+		form.assertGitHubOrganization().hasNoErrors();
 	}
 
 	@Test
@@ -83,7 +83,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 			.country("USA")
 			.telephone("123.456.7890")
 			.companyName("Pivotal")
-			.organization("pivotal")
+			.gitHubOrganization("pivotal")
 			.title("Director")
 			.sign(SignCclaPage.class);
 
@@ -92,7 +92,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		form.assertName().hasNoErrors();
 		form.assertEmail().hasRequiredError();
 		form.assertCompanyName().hasNoErrors();
-		form.assertOrganization().hasNoErrors();
+		form.assertGitHubOrganization().hasNoErrors();
 	}
 
 
@@ -112,7 +112,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 			.country("USA")
 			.telephone("123.456.7890")
 			.companyName("Pivotal")
-			.organization("pivotal")
+			.gitHubOrganization("pivotal")
 			.title("Director")
 			.sign(SignCclaPage.class);
 
@@ -141,7 +141,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 			.mailingAddress("123 Seasame St")
 			.telephone("123.456.7890")
 			.companyName("Pivotal")
-			.organization("pivotal")
+			.gitHubOrganization("pivotal")
 			.title("Director")
 			.sign(SignCclaPage.class);
 
@@ -170,7 +170,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 			.mailingAddress("123 Seasame St")
 			.country("USA")
 			.companyName("Pivotal")
-			.organization("pivotal")
+			.gitHubOrganization("pivotal")
 			.title("Director")
 			.sign(SignCclaPage.class);
 
@@ -199,7 +199,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 			.mailingAddress("123 Seasame St")
 			.country("USA")
 			.telephone("123.456.7890")
-			.organization("pivotal")
+			.gitHubOrganization("pivotal")
 			.title("Director")
 			.sign(SignCclaPage.class);
 
@@ -208,7 +208,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		form.assertName().hasNoErrors();
 		form.assertEmail().hasNoErrors();
 		form.assertCompanyName().hasRequiredError();
-		form.assertOrganization().hasNoErrors();
+		form.assertGitHubOrganization().hasNoErrors();
 	}
 
 	@Test
@@ -236,7 +236,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		form.assertName().hasNoErrors();
 		form.assertEmail().hasNoErrors();
 		form.assertCompanyName().hasNoErrors();
-		form.assertOrganization().hasRequiredError();
+		form.assertGitHubOrganization().hasRequiredError();
 	}
 
 	@Test
@@ -253,7 +253,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 			.country("USA")
 			.telephone("123.456.7890")
 			.companyName("Pivotal")
-			.organization("pivotal")
+			.gitHubOrganization("pivotal")
 			.title("Director")
 			.sign(SignCclaPage.class);
 
@@ -265,7 +265,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		form.assertCountry().hasValue("USA");
 		form.assertTelephone().hasValue("123.456.7890");
 		form.assertCompanyName().hasValue("Pivotal");
-		form.assertOrganization().hasValue("pivotal");
+		form.assertGitHubOrganization().hasValue("pivotal");
 		form.assertTitle().hasValue("Director");
 
 		signPage = SignCclaPage.go(getDriver(), cla.getName());

@@ -71,7 +71,7 @@ public class SignCclaPage extends BasePage {
 
 		WebElement companyName;
 
-		WebElement organization;
+		WebElement gitHubOrganization;
 
 		WebElement title;
 
@@ -134,12 +134,12 @@ public class SignCclaPage extends BasePage {
 			return this;
 		}
 
-		public SelectAssert assertOrganization() {
-			return assertSelect(organization);
+		public SelectAssert assertGitHubOrganization() {
+			return assertSelect(gitHubOrganization);
 		}
 
-		public Form organization(String organization) {
-			new Select(this.organization).selectByValue(organization);
+		public Form gitHubOrganization(String organization) {
+			new Select(this.gitHubOrganization).selectByValue(organization);
 			return this;
 		}
 

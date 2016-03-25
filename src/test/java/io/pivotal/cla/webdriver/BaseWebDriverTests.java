@@ -104,7 +104,7 @@ public abstract class BaseWebDriverTests {
 		corporateSignature.setName("Rob Winch");
 		corporateSignature.setMailingAddress("123 Seasame Street");
 		corporateSignature.setTelephone("123.456.7890");
-		corporateSignature.setOrganization("organization");
+		corporateSignature.setGitHubOrganization("organization");
 	}
 
 

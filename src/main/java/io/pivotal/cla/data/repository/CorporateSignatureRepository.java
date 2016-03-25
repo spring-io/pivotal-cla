@@ -23,5 +23,5 @@ import io.pivotal.cla.data.CorporateSignature;
 
 public interface CorporateSignatureRepository extends CrudRepository<CorporateSignature, Long> {
 
-	CorporateSignature findByClaNameAndOrganizationIn(String name, Collection<String> organizations);
+	CorporateSignature findByClaNameAndGitHubOrganizationIn(String name, Collection<String> organizations);
 }

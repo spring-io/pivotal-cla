@@ -80,16 +80,16 @@
 						<p th:each="err : ${#fields.errors('companyName')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('organization')}? 'has-error form-group' : form-group">
-					<label for="organization">
-						Organization
+				<div class="form-group" th:class="${#fields.hasErrors('gitHubOrganization')}? 'has-error form-group' : form-group">
+					<label for="gitHubOrganization">
+						GitHub Organization
 					</label>
-					<select class="form-control" th:field="*{organization}">
+					<select class="form-control" th:field="*{gitHubOrganization}">
 						<option value=""></option>
-						<option th:each="e : ${signCorporateClaForm.organizations}" th:value="${e}" th:text="${e}"></option>
+						<option th:each="e : ${signCorporateClaForm.gitHubOrganizations}" th:value="${e}" th:text="${e}"></option>
 					</select>
-					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('organization')}" id="err-organization">
-						<p th:each="err : ${#fields.errors('organization')}" th:text="${err}">Input is incorrect</p>
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('gitHubOrganization')}" id="err-gitHubOrganization">
+						<p th:each="err : ${#fields.errors('gitHubOrganization')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
 				<div class="form-group" th:class="${#fields.hasErrors('title')}? 'has-error form-group' : form-group">
