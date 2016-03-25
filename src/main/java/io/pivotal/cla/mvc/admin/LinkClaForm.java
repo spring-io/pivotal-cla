@@ -29,4 +29,6 @@ public class LinkClaForm {
 	@NotEmpty(message = "This is required")
 	private String claName;
 
+	private String legacy;
+
 }

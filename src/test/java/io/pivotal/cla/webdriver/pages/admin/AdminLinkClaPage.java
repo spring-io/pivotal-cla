@@ -17,8 +17,10 @@ package io.pivotal.cla.webdriver.pages.admin;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -36,8 +38,32 @@ public class AdminLinkClaPage extends BasePage {
 
 	WebElement claName;
 
+	WebElement legacy;
+
+	@FindBy(id = "contributing-adoc")
+	WebElement contributingAdoc;
+
+	@FindBy(id = "contributing-md")
+	WebElement contributingMd;
+
 	public AdminLinkClaPage(WebDriver driver) {
 		super(driver);
+	}
+
+	public String contributingMd() {
+		try {
+			return contributingMd.getText();
+		}catch(NoSuchElementException missing) {
+			return null;
+		}
+	}
+
+	public String contributingAdoc() {
+		try {
+			return contributingAdoc.getText();
+		}catch(NoSuchElementException missing) {
+			return null;
+		}
 	}
 
 	public SelectAssert assertClaName() {
@@ -58,6 +84,13 @@ public class AdminLinkClaPage extends BasePage {
 		cla.selectByVisibleText(licenseName);
 		submit.click();
 		return PageFactory.initElements(getDriver(), page);
+	}
+
+
+	public AdminLinkClaPage legacy(String name) {
+		Select legacy = new Select(this.legacy);
+		legacy.selectByVisibleText(name);
+		return this;
 	}
 
 	public void waitForRepositories() {

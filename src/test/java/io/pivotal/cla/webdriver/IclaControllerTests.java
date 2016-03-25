@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 import org.junit.Test;
 
 import io.pivotal.cla.security.WithSigningUser;
+import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.webdriver.pages.SignIclaPage;
 import io.pivotal.cla.webdriver.pages.SignIclaPage.Form;
 
@@ -34,6 +35,27 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
 		assertThat(signPage.getIndividualCla()).isEqualTo(cla.getIndividualContent().getHtml());
+		assertThat(signPage.isSigned()).isFalse();
+	}
+
+	@Test
+	public void alreadySigned() {
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+		when(mockIndividualSignatureRepository.findByClaNameAndEmailIn(cla.getName(), WithSigningUserFactory.create().getEmails())).thenReturn(individualSignature);
+
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
+
+		assertThat(signPage.isSigned()).isTrue();
+	}
+
+	@Test
+	public void signedLegacy() {
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+		when(mockIndividualSignatureRepository.findByClaNameAndEmailIn(cla.getName(), WithSigningUserFactory.create().getEmails())).thenReturn(individualSignature);
+
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName()+"-notsigned", cla.getName());
+
+		assertThat(signPage.isSigned()).isTrue();
 	}
 
 	@Test

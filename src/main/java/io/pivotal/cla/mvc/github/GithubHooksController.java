@@ -15,6 +15,7 @@
  */
 package io.pivotal.cla.mvc.github;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
@@ -66,8 +68,17 @@ public class GithubHooksController {
 		return "SUCCESS";
 	}
 
+	/**
+	 *
+	 * @param request
+	 * @param body
+	 * @param cla
+	 * @param legacy If this CLA is signed, then they do not need to sign again.
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping("/github/hooks/pull_request/{cla}")
-	public String pullRequest(HttpServletRequest request, @RequestBody String body, @PathVariable String cla) throws Exception {
+	public String pullRequest(HttpServletRequest request, @RequestBody String body, @PathVariable String cla, @RequestParam(required=false) String legacy) throws Exception {
 		Gson gson = GsonUtils.createGson();
 		RepositoryPullRequestPayload pullRequestPayload = gson.fromJson(body, RepositoryPullRequestPayload.class);
 
@@ -79,15 +90,7 @@ public class GithubHooksController {
 
 		User user = userRepo.findOne(login);
 
-		IndividualSignature signedIndividual = user == null ? null
-				: individualRepo.findByClaNameAndEmailIn(cla, user.getEmails());
-
-		boolean success = signedIndividual != null;
-		if(!success) {
-			List<String> organizations = github.getOrganizations(login);
-			CorporateSignature corporateSignature = corporate.findByClaNameAndGitHubOrganizationIn(cla, organizations);
-			success = corporateSignature != null;
-		}
+		boolean success = hasSigned(user, login, cla) || hasSigned(user, login, legacy);
 
 		CommitStatus status = new CommitStatus();
 		status.setGithubUsername(login);
@@ -95,16 +98,34 @@ public class GithubHooksController {
 		status.setRepoId(repoId.generateId());
 		status.setSha(pullRequest.getHead().getSha());
 		status.setSuccess(success);
-		String url = UrlBuilder
+		UrlBuilder url = UrlBuilder
 			.fromRequest(request)
 			.path("/sign/"+cla)
 			.param("repositoryId", status.getRepoId())
-			.param("pullRequestId", String.valueOf(status.getPullRequestId()))
-			.build();
-		status.setUrl(url);
+			.param("pullRequestId", String.valueOf(status.getPullRequestId()));
+		if(legacy != null) {
+			url.param("legacy", legacy);
+		}
+		status.setUrl(url.build());
 
 		github.save(status);
 
 		return "FAIL";
+	}
+
+	private boolean hasSigned(User user, String login, String claName) throws IOException {
+		if(claName == null) {
+			return false;
+		}
+		IndividualSignature signedIndividual = user == null ? null
+				: individualRepo.findByClaNameAndEmailIn(claName, user.getEmails());
+
+		if(signedIndividual != null) {
+			return true;
+		}
+
+		List<String> organizations = github.getOrganizations(login);
+		CorporateSignature corporateSignature = corporate.findByClaNameAndGitHubOrganizationIn(claName, organizations);
+		return corporateSignature != null;
 	}
 }

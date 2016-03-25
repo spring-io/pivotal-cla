@@ -57,9 +57,11 @@ public class IclaController {
 
 	@RequestMapping("/sign/{claName}/icla")
 	public String claForm(@AuthenticationPrincipal User user, @PathVariable String claName,
+			@RequestParam(required=false) String legacy,
 			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
 			Map<String, Object> model) {
-		IndividualSignature signed = individual.findByClaNameAndEmailIn(claName, user.getEmails());
+
+		IndividualSignature signed = getSignature(user, claName, legacy);
 		ContributorLicenseAgreement cla = signed == null ? clas.findByNameAndPrimaryTrue(claName) : signed.getCla();
 		SignClaForm form = new SignClaForm();
 		form.setSigned(signed != null);
@@ -72,6 +74,14 @@ public class IclaController {
 		model.put("cla", cla);
 
 		return "cla/icla/sign";
+	}
+
+	private IndividualSignature getSignature(User user, String claName, String legacy) {
+		IndividualSignature signed = individual.findByClaNameAndEmailIn(claName, user.getEmails());
+		if(signed != null) {
+			return signed;
+		}
+		return individual.findByClaNameAndEmailIn(legacy, user.getEmails());
 	}
 
 	@RequestMapping(value = "/sign/{claName}/icla", method = RequestMethod.POST)

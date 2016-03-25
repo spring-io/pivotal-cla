@@ -21,7 +21,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +31,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import io.pivotal.cla.data.AccessToken;
+import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithAdminUser;
 import io.pivotal.cla.service.ContributingUrlsResponse;
@@ -40,9 +43,14 @@ import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 @WithAdminUser
 public class AdminLinkClaTests extends BaseWebDriverTests {
 
+	ContributorLicenseAgreement legacy;
+
 	@Before
 	public void claFormData() throws Exception {
-		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
+		legacy = new ContributorLicenseAgreement();
+		legacy.setName("spring");
+
+		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla,legacy));
 		when(mockGithub.findRepositoryNames(anyString())).thenReturn(Arrays.asList("test/this"));
 	}
 
@@ -110,6 +118,36 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 		assertThat(request.getAccessToken()).isEqualTo(user.getAccessToken());
 		assertThat(request.getRepositoryIds()).containsOnly("test/this");
 		assertThat(request.getGithubEventUrl()).isEqualTo("http://localhost/github/hooks/pull_request/apache?access_token="+token.getToken());
+		assertThat(driver.getPageSource()).doesNotContain(token.getToken());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void linkClaValidationRepositoriesWithLegacy() throws Exception {
+		AccessToken token = new AccessToken(AccessToken.CLA_ACCESS_TOKEN_ID, "linkClaValidationRepositoriesWithLegacy_access_token_abc123");
+		when(mockTokenRepo.findOne(AccessToken.CLA_ACCESS_TOKEN_ID)).thenReturn(token);
+		ContributingUrlsResponse urlsResponse = new ContributingUrlsResponse();
+		urlsResponse.getAsciidoc().add("https://api.github.com/rwinch/cla-test/new/master?filename=CONTRIBUTING.adoc");
+		urlsResponse.getMarkdown().add("https://api.github.com/rwinch/cla-test/new/master?filename=CONTRIBUTING.md");
+		when(mockGithub.getContributingUrls(anyList())).thenReturn(urlsResponse);
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		AdminLinkClaPage link = AdminLinkClaPage.to(getDriver());
+
+		link.legacy("spring");
+		link = link.link("test/this", "apache", AdminLinkClaPage.class);
+
+		link.assertRepositories().hasNoErrors();
+		link.assertClaName().hasNoErrors();
+		assertThat(link.contributingAdoc()).contains(" http://localhost/sign/apache?legacy=spring[");
+		assertThat(link.contributingMd()).contains("](http://localhost/sign/apache?legacy=spring)");
+
+		ArgumentCaptor<CreatePullRequestHookRequest> requestCaptor = ArgumentCaptor.forClass(CreatePullRequestHookRequest.class);
+		verify(mockGithub).createPullRequestHooks(requestCaptor.capture());
+		CreatePullRequestHookRequest request = requestCaptor.getValue();
+		assertThat(request.getAccessToken()).isEqualTo(user.getAccessToken());
+		assertThat(request.getRepositoryIds()).containsOnly("test/this");
+		assertThat(request.getGithubEventUrl()).isEqualTo("http://localhost/github/hooks/pull_request/apache?legacy="+legacy.getName()+"&access_token="+token.getToken());
 		assertThat(driver.getPageSource()).doesNotContain(token.getToken());
 	}
 }

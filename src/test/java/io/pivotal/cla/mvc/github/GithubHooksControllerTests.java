@@ -18,6 +18,7 @@ package io.pivotal.cla.mvc.github;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anySet;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -152,6 +153,52 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		assertThat(status.getPullRequestId()).isEqualTo(2);
 		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
 		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/apache?repositoryId=rwinch/176_test&pullRequestId=2");
+		assertThat(status.isSuccess()).isTrue();
+		assertThat(status.getGithubUsername()).isEqualTo(user.getGithubLogin());
+	}
+
+	@Test
+	public void legacyClaNotSigned() throws Exception {
+		User user = WithSigningUserFactory.create();
+		when(mockUserRepo.findOne(anyString())).thenReturn(user);
+		when(mockTokenRepo.findOne("rwinch/176_test"))
+			.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
+
+		mockMvc.perform(hookRequest().param("legacy", "spring").content(PAYLOAD))
+			.andExpect(status().isOk());
+
+		ArgumentCaptor<CommitStatus> statusCaptor = ArgumentCaptor.forClass(CommitStatus.class);
+		verify(mockGithub).save(statusCaptor.capture());
+
+		CommitStatus status = statusCaptor.getValue();
+		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
+		assertThat(status.getPullRequestId()).isEqualTo(2);
+		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
+		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/apache?repositoryId=rwinch/176_test&pullRequestId=2&legacy=spring");
+		assertThat(status.isSuccess()).isFalse();
+		assertThat(status.getGithubUsername()).isEqualTo(user.getGithubLogin());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void legacyClaSigned() throws Exception {
+		User user = WithSigningUserFactory.create();
+		when(mockUserRepo.findOne(anyString())).thenReturn(user);
+		when(mockTokenRepo.findOne("rwinch/176_test"))
+			.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
+		when(mockIndividualSignatureRepository.findByClaNameAndEmailIn(eq("spring"), anySet())).thenReturn(individualSignature);
+
+		mockMvc.perform(hookRequest().param("legacy", "spring").content(PAYLOAD))
+			.andExpect(status().isOk());
+
+		ArgumentCaptor<CommitStatus> statusCaptor = ArgumentCaptor.forClass(CommitStatus.class);
+		verify(mockGithub).save(statusCaptor.capture());
+
+		CommitStatus status = statusCaptor.getValue();
+		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
+		assertThat(status.getPullRequestId()).isEqualTo(2);
+		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
+		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/apache?repositoryId=rwinch/176_test&pullRequestId=2&legacy=spring");
 		assertThat(status.isSuccess()).isTrue();
 		assertThat(status.getGithubUsername()).isEqualTo(user.getGithubLogin());
 	}
