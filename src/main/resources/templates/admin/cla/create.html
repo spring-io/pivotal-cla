@@ -5,7 +5,7 @@
 	</head>
 	<body>
 		<div layout:fragment="content">
-			<form th:action="@{/admin/cla/create}" th:object="${contributorLicenseAgreeement}" method="post">
+			<form th:action="@{/admin/cla/create}" th:object="${contributorLicenseAgreement}" method="post">
 				<div class="form-group" th:class="${#fields.hasErrors('name')}? 'has-error form-group' : form-group">
 					<label class="control-label" for="name">Agreement Name</label>
 					<input type="text" class="form-control" th:field="*{name}" placeholder="(i.e. apache)">

@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import io.pivotal.cla.data.AccessToken;
-import io.pivotal.cla.data.ContributorLicenseAgreeement;
+import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
@@ -60,7 +60,7 @@ public class IclaController {
 			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
 			Map<String, Object> model) {
 		IndividualSignature signed = individual.findByClaNameAndEmailIn(claName, user.getEmails());
-		ContributorLicenseAgreeement cla = signed == null ? clas.findByName(claName) : signed.getCla();
+		ContributorLicenseAgreement cla = signed == null ? clas.findByName(claName) : signed.getCla();
 		SignClaForm form = new SignClaForm();
 		form.setSigned(signed != null);
 		form.setName(user.getName());
@@ -77,11 +77,11 @@ public class IclaController {
 	@RequestMapping(value = "/sign/{claName}/icla", method = RequestMethod.POST)
 	public String signCla(@AuthenticationPrincipal User user, @Valid SignClaForm signClaForm, BindingResult result, Map<String, Object> model) throws IOException {
 		if(result.hasErrors()) {
-			ContributorLicenseAgreeement cla = clas.findOne(signClaForm.getClaId());
+			ContributorLicenseAgreement cla = clas.findOne(signClaForm.getClaId());
 			model.put("cla", cla);
 			return "cla/icla/sign";
 		}
-		ContributorLicenseAgreeement cla = clas.findOne(signClaForm.getClaId());
+		ContributorLicenseAgreement cla = clas.findOne(signClaForm.getClaId());
 		IndividualSignature signature = new IndividualSignature();
 		signature.setCla(cla);
 		signature.setCountry(signClaForm.getCountry());

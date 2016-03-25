@@ -45,12 +45,12 @@ public class DataTests {
 		corporate.setMarkdown("Corporate");
 		MarkdownContent individual = new MarkdownContent();
 		individual.setMarkdown("Individual");
-		ContributorLicenseAgreeement cla = new ContributorLicenseAgreeement();
+		ContributorLicenseAgreement cla = new ContributorLicenseAgreement();
 		cla.setCorporateContent(corporate);
 		cla.setIndividualContent(individual);
 		cla.setName("spring");
 
-		ContributorLicenseAgreeement springCla = clas.save(cla);
+		ContributorLicenseAgreement springCla = clas.save(cla);
 
 		IndividualSignature signature = new IndividualSignature();
 		signature.setCla(springCla);

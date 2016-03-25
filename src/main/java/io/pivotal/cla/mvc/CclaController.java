@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import io.pivotal.cla.data.AccessToken;
-import io.pivotal.cla.data.ContributorLicenseAgreeement;
+import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
@@ -60,7 +60,7 @@ public class CclaController {
 			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
 			Map<String, Object> model) throws Exception {
 		CorporateSignature signed = null;//corporate.findByClaNameAndEmailIn(claName, user.getEmails());
-		ContributorLicenseAgreeement cla = clas.findByName(claName);//signed == null ? clas.findByName(claName) : signed.getCla();
+		ContributorLicenseAgreement cla = clas.findByName(claName);//signed == null ? clas.findByName(claName) : signed.getCla();
 		SignCorporateClaForm form = new SignCorporateClaForm();
 		form.setSigned(signed != null);
 		form.setName(user.getName());
@@ -78,12 +78,12 @@ public class CclaController {
 	@RequestMapping(value = "/sign/{claName}/ccla", method = RequestMethod.POST)
 	public String signCla(@AuthenticationPrincipal User user, @Valid SignCorporateClaForm signCorporateClaForm, BindingResult result, Map<String, Object> model) throws IOException {
 		if(result.hasErrors()) {
-			ContributorLicenseAgreeement cla = clas.findOne(signCorporateClaForm.getClaId());
+			ContributorLicenseAgreement cla = clas.findOne(signCorporateClaForm.getClaId());
 			model.put("cla", cla);
 			signCorporateClaForm.setOrganizations(github.getOrganizations(user.getGithubLogin()));
 			return "cla/ccla/sign";
 		}
-		ContributorLicenseAgreeement cla = clas.findOne(signCorporateClaForm.getClaId());
+		ContributorLicenseAgreement cla = clas.findOne(signCorporateClaForm.getClaId());
 		CorporateSignature signature = new CorporateSignature();
 		signature.setCla(cla);
 		signature.setEmail(signCorporateClaForm.getEmail());

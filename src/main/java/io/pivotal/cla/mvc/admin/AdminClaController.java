@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import io.pivotal.cla.data.AccessToken;
-import io.pivotal.cla.data.ContributorLicenseAgreeement;
+import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.MarkdownContent;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
@@ -66,12 +66,12 @@ public class AdminClaController {
 
 	@RequestMapping("/admin/cla/create")
 	public String createClaForm(Map<String, Object> model) throws Exception {
-		model.put("contributorLicenseAgreeement", new ContributorLicenseAgreeement());
+		model.put("contributorLicenseAgreement", new ContributorLicenseAgreement());
 		return "admin/cla/create";
 	}
 
 	@RequestMapping(value = "/admin/cla/create", method = RequestMethod.POST)
-	public String createCla(@AuthenticationPrincipal User user, @Valid ContributorLicenseAgreeement contributorLicenseAgreeement, BindingResult result)
+	public String createCla(@AuthenticationPrincipal User user, @Valid ContributorLicenseAgreement contributorLicenseAgreement, BindingResult result)
 			throws Exception {
 		if (result.hasErrors()) {
 			return "admin/cla/create";
@@ -79,15 +79,15 @@ public class AdminClaController {
 
 		String accessToken = user.getAccessToken();
 
-		MarkdownContent individual = contributorLicenseAgreeement.getIndividualContent();
+		MarkdownContent individual = contributorLicenseAgreement.getIndividualContent();
 		String individualHtml = github.markdownToHtml(accessToken, individual.getMarkdown());
 		individual.setHtml(individualHtml);
 
-		MarkdownContent corporate = contributorLicenseAgreeement.getCorporateContent();
+		MarkdownContent corporate = contributorLicenseAgreement.getCorporateContent();
 		String corperateHtml = github.markdownToHtml(accessToken, corporate.getMarkdown());
 		corporate.setHtml(corperateHtml);
 
-		claRepo.save(contributorLicenseAgreeement);
+		claRepo.save(contributorLicenseAgreement);
 		return "redirect:/admin/cla/?success";
 	}
 

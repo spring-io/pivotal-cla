@@ -34,7 +34,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class ContributorLicenseAgreeement {
+public class ContributorLicenseAgreement {
 
 	@Id
 	@GeneratedValue

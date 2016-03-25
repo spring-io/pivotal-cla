@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.htmlunit.webdriver.MockMvcHtmlUnitDr
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.pivotal.cla.data.ContributorLicenseAgreeement;
+import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.MarkdownContent;
@@ -59,7 +59,7 @@ public abstract class BaseWebDriverTests {
 
 	protected MockMvc mockMvc;
 
-	protected ContributorLicenseAgreeement cla;
+	protected ContributorLicenseAgreement cla;
 	protected IndividualSignature individualSignature;
 	protected CorporateSignature corporateSignature;
 
@@ -83,7 +83,7 @@ public abstract class BaseWebDriverTests {
 		individual.setMarkdown("# Individual");
 		individual.setHtml("[h1]Individual[/h1]");
 
-		cla = new ContributorLicenseAgreeement();
+		cla = new ContributorLicenseAgreement();
 		cla.setName("apache");
 		cla.setCorporateContent(corporate);
 		cla.setIndividualContent(individual);

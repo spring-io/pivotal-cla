@@ -33,7 +33,7 @@ public class IndividualSignature {
 	private Long id;
 
 	@ManyToOne
-	private ContributorLicenseAgreeement cla;
+	private ContributorLicenseAgreement cla;
 
 	@Version
 	private Date dateOfSignature;

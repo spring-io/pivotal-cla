@@ -17,10 +17,10 @@ package io.pivotal.cla.data.repository;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import io.pivotal.cla.data.ContributorLicenseAgreeement;
+import io.pivotal.cla.data.ContributorLicenseAgreement;
 
 public interface ContributorLicenseAgreementRepository
-		extends PagingAndSortingRepository<ContributorLicenseAgreeement, Long> {
+		extends PagingAndSortingRepository<ContributorLicenseAgreement, Long> {
 
-	ContributorLicenseAgreeement findByName(String name);
+	ContributorLicenseAgreement findByName(String name);
 }

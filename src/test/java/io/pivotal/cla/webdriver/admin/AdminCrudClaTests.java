@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import io.pivotal.cla.data.ContributorLicenseAgreeement;
+import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.security.WithAdminUser;
 import io.pivotal.cla.security.WithAdminUserFactory;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
@@ -105,11 +105,11 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 		AdminListClasPage successPage = create.create("Eclipse", individualMd, corporateMd, AdminListClasPage.class);
 		successPage.assertAt();
 
-		ArgumentCaptor<ContributorLicenseAgreeement> captor = ArgumentCaptor
-				.forClass(ContributorLicenseAgreeement.class);
+		ArgumentCaptor<ContributorLicenseAgreement> captor = ArgumentCaptor
+				.forClass(ContributorLicenseAgreement.class);
 		verify(mockClaRepository).save(captor.capture());
 
-		ContributorLicenseAgreeement cla = captor.getValue();
+		ContributorLicenseAgreement cla = captor.getValue();
 		assertThat(cla.getName()).isEqualTo("Eclipse");
 		assertThat(cla.getIndividualContent().getHtml()).isEqualTo(individualHtml);
 		assertThat(cla.getIndividualContent().getMarkdown()).isEqualTo(individualMd);
