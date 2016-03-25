@@ -43,6 +43,7 @@ footer {
   <body>
       <!-- Static navbar -->
       <nav class="navbar navbar-default">
+        <div class="container">
         <div class="container-fluid">
           <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -85,8 +86,9 @@ footer {
             </ul>
           </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->
+        </div>
       </nav>
-       <div class="container">
+      <div class="container">
 
 
       <div id="message" th:if="${message != null}" th:text="${message}" class="alert alert-success">
