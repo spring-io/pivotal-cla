@@ -32,6 +32,12 @@ public interface IndividualSignatureRepository extends CrudRepository<Individual
 	List<IndividualSignature> findByEmailIn(Set<String> email);
 
 	default IndividualSignature getSignature(User user, String claName, String legacyClaName) {
+		if(user == null) {
+			return null;
+		}
+		if(user.getEmails() == null) {
+			return null;
+		}
 		IndividualSignature signed = findFirstByClaNameAndEmailInOrderByDateOfSignature(claName, user.getEmails());
 		if(legacyClaName == null || signed != null) {
 			return signed;

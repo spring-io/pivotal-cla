@@ -61,6 +61,11 @@ public class SignClaPage extends BasePage {
 		}
 	}
 
+	public void assertClaLinksWithPullRequest(String claName, String repositoryId, String pullRequestId) {
+		assertThat(getIclaHref()).isEqualTo("http://localhost/sign/" + claName + "/icla?repositoryId=" + repositoryId + "&pullRequestId="+pullRequestId);
+		assertThat(getCclaHref()).isEqualTo("http://localhost/sign/" + claName + "/ccla?repositoryId=" + repositoryId + "&pullRequestId="+pullRequestId);
+	}
+
 	private String getCclaHref() {
 		return cclaLink.getAttribute("href");
 	}
@@ -89,6 +94,11 @@ public class SignClaPage extends BasePage {
 
 	public static SignClaPage go(WebDriver driver, String claName, String legacy) {
 		get(driver, "/sign/" + claName + "?legacy=" + legacy);
+		return PageFactory.initElements(driver, SignClaPage.class);
+	}
+
+	public static SignClaPage go(WebDriver driver, String claName, String repositoryId, String pullRequestId) {
+		get(driver, "/sign/" + claName + "?repositoryId=" + repositoryId + "&pullRequestId=" + pullRequestId);
 		return PageFactory.initElements(driver, SignClaPage.class);
 	}
 }
