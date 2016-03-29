@@ -16,6 +16,7 @@
 package io.pivotal.cla.mvc.github;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -92,6 +93,7 @@ public class GithubHooksController {
 		if(user == null) {
 			user = new User();
 			user.setGithubLogin(githubLogin);
+			user.setEmails(new HashSet<>());
 		}
 
 		boolean success = hasSigned(user, cla, legacy);
