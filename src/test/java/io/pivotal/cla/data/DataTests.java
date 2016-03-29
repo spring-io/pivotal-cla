@@ -28,6 +28,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import io.pivotal.cla.GithubClaApplication;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
+import io.pivotal.cla.data.repository.CorporateSignatureRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -39,6 +40,9 @@ public class DataTests {
 
 	@Autowired
 	IndividualSignatureRepository signatures;
+
+	@Autowired
+	CorporateSignatureRepository cclaSignatures;
 
 	ContributorLicenseAgreement cla;
 
@@ -97,7 +101,25 @@ public class DataTests {
 		signature  = signatures.save(signature);
 		legacySignature = signatures.save(legacySignature);
 
-		signatures.findFirstByClaNameAndEmailInOrderByDateOfSignature(cla.getName(),
-				Sets.newSet(signature.getEmail(), legacySignature.getEmail()));
+		assertThat(signatures.findFirstByClaNameAndEmailInOrderByDateOfSignature(cla.getName(),
+				Sets.newSet(signature.getEmail(), legacySignature.getEmail()))).isNotNull();
+	}
+
+	@Test
+	public void cclaSignatureNotFoundOnIcla() {
+		CorporateSignature signature = new CorporateSignature();
+		signature.setCla(cla);
+		signature.setCountry("USA");
+		signature.setEmail("rwinch@pivotal.io");
+		signature.setMailingAddress("123 Seasame Street");
+		signature.setName("Rob Winch");
+		signature.setTelephone("1234567890");
+		signature.setCompanyName("Pivotal");
+		signature.setGitHubOrganization("spring-projects");
+
+		cclaSignatures.save(signature);
+
+		assertThat(signatures.findFirstByClaNameAndEmailInOrderByDateOfSignature(cla.getName(),
+				Sets.newSet(signature.getEmail()))).isNull();
 	}
 }

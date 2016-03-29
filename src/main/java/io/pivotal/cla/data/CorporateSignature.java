@@ -15,15 +15,41 @@
  */
 package io.pivotal.cla.data;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Version;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
-@EqualsAndHashCode(callSuper=true)
-public class CorporateSignature extends IndividualSignature {
+public class CorporateSignature {
+
+	@Id
+	@GeneratedValue
+	private Long id;
+
+	@ManyToOne
+	private ContributorLicenseAgreement cla;
+
+	@Version
+	private Date dateOfSignature;
+
+	private String name;
+
+	private String email;
+
+	private String mailingAddress;
+
+	private String country;
+
+	private String telephone;
+
+	private String githubLogin;
 
 	private String companyName;
 
