@@ -25,7 +25,7 @@ import io.pivotal.cla.data.User;
 
 public interface IndividualSignatureRepository extends CrudRepository<IndividualSignature, Long> {
 
-	IndividualSignature findFirstByClaNameAndEmailInOrderByDateOfSignature(String name, Set<String> email);
+	IndividualSignature findFirstByClaNameAndEmailInOrderByDateOfSignature(String claName, Set<String> emails);
 
 	List<IndividualSignature> findByEmailIn(Set<String> email);
 
