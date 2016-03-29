@@ -17,6 +17,7 @@ package io.pivotal.cla.webdriver.pages;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -29,6 +30,9 @@ public class SignCclaPage extends BasePage {
 
 	@FindBy(id = "breadcrumb-cla-link")
 	WebElement claLink;
+
+	@FindBy(id = "success")
+	WebElement success;
 
 	public SignCclaPage(WebDriver driver) {
 		super(driver);
@@ -46,6 +50,14 @@ public class SignCclaPage extends BasePage {
 		}
 	}
 
+	public boolean isSigned() {
+		try {
+			return success.getText() != null;
+		} catch(NoSuchElementException missing) {
+			return false;
+		}
+	}
+
 	public Form form() {
 		Form form = new Form();
 		PageFactory.initElements(getDriver(), form);
@@ -58,6 +70,11 @@ public class SignCclaPage extends BasePage {
 
 	public static SignCclaPage go(WebDriver driver, String cla) {
 		get(driver, "/sign/" + cla + "/ccla");
+		return PageFactory.initElements(driver, SignCclaPage.class);
+	}
+
+	public static SignCclaPage go(WebDriver driver, String cla, String legacy) {
+		get(driver, "/sign/" + cla + "/ccla?legacy=" + legacy);
 		return PageFactory.initElements(driver, SignCclaPage.class);
 	}
 

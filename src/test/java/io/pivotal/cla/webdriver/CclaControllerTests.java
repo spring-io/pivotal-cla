@@ -26,7 +26,6 @@ import org.junit.Test;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.webdriver.pages.SignCclaPage;
 import io.pivotal.cla.webdriver.pages.SignCclaPage.Form;
-import io.pivotal.cla.webdriver.pages.SignIclaPage;
 
 @WithSigningUser
 public class CclaControllerTests extends BaseWebDriverTests {
@@ -45,10 +44,10 @@ public class CclaControllerTests extends BaseWebDriverTests {
 	public void viewLegacy() {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 
-		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName(), "spring");
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName(), "spring");
 
 		signPage.assertClaLink(cla.getName(), "spring");
-		assertThat(signPage.getIndividualCla()).isEqualTo(cla.getIndividualContent().getHtml());
+		assertThat(signPage.getCorporate()).isEqualTo(cla.getCorporateContent().getHtml());
 		assertThat(signPage.isSigned()).isFalse();
 	}
 
