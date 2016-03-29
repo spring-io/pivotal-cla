@@ -85,7 +85,7 @@ public abstract class BaseWebDriverTests {
 		individual.setHtml("[h1]Individual[/h1]");
 
 		cla = new ContributorLicenseAgreement();
-		cla.setName("apache");
+		cla.setName("pivotal");
 		cla.setCorporateContent(corporate);
 		cla.setIndividualContent(individual);
 		cla.setId(1L);

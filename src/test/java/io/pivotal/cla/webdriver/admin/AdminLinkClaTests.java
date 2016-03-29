@@ -58,7 +58,7 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 		AdminLinkClaPage link = homePage.link();
 		link.assertAt();
 
-		link.assertClaName().hasOptionTexts("apache");
+		link.assertClaName().hasOptionTexts(cla.getName());
 	}
 
 	@Test
@@ -71,7 +71,7 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 		link.assertClaName().hasRequiredError();
 
 		// populates options after validation error
-		link.assertClaName().hasOptionTexts("apache");
+		link.assertClaName().hasOptionTexts(cla.getName());
 	}
 
 	@Test
@@ -89,10 +89,10 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 	public void linkClaValidationRepositoriesRequired() throws Exception {
 		AdminLinkClaPage link = AdminLinkClaPage.to(getDriver());
 
-		link = link.link("", "apache", AdminLinkClaPage.class);
+		link = link.link("", cla.getName(), AdminLinkClaPage.class);
 
 		link.assertRepositories().hasRequiredError();
-		link.assertClaName().hasNoErrors().hasValue("apache");
+		link.assertClaName().hasNoErrors().hasValue(cla.getName());
 	}
 
 	@Test
@@ -105,7 +105,7 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 
 		AdminLinkClaPage link = AdminLinkClaPage.to(getDriver());
 
-		link = link.link("test/this", "apache", AdminLinkClaPage.class);
+		link = link.link("test/this", cla.getName(), AdminLinkClaPage.class);
 
 		link.assertRepositories().hasNoErrors();
 		link.assertClaName().hasNoErrors();
@@ -115,7 +115,7 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 		CreatePullRequestHookRequest request = requestCaptor.getValue();
 		assertThat(request.getAccessToken()).isEqualTo(user.getAccessToken());
 		assertThat(request.getRepositoryIds()).containsOnly("test/this");
-		assertThat(request.getGithubEventUrl()).isEqualTo("http://localhost/github/hooks/pull_request/apache?access_token="+token.getToken());
+		assertThat(request.getGithubEventUrl()).isEqualTo("http://localhost/github/hooks/pull_request/"+cla.getName()+"?access_token="+token.getToken());
 		assertThat(driver.getPageSource()).doesNotContain(token.getToken());
 	}
 
@@ -133,19 +133,19 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 		AdminLinkClaPage link = AdminLinkClaPage.to(getDriver());
 
 		link.legacy("spring");
-		link = link.link("test/this", "apache", AdminLinkClaPage.class);
+		link = link.link("test/this", cla.getName(), AdminLinkClaPage.class);
 
 		link.assertRepositories().hasNoErrors();
 		link.assertClaName().hasNoErrors();
-		assertThat(link.contributingAdoc()).contains(" http://localhost/sign/apache?legacy=spring[");
-		assertThat(link.contributingMd()).contains("](http://localhost/sign/apache?legacy=spring)");
+		assertThat(link.contributingAdoc()).contains(" http://localhost/sign/"+cla.getName()+"?legacy=spring[");
+		assertThat(link.contributingMd()).contains("](http://localhost/sign/"+cla.getName()+"?legacy=spring)");
 
 		ArgumentCaptor<CreatePullRequestHookRequest> requestCaptor = ArgumentCaptor.forClass(CreatePullRequestHookRequest.class);
 		verify(mockGithub).createPullRequestHooks(requestCaptor.capture());
 		CreatePullRequestHookRequest request = requestCaptor.getValue();
 		assertThat(request.getAccessToken()).isEqualTo(user.getAccessToken());
 		assertThat(request.getRepositoryIds()).containsOnly("test/this");
-		assertThat(request.getGithubEventUrl()).isEqualTo("http://localhost/github/hooks/pull_request/apache?legacy="+legacy.getName()+"&access_token="+token.getToken());
+		assertThat(request.getGithubEventUrl()).isEqualTo("http://localhost/github/hooks/pull_request/"+cla.getName()+"?legacy="+legacy.getName()+"&access_token="+token.getToken());
 		assertThat(driver.getPageSource()).doesNotContain(token.getToken());
 	}
 }

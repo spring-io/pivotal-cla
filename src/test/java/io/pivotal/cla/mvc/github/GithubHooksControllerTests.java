@@ -77,7 +77,7 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
 		assertThat(status.getPullRequestId()).isEqualTo(2);
 		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
-		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/apache?repositoryId=rwinch/176_test&pullRequestId=2");
+		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/pivotal?repositoryId=rwinch/176_test&pullRequestId=2");
 		assertThat(status.isSuccess()).isFalse();
 	}
 
@@ -127,7 +127,7 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
 		assertThat(status.getPullRequestId()).isEqualTo(2);
 		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
-		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/apache?repositoryId=rwinch/176_test&pullRequestId=2");
+		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/pivotal?repositoryId=rwinch/176_test&pullRequestId=2");
 		assertThat(status.isSuccess()).isTrue();
 		assertThat(status.getGithubUsername()).isEqualTo(user.getGithubLogin());
 	}
@@ -152,7 +152,7 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
 		assertThat(status.getPullRequestId()).isEqualTo(2);
 		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
-		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/apache?repositoryId=rwinch/176_test&pullRequestId=2");
+		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/pivotal?repositoryId=rwinch/176_test&pullRequestId=2");
 		assertThat(status.isSuccess()).isTrue();
 		assertThat(status.getGithubUsername()).isEqualTo(user.getGithubLogin());
 	}
@@ -174,7 +174,7 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
 		assertThat(status.getPullRequestId()).isEqualTo(2);
 		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
-		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/apache?repositoryId=rwinch/176_test&pullRequestId=2&legacy=spring");
+		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/pivotal?repositoryId=rwinch/176_test&pullRequestId=2&legacy=spring");
 		assertThat(status.isSuccess()).isFalse();
 		assertThat(status.getGithubUsername()).isEqualTo(user.getGithubLogin());
 	}
@@ -198,13 +198,13 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
 		assertThat(status.getPullRequestId()).isEqualTo(2);
 		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
-		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/apache?repositoryId=rwinch/176_test&pullRequestId=2&legacy=spring");
+		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/pivotal?repositoryId=rwinch/176_test&pullRequestId=2&legacy=spring");
 		assertThat(status.isSuccess()).isTrue();
 		assertThat(status.getGithubUsername()).isEqualTo(user.getGithubLogin());
 	}
 
 	private MockHttpServletRequestBuilder hookRequest() {
-		MockHttpServletRequestBuilder post = post("/github/hooks/pull_request/apache");
+		MockHttpServletRequestBuilder post = post("/github/hooks/pull_request/pivotal");
 		if(accessToken != null) {
 			post.param("access_token", accessToken.getToken());
 		}

@@ -33,7 +33,6 @@ public class ClaControllerTests extends BaseWebDriverTests {
 	@Before
 	public void setup() {
 		super.setup();
-		cla.setName("pivotal");
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 	}
 
