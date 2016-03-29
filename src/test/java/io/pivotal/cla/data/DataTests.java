@@ -17,6 +17,7 @@ package io.pivotal.cla.data;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.util.collections.Sets;
@@ -39,32 +40,64 @@ public class DataTests {
 	@Autowired
 	IndividualSignatureRepository signatures;
 
-	@Test
-	public void workflow() {
+	ContributorLicenseAgreement cla;
+
+	IndividualSignature signature;
+
+	@Before
+	public void setup() {
 		MarkdownContent corporate = new MarkdownContent();
 		corporate.setMarkdown("Corporate");
 		MarkdownContent individual = new MarkdownContent();
 		individual.setMarkdown("Individual");
-		ContributorLicenseAgreement cla = new ContributorLicenseAgreement();
+		cla = new ContributorLicenseAgreement();
 		cla.setCorporateContent(corporate);
 		cla.setIndividualContent(individual);
-		cla.setName("spring");
+		cla.setName("pivotal");
+		cla = clas.save(cla);
 
-		ContributorLicenseAgreement springCla = clas.save(cla);
-
-		IndividualSignature signature = new IndividualSignature();
-		signature.setCla(springCla);
+		signature = new IndividualSignature();
+		signature.setCla(cla);
 		signature.setCountry("USA");
 		signature.setEmail("rwinch@pivotal.io");
 		signature.setMailingAddress("123 Seasame Street");
 		signature.setName("Rob Winch");
 		signature.setTelephone("1234567890");
 
+	}
+
+	@Test
+	public void workflow() {
+
 		IndividualSignature robsSignature = signatures.save(signature);
 
-		IndividualSignature didRobSign = signatures.findByClaNameAndEmailIn(springCla.getName(),
+		IndividualSignature didRobSign = signatures.findFirstByClaNameAndEmailInOrderByDateOfSignature(cla.getName(),
 				Sets.newSet(robsSignature.getEmail(), "other@example.com"));
 
 		assertThat(didRobSign).isNotNull();
+	}
+
+	@Test
+	public void legacy() {
+		ContributorLicenseAgreement legacy = new ContributorLicenseAgreement();
+		legacy.setCorporateContent(cla.getCorporateContent());
+		legacy.setIndividualContent(cla.getIndividualContent());
+		legacy.setName("pivotal");
+
+		legacy = clas.save(legacy);
+
+		IndividualSignature legacySignature = new IndividualSignature();
+		legacySignature.setCla(legacy);
+		legacySignature.setCountry("USA");
+		legacySignature.setEmail("rwinch@pivotal.io");
+		legacySignature.setMailingAddress("123 Seasame Street");
+		legacySignature.setName("Rob Winch");
+		legacySignature.setTelephone("1234567890");
+
+		signature  = signatures.save(signature);
+		legacySignature = signatures.save(legacySignature);
+
+		signatures.findFirstByClaNameAndEmailInOrderByDateOfSignature(cla.getName(),
+				Sets.newSet(signature.getEmail(), legacySignature.getEmail()));
 	}
 }

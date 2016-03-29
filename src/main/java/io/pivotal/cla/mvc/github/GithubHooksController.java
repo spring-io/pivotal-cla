@@ -118,7 +118,7 @@ public class GithubHooksController {
 			return false;
 		}
 		IndividualSignature signedIndividual = user == null ? null
-				: individualRepo.findByClaNameAndEmailIn(claName, user.getEmails());
+				: individualRepo.findFirstByClaNameAndEmailInOrderByDateOfSignature(claName, user.getEmails());
 
 		if(signedIndividual != null) {
 			return true;

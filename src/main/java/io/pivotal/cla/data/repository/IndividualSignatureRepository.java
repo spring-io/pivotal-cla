@@ -25,15 +25,15 @@ import io.pivotal.cla.data.User;
 
 public interface IndividualSignatureRepository extends CrudRepository<IndividualSignature, Long> {
 
-	IndividualSignature findByClaNameAndEmailIn(String name, Set<String> email);
+	IndividualSignature findFirstByClaNameAndEmailInOrderByDateOfSignature(String name, Set<String> email);
 
 	List<IndividualSignature> findByEmailIn(Set<String> email);
 
 	default IndividualSignature getSignature(User user, String claName, String legacy) {
-		IndividualSignature signed = findByClaNameAndEmailIn(claName, user.getEmails());
+		IndividualSignature signed = findFirstByClaNameAndEmailInOrderByDateOfSignature(claName, user.getEmails());
 		if(legacy == null || signed != null) {
 			return signed;
 		}
-		return findByClaNameAndEmailIn(legacy, user.getEmails());
+		return findFirstByClaNameAndEmailInOrderByDateOfSignature(legacy, user.getEmails());
 	}
 }

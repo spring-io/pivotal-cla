@@ -115,7 +115,7 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		when(mockUserRepo.findOne(anyString())).thenReturn(user);
 		when(mockTokenRepo.findOne("rwinch/176_test"))
 			.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
-		when(mockIndividualSignatureRepository.findByClaNameAndEmailIn(anyString(), anySet())).thenReturn(individualSignature);
+		when(mockIndividualSignatureRepository.findFirstByClaNameAndEmailInOrderByDateOfSignature(anyString(), anySet())).thenReturn(individualSignature);
 
 		mockMvc.perform(hookRequest().content(PAYLOAD))
 			.andExpect(status().isOk());
@@ -186,7 +186,7 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		when(mockUserRepo.findOne(anyString())).thenReturn(user);
 		when(mockTokenRepo.findOne("rwinch/176_test"))
 			.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
-		when(mockIndividualSignatureRepository.findByClaNameAndEmailIn(eq("spring"), anySet())).thenReturn(individualSignature);
+		when(mockIndividualSignatureRepository.findFirstByClaNameAndEmailInOrderByDateOfSignature(eq("spring"), anySet())).thenReturn(individualSignature);
 
 		mockMvc.perform(hookRequest().param("legacy", "spring").content(PAYLOAD))
 			.andExpect(status().isOk());
