@@ -17,7 +17,6 @@ package io.pivotal.cla.webdriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anySet;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,8 +34,8 @@ import io.pivotal.cla.webdriver.pages.AboutPage;
 import io.pivotal.cla.webdriver.pages.DashboardPage;
 import io.pivotal.cla.webdriver.pages.DashboardPage.Signature;
 import io.pivotal.cla.webdriver.pages.HomePage;
-import io.pivotal.cla.webdriver.pages.SignClaPage;
 import io.pivotal.cla.webdriver.pages.SignCclaPage;
+import io.pivotal.cla.webdriver.pages.SignClaPage;
 import io.pivotal.cla.webdriver.pages.SignIclaPage;
 import io.pivotal.cla.webdriver.pages.SignedPage;
 

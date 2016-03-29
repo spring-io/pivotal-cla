@@ -25,8 +25,8 @@ import org.junit.Test;
 
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.webdriver.pages.SignCclaPage;
-import io.pivotal.cla.webdriver.pages.SignIclaPage;
 import io.pivotal.cla.webdriver.pages.SignCclaPage.Form;
+import io.pivotal.cla.webdriver.pages.SignIclaPage;
 
 @WithSigningUser
 public class CclaControllerTests extends BaseWebDriverTests {
