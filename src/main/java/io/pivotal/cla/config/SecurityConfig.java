@@ -30,6 +30,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationEn
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.cors.CorsUtils;
 
 import io.pivotal.cla.security.GithubAuthenticationEntryPoint;
 
@@ -52,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.csrf()
 				.ignoringAntMatchers("/github/hooks/**").and()
 			.authorizeRequests()
+				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 				.antMatchers("/login/**", "/", "/about", "/webjars/**").permitAll()
 				.antMatchers("/github/hooks/**").access("@oauth.check(request.getParameter('access_token'))")
 				.antMatchers("/admin/**","/manage/**").hasRole("ADMIN")

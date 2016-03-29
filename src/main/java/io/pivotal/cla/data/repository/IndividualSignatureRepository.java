@@ -27,13 +27,15 @@ public interface IndividualSignatureRepository extends CrudRepository<Individual
 
 	IndividualSignature findFirstByClaNameAndEmailInOrderByDateOfSignature(String claName, Set<String> emails);
 
+	IndividualSignature findFirstByClaNameAndGithubLoginOrderByDateOfSignature(String claName, String githubLogin);
+
 	List<IndividualSignature> findByEmailIn(Set<String> email);
 
-	default IndividualSignature getSignature(User user, String claName, String legacy) {
+	default IndividualSignature getSignature(User user, String claName, String legacyClaName) {
 		IndividualSignature signed = findFirstByClaNameAndEmailInOrderByDateOfSignature(claName, user.getEmails());
-		if(legacy == null || signed != null) {
+		if(legacyClaName == null || signed != null) {
 			return signed;
 		}
-		return findFirstByClaNameAndEmailInOrderByDateOfSignature(legacy, user.getEmails());
+		return findFirstByClaNameAndEmailInOrderByDateOfSignature(legacyClaName, user.getEmails());
 	}
 }

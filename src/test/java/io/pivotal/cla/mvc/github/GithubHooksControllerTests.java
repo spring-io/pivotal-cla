@@ -16,9 +16,9 @@
 package io.pivotal.cla.mvc.github;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anySet;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -109,13 +109,12 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void markCommitStatusSuccessIndividual() throws Exception {
 		User user = WithSigningUserFactory.create();
 		when(mockUserRepo.findOne(anyString())).thenReturn(user);
 		when(mockTokenRepo.findOne("rwinch/176_test"))
 			.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
-		when(mockIndividualSignatureRepository.findFirstByClaNameAndEmailInOrderByDateOfSignature(anyString(), anySet())).thenReturn(individualSignature);
+		when(mockIndividualSignatureRepository.getSignature(any(), anyString(), anyString())).thenReturn(individualSignature);
 
 		mockMvc.perform(hookRequest().content(PAYLOAD))
 			.andExpect(status().isOk());
@@ -180,13 +179,13 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void legacyClaSigned() throws Exception {
 		User user = WithSigningUserFactory.create();
 		when(mockUserRepo.findOne(anyString())).thenReturn(user);
 		when(mockTokenRepo.findOne("rwinch/176_test"))
 			.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
-		when(mockIndividualSignatureRepository.findFirstByClaNameAndEmailInOrderByDateOfSignature(eq("spring"), anySet())).thenReturn(individualSignature);
+
+		when(mockIndividualSignatureRepository.getSignature(any(), anyString(), anyString())).thenReturn(individualSignature);
 
 		mockMvc.perform(hookRequest().param("legacy", "spring").content(PAYLOAD))
 			.andExpect(status().isOk());

@@ -86,14 +86,18 @@ public class GithubHooksController {
 		RepositoryId repoId = RepositoryId.createFromId(repository.getOwner().getLogin() + "/" + repository.getName());
 
 		PullRequest pullRequest = pullRequestPayload.getPullRequest();
-		String login = pullRequest.getUser().getLogin();
+		String githubLogin = pullRequest.getUser().getLogin();
 
-		User user = userRepo.findOne(login);
+		User user = userRepo.findOne(githubLogin);
+		if(user == null) {
+			user = new User();
+			user.setGithubLogin(githubLogin);
+		}
 
-		boolean success = hasSigned(user, login, cla) || hasSigned(user, login, legacy);
+		boolean success = hasSigned(user, cla, legacy);
 
 		CommitStatus status = new CommitStatus();
-		status.setGithubUsername(login);
+		status.setGithubUsername(githubLogin);
 		status.setPullRequestId(pullRequest.getNumber());
 		status.setRepoId(repoId.generateId());
 		status.setSha(pullRequest.getHead().getSha());
@@ -113,18 +117,18 @@ public class GithubHooksController {
 		return "FAIL";
 	}
 
-	private boolean hasSigned(User user, String login, String claName) throws IOException {
+	private boolean hasSigned(User user, String claName, String legacyClaName) throws IOException {
 		if(claName == null) {
 			return false;
 		}
 		IndividualSignature signedIndividual = user == null ? null
-				: individualRepo.findFirstByClaNameAndEmailInOrderByDateOfSignature(claName, user.getEmails());
+				: individualRepo.getSignature(user, claName, legacyClaName);
 
 		if(signedIndividual != null) {
 			return true;
 		}
 
-		List<String> organizations = github.getOrganizations(login);
+		List<String> organizations = github.getOrganizations(user.getGithubLogin());
 		CorporateSignature corporateSignature = corporate.findByClaNameAndGitHubOrganizationIn(claName, organizations);
 		return corporateSignature != null;
 	}
