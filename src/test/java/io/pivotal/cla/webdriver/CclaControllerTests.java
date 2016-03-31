@@ -36,21 +36,9 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
-		signPage.assertClaLink(cla.getName(), null);
+		signPage.assertClaLink(cla.getName());
 		assertThat(signPage.getCorporate()).isEqualTo(cla.getCorporateContent().getHtml());
 	}
-
-	@Test
-	public void viewLegacy() {
-		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
-
-		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName(), "spring");
-
-		signPage.assertClaLink(cla.getName(), "spring");
-		assertThat(signPage.getCorporate()).isEqualTo(cla.getCorporateContent().getHtml());
-		assertThat(signPage.isSigned()).isFalse();
-	}
-
 
 	@Test
 	public void signNameRequired() throws Exception {

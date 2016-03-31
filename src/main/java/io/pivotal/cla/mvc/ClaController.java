@@ -36,16 +36,14 @@ public class ClaController {
 
 	@RequestMapping("/sign/{claName}")
 	public String signIndex(@AuthenticationPrincipal User user, @PathVariable String claName,
-			@RequestParam(required = false) String legacy,
 			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
 			Map<String, Object> model) {
-		IndividualSignature individualSignature = individual.getSignature(user, claName, legacy);
+		IndividualSignature individualSignature = individual.findSignaturesFor(user, claName);
 
 		model.put("repositoryId",repositoryId);
 		model.put("pullRequestId", pullRequestId);
 		model.put("signed", individualSignature != null);
 		model.put("claName", claName);
-		model.put("legacy", legacy);
 		return "index";
 	}
 }

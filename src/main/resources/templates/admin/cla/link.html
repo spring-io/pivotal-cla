@@ -144,18 +144,6 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 						<p th:each="err : ${#fields.errors('claName')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('legacy')}? 'has-error form-group' : form-group">
-					<label for="cla">
-						Legacy Agreement (Optional)
-					</label>
-					<select class="form-control" th:field="*{legacy}">
-						<option value=""></option>
-						<option th:each="l : ${licenses}" th:value="${l.name}" th:text="${l.name}"></option>
-					</select>
-					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('legacy')}" id="err-legacy">
-						<p th:each="err : ${#fields.errors('legacy')}" th:text="${err}">Input is incorrect</p>
-					</div>
-				</div>
 				<button id="submit" type="submit" class="btn btn-success">Use CLA</button>
 			</form>
 		</div>

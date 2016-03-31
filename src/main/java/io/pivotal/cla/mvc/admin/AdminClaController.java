@@ -24,7 +24,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -119,10 +118,6 @@ public class AdminClaController {
 
 		UrlBuilder pullRequestUrlBldr = UrlBuilder.fromRequest(request);
 		UrlBuilder signClaUrlBldr = UrlBuilder.fromRequest(request);
-		if(StringUtils.hasLength(linkClaForm.getLegacy())) {
-			pullRequestUrlBldr.param("legacy", linkClaForm.getLegacy());
-			signClaUrlBldr.param("legacy", linkClaForm.getLegacy());
-		}
 
 		String pullRequestHookUrl = pullRequestUrlBldr
 				.path("/github/hooks/pull_request/" + linkClaForm.getClaName())

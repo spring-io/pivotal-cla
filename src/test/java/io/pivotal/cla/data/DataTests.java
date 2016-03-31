@@ -82,30 +82,6 @@ public class DataTests {
 	}
 
 	@Test
-	public void legacy() {
-		ContributorLicenseAgreement legacy = new ContributorLicenseAgreement();
-		legacy.setCorporateContent(cla.getCorporateContent());
-		legacy.setIndividualContent(cla.getIndividualContent());
-		legacy.setName("pivotal");
-
-		legacy = clas.save(legacy);
-
-		IndividualSignature legacySignature = new IndividualSignature();
-		legacySignature.setCla(legacy);
-		legacySignature.setCountry("USA");
-		legacySignature.setEmail("rwinch@pivotal.io");
-		legacySignature.setMailingAddress("123 Seasame Street");
-		legacySignature.setName("Rob Winch");
-		legacySignature.setTelephone("1234567890");
-
-		signature  = signatures.save(signature);
-		legacySignature = signatures.save(legacySignature);
-
-		assertThat(signatures.findFirstByClaNameAndEmailInOrderByDateOfSignature(cla.getName(),
-				Sets.newSet(signature.getEmail(), legacySignature.getEmail()))).isNotNull();
-	}
-
-	@Test
 	public void cclaSignatureNotFoundOnIcla() {
 		CorporateSignature signature = new CorporateSignature();
 		signature.setCla(cla);

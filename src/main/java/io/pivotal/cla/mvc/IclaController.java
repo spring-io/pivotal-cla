@@ -57,11 +57,10 @@ public class IclaController {
 
 	@RequestMapping("/sign/{claName}/icla")
 	public String claForm(@AuthenticationPrincipal User user, @PathVariable String claName,
-			@RequestParam(required=false) String legacy,
 			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
 			Map<String, Object> model) {
 
-		IndividualSignature signed = individual.getSignature(user, claName, legacy);
+		IndividualSignature signed = individual.findSignaturesFor(user, claName);
 		ContributorLicenseAgreement cla = signed == null ? clas.findByNameAndPrimaryTrue(claName) : signed.getCla();
 		SignClaForm form = new SignClaForm();
 		form.setSigned(signed != null);
@@ -70,7 +69,6 @@ public class IclaController {
 		form.setRepositoryId(repositoryId);
 		form.setPullRequestId(pullRequestId);
 
-		model.put("legacy", legacy);
 		model.put("signClaForm", form);
 		model.put("cla", cla);
 

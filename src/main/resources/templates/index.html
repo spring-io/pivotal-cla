@@ -25,8 +25,7 @@
 						Sign the Individual Contributor License Agreement (ICLA) if you are agreeing to the terms for only yourself.
 					</p>
 					<p>
-						<a th:if="${pullRequestId != null}" id="icla-link" class="btn btn-success btn-lg" th:href="@{/sign/{claName}/icla(claName=${claName},repositoryId=${repositoryId},pullRequestId=${pullRequestId})}">Sign Individual CLA</a>
-						<a th:if="${pullRequestId == null}" id="icla-link" class="btn btn-success btn-lg" th:href="${legacy} == null ? @{/sign/{claName}/icla(claName=${claName})} : @{/sign/{claName}/icla(claName=${claName},legacy=${legacy})}">Sign Individual CLA</a>
+						<a id="icla-link" class="btn btn-success btn-lg" th:href="${pullRequestId == null} ? @{/sign/{claName}/icla(claName=${claName})} : @{/sign/{claName}/icla(claName=${claName},repositoryId=${repositoryId},pullRequestId=${pullRequestId})}">Sign Individual CLA</a>
 					</p>
 				</div>
 				<div class="col-md-6">
@@ -35,8 +34,7 @@
 						Sign the Corporate Contributor License Agreement (CCLA) if you are agreeing to the terms on behalf of an entire organization or company.
 					</p>
 					<p>
-						<a th:if="${pullRequestId != null}" id="ccla-link" class="btn btn-success btn-lg" th:href="@{/sign/{claName}/ccla(claName=${claName},repositoryId=${repositoryId},pullRequestId=${pullRequestId})}">Sign Corporate CLA</a>
-						<a th:if="${pullRequestId == null}" id="ccla-link" class="btn btn-success btn-lg" th:href="${legacy} == null ? @{/sign/{claName}/ccla(claName=${claName})} : @{/sign/{claName}/ccla(claName=${claName},legacy=${legacy})}">Sign Corporate CLA</a>
+						<a id="ccla-link" class="btn btn-success btn-lg" th:href="${pullRequestId == null} ? @{/sign/{claName}/ccla(claName=${claName})} : @{/sign/{claName}/ccla(claName=${claName},repositoryId=${repositoryId},pullRequestId=${pullRequestId})}">Sign Corporate CLA</a>
 					</p>
 				</div>
 			</div>

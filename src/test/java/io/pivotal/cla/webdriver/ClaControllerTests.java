@@ -40,14 +40,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 	public void claPivotal() throws Exception {
 		SignClaPage home = SignClaPage.go(driver, cla.getName());
 		home.assertAt();
-		home.assertClaLinks(cla.getName(), null);
-	}
-
-	@Test
-	public void claPivotaLegacySpring() throws Exception {
-		SignClaPage home = SignClaPage.go(driver, cla.getName(), "spring");
-		home.assertAt();
-		home.assertClaLinks(cla.getName(), "spring");
+		home.assertClaLinks(cla.getName());
 	}
 
 	@Test
@@ -61,19 +54,9 @@ public class ClaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void claPivotalIndividualSigned() {
-		when(mockIndividualSignatureRepository.getSignature(WithSigningUserFactory.create(),cla.getName(), null)).thenReturn(individualSignature);
+		when(mockIndividualSignatureRepository.findSignaturesFor(WithSigningUserFactory.create(),cla.getName())).thenReturn(individualSignature);
 
 		SignClaPage home = SignClaPage.go(driver, cla.getName());
-		home.assertAt();
-		home.assertSigned();
-	}
-
-	@Test
-	public void claPivotalIndividualLegacySigned() {
-		String claName = cla.getName() + "-notsigned";
-		when(mockIndividualSignatureRepository.getSignature(WithSigningUserFactory.create(),claName, cla.getName())).thenReturn(individualSignature);
-
-		SignClaPage home = SignClaPage.go(driver, claName, cla.getName());
 		home.assertAt();
 		home.assertSigned();
 	}

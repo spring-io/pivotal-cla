@@ -74,12 +74,11 @@ public class GithubHooksController {
 	 * @param request
 	 * @param body
 	 * @param cla
-	 * @param legacy If this CLA is signed, then they do not need to sign again.
 	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping("/github/hooks/pull_request/{cla}")
-	public String pullRequest(HttpServletRequest request, @RequestBody String body, @PathVariable String cla, @RequestParam(required=false) String legacy) throws Exception {
+	public String pullRequest(HttpServletRequest request, @RequestBody String body, @PathVariable String cla) throws Exception {
 		Gson gson = GsonUtils.createGson();
 		RepositoryPullRequestPayload pullRequestPayload = gson.fromJson(body, RepositoryPullRequestPayload.class);
 
@@ -96,7 +95,7 @@ public class GithubHooksController {
 			user.setEmails(new HashSet<>());
 		}
 
-		boolean success = hasSigned(user, cla, legacy);
+		boolean success = hasSigned(user, cla);
 
 		CommitStatus status = new CommitStatus();
 		status.setGithubUsername(githubLogin);
@@ -109,9 +108,6 @@ public class GithubHooksController {
 			.path("/sign/"+cla)
 			.param("repositoryId", status.getRepoId())
 			.param("pullRequestId", String.valueOf(status.getPullRequestId()));
-		if(legacy != null) {
-			url.param("legacy", legacy);
-		}
 		status.setUrl(url.build());
 
 		github.save(status);
@@ -119,12 +115,11 @@ public class GithubHooksController {
 		return "FAIL";
 	}
 
-	private boolean hasSigned(User user, String claName, String legacyClaName) throws IOException {
+	private boolean hasSigned(User user, String claName) throws IOException {
 		if(claName == null) {
 			return false;
 		}
-		IndividualSignature signedIndividual = user == null ? null
-				: individualRepo.getSignature(user, claName, legacyClaName);
+		IndividualSignature signedIndividual = individualRepo.findSignaturesFor(user, claName);
 
 		if(signedIndividual != null) {
 			return true;

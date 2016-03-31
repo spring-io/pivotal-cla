@@ -57,7 +57,6 @@ public class CclaController {
 
 	@RequestMapping("/sign/{claName}/ccla")
 	public String claForm(@AuthenticationPrincipal User user, @PathVariable String claName,
-			@RequestParam(required=false) String legacy,
 			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
 			Map<String, Object> model) throws Exception {
 		CorporateSignature signed = null;//corporate.findByClaNameAndEmailIn(claName, user.getEmails());
@@ -70,7 +69,6 @@ public class CclaController {
 		form.setPullRequestId(pullRequestId);
 		form.setGitHubOrganizations(github.getOrganizations(user.getGithubLogin()));
 
-		model.put("legacy", legacy);
 		model.put("signCorporateClaForm", form);
 		model.put("cla", cla);
 

@@ -116,7 +116,7 @@ public class HomeControllerTests extends BaseWebDriverTests {
 		IndividualSignature signature = new IndividualSignature();
 		signature.setCla(cla);
 		when(mockIndividualSignatureRepository.findByEmailIn(anySet())).thenReturn(Arrays.asList(individualSignature));
-		when(mockIndividualSignatureRepository.getSignature(WithSigningUserFactory.create(), cla.getName(), null)).thenReturn(individualSignature);
+		when(mockIndividualSignatureRepository.findSignaturesFor(WithSigningUserFactory.create(), cla.getName())).thenReturn(individualSignature);
 
 		DashboardPage dashboard = DashboardPage.go(driver);
 		dashboard.assertAt();

@@ -42,12 +42,8 @@ public class SignCclaPage extends BasePage {
 		return corporateCla.getText();
 	}
 
-	public void assertClaLink(String claName, String legacy) {
-		if(legacy == null) {
-			assertThat(claLink.getAttribute("href")).endsWith("/sign/"+claName);
-		} else {
-			assertThat(claLink.getAttribute("href")).endsWith("/sign/"+claName+"?legacy="+legacy);
-		}
+	public void assertClaLink(String claName) {
+		assertThat(claLink.getAttribute("href")).endsWith("/sign/"+claName);
 	}
 
 	public boolean isSigned() {
@@ -70,11 +66,6 @@ public class SignCclaPage extends BasePage {
 
 	public static SignCclaPage go(WebDriver driver, String cla) {
 		get(driver, "/sign/" + cla + "/ccla");
-		return PageFactory.initElements(driver, SignCclaPage.class);
-	}
-
-	public static SignCclaPage go(WebDriver driver, String cla, String legacy) {
-		get(driver, "/sign/" + cla + "/ccla?legacy=" + legacy);
 		return PageFactory.initElements(driver, SignCclaPage.class);
 	}
 

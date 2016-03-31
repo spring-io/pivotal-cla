@@ -50,15 +50,9 @@ public class SignClaPage extends BasePage {
 		return (T) PageFactory.initElements(getDriver(), page);
 	}
 
-	public void assertClaLinks(String claName, String legacy) {
-
-		if (legacy == null) {
-			assertThat(getIclaHref()).isEqualTo("http://localhost/sign/" + claName + "/icla");
-			assertThat(getCclaHref()).isEqualTo("http://localhost/sign/" + claName + "/ccla");
-		} else {
-			assertThat(getIclaHref()).isEqualTo("http://localhost/sign/" + claName + "/icla?legacy=" + legacy);
-			assertThat(getCclaHref()).isEqualTo("http://localhost/sign/" + claName + "/ccla?legacy=" + legacy);
-		}
+	public void assertClaLinks(String claName) {
+		assertThat(getIclaHref()).isEqualTo("http://localhost/sign/" + claName + "/icla");
+		assertThat(getCclaHref()).isEqualTo("http://localhost/sign/" + claName + "/ccla");
 	}
 
 	public void assertClaLinksWithPullRequest(String claName, String repositoryId, String pullRequestId) {
@@ -89,11 +83,6 @@ public class SignClaPage extends BasePage {
 
 	public static SignClaPage go(WebDriver driver, String claName) {
 		get(driver, "/sign/" + claName);
-		return PageFactory.initElements(driver, SignClaPage.class);
-	}
-
-	public static SignClaPage go(WebDriver driver, String claName, String legacy) {
-		get(driver, "/sign/" + claName + "?legacy=" + legacy);
 		return PageFactory.initElements(driver, SignClaPage.class);
 	}
 

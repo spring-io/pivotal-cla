@@ -38,9 +38,7 @@ public class AdminLinkClaPage extends BasePage {
 
 	WebElement claName;
 
-	WebElement legacy;
-
-	@FindBy(id = "contributing-adoc")
+ 	@FindBy(id = "contributing-adoc")
 	WebElement contributingAdoc;
 
 	@FindBy(id = "contributing-md")
@@ -86,12 +84,6 @@ public class AdminLinkClaPage extends BasePage {
 		return PageFactory.initElements(getDriver(), page);
 	}
 
-
-	public AdminLinkClaPage legacy(String name) {
-		Select legacy = new Select(this.legacy);
-		legacy.selectByVisibleText(name);
-		return this;
-	}
 
 	public void waitForRepositories() {
 		new WebDriverWait(getDriver(), 3).until(new Predicate<WebDriver>() {

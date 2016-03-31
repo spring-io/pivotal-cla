@@ -20,6 +20,8 @@ jar {
 	baseName = 'pivotal-github-cla'
 	version = '0.0.1-SNAPSHOT'
 }
+
+ext.querydslVersion = '3.6.9'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -34,6 +36,8 @@ jar {
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile("com.mysema.querydsl:querydsl-jpa:$querydslVersion")
+	compile "com.mysema.querydsl:querydsl-apt:$querydslVersion:jpa"
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-security')
 	compile('org.springframework.boot:spring-boot-actuator')
@@ -57,7 +61,7 @@ dependencies {
 
 eclipse {
 	classpath {
-		 containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
-		 containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+		containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+		containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
 	}
 }

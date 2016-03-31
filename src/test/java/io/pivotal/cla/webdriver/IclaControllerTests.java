@@ -34,18 +34,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
-		signPage.assertClaLink(cla.getName(), null);
-		assertThat(signPage.getIndividualCla()).isEqualTo(cla.getIndividualContent().getHtml());
-		assertThat(signPage.isSigned()).isFalse();
-	}
-
-	@Test
-	public void viewLegacy() {
-		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
-
-		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName(), "spring");
-
-		signPage.assertClaLink(cla.getName(), "spring");
+		signPage.assertClaLink(cla.getName());
 		assertThat(signPage.getIndividualCla()).isEqualTo(cla.getIndividualContent().getHtml());
 		assertThat(signPage.isSigned()).isFalse();
 	}
@@ -53,20 +42,9 @@ public class IclaControllerTests extends BaseWebDriverTests {
 	@Test
 	public void alreadySigned() {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
-		when(mockIndividualSignatureRepository.getSignature(WithSigningUserFactory.create(), cla.getName(), null)).thenReturn(individualSignature);
+		when(mockIndividualSignatureRepository.findSignaturesFor(WithSigningUserFactory.create(), cla.getName())).thenReturn(individualSignature);
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
-
-		assertThat(signPage.isSigned()).isTrue();
-	}
-
-	@Test
-	public void signedLegacy() {
-		String claName = cla.getName()+"-notsigned";
-		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
-		when(mockIndividualSignatureRepository.getSignature(WithSigningUserFactory.create(), claName, cla.getName())).thenReturn(individualSignature);
-
-		SignIclaPage signPage = SignIclaPage.go(getDriver(), claName, cla.getName());
 
 		assertThat(signPage.isSigned()).isTrue();
 	}
