@@ -24,6 +24,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.OneToOne;
 import javax.persistence.Version;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -58,6 +59,15 @@ public class ContributorLicenseAgreement {
 	 */
 	@Column(name = "primary_cla")
 	private boolean primary;
+
+	/**
+	 * The {@link ContributorLicenseAgreement} that replaces this
+	 * {@link ContributorLicenseAgreement}. If this is not signed, we check to
+	 * see if {@link #getSupersedingCla()} is signed. If neither are signed,
+	 * then the user signs {@link #getSupersedingCla()}.
+	 */
+	@OneToOne
+	private ContributorLicenseAgreement supersedingCla;
 
 	// TODO java 8?
 	@Version

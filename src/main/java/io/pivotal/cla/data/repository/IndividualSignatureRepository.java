@@ -18,34 +18,18 @@ package io.pivotal.cla.data.repository;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import com.mysema.query.types.expr.BooleanExpression;
-
 import io.pivotal.cla.data.IndividualSignature;
-import io.pivotal.cla.data.QIndividualSignature;
 import io.pivotal.cla.data.User;
 
 public interface IndividualSignatureRepository extends CrudRepository<IndividualSignature, Long>, QueryDslPredicateExecutor<IndividualSignature> {
 
-	default IndividualSignature findSignaturesFor(User user,  String claName) {
-		BooleanExpression eqClaName = QIndividualSignature.individualSignature.cla.name.eq(claName);
-		BooleanExpression hasEmail = QIndividualSignature.individualSignature.email.in(user.getEmails());
-		BooleanExpression hasGithubLogin = QIndividualSignature.individualSignature.githubLogin.eq(user.getGithubLogin());
-
-		PageRequest limit = new PageRequest(0, 1);
-		Page<IndividualSignature> results = findAll(eqClaName.and(hasEmail.or(hasGithubLogin)), limit);
-		return results.getSize() == 0 ? null : results.getContent().get(0);
-	}
-
-	IndividualSignature findFirstByClaNameAndEmailInOrderByDateOfSignature(String claName, Set<String> emails);
-
-	IndividualSignature findFirstByClaNameAndGithubLoginOrderByDateOfSignature(String claName, String githubLogin);
+	@Query("select s from IndividualSignature s where (s.cla.name = :#{#claName} or s.cla.name in (select distinct c.supersedingCla.name from ContributorLicenseAgreement c where c.name = :#{#claName})) and (s.githubLogin = :#{#u.githubLogin} or s.email in (:#{#u.emails}))")
+	IndividualSignature findSignaturesFor(@Param("u") User user,  @Param("claName") String claName);
 
 	List<IndividualSignature> findByEmailIn(Set<String> email);
 }

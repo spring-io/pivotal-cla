@@ -41,6 +41,21 @@ public class DataUtils {
 		return cla;
 	}
 
+	public static ContributorLicenseAgreement createSpringCla() {
+		MarkdownContent corporate = new MarkdownContent();
+		corporate.setMarkdown("Corporate");
+		MarkdownContent individual = new MarkdownContent();
+		individual.setMarkdown("Individual");
+
+		ContributorLicenseAgreement cla = new ContributorLicenseAgreement();
+		cla.setCorporateContent(corporate);
+		cla.setIndividualContent(individual);
+		cla.setName("spring");
+		cla.setSupersedingCla(createPivotalCla());
+
+		return cla;
+	}
+
 	public static IndividualSignature iclaSignature(ContributorLicenseAgreement cla) {
 		IndividualSignature signature = new IndividualSignature();
 		signature.setCla(cla);
