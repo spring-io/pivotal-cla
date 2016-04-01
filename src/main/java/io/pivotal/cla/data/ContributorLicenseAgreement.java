@@ -31,9 +31,11 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Data
+@ToString(exclude = {"individualContent","corporateContent"})
 public class ContributorLicenseAgreement {
 
 	@Id
