@@ -65,9 +65,7 @@ public class IndividualSignatureRepositoryTests {
 
 		cla = DataUtils.createPivotalCla();
 		cla = clas.save(cla);
-		signature = DataUtils.iclaSignature(cla);
-		signature.setGithubLogin(user.getGithubLogin());
-		signature.setEmail(user.getEmails().iterator().next());
+		signature = createSignature(cla, user);
 
 		signatures.save(signature);
 
@@ -99,5 +97,20 @@ public class IndividualSignatureRepositoryTests {
 	@Test
 	public void findSignatureForSupersedingCla() {
 		assertThat(signatures.findSignaturesFor(user, springCla.getName())).isNotNull();
+	}
+
+	@Test
+	public void findSignatureForMultipleSigned() {
+		IndividualSignature springSignature = createSignature(springCla, user);
+		signatures.save(springSignature);
+
+		assertThat(signatures.findSignaturesFor(user, springCla.getName())).isNotNull();
+	}
+
+	private static IndividualSignature createSignature(ContributorLicenseAgreement cla, User user) {
+		IndividualSignature signature = DataUtils.iclaSignature(cla);
+		signature.setGithubLogin(user.getGithubLogin());
+		signature.setEmail(user.getEmails().iterator().next());
+		return signature;
 	}
 }
