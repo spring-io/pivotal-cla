@@ -66,4 +66,16 @@ public class DataUtils {
 		signature.setTelephone("1234567890");
 		return signature;
 	}
+
+	public static CorporateSignature cclaSignature(ContributorLicenseAgreement cla) {
+		CorporateSignature signature = new CorporateSignature();
+		signature.setCla(cla);
+		signature.setGitHubOrganization(cla.getName());
+		signature.setCountry("USA");
+		signature.setEmail("rwinch@pivotal.io");
+		signature.setMailingAddress("123 Seasame Street");
+		signature.setName("Rob Winch");
+		signature.setTelephone("1234567890");
+		return signature;
+	}
 }
