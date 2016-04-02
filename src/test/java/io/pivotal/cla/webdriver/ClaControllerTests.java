@@ -16,6 +16,8 @@
 package io.pivotal.cla.webdriver;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -59,6 +61,13 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		SignClaPage home = SignClaPage.go(driver, cla.getName());
 		home.assertAt();
 		home.assertSigned();
+	}
+
+	@Test
+	public void claNameNotFound() throws Exception {
+		String url = SignClaPage.url("missing");
+		mockMvc.perform(get(url))
+			.andExpect(status().isNotFound());
 	}
 
 	@Test

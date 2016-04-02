@@ -86,6 +86,10 @@ public class SignClaPage extends BasePage {
 		return PageFactory.initElements(driver, SignClaPage.class);
 	}
 
+	public static String url(String claName) {
+		return "/sign/" + claName;
+	}
+
 	public static SignClaPage go(WebDriver driver, String claName, String repositoryId, String pullRequestId) {
 		get(driver, "/sign/" + claName + "?repositoryId=" + repositoryId + "&pullRequestId=" + pullRequestId);
 		return PageFactory.initElements(driver, SignClaPage.class);

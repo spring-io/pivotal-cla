@@ -69,13 +69,17 @@ public class SignIclaPage extends BasePage {
 		assertThat(getDriver().getTitle()).endsWith("- Sign ICLA");
 	}
 
+	public static String url(String cla) {
+		return "/sign/"+ cla + "/icla";
+	}
+
 	public static SignIclaPage go(WebDriver driver, String cla) {
-		get(driver, "/sign/" + cla + "/icla");
+		get(driver, url(cla));
 		return PageFactory.initElements(driver, SignIclaPage.class);
 	}
 
 	public static SignIclaPage go(WebDriver driver, String cla, String repositoryId, long pullRequestId) {
-		get(driver, "/sign/" + cla + "/icla?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId);
+		get(driver, url(cla) + "?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId);
 		return PageFactory.initElements(driver, SignIclaPage.class);
 	}
 

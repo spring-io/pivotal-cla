@@ -17,6 +17,8 @@ package io.pivotal.cla.webdriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
 
@@ -224,7 +226,6 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		signPage.assertAt();
 	}
 
-
 	@Test
 	public void signNoRepositoryIdWithPullRequestId() {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
@@ -241,5 +242,13 @@ public class IclaControllerTests extends BaseWebDriverTests {
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
+	}
+
+	@Test
+	public void claNameNotFound() throws Exception {
+		String url = SignIclaPage.url("missing");
+		mockMvc
+			.perform(get(url))
+				.andExpect(status().isNotFound());
 	}
 }

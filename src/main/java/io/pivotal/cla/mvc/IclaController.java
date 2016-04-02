@@ -62,6 +62,9 @@ public class IclaController {
 
 		IndividualSignature signed = individual.findSignaturesFor(user, claName);
 		ContributorLicenseAgreement cla = signed == null ? clas.findByNameAndPrimaryTrue(claName) : signed.getCla();
+		if(cla == null) {
+			throw new ResourceNotFoundException();
+		}
 		SignClaForm form = new SignClaForm();
 		form.setSigned(signed != null);
 		form.setName(user.getName());

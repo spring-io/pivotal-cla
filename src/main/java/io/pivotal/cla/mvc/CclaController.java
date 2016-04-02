@@ -61,6 +61,11 @@ public class CclaController {
 			Map<String, Object> model) throws Exception {
 		CorporateSignature signed = null;//corporate.findByClaNameAndEmailIn(claName, user.getEmails());
 		ContributorLicenseAgreement cla = clas.findByNameAndPrimaryTrue(claName);//signed == null ? clas.findByName(claName) : signed.getCla();
+
+		if(cla == null) {
+			throw new ResourceNotFoundException();
+		}
+
 		SignCorporateClaForm form = new SignCorporateClaForm();
 		form.setSigned(signed != null);
 		form.setName(user.getName());

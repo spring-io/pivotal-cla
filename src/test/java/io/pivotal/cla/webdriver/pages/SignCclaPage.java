@@ -64,13 +64,17 @@ public class SignCclaPage extends BasePage {
 		assertThat(getDriver().getTitle()).endsWith("- Sign CCLA");
 	}
 
+	public static String url(String cla) {
+		return "/sign/"+ cla + "/ccla";
+	}
+
 	public static SignCclaPage go(WebDriver driver, String cla) {
-		get(driver, "/sign/" + cla + "/ccla");
+		get(driver, url(cla));
 		return PageFactory.initElements(driver, SignCclaPage.class);
 	}
 
 	public static SignCclaPage go(WebDriver driver, String cla, String repositoryId, long pullRequestId) {
-		get(driver, "/sign/" + cla + "/ccla?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId);
+		get(driver, url(cla) + "/?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId);
 		return PageFactory.initElements(driver, SignCclaPage.class);
 	}
 
