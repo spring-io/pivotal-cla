@@ -25,6 +25,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.webdriver.pages.AboutPage;
@@ -69,9 +70,10 @@ public class ClaControllerTests extends BaseWebDriverTests {
 	@Test
 	public void claPivotalCorporateSigned() throws Exception {
 		List<String> organizations = Arrays.asList(corporateSignature.getGitHubOrganization());
-		when(mockGithub.getOrganizations(WithSigningUserFactory.create().getGithubLogin())).thenReturn(organizations);
+		User user = WithSigningUserFactory.create();
+		when(mockGithub.getOrganizations(user.getGithubLogin())).thenReturn(organizations);
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
-		when(mockCorporateSignatureRepository.findSignature(cla.getName(), organizations)).thenReturn(corporateSignature);
+		when(mockCorporateSignatureRepository.findSignature(cla.getName(), organizations, user.getEmails())).thenReturn(corporateSignature);
 
 		SignClaPage claPage = SignClaPage.go(driver, cla.getName());
 

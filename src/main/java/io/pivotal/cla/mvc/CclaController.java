@@ -61,7 +61,7 @@ public class CclaController {
 			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
 			Map<String, Object> model) throws Exception {
 		List<String> organizations = github.getOrganizations(user.getGithubLogin());
-		CorporateSignature signed = corporate.findSignature(claName, organizations);
+		CorporateSignature signed = corporate.findSignature(claName, organizations, user.getEmails());
 		ContributorLicenseAgreement cla = signed == null ? clas.findByNameAndPrimaryTrue(claName) : signed.getCla();
 
 		if(cla == null) {

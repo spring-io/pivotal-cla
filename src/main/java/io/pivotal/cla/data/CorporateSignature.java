@@ -53,7 +53,17 @@ public class CorporateSignature {
 
 	private String companyName;
 
+	/**
+	 * The GitHub organization that is covered by this signature (null if
+	 * emailDomain is non-null)
+	 */
 	private String gitHubOrganization;
+
+	/**
+	 * The email domain that is covered by this signature (null if
+	 * gitHubOrganization is non-null)
+	 */
+	private String emailDomain;
 
 	private String title;
 

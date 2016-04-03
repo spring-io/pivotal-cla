@@ -17,6 +17,7 @@ package io.pivotal.cla.mvc.github;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anySet;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -139,7 +140,7 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		when(mockTokenRepo.findOne("rwinch/176_test"))
 			.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("organization"));
-		when(mockCorporateSignatureRepository.findSignature(anyString(), anySet())).thenReturn(corporateSignature);
+		when(mockCorporateSignatureRepository.findSignature(anyString(), anySet(), anyCollectionOf(String.class))).thenReturn(corporateSignature);
 
 		mockMvc.perform(hookRequest().content(PAYLOAD))
 			.andExpect(status().isOk());

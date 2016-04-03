@@ -125,7 +125,7 @@ public class GithubHooksController {
 		}
 
 		List<String> organizations = github.getOrganizations(user.getGithubLogin());
-		CorporateSignature corporateSignature = corporate.findSignature(claName, organizations);
+		CorporateSignature corporateSignature = corporate.findSignature(claName, organizations, user.getEmails());
 		return corporateSignature != null;
 	}
 }

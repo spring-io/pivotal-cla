@@ -60,7 +60,7 @@ public class ClaController {
 		boolean signed = individualSignature != null;
 		if(!signed) {
 			List<String> organizations = github.getOrganizations(user.getGithubLogin());
-			signed = corporate.findSignature(claName, organizations) != null;
+			signed = corporate.findSignature(claName, organizations, user.getEmails()) != null;
 		}
 
 		model.put("repositoryId",repositoryId);

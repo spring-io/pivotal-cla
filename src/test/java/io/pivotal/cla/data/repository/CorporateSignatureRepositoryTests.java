@@ -77,22 +77,22 @@ public class CorporateSignatureRepositoryTests {
 
 	@Test
 	public void findSignatureNotFoundOrganization() {
-		assertThat(signatures.findSignature(cla.getName(), Arrays.asList("notorganization"))).isNull();
+		assertThat(signatures.findSignature(cla.getName(), Arrays.asList("notorganization"), user.getEmails())).isNull();
 	}
 
 	@Test
 	public void findSignatureNotFoundCla() {
-		assertThat(signatures.findSignature("notfound", Arrays.asList(signature.getGitHubOrganization()))).isNull();
+		assertThat(signatures.findSignature("notfound", Arrays.asList(signature.getGitHubOrganization()), user.getEmails())).isNull();
 	}
 
 	@Test
 	public void findSignature() {
-		assertThat(signatures.findSignature(cla.getName(), Arrays.asList("notorganization", signature.getGitHubOrganization()))).isNotNull();
+		assertThat(signatures.findSignature(cla.getName(), Arrays.asList("notorganization", signature.getGitHubOrganization()), user.getEmails())).isNotNull();
 	}
 
 	@Test
 	public void findSignatureSupersedingCla() {
-		assertThat(signatures.findSignature(springCla.getName(), Arrays.asList("notorganization", signature.getGitHubOrganization()))).isNotNull();
+		assertThat(signatures.findSignature(springCla.getName(), Arrays.asList("notorganization", signature.getGitHubOrganization()), user.getEmails())).isNotNull();
 	}
 
 	@Test
@@ -100,7 +100,32 @@ public class CorporateSignatureRepositoryTests {
 		CorporateSignature springSignature = createSignature(springCla, user);
 		signatures.save(springSignature);
 
-		assertThat(signatures.findSignature(springCla.getName(), Arrays.asList(signature.getGitHubOrganization(), springSignature.getGitHubOrganization()))).isNotNull();
+		assertThat(signatures.findSignature(springCla.getName(), Arrays.asList(signature.getGitHubOrganization(), springSignature.getGitHubOrganization()), user.getEmails())).isNotNull();
+	}
+
+	@Test
+	public void findSignatureEmailDomain() {
+		CorporateSignature emailSignature = createSignature(cla, user);
+		emailSignature.setGitHubOrganization(null);
+		emailSignature.setEmailDomain("gmail.com");
+
+		emailSignature = signatures.save(emailSignature);
+
+		assertThat(signatures.findSignature(springCla.getName(), Arrays.asList("notorganization"), user.getEmails())).isNotNull();
+	}
+
+	/**
+	 * Happens in GitHubHooksController when user has not yet authenticated.
+	 */
+	@Test
+	public void findSignatureNullEmails() {
+		CorporateSignature emailSignature = createSignature(cla, user);
+		emailSignature.setGitHubOrganization(null);
+		emailSignature.setEmailDomain("gmail.com");
+
+		emailSignature = signatures.save(emailSignature);
+
+		assertThat(signatures.findSignature(springCla.getName(), Arrays.asList("notorganization"), null)).isNull();
 	}
 
 	private static CorporateSignature createSignature(ContributorLicenseAgreement cla, User user) {
