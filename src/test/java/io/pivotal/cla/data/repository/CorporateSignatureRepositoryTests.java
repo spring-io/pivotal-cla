@@ -76,8 +76,13 @@ public class CorporateSignatureRepositoryTests {
 	}
 
 	@Test
-	public void findSignatureNotFound() {
+	public void findSignatureNotFoundOrganization() {
 		assertThat(signatures.findSignature(cla.getName(), Arrays.asList("notorganization"))).isNull();
+	}
+
+	@Test
+	public void findSignatureNotFoundCla() {
+		assertThat(signatures.findSignature("notfound", Arrays.asList(signature.getGitHubOrganization()))).isNull();
 	}
 
 	@Test

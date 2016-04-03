@@ -107,6 +107,19 @@ public class IndividualSignatureRepositoryTests {
 		assertThat(signatures.findSignaturesFor(user, springCla.getName())).isNotNull();
 	}
 
+	@Test
+	public void findSignatureNotFoundCla() {
+		assertThat(signatures.findSignaturesFor(user, "notfound")).isNull();;
+	}
+
+	@Test
+	public void findSignatureNotUser() {
+		user.setGithubLogin("notfound" + user.getGithubLogin());
+		user.setEmails(Collections.singleton("notfound@example.com"));
+
+		assertThat(signatures.findSignaturesFor(user, cla.getName())).isNull();;
+	}
+
 	private static IndividualSignature createSignature(ContributorLicenseAgreement cla, User user) {
 		IndividualSignature signature = DataUtils.iclaSignature(cla);
 		signature.setGithubLogin(user.getGithubLogin());
