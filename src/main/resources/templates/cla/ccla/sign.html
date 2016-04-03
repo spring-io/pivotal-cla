@@ -101,9 +101,9 @@
 				</div>
 				<div class="form-group" th:class="${#fields.hasErrors('title')}? 'has-error form-group' : form-group">
 					<label for="title">
-						Title
+						Job Title
 					</label>
-					<input class="form-control"  type="text" th:field="*{title}"/>
+					<input class="form-control"  type="text" th:field="*{title}" placeholder="VP of Engineering, CEO, CTO, etc"/>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('title')}" id="err-title">
 						<p th:each="err : ${#fields.errors('title')}" th:text="${err}">Input is incorrect</p>
 					</div>
