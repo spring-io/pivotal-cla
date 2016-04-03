@@ -1,4 +1,4 @@
-insert into contributor_license_agreement(id,name,description,primary_cla,created,individual_markdown,individual_html,corporate_markdown,corporate_html) values (11, 'spring','ICLA FINAL 072310',true,null,'ICLA FINAL 072310','ICLA FINAL 072310 html','CCLA FINAL 072310 md','CCLA FINAL 072310 html');
+insert into contributor_license_agreement(id,name,description,primary_cla,created,individual_markdown,individual_html,corporate_markdown,corporate_html) values (11, 'spring','ICLA FINAL 072310',false,null,'ICLA FINAL 072310','ICLA FINAL 072310 html','CCLA FINAL 072310 md','CCLA FINAL 072310 html');
 insert into contributor_license_agreement(id,name,primary_cla,created,individual_markdown,individual_html,corporate_markdown,corporate_html) values (10, 'spring',true,null,'spring icla md','spring icla html','spring ccla md','spring ccla html');
 
 insert into contributor_license_agreement (id,name,primary_cla,created,individual_markdown,individual_html,corporate_markdown,corporate_html) values (1, 'pivotal',true,null,'### Pivotal Software, Inc.

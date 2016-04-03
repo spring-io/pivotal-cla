@@ -15,6 +15,8 @@
  */
 package io.pivotal.cla.mvc.admin;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +62,7 @@ public class AdminClaController {
 
 	@RequestMapping("/admin/cla/")
 	public String listClas(Map<String, Object> model) throws Exception {
-		model.put("clas", claRepo.findAll());
+		model.put("clas", findClas());
 		return "admin/cla/index";
 	}
 
@@ -94,7 +96,7 @@ public class AdminClaController {
 	@RequestMapping("/admin/cla/link")
 	public String linkClaForm(@AuthenticationPrincipal User user, Map<String, Object> model) throws Exception {
 		model.put("linkClaForm", new LinkClaForm());
-		model.put("licenses", claRepo.findAll());
+		model.put("licenses", findClas());
 		model.put("accessTokensUrl", ACCESS_TOKENS_URL);
 		return "admin/cla/link";
 	}
@@ -109,7 +111,7 @@ public class AdminClaController {
 	public String linkCla(@AuthenticationPrincipal User user, HttpServletRequest request, Map<String, Object> model, @Valid LinkClaForm linkClaForm,
 			BindingResult result, RedirectAttributes attrs) throws Exception {
 		if (result.hasErrors()) {
-			model.put("licenses", claRepo.findAll());
+			model.put("licenses", findClas());
 			model.put("accessTokensUrl", ACCESS_TOKENS_URL);
 			return "admin/cla/link";
 		}
@@ -140,5 +142,11 @@ public class AdminClaController {
 		attrs.addFlashAttribute("editContributingMdUrls", contributingUrls.getMarkdown());
 
 		return "redirect:/admin/cla/link";
+	}
+
+	private List<ContributorLicenseAgreement> findClas() {
+		List<ContributorLicenseAgreement> result = claRepo.findByPrimaryTrue();
+		Collections.sort(result, (lhs, rhs) -> lhs.getName().compareTo(rhs.getName()));
+		return result;
 	}
 }

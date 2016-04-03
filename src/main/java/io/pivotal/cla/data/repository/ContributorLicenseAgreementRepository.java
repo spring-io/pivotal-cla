@@ -15,6 +15,8 @@
  */
 package io.pivotal.cla.data.repository;
 
+import java.util.List;
+
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import io.pivotal.cla.data.ContributorLicenseAgreement;
@@ -23,4 +25,6 @@ public interface ContributorLicenseAgreementRepository
 		extends PagingAndSortingRepository<ContributorLicenseAgreement, Long> {
 
 	ContributorLicenseAgreement findByNameAndPrimaryTrue(String name);
+
+	List<ContributorLicenseAgreement> findByPrimaryTrue();
 }
