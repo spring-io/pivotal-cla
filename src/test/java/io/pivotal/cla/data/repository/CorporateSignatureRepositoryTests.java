@@ -95,6 +95,14 @@ public class CorporateSignatureRepositoryTests {
 		assertThat(signatures.findSignature(springCla.getName(), Arrays.asList("notorganization", signature.getGitHubOrganization()))).isNotNull();
 	}
 
+	@Test
+	public void findSignatureForMultipleSigned() {
+		CorporateSignature springSignature = createSignature(springCla, user);
+		signatures.save(springSignature);
+
+		assertThat(signatures.findSignature(springCla.getName(), Arrays.asList(signature.getGitHubOrganization(), springSignature.getGitHubOrganization()))).isNotNull();
+	}
+
 	private static CorporateSignature createSignature(ContributorLicenseAgreement cla, User user) {
 		CorporateSignature signature = DataUtils.cclaSignature(cla);
 		signature.setGithubLogin(user.getGithubLogin());

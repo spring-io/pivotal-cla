@@ -16,7 +16,10 @@
 package io.pivotal.cla.data.repository;
 
 import java.util.Collection;
+import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -25,8 +28,14 @@ import io.pivotal.cla.data.CorporateSignature;
 
 public interface CorporateSignatureRepository extends CrudRepository<CorporateSignature, Long> {
 
+	default CorporateSignature findSignature(@Param("claName") String claName, @Param("organizations") Collection<String> organizations) {
+		PageRequest pageable = new PageRequest(0, 1);
+		List<CorporateSignature> results = findSignatures(pageable, claName, organizations);
+		return results.isEmpty() ? null : results.get(0);
+	}
+
 	@Query("select s from CorporateSignature s where (s.cla.name = :claName or s.cla.name in (select distinct c.supersedingCla.name from ContributorLicenseAgreement c where c.name = :#{#claName})) and s.gitHubOrganization in (:organizations)")
-	CorporateSignature findSignature(@Param("claName") String claName, @Param("organizations") Collection<String> organizations);
+	List<CorporateSignature> findSignatures(Pageable pageable, @Param("claName") String claName, @Param("organizations") Collection<String> organizations);
 
 	// part of github organization
 	// has email that ends with @domain
