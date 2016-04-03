@@ -30,7 +30,7 @@ public interface GitHubService {
 
 	User getCurrentUser(CurrentUserRequest request);
 
-	List<String> getOrganizations(String accessToken) throws IOException;
+	List<String> getOrganizations(String username) throws IOException;
 
 	ContributingUrlsResponse getContributingUrls(List<String> repositoryIds);
 

@@ -19,6 +19,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,6 +64,18 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		SignClaPage home = SignClaPage.go(driver, cla.getName());
 		home.assertAt();
 		home.assertSigned();
+	}
+
+	@Test
+	public void claPivotalCorporateSigned() throws Exception {
+		List<String> organizations = Arrays.asList(corporateSignature.getGitHubOrganization());
+		when(mockGithub.getOrganizations(WithSigningUserFactory.create().getGithubLogin())).thenReturn(organizations);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+		when(mockCorporateSignatureRepository.findSignature(cla.getName(), organizations)).thenReturn(corporateSignature);
+
+		SignClaPage claPage = SignClaPage.go(driver, cla.getName());
+
+		claPage.assertSigned();
 	}
 
 	@Test

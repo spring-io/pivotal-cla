@@ -17,6 +17,7 @@ package io.pivotal.cla.mvc;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -59,8 +60,9 @@ public class CclaController {
 	public String claForm(@AuthenticationPrincipal User user, @PathVariable String claName,
 			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
 			Map<String, Object> model) throws Exception {
-		CorporateSignature signed = null;//corporate.findByClaNameAndEmailIn(claName, user.getEmails());
-		ContributorLicenseAgreement cla = clas.findByNameAndPrimaryTrue(claName);//signed == null ? clas.findByName(claName) : signed.getCla();
+		List<String> organizations = github.getOrganizations(user.getGithubLogin());
+		CorporateSignature signed = corporate.findSignature(claName, organizations);
+		ContributorLicenseAgreement cla = signed == null ? clas.findByNameAndPrimaryTrue(claName) : signed.getCla();
 
 		if(cla == null) {
 			throw new ResourceNotFoundException();

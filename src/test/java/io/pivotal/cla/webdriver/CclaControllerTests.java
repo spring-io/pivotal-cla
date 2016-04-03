@@ -22,10 +22,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
 import io.pivotal.cla.security.WithSigningUser;
+import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.webdriver.pages.SignCclaPage;
 import io.pivotal.cla.webdriver.pages.SignCclaPage.Form;
 
@@ -40,6 +42,18 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 		signPage.assertClaLink(cla.getName());
 		assertThat(signPage.getCorporate()).isEqualTo(cla.getCorporateContent().getHtml());
+	}
+
+	@Test
+	public void viewSigned() throws Exception {
+		List<String> organizations = Arrays.asList(corporateSignature.getGitHubOrganization());
+		when(mockGithub.getOrganizations(WithSigningUserFactory.create().getGithubLogin())).thenReturn(organizations);
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+		when(mockCorporateSignatureRepository.findSignature(cla.getName(), organizations)).thenReturn(corporateSignature);
+
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
+
+		assertThat(signPage.isSigned()).isTrue();
 	}
 
 	@Test

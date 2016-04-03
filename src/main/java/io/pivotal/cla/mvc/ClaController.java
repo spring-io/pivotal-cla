@@ -15,6 +15,7 @@
  */
 package io.pivotal.cla.mvc;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,9 @@ import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
+import io.pivotal.cla.data.repository.CorporateSignatureRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
+import io.pivotal.cla.service.GitHubService;
 
 @Controller
 public class ClaController {
@@ -37,12 +40,16 @@ public class ClaController {
 	ContributorLicenseAgreementRepository clas;
 
 	@Autowired
+	GitHubService github;
+	@Autowired
 	IndividualSignatureRepository individual;
+	@Autowired
+	CorporateSignatureRepository corporate;
 
 	@RequestMapping("/sign/{claName}")
 	public String signIndex(@AuthenticationPrincipal User user, @PathVariable String claName,
 			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
-			Map<String, Object> model) {
+			Map<String, Object> model) throws Exception {
 
 		ContributorLicenseAgreement cla = clas.findByNameAndPrimaryTrue(claName);
 		if(cla == null) {
@@ -50,10 +57,15 @@ public class ClaController {
 		}
 
 		IndividualSignature individualSignature = individual.findSignaturesFor(user, claName);
+		boolean signed = individualSignature != null;
+		if(!signed) {
+			List<String> organizations = github.getOrganizations(user.getGithubLogin());
+			signed = corporate.findSignature(claName, organizations) != null;
+		}
 
 		model.put("repositoryId",repositoryId);
 		model.put("pullRequestId", pullRequestId);
-		model.put("signed", individualSignature != null);
+		model.put("signed", signed);
 		model.put("claName", claName);
 		return "index";
 	}
