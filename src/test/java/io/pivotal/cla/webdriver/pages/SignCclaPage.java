@@ -97,6 +97,8 @@ public class SignCclaPage extends BasePage {
 
 		WebElement title;
 
+		WebElement confirm;
+
 		public <T extends BasePage> T sign(Class<T> page) {
 			sign.click();
 			return PageFactory.initElements(getDriver(), page);
@@ -172,6 +174,15 @@ public class SignCclaPage extends BasePage {
 
 		public InputAssert assertTitle() {
 			return assertInput(title);
+		}
+
+		public Form confirm() {
+			this.confirm.click();
+			return this;
+		}
+
+		public CheckboxAssert assertConfirm() {
+			return assertCheckbox(confirm);
 		}
 	}
 }

@@ -33,4 +33,5 @@ public class SignCorporateClaForm extends SignClaForm {
 	private String title;
 
 	private List<String> gitHubOrganizations;
+
 }

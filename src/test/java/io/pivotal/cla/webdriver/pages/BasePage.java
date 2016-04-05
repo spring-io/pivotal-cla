@@ -69,6 +69,10 @@ public abstract class BasePage {
 		return new InputAssert(input);
 	}
 
+	protected CheckboxAssert assertCheckbox(WebElement input) {
+		return new CheckboxAssert(input);
+	}
+
 	public class InputAssert {
 		protected WebElement input;
 
@@ -121,6 +125,20 @@ public abstract class BasePage {
 
 		private Select select() {
 			return new Select(input);
+		}
+	}
+
+	public class CheckboxAssert extends InputAssert {
+		public CheckboxAssert(WebElement input) {
+			super(input);
+		}
+
+		public void assertSelected() {
+			assertThat(input.isSelected()).isTrue();
+		}
+
+		public void assertNotSelected() {
+			assertThat(input.isSelected()).isFalse();
 		}
 	}
 

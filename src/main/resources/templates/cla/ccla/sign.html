@@ -108,6 +108,17 @@
 						<p th:each="err : ${#fields.errors('title')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
+				<hr/>
+				<div class="checkbox" th:class="${#fields.hasErrors('confirm')}? 'has-error checkbox' : checkbox">
+					<label for="confirm">
+						<input type="checkbox" id="checkbox" th:field="*{confirm}"/> I have read the terms and agree
+					</label>
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('confirm')}" id="err-confirm">
+						<p th:each="err : ${#fields.errors('confirm')}" th:text="${err}">Input is incorrect</p>
+					</div>
+				</div>
+				<hr/>
+
 
 				<input type="hidden" th:field="*{claId}"/>
 				<input type="hidden" th:if="${signCorporateClaForm.repositoryId != null}" th:field="*{repositoryId}"/>

@@ -97,6 +97,8 @@ public class SignIclaPage extends BasePage {
 
 		WebElement telephone;
 
+		WebElement confirm;
+
 		public <T extends BasePage> T sign(Class<T> page) {
 			sign.click();
 			return PageFactory.initElements(getDriver(), page);
@@ -145,6 +147,15 @@ public class SignIclaPage extends BasePage {
 		public Form telephone(String telephone) {
 			this.telephone.sendKeys(telephone);
 			return this;
+		}
+
+		public Form confirm() {
+			this.confirm.click();
+			return this;
+		}
+
+		public CheckboxAssert assertConfirm() {
+			return assertCheckbox(confirm);
 		}
 	}
 }

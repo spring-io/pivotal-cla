@@ -65,6 +65,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 			.mailingAddress("123 Seasame St")
 			.country("USA")
 			.telephone("123.456.7890")
+			.confirm()
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
@@ -74,6 +75,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		form.assertMailingAddress().hasNoErrors();
 		form.assertCountry().hasNoErrors();
 		form.assertTelephone().hasNoErrors();
+		form.assertConfirm().hasNoErrors();
 	}
 
 	@Test
@@ -90,6 +92,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 			.mailingAddress("123 Seasame St")
 			.country("USA")
 			.telephone("123.456.7890")
+			.confirm()
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
@@ -99,6 +102,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		form.assertMailingAddress().hasNoErrors();
 		form.assertCountry().hasNoErrors();
 		form.assertTelephone().hasNoErrors();
+		form.assertConfirm().hasNoErrors();
 	}
 
 	@Test
@@ -115,6 +119,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 			.email("rob@gmail.com")
 			.country("USA")
 			.telephone("123.456.7890")
+			.confirm()
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
@@ -124,6 +129,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		form.assertMailingAddress().hasRequiredError();
 		form.assertCountry().hasNoErrors();
 		form.assertTelephone().hasNoErrors();
+		form.assertConfirm().hasNoErrors();
 	}
 
 	@Test
@@ -140,6 +146,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 			.email("rob@gmail.com")
 			.mailingAddress("123 Seasame St")
 			.telephone("123.456.7890")
+			.confirm()
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
@@ -149,6 +156,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		form.assertMailingAddress().hasNoErrors();
 		form.assertCountry().hasRequiredError();
 		form.assertTelephone().hasNoErrors();
+		form.assertConfirm().hasNoErrors();
 	}
 
 	@Test
@@ -165,6 +173,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 			.email("rob@gmail.com")
 			.mailingAddress("123 Seasame St")
 			.country("USA")
+			.confirm()
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
@@ -174,6 +183,34 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		form.assertMailingAddress().hasNoErrors();
 		form.assertCountry().hasNoErrors();
 		form.assertTelephone().hasRequiredError();
+		form.assertConfirm().hasNoErrors();
+	}
+
+	@Test
+	public void signConfirmRequired() {
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
+
+		Form form = signPage.form();
+
+		signPage = form
+			.name("Rob Winch")
+			.email("rob@gmail.com")
+			.mailingAddress("123 Seasame St")
+			.country("USA")
+			.telephone("123.456.7890")
+			.sign(SignIclaPage.class);
+
+		signPage.assertAt();
+		form = signPage.form();
+		form.assertName().hasNoErrors();
+		form.assertEmail().hasNoErrors();
+		form.assertMailingAddress().hasNoErrors();
+		form.assertCountry().hasNoErrors();
+		form.assertTelephone().hasNoErrors();
+		form.assertConfirm().hasRequiredError();
 	}
 
 	@Test
@@ -188,6 +225,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 			.email("rob@gmail.com")
 			.mailingAddress("123 Seasame St")
 			.country("USA")
+			.telephone("123.456.7890")
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
@@ -197,15 +235,16 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		form.assertEmail().hasValue("rob@gmail.com");
 		form.assertMailingAddress().hasValue("123 Seasame St");
 		form.assertCountry().hasValue("USA");
+		form.assertTelephone().hasValue("123.456.7890");
 
 		signPage = SignIclaPage.go(getDriver(), cla.getName());
 
 		signPage = signPage.form()
-			.telephone("123.456.7890")
+			.confirm()
 			.sign(SignIclaPage.class);
 
 		signPage.form()
-			.assertTelephone().hasValue("123.456.7890");
+			.assertConfirm().assertSelected();
 	}
 
 	@Test

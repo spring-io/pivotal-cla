@@ -76,6 +76,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 			.companyName("Pivotal")
 			.gitHubOrganization("pivotal")
 			.title("Director")
+			.confirm()
 			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
@@ -84,6 +85,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		form.assertEmail().hasNoErrors();
 		form.assertCompanyName().hasNoErrors();
 		form.assertGitHubOrganization().hasNoErrors();
+		form.assertConfirm().hasNoErrors();
 	}
 
 	@Test
@@ -104,6 +106,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 			.companyName("Pivotal")
 			.gitHubOrganization("pivotal")
 			.title("Director")
+			.confirm()
 			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
@@ -112,6 +115,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		form.assertEmail().hasRequiredError();
 		form.assertCompanyName().hasNoErrors();
 		form.assertGitHubOrganization().hasNoErrors();
+		form.assertConfirm().hasNoErrors();
 	}
 
 
@@ -133,6 +137,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 			.companyName("Pivotal")
 			.gitHubOrganization("pivotal")
 			.title("Director")
+			.confirm()
 			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
@@ -142,6 +147,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		form.assertMailingAddress().hasRequiredError();
 		form.assertCountry().hasNoErrors();
 		form.assertTelephone().hasNoErrors();
+		form.assertConfirm().hasNoErrors();
 	}
 
 	@Test
@@ -162,6 +168,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 			.companyName("Pivotal")
 			.gitHubOrganization("pivotal")
 			.title("Director")
+			.confirm()
 			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
@@ -171,6 +178,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		form.assertMailingAddress().hasNoErrors();
 		form.assertCountry().hasRequiredError();
 		form.assertTelephone().hasNoErrors();
+		form.assertConfirm().hasNoErrors();
 	}
 
 	@Test
@@ -191,6 +199,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 			.companyName("Pivotal")
 			.gitHubOrganization("pivotal")
 			.title("Director")
+			.confirm()
 			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
@@ -200,6 +209,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		form.assertMailingAddress().hasNoErrors();
 		form.assertCountry().hasNoErrors();
 		form.assertTelephone().hasRequiredError();
+		form.assertConfirm().hasNoErrors();
 	}
 
 	@Test
@@ -220,6 +230,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 			.telephone("123.456.7890")
 			.gitHubOrganization("pivotal")
 			.title("Director")
+			.confirm()
 			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
@@ -228,6 +239,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		form.assertEmail().hasNoErrors();
 		form.assertCompanyName().hasRequiredError();
 		form.assertGitHubOrganization().hasNoErrors();
+		form.assertConfirm().hasNoErrors();
 	}
 
 	@Test
@@ -248,6 +260,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 			.telephone("123.456.7890")
 			.companyName("Pivotal")
 			.title("Director")
+			.confirm()
 			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
@@ -256,6 +269,38 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		form.assertEmail().hasNoErrors();
 		form.assertCompanyName().hasNoErrors();
 		form.assertGitHubOrganization().hasRequiredError();
+		form.assertConfirm().hasNoErrors();
+	}
+
+	@Test
+	public void signConfirmRequired() throws Exception {
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
+
+		Form form = signPage.form();
+
+		signPage = form
+			.name("Rob Winch")
+			.email("rob@gmail.com")
+			.mailingAddress("123 Seasame St")
+			.country("USA")
+			.telephone("123.456.7890")
+			.companyName("Pivotal")
+			.gitHubOrganization("pivotal")
+			.title("Director")
+			.sign(SignCclaPage.class);
+
+		signPage.assertAt();
+		form = signPage.form();
+		form.assertName().hasNoErrors();
+		form.assertEmail().hasNoErrors();
+		form.assertMailingAddress().hasNoErrors();
+		form.assertCountry().hasNoErrors();
+		form.assertTelephone().hasNoErrors();
+		form.assertConfirm().hasRequiredError();
 	}
 
 	@Test
@@ -274,6 +319,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 			.companyName("Pivotal")
 			.gitHubOrganization("pivotal")
 			.title("Director")
+			.confirm()
 			.sign(SignCclaPage.class);
 
 		signPage.assertAt();
@@ -286,6 +332,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		form.assertCompanyName().hasValue("Pivotal");
 		form.assertGitHubOrganization().hasValue("pivotal");
 		form.assertTitle().hasValue("Director");
+		form.assertConfirm().assertSelected();
 
 		signPage = SignCclaPage.go(getDriver(), cla.getName());
 
