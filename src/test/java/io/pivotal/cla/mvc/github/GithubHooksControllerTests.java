@@ -23,6 +23,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
@@ -155,6 +156,13 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/pivotal?repositoryId=rwinch/176_test&pullRequestId=2");
 		assertThat(status.isSuccess()).isTrue();
 		assertThat(status.getGithubUsername()).isEqualTo(user.getGithubLogin());
+	}
+
+	@Test
+	public void markCommitStatusBadRequest() throws Exception {
+
+		mockMvc.perform(hookRequest().content(""))
+			.andExpect(status().isBadRequest());
 	}
 
 	private MockHttpServletRequestBuilder hookRequest() {
