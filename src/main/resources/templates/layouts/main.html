@@ -74,7 +74,7 @@ footer {
 							</li> -->
 						</ul>
 						<ul class="nav navbar-nav navbar-right" th:if="${currentUser != null}">
-						 <li class="dropdown">
+						<li class="dropdown">
 								<a id="user-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img th:src="${currentUser.avatarUrl}" height="20" width="20"> <span class="caret"></span></a>
 								<ul class="dropdown-menu">
 										<li class="dropdown-header" th:text="${currentUser.githubLogin}">the_username</li>
@@ -90,7 +90,7 @@ footer {
 			<div class="container">
 
 
-			<div id="message" th:if="${message != null}" th:text="${message}" class="alert alert-success">
+			<div id="successMessage" th:if="${successMessage != null}" th:text="${successMessage}" class="alert alert-success">
 
 			</div>
 			<!-- Main component for a primary marketing message or call to action -->

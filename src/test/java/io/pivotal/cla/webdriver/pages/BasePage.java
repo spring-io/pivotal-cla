@@ -48,8 +48,8 @@ public abstract class BasePage {
 	@FindBy(id = "user-menu")
 	private WebElement userMenu;
 
-	@FindBy(id = "message")
-	private WebElement message;
+	@FindBy(id = "successMessage")
+	private WebElement successMessage;
 
 	protected BasePage(WebDriver driver) {
 		this.driver = driver;
@@ -154,7 +154,7 @@ public abstract class BasePage {
 		return PageFactory.initElements(driver, ProfilePage.class);
 	}
 
-	protected String getMessage() {
-		return message.getText();
+	protected String getSuccessMessage() {
+		return successMessage.getText();
 	}
 }

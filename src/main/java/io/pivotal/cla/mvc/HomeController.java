@@ -40,7 +40,7 @@ public class HomeController {
 	@RequestMapping(value="/",params="logout")
 	public String logoutSuccess(Map<String,Object> model) throws Exception {
 		model.put("claName", "pivotal");
-		model.put("message", "You have been signed out.");
+		model.put("successMessage", "You have been signed out.");
 		return "index";
 	}
 
