@@ -34,8 +34,6 @@ import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
 public abstract class BasePage {
 	private WebDriver driver;
 
-	private WebElement dashboard;
-
 	private WebElement manage;
 
 	private WebElement link;
