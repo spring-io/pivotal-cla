@@ -15,16 +15,26 @@
  */
 package io.pivotal.cla.config;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
@@ -33,6 +43,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsUtils;
 
+import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.GithubAuthenticationEntryPoint;
 
 @EnableWebSecurity
@@ -47,10 +58,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.exceptionHandling()
 				.authenticationEntryPoint(entryPoint)
-				.accessDeniedHandler( (request, response, accessDeniedException) -> {
-						new HttpSessionRequestCache().saveRequest(request, response);
-						entryPoint.commence(request, response, new InsufficientAuthenticationException("Additional OAuth Scopes required", accessDeniedException));
-					})
+				.accessDeniedHandler( new AccessDeniedHandler() {
+					@Override
+					public void handle(HttpServletRequest request, HttpServletResponse response,
+							AccessDeniedException accessDeniedException) throws IOException, ServletException {
+									Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+									User currentUser = authentication == null ? null : (User) authentication.getPrincipal();
+
+									if(currentUser.isAdminAccessRequested()) {
+										new AccessDeniedHandlerImpl().handle(request, response, accessDeniedException);
+										return;
+									}
+
+									new HttpSessionRequestCache().saveRequest(request, response);
+									entryPoint.commence(request, response, new InsufficientAuthenticationException("Additional OAuth Scopes required", accessDeniedException));
+								}
+				})
 				.and()
 			.csrf()
 				.ignoringAntMatchers("/github/hooks/**").and()

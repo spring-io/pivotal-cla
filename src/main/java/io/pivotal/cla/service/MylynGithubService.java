@@ -173,6 +173,7 @@ public class MylynGithubService implements GitHubService {
 			user.setAvatarUrl(githubUser.getAvatarUrl());
 			user.setEmails(new TreeSet<>(verifiedEmails));
 			user.setGithubLogin(githubUser.getLogin());
+			user.setAdminAccessRequested(request.isRequestAdminAccess());
 			user.setAdmin(request.isRequestAdminAccess() && hasAdminEmail(user));
 			return user;
 

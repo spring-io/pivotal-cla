@@ -24,4 +24,5 @@ import org.springframework.security.test.context.support.WithSecurityContext;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface WithSigningUser {
 
+	boolean requestedAdmin() default false;
 }

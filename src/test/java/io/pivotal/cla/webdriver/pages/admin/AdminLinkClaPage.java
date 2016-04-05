@@ -38,7 +38,7 @@ public class AdminLinkClaPage extends BasePage {
 
 	WebElement claName;
 
- 	@FindBy(id = "contributing-adoc")
+	@FindBy(id = "contributing-adoc")
 	WebElement contributingAdoc;
 
 	@FindBy(id = "contributing-md")
@@ -98,8 +98,12 @@ public class AdminLinkClaPage extends BasePage {
 		assertThat(getDriver().getTitle()).endsWith("Link to CLA");
 	}
 
+	public static String url() {
+		return "/admin/cla/link";
+	}
+
 	public static AdminLinkClaPage to(WebDriver driver) {
-		get(driver, "/admin/cla/link");
+		get(driver, url());
 		return PageFactory.initElements(driver, AdminLinkClaPage.class);
 	}
 }

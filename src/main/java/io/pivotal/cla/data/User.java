@@ -43,4 +43,6 @@ public class User {
 
 	private boolean admin;
 
+	private boolean adminAccessRequested;
+
 }

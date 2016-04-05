@@ -28,7 +28,9 @@ public class WithSigningUserFactory implements WithSecurityContextFactory<WithSi
 
 	@Override
 	public SecurityContext createSecurityContext(WithSigningUser user) {
-		UserAuthentication auth = new UserAuthentication(create());
+		User principal = create();
+		principal.setAdminAccessRequested(user.requestedAdmin());
+		UserAuthentication auth = new UserAuthentication(principal);
 		SecurityContext context = SecurityContextHolder.createEmptyContext();
 		context.setAuthentication(auth);
 		return context;

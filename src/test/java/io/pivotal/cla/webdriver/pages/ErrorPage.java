@@ -43,6 +43,10 @@ public class ErrorPage extends SignClaPage {
 		assertThat(getError()).isEqualTo("Not Found");
 	}
 
+	public void assertErrorForbidden() {
+		assertThat(getError()).isEqualTo("Forbidden");
+	}
+
 	public String getError() {
 		return error.getText();
 	}
