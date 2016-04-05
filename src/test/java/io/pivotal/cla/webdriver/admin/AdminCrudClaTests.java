@@ -19,6 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -35,6 +37,8 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 
 	@Test
 	public void navigateToCreateCla() {
+		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
+
 		HomePage homePage = HomePage.go(driver);
 		AdminListClasPage manage = homePage.manage();
 		manage.assertAt();
@@ -91,6 +95,8 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 
 	@Test
 	public void createClaSuccess() {
+		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
+
 		String individualMd = cla.getIndividualContent().getMarkdown();
 		String individualHtml = cla.getIndividualContent().getHtml();
 		String corporateMd = cla.getCorporateContent().getMarkdown();
