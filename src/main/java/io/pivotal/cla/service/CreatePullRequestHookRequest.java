@@ -32,4 +32,6 @@ public class CreatePullRequestHookRequest {
 
 	private String githubEventUrl;
 
+	private String secret;
+
 }

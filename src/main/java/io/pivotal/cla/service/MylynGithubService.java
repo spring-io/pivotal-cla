@@ -217,7 +217,7 @@ public class MylynGithubService implements GitHubService {
 
 			tokenRepo.save(token);
 
-			EventsRepositoryHook hook = createHook(githubEventUrl);
+			EventsRepositoryHook hook = createHook(githubEventUrl, request.getSecret());
 			RepositoryHook createdHook = service.createHook(RepositoryId.createFromId(repository), hook);
 			long hookId = createdHook.getId();
 			hookUrls.add("https://github.com/" + repository + "/settings/hooks/" + hookId);
@@ -281,10 +281,11 @@ public class MylynGithubService implements GitHubService {
 		}
 	}
 
-	private EventsRepositoryHook createHook(String url) {
+	private EventsRepositoryHook createHook(String url, String secret) {
 		Map<String, String> config = new HashMap<>();
 		config.put("url", url);
 		config.put("content_type", "json");
+		config.put("secret", secret);
 		EventsRepositoryHook hook = new EventsRepositoryHook();
 		hook.setActive(true);
 		hook.addEvent("pull_request");

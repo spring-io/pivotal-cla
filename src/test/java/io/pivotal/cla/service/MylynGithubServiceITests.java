@@ -127,6 +127,7 @@ public class MylynGithubServiceITests {
 		hookRequest.setAccessToken("access-token-123");
 		hookRequest.setGithubEventUrl("https://example.com/github/hook");
 		hookRequest.setRepositoryIds(Arrays.asList("spring-projects/spring-security","spring-projects/spring-session"));
+		hookRequest.setSecret("do not guess me");
 
 		List<String> hooks = service.createPullRequestHooks(hookRequest );
 
@@ -140,7 +141,7 @@ public class MylynGithubServiceITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/hooks");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + hookRequest.getAccessToken());
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"events\":[\"pull_request\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":0,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"url\":\"https://example.com/github/hook\"}}");
+				"{\"events\":[\"pull_request\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":0,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"secret\":\"do not guess me\",\"url\":\"https://example.com/github/hook\"}}");
 
 		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("POST");
@@ -148,7 +149,7 @@ public class MylynGithubServiceITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-session/hooks");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + hookRequest.getAccessToken());
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"events\":[\"pull_request\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":0,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"url\":\"https://example.com/github/hook\"}}");
+				"{\"events\":[\"pull_request\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":0,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"secret\":\"do not guess me\",\"url\":\"https://example.com/github/hook\"}}");
 	}
 
 	@Test

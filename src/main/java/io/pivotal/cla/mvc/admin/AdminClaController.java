@@ -123,7 +123,6 @@ public class AdminClaController {
 
 		String pullRequestHookUrl = pullRequestUrlBldr
 				.path("/github/hooks/pull_request/" + linkClaForm.getClaName())
-				.param("access_token", accessToken.getToken())
 				.build();
 		String signClaUrl = signClaUrlBldr.path("/sign/" + linkClaForm.getClaName()).build();
 
@@ -132,6 +131,7 @@ public class AdminClaController {
 		List<String> repositoryIds = linkClaForm.getRepositories();
 		createPullRequest.setRepositoryIds(repositoryIds);
 		createPullRequest.setGithubEventUrl(pullRequestHookUrl);
+		createPullRequest.setSecret(accessToken.getToken());
 
 		ContributingUrlsResponse contributingUrls = github.getContributingUrls(repositoryIds);
 		List<String> hookUrls = github.createPullRequestHooks(createPullRequest);

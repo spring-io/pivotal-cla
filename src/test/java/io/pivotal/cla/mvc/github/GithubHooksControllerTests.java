@@ -25,15 +25,22 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
+import io.pivotal.cla.security.GithubSignature;
 import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.service.CommitStatus;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
@@ -43,6 +50,9 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 
 	AccessToken accessToken;
 
+	@Autowired
+	GithubSignature oauth;
+
 	@Before
 	public void setupAccessToken() {
 		accessToken = new AccessToken(AccessToken.CLA_ACCESS_TOKEN_ID, "GithubHooksControllerTests_access_token");
@@ -51,7 +61,7 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void ping() throws Exception {
-		mockMvc.perform(hookRequest().header("X-GitHub-Event", "ping"))
+		mockMvc.perform(hookRequest().header("X-GitHub-Event", "ping").content(PAYLOAD))
 				.andExpect(status().is2xxSuccessful());
 	}
 
@@ -59,7 +69,7 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 	public void pingNoToken() throws Exception {
 		accessToken = null;
 
-		mockMvc.perform(hookRequest().header("X-GitHub-Event", "ping"))
+		mockMvc.perform(hookRequest().header("X-GitHub-Event", "ping").content(PAYLOAD))
 				.andExpect(status().isUnauthorized());
 	}
 
@@ -165,10 +175,29 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 	}
 
 	private MockHttpServletRequestBuilder hookRequest() {
-		MockHttpServletRequestBuilder post = post("/github/hooks/pull_request/pivotal");
-		if(accessToken != null) {
-			post.param("access_token", accessToken.getToken());
-		}
+		MockHttpServletRequestBuilder post = post("/github/hooks/pull_request/pivotal").with(new RequestPostProcessor() {
+
+			@Override
+			public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
+				if(accessToken != null) {
+					try {
+						String signature = getSignature(request);
+						request.addHeader("X-Hub-Signature", signature);
+					} catch(Exception e) {
+						throw new RuntimeException(e);
+					}
+				}
+				return request;
+			}
+
+			private String getSignature(MockHttpServletRequest request)
+					throws IOException, UnsupportedEncodingException, Exception {
+				String body = IOUtils.toString(request.getReader());
+				String signature = oauth.create(body, accessToken.getToken());
+				return signature;
+			}
+		});
+
 		return post;
 	}
 

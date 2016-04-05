@@ -109,7 +109,8 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 		CreatePullRequestHookRequest request = requestCaptor.getValue();
 		assertThat(request.getAccessToken()).isEqualTo(user.getAccessToken());
 		assertThat(request.getRepositoryIds()).containsOnly("test/this");
-		assertThat(request.getGithubEventUrl()).isEqualTo("http://localhost/github/hooks/pull_request/"+cla.getName()+"?access_token="+token.getToken());
+		assertThat(request.getGithubEventUrl()).isEqualTo("http://localhost/github/hooks/pull_request/"+cla.getName());
+		assertThat(request.getSecret()).isEqualTo(token.getToken());
 		assertThat(driver.getPageSource()).doesNotContain(token.getToken());
 	}
 }

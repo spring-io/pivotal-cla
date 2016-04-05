@@ -26,6 +26,7 @@ import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +47,7 @@ import io.pivotal.cla.service.CommitStatus;
 import io.pivotal.cla.service.GitHubService;
 
 @RestController
+@PreAuthorize("@githubSignature.check(#request.getHeader('X-Hub-Signature'), #body)")
 public class GithubHooksController {
 
 	@Autowired
@@ -64,7 +66,7 @@ public class GithubHooksController {
 	GitHubService github;
 
 	@RequestMapping(value = "/github/hooks/pull_request/{cla}", headers = "X-GitHub-Event=ping")
-	public String pullRequestPing() {
+	public String pullRequestPing(HttpServletRequest request, @RequestBody String body, @PathVariable String cla) throws Exception {
 		return "SUCCESS";
 	}
 

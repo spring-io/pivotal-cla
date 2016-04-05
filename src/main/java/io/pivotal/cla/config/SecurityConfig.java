@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -35,6 +36,7 @@ import org.springframework.web.cors.CorsUtils;
 import io.pivotal.cla.security.GithubAuthenticationEntryPoint;
 
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	ClaOAuthConfig oauthConfig;
@@ -55,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 				.antMatchers("/login/**", "/", "/about", "/webjars/**").permitAll()
-				.antMatchers("/github/hooks/**").access("@oauth.check(request.getParameter('access_token'))")
+				.antMatchers("/github/hooks/**").permitAll()
 				.antMatchers("/admin/**","/manage/**").hasRole("ADMIN")
 				.anyRequest().authenticated()
 				.and()
