@@ -46,7 +46,6 @@ import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.service.CurrentUserRequest;
 import io.pivotal.cla.service.OAuthAccessTokenParams;
-import io.pivotal.cla.webdriver.pages.DashboardPage;
 import io.pivotal.cla.webdriver.pages.SignClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
@@ -64,7 +63,7 @@ public class AuthenticationTests extends BaseWebDriverTests {
 
 	@Test
 	public void requiresAuthenticationAndCreatesValidOAuthTokenRequest() throws Exception {
-		String redirect = mockMvc.perform(get("/dashboard"))
+		String redirect = mockMvc.perform(get("/sign/pivotal"))
 				.andExpect(status().is3xxRedirection())
 				.andReturn().getResponse().getRedirectedUrl();
 
@@ -112,11 +111,11 @@ public class AuthenticationTests extends BaseWebDriverTests {
 	@Test
 	public void authenticateUser() throws Exception {
 		User user = WithSigningUserFactory.create();
-
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockGithub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
 
-		DashboardPage home = DashboardPage.go(driver);
-		home.assertAt();
+		SignClaPage claPage = SignClaPage.go(driver, cla.getName());
+		claPage.assertAt();
 
 		ArgumentCaptor<CurrentUserRequest> userCaptor = ArgumentCaptor.forClass(CurrentUserRequest.class);
 		verify(mockGithub).getCurrentUser(userCaptor.capture());
@@ -151,6 +150,7 @@ public class AuthenticationTests extends BaseWebDriverTests {
 		User currentUser = WithAdminUserFactory.create();
 		currentUser.setAdmin(false);
 
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockGithub.getCurrentUser(any(CurrentUserRequest.class))).thenAnswer(new Answer<User>() {
 			@Override
 			public User answer(InvocationOnMock invocation) throws Throwable {
@@ -163,8 +163,8 @@ public class AuthenticationTests extends BaseWebDriverTests {
 
 		when(mockIndividualSignatureRepository.findByEmailIn(anySet())).thenReturn(Collections.emptyList());
 
-		DashboardPage dashboard = DashboardPage.go(driver);
-		dashboard.assertAt();
+		SignClaPage signClaPage = SignClaPage.go(driver, cla.getName());
+		signClaPage.assertAt();
 
 		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
 		when(mockGithub.findRepositoryNames(anyString())).thenReturn(Arrays.asList("test/this"));
@@ -182,7 +182,7 @@ public class AuthenticationTests extends BaseWebDriverTests {
 		User currentUser = WithAdminUserFactory.create();
 		when(mockGithub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(currentUser);
 		MockHttpSession session = new MockHttpSession();
-		String redirect = mockMvc.perform(get("/dashboard").session(session))
+		String redirect = mockMvc.perform(get("/sign/pivotal").session(session))
 				.andExpect(status().is3xxRedirection())
 				.andReturn().getResponse().getRedirectedUrl();
 
@@ -199,14 +199,15 @@ public class AuthenticationTests extends BaseWebDriverTests {
 	@WithSigningUser
 	@SuppressWarnings("unchecked")
 	public void signOut() throws Exception {
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockIndividualSignatureRepository.findByEmailIn(anySet())).thenReturn(Arrays.asList(individualSignature));
 
-		DashboardPage dashboardPage = DashboardPage.go(getDriver());
-		dashboardPage.assertAt();
+		SignClaPage signClaPage = SignClaPage.go(driver, cla.getName());
+		signClaPage.assertAt();
 
 		TestSecurityContextHolder.clearContext();
 
-		SignClaPage signOut = dashboardPage.signOut();
+		SignClaPage signOut = signClaPage.signOut();
 		signOut.assertAt();
 
 		signOut.assertLogoutSuccess();

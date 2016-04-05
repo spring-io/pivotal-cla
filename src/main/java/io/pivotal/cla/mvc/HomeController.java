@@ -15,17 +15,12 @@
  */
 package io.pivotal.cla.mvc;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import io.pivotal.cla.data.IndividualSignature;
-import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 
@@ -49,10 +44,4 @@ public class HomeController {
 		return "index";
 	}
 
-	@RequestMapping("/dashboard")
-	public String dashboard(@AuthenticationPrincipal User currentUser, Map<String,Object> model) throws Exception {
-		List<IndividualSignature> signatures = individual.findByEmailIn(currentUser.getEmails());
-		model.put("clas", signatures.stream().map(IndividualSignature::getCla).collect(Collectors.toList()));
-		return "dashboard";
-	}
 }

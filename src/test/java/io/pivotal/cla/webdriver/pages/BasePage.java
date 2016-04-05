@@ -126,11 +126,6 @@ public abstract class BasePage {
 		}
 	}
 
-	public DashboardPage dashboard() {
-		dashboard.click();
-		return PageFactory.initElements(driver, DashboardPage.class);
-	}
-
 	public AdminListClasPage manage() {
 		manage.click();
 		return PageFactory.initElements(driver, AdminListClasPage.class);

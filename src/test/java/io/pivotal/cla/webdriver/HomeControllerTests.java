@@ -15,29 +15,18 @@
  */
 package io.pivotal.cla.webdriver;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anySet;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.junit.Test;
 
-import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.security.WithSigningUser;
-import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.webdriver.pages.AboutPage;
-import io.pivotal.cla.webdriver.pages.DashboardPage;
-import io.pivotal.cla.webdriver.pages.DashboardPage.Signature;
 import io.pivotal.cla.webdriver.pages.HomePage;
 import io.pivotal.cla.webdriver.pages.SignCclaPage;
 import io.pivotal.cla.webdriver.pages.SignClaPage;
 import io.pivotal.cla.webdriver.pages.SignIclaPage;
-import io.pivotal.cla.webdriver.pages.SignedPage;
 
 public class HomeControllerTests extends BaseWebDriverTests {
 
@@ -79,54 +68,6 @@ public class HomeControllerTests extends BaseWebDriverTests {
 		SignClaPage home = HomePage.go(driver);
 		SignCclaPage sign = home.signCcla(SignCclaPage.class);
 		sign.assertAt();
-	}
-
-	@Test
-	public void dashboardRequiresAuthentication() throws Exception {
-		mockMvc.perform(get("/dashboard"))
-			.andExpect(status().is3xxRedirection());
-	}
-
-	@Test
-	@WithSigningUser
-	@SuppressWarnings("unchecked")
-	public void dashboardNavigation() throws Exception {
-		when(mockIndividualSignatureRepository.findByEmailIn(anySet())).thenReturn(Collections.emptyList());
-
-		SignClaPage home = HomePage.go(driver);
-		DashboardPage dashboard = home.dashboard();
-		dashboard.assertAt();
-	}
-
-	@Test
-	@WithSigningUser
-	@SuppressWarnings("unchecked")
-	public void dashboardNoSignatures() {
-		when(mockIndividualSignatureRepository.findByEmailIn(anySet())).thenReturn(Collections.emptyList());
-
-		DashboardPage dashboard = DashboardPage.go(driver);
-		dashboard.assertAt();
-		dashboard.assertNoSignatures();
-	}
-
-	@Test
-	@WithSigningUser
-	@SuppressWarnings("unchecked")
-	public void dashboardSignature() {
-		IndividualSignature signature = new IndividualSignature();
-		signature.setCla(cla);
-		when(mockIndividualSignatureRepository.findByEmailIn(anySet())).thenReturn(Arrays.asList(individualSignature));
-		when(mockIndividualSignatureRepository.findSignaturesFor(WithSigningUserFactory.create(), cla.getName())).thenReturn(individualSignature);
-
-		DashboardPage dashboard = DashboardPage.go(driver);
-		dashboard.assertAt();
-
-		List<Signature> signatures = dashboard.getSignatures();
-		assertThat(signatures).extracting(Signature::getName).containsOnly(cla.getName());
-
-		SignedPage view = signatures.get(0).view();
-		view.assertAt();
-		view.asserSigned();
 	}
 
 	@Test

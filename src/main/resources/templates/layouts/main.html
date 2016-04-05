@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		<meta name="description" content="">
+		<meta name="author" content="">
 
-    <title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE">Pivotal CLA</title>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+		<title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE">Pivotal CLA</title>
+		<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
 
-    <link rel="stylesheet" th:href="@{/css/sticky-footer-navbar.css}">
-    <style type="text/css">
+		<link rel="stylesheet" th:href="@{/css/sticky-footer-navbar.css}">
+		<style type="text/css">
 .navbar-default, .btn-success, .btn-success:hover, .btn-success:focus  {
 	background-color: #03786e;
 	color: #fff;
@@ -29,110 +29,109 @@
 	color: #fff;
 }
 footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 60px;
-    color: #fff;
-    background-color: #03786e;
-    color: #eee;
-    padding: 20px 0;
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		height: 60px;
+		color: #fff;
+		background-color: #03786e;
+		color: #eee;
+		padding: 20px 0;
 }
-    </style>
-  </head>
-  <body>
-      <!-- Static navbar -->
-      <nav class="navbar navbar-default">
-        <div class="container">
-        <div class="container-fluid">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" th:href="@{/}">Pivotal CLA</a>
-          </div>
-          <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-              <li th:if="${isAdmin}"><a id="link" th:href="@{/admin/cla/link}">Link to CLA</a></li>
-              <li th:if="${isAdmin}"><a id="manage" th:href="@{/admin/cla/}">Manage CLAs</a></li>
-              <li><a id="dashboard" th:href="@{/dashboard}">Dashboard</a></li>
-              <li><a id="about" th:href="@{/about}">About</a></li>
-              <!-- <li><a href="#">Contact</a></li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li class="dropdown-header">Nav header</li>
-                  <li><a href="#">Separated link</a></li>
-                  <li><a href="#">One more separated link</a></li>
-                </ul>
-              </li> -->
-            </ul>
-            <ul class="nav navbar-nav navbar-right" th:if="${currentUser != null}">
-             <li class="dropdown">
-                <a id="user-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img th:src="${currentUser.avatarUrl}" height="20" width="20"> <span class="caret"></span></a>
-	              <ul class="dropdown-menu">
-	                  <li class="dropdown-header" th:text="${currentUser.githubLogin}">the_username</li>
-	                  <li><a id="profile" href="https://github.com/settings/profile">GitHub Profile</a></li>
-	                  <li><a id="sign-out" th:href="@{/logout}">Sign Out</a><form id="sign-out-form" th:action="@{/logout}" method="post" class="form form-inline"></form></li>
-	              </ul>
-              </li>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div><!--/.container-fluid -->
-        </div>
-      </nav>
-      <div class="container">
+		</style>
+	</head>
+	<body>
+			<!-- Static navbar -->
+			<nav class="navbar navbar-default">
+				<div class="container">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" th:href="@{/}">Pivotal CLA</a>
+					</div>
+					<div id="navbar" class="navbar-collapse collapse">
+						<ul class="nav navbar-nav">
+							<li th:if="${isAdmin}"><a id="link" th:href="@{/admin/cla/link}">Link to CLA</a></li>
+							<li th:if="${isAdmin}"><a id="manage" th:href="@{/admin/cla/}">Manage CLAs</a></li>
+							<li><a id="about" th:href="@{/about}">About</a></li>
+							<!-- <li><a href="#">Contact</a></li>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li><a href="#">Action</a></li>
+									<li><a href="#">Another action</a></li>
+									<li><a href="#">Something else here</a></li>
+									<li role="separator" class="divider"></li>
+									<li class="dropdown-header">Nav header</li>
+									<li><a href="#">Separated link</a></li>
+									<li><a href="#">One more separated link</a></li>
+								</ul>
+							</li> -->
+						</ul>
+						<ul class="nav navbar-nav navbar-right" th:if="${currentUser != null}">
+						 <li class="dropdown">
+								<a id="user-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img th:src="${currentUser.avatarUrl}" height="20" width="20"> <span class="caret"></span></a>
+								<ul class="dropdown-menu">
+										<li class="dropdown-header" th:text="${currentUser.githubLogin}">the_username</li>
+										<li><a id="profile" href="https://github.com/settings/profile">GitHub Profile</a></li>
+										<li><a id="sign-out" th:href="@{/logout}">Sign Out</a><form id="sign-out-form" th:action="@{/logout}" method="post" class="form form-inline"></form></li>
+								</ul>
+							</li>
+						</ul>
+					</div><!--/.nav-collapse -->
+				</div><!--/.container-fluid -->
+				</div>
+			</nav>
+			<div class="container">
 
 
-      <div id="message" th:if="${message != null}" th:text="${message}" class="alert alert-success">
+			<div id="message" th:if="${message != null}" th:text="${message}" class="alert alert-success">
 
-      </div>
-      <!-- Main component for a primary marketing message or call to action -->
-      <div layout:fragment="content">
-        <!-- ============================================================================ -->
-        <!-- This content is only used for static prototyping purposes (natural templates)-->
-        <!-- and is therefore entirely optional, as this markup fragment will be included -->
-        <!-- from "fragments/header.html" at runtime.                                     -->
-        <!-- ============================================================================ -->
-        <h1>Static content for prototyping purposes only</h1>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Praesent scelerisque neque neque, ac elementum quam dignissim interdum.
-          Phasellus et placerat elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Praesent scelerisque neque neque, ac elementum quam dignissim interdum.
-          Phasellus et placerat elit.
-        </p>
-      </div>
-    </div> <!-- /container -->
+			</div>
+			<!-- Main component for a primary marketing message or call to action -->
+			<div layout:fragment="content">
+				<!-- ============================================================================ -->
+				<!-- This content is only used for static prototyping purposes (natural templates)-->
+				<!-- and is therefore entirely optional, as this markup fragment will be included -->
+				<!-- from "fragments/header.html" at runtime.                                     -->
+				<!-- ============================================================================ -->
+				<h1>Static content for prototyping purposes only</h1>
+				<p>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+					Praesent scelerisque neque neque, ac elementum quam dignissim interdum.
+					Phasellus et placerat elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+					Praesent scelerisque neque neque, ac elementum quam dignissim interdum.
+					Phasellus et placerat elit.
+				</p>
+			</div>
+		</div> <!-- /container -->
 	<footer class="footer">
-      <div class="container">
-        <p class="text-center">Powered by <a href="https://run.pivotal.io">Pivotal Web Services</a></p>
-      </div>
-    </footer>
+			<div class="container">
+				<p class="text-center">Powered by <a href="https://run.pivotal.io">Pivotal Web Services</a></p>
+			</div>
+		</footer>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
-    <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
-    <div layout:fragment="javascript">
-    </div>
-    <script type="text/javascript">
-    //<!--
-    $(function() {
-        $('#sign-out').click(function(e) {
-            e.preventDefault();
-            $('#sign-out-form').submit();
-        });
-    });
-    //-->
-    </script>
-  </body>
+		<!-- Bootstrap core JavaScript
+		================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+		<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+		<div layout:fragment="javascript">
+		</div>
+		<script type="text/javascript">
+		//<!--
+		$(function() {
+				$('#sign-out').click(function(e) {
+						e.preventDefault();
+						$('#sign-out-form').submit();
+				});
+		});
+		//-->
+		</script>
+	</body>
 </html>
