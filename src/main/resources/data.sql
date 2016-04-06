@@ -1,6 +1,3 @@
-insert into contributor_license_agreement(id,name,description,primary_cla,created,individual_markdown,individual_html,corporate_markdown,corporate_html) values (11, 'spring','ICLA FINAL 072310',false,null,'ICLA FINAL 072310','ICLA FINAL 072310 html','CCLA FINAL 072310 md','CCLA FINAL 072310 html');
-insert into contributor_license_agreement(id,name,primary_cla,created,individual_markdown,individual_html,corporate_markdown,corporate_html) values (10, 'spring',true,null,'spring icla md','spring icla html','spring ccla md','spring ccla html');
-
 insert into contributor_license_agreement (id,name,primary_cla,created,individual_markdown,individual_html,corporate_markdown,corporate_html) values (1, 'pivotal',true,null,'### Pivotal Software, Inc.
 
 ### Individual Contributor License Agreement
@@ -150,3 +147,6 @@ In consideration of the opportunity to participate in the community of contribut
 <li>By clicking on the “I have read and agree to the entire Corporate Contributor License Agreement”, the person executing this CLA on behalf of Company represents that she/he has the authority to sign on behalf of, and bind Company to, the terms and conditions of this CLA.</li>
 </ol>
 </div>');
+
+insert into contributor_license_agreement(id,name,description,primary_cla,created,individual_markdown,individual_html,corporate_markdown,corporate_html) values (11, 'spring','ICLA FINAL 072310',false,null,'ICLA FINAL 072310','ICLA FINAL 072310 html','CCLA FINAL 072310 md','CCLA FINAL 072310 html');
+insert into contributor_license_agreement(id,superseding_cla_id,name,primary_cla,created,individual_markdown,individual_html,corporate_markdown,corporate_html) values (10, 1, 'spring',true,null,'spring icla md','spring icla html','spring ccla md','spring ccla html');
