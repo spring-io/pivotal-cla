@@ -56,6 +56,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		AuthenticationEntryPoint entryPoint = entryPoint();
 		http
+			.requiresChannel()
+				.requestMatchers(request -> request.getHeader("x-forwarded-port") != null).requiresSecure()
+				.and()
 			.exceptionHandling()
 				.authenticationEntryPoint(entryPoint)
 				.accessDeniedHandler( new AccessDeniedHandler() {
