@@ -22,7 +22,7 @@
 				<div class="col-md-6">
 					<h2>Individual Contributor License Agreement</h2>
 					<p>
-						Sign the Individual Contributor License Agreement (ICLA) if you are agreeing to the terms for only yourself.
+						I'm an individual contributor
 					</p>
 					<p>
 						<a id="icla-link" class="btn btn-success btn-lg" th:href="${pullRequestId == null} ? @{/sign/{claName}/icla(claName=${claName})} : @{/sign/{claName}/icla(claName=${claName},repositoryId=${repositoryId},pullRequestId=${pullRequestId})}">Sign Individual CLA</a>
@@ -31,7 +31,7 @@
 				<div class="col-md-6">
 					<h2>Corporate Contributor License Agreement</h2>
 					<p>
-						Sign the Corporate Contributor License Agreement (CCLA) if you are agreeing to the terms on behalf of an entire organization or company.
+						I'm representing a company wanting its employees to contribute
 					</p>
 					<p>
 						<a id="ccla-link" class="btn btn-success btn-lg" th:href="${pullRequestId == null} ? @{/sign/{claName}/ccla(claName=${claName})} : @{/sign/{claName}/ccla(claName=${claName},repositoryId=${repositoryId},pullRequestId=${pullRequestId})}">Sign Corporate CLA</a>
