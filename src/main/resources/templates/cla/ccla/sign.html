@@ -126,10 +126,9 @@
 				<button id="sign" type="submit" class="btn btn-success">Submit & Contribute</button>
 			</form>
 		</div>
+
 		<div layout:fragment="javascript">
-			<script type="text/javascript">
-			$("[data-toggle=popover]").popover({html:true});
-			</script>
+			<script th:src="@{/assets/pages/cla/ccla/sign.js}" type="text/javascript"></script>
 		</div>
 	</body>
 </html>
