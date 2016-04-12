@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -218,12 +219,41 @@ public class MylynGithubService implements GitHubService {
 
 			tokenRepo.save(token);
 
+			RepositoryId repositoryId = RepositoryId.createFromId(repository);
 			EventsRepositoryHook hook = createHook(githubEventUrl, request.getSecret());
-			RepositoryHook createdHook = service.createHook(RepositoryId.createFromId(repository), hook);
-			long hookId = createdHook.getId();
+
+			List<RepositoryHook> hooks = service.getHooks(repositoryId);
+			Optional<RepositoryHook> optional = hooks.stream().filter(h -> hasUrl(hook, githubEventUrl)).findFirst();
+
+			long hookId;
+			if (optional.isPresent()) {
+				RepositoryHook repositoryHook = optional.get();
+				hookId = repositoryHook.getId();
+
+				if (!repositoryHook.isActive()) {
+					repositoryHook.setActive(true);
+					service.editHook(repositoryId, repositoryHook);
+				}
+			} else {
+				RepositoryHook createdHook = service.createHook(repositoryId, hook);
+				hookId = createdHook.getId();
+			}
+
 			hookUrls.add("https://github.com/" + repository + "/settings/hooks/" + hookId);
 		}
+
 		return hookUrls;
+	}
+
+	private boolean hasUrl(RepositoryHook hook, String githubEventUrl) {
+
+		if(hook.getConfig() != null){
+			if(githubEventUrl.endsWith(hook.getConfig().get("url"))){
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public ContributingUrlsResponse getContributingUrls(List<String> repositoryIds) {
