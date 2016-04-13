@@ -55,6 +55,9 @@ import io.pivotal.cla.egit.github.core.service.EmailService;
 @Component
 public class MylynGithubService implements GitHubService {
 
+	public final static String CONTRIBUTING_FILE = "CONTRIBUTING";
+	public final static String ADMIN_MAIL_SUFFIX = "@pivotal.io";
+
 	AccessTokenRepository tokenRepo;
 
 	ClaOAuthConfig oauthConfig;
@@ -98,13 +101,19 @@ public class MylynGithubService implements GitHubService {
 		if (token == null) {
 			return;
 		}
+
+		String claName ="Contributor License Agreement";
+		String thankYou = "Thank you for signing the";
+		String pleasSign = "Please sign the";
+
 		boolean success = commitStatus.isSuccess();
 		RepositoryId id = RepositoryId.createFromId(repoId);
 		GitHubClient client = createClient(token.getToken());
 		ContextCommitService commitService = new ContextCommitService(client);
 		ContextCommitStatus status = new ContextCommitStatus();
-		status.setDescription(success ? "Thank you for signing the Contributor License Agreement!"
-				: "Please sign the Contributor Licenese Agreement!");
+		status.setDescription(success ? String.format("%s %s!", thankYou, claName)
+				:  String.format("%s %s!", pleasSign, claName));
+
 		status.setState(success ? CommitStatus.STATE_SUCCESS : CommitStatus.STATE_FAILURE);
 		status.setContext("ci/pivotal-cla");
 		status.setUrl(commitStatus.getUrl());
@@ -116,21 +125,26 @@ public class MylynGithubService implements GitHubService {
 			throw new RuntimeException(e);
 		}
 
+		String claLinkMarkdown = String.format("[%s](%s)", claName, status.getUrl());
+		String userMentionMarkdown = String.format("@%s", commitStatus.getGithubUsername());
+
 		GitHubClient commentClient = createClient(oauthConfig.getPivotalClaAccessToken());
 		IssueService issues = new IssueService(commentClient);
 		List<String> claUserComments = getCommentsByClaUser(issues, id, commitStatus);
+
 		if(success) {
-			String body = "@" + commitStatus.getGithubUsername() + " Thank you for signing the [Contributor License Agreement](" + status.getUrl() + ")!";
+
+			String body = String.format("%s %s %s!", userMentionMarkdown, thankYou, claLinkMarkdown);
 			if(claUserComments.contains(body)) {
 				return;
 			}
 			try {
-				issues.createComment(id, commitStatus.getPullRequestId(), "@" + commitStatus.getGithubUsername() + " Thank you for signing the [Contributor License Agreement](" + status.getUrl() + ")!");
+				issues.createComment(id, commitStatus.getPullRequestId(), body);
 			} catch(IOException e) {
 				throw new RuntimeException(e);
 			}
 		} else {
-			String body = "@" + commitStatus.getGithubUsername() + " Please sign the [Contributor License Agreement](" + status.getUrl() + ")!";
+			String body = String.format("%s %s %s!", userMentionMarkdown, pleasSign, claLinkMarkdown);
 			if(claUserComments.contains(body)) {
 				return;
 			}
@@ -198,7 +212,7 @@ public class MylynGithubService implements GitHubService {
 	}
 
 	private boolean hasAdminEmail(User user) {
-		return user.getEmails().stream().anyMatch(e -> e.endsWith("@pivotal.io"));
+		return user.getEmails().stream().anyMatch(e -> e.endsWith(ADMIN_MAIL_SUFFIX));
 	}
 
 	@Override
@@ -259,11 +273,11 @@ public class MylynGithubService implements GitHubService {
 	public ContributingUrlsResponse getContributingUrls(List<String> repositoryIds) {
 		Set<String> remainingRepositoryIds = new LinkedHashSet<>(repositoryIds);
 
-		Map<String,String> mdUrls = createEditLinks(remainingRepositoryIds, "CONTRIBUTING.md");
+		Map<String,String> mdUrls = createEditLinks(remainingRepositoryIds, String.format("%s.md", CONTRIBUTING_FILE));
 		remainingRepositoryIds.removeAll(mdUrls.keySet());
-		Map<String,String> adocUrls = createEditLinks(remainingRepositoryIds, "CONTRIBUTING.adoc");
+		Map<String,String> adocUrls = createEditLinks(remainingRepositoryIds, String.format("%s.adoc", CONTRIBUTING_FILE));
 		remainingRepositoryIds.removeAll(adocUrls.keySet());
-		List<String> newUrls = createNewLinks(remainingRepositoryIds, "CONTRIBUTING.adoc");
+		List<String> newUrls = createNewLinks(remainingRepositoryIds, String.format("%s.adoc", CONTRIBUTING_FILE));
 
 		ContributingUrlsResponse response = new ContributingUrlsResponse();
 		response.setMarkdown(mdUrls.values());

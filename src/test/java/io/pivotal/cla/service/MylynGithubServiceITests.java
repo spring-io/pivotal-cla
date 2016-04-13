@@ -353,7 +353,7 @@ public class MylynGithubServiceITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + token.getToken());
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Please sign the Contributor Licenese Agreement!\",\"state\":\"failure\",\"target_url\":\"https://status.example.com/uri\"}");
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Please sign the Contributor License Agreement!\",\"state\":\"failure\",\"target_url\":\"https://status.example.com/uri\"}");
 
 		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("GET");
@@ -392,7 +392,7 @@ public class MylynGithubServiceITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + token.getToken());
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Please sign the Contributor Licenese Agreement!\",\"state\":\"failure\",\"target_url\":\"https://status.example.com/uri\"}");
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Please sign the Contributor License Agreement!\",\"state\":\"failure\",\"target_url\":\"https://status.example.com/uri\"}");
 
 		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("GET");
