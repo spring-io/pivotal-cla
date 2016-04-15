@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -44,6 +45,7 @@ import io.pivotal.cla.service.CreatePullRequestHookRequest;
 import io.pivotal.cla.service.GitHubService;
 
 @Controller
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminClaController {
 
 	/**

@@ -47,7 +47,7 @@ import io.pivotal.cla.service.GitHubService;
 public abstract class BaseWebDriverTests {
 
 	@Autowired
-	WebApplicationContext wac;
+	protected WebApplicationContext wac;
 	protected GitHubService mockGithub;
 	protected ContributorLicenseAgreementRepository mockClaRepository;
 	protected IndividualSignatureRepository mockIndividualSignatureRepository;

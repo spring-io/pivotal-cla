@@ -16,6 +16,7 @@
 package io.pivotal.cla.webdriver.admin;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -26,11 +27,15 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.openqa.selenium.WebDriver;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.web.servlet.htmlunit.webdriver.MockMvcHtmlUnitDriverBuilder;
 
 import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithAdminUser;
+import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.service.ContributingUrlsResponse;
 import io.pivotal.cla.service.CreatePullRequestHookRequest;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
@@ -112,5 +117,13 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 		assertThat(request.getGithubEventUrl()).isEqualTo("http://localhost/github/hooks/pull_request/"+cla.getName());
 		assertThat(request.getSecret()).isEqualTo(token.getToken());
 		assertThat(driver.getPageSource()).doesNotContain(token.getToken());
+	}
+
+	@WithSigningUser
+	@Test
+	public void methodSecurity() {
+		WebDriver driver = MockMvcHtmlUnitDriverBuilder.webAppContextSetup(wac).build();
+
+		assertThatThrownBy(() -> { AdminLinkClaPage.to(driver); }).hasRootCauseExactlyInstanceOf(AccessDeniedException.class);
 	}
 }
