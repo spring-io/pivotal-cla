@@ -79,7 +79,9 @@ public class AdminLinkClaPage extends BasePage {
 		if(StringUtils.hasText(repositoryName)) {
 			new Select(repositories).selectByValue(repositoryName);
 		}
-		cla.selectByVisibleText(licenseName);
+		if(StringUtils.hasText(licenseName)) {
+			cla.selectByVisibleText(licenseName);
+		}
 		submit.click();
 		return PageFactory.initElements(getDriver(), page);
 	}

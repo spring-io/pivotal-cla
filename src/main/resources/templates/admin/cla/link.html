@@ -125,7 +125,7 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 						Contributor Agreement
 					</label>
 					<select class="form-control" th:field="*{claName}">
-						<option value=""></option>
+						<option value="">-- Please Select --</option>
 						<option th:each="l : ${licenses}" th:value="${l.name}" th:text="${l.name}"></option>
 					</select>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('claName')}" id="err-claName">

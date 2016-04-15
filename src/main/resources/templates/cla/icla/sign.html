@@ -38,7 +38,7 @@
 						Email
 					</label>
 					<select class="form-control" th:field="*{email}">
-						<option value=""></option>
+						<option value="">-- Please Select --</option>
 						<option th:each="e : ${currentUser.emails}" th:value="${e}" th:text="${e}"></option>
 					</select>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('email')}" id="err-email">
