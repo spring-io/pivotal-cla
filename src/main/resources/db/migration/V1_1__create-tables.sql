@@ -88,3 +88,16 @@ ALTER TABLE user_email
   ADD CONSTRAINT FK_USER_EMAIL
 FOREIGN KEY (github_login) REFERENCES USER (github_login);
 
+
+CREATE UNIQUE INDEX UQ_USER_EMAIL ON user_email (github_login, email);
+
+CREATE INDEX IX_CLA_NAME ON contributor_license_agreement (name);
+CREATE INDEX IX_CLA_SUPERSEDING ON contributor_license_agreement (superseding_cla_id);
+
+CREATE INDEX IX_CCLA_EMAIL_DOMAIN ON corporate_signature (email_domain);
+CREATE INDEX IX_CCLA_ORG ON corporate_signature (git_hub_organization);
+CREATE INDEX IX_CCLA_CLA_ID ON corporate_signature (cla_id);
+
+CREATE INDEX IX_ICLA_EMAIL ON individual_signature (email);
+CREATE INDEX IX_ICLA_GITHUB_LOGIN ON individual_signature (github_login);
+CREATE INDEX IX_ICLA_CLA_ID ON individual_signature (cla_id);
