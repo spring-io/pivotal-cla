@@ -13,20 +13,6 @@
 						<p th:each="err : ${#fields.errors('name')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('description')}? 'has-error form-group' : form-group">
-					<label class="control-label" for="description">Agreement Description</label>
-					<input type="text" class="form-control" th:field="*{description}" placeholder="(i.e. ICLA FINAL 072310)">
-					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('description')}" id="err-description">
-						<p th:each="err : ${#fields.errors('description')}" th:text="${err}">Input is incorrect</p>
-					</div>
-				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('primary')}? 'has-error form-group' : form-group">
-					<label class="control-label" for="primary">Primary CLA</label>
-					<input type="checkbox" class="form-control" th:field="*{primary}">
-					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('primary')}" id="err-name">
-						<p th:each="err : ${#fields.errors('primary')}" th:text="${err}">Input is incorrect</p>
-					</div>
-				</div>
 				<div class="form-group" th:class="${#fields.hasErrors('individualContent.markdown')}? 'has-error form-group' : form-group">
 					<label class="control-label" for="individualContent.markdown">Individual Contributor Text</label>
 					<textarea class="form-control" th:field="*{individualContent.markdown}"></textarea>
@@ -39,6 +25,20 @@
 					<textarea class="form-control" th:field="*{corporateContent.markdown}"></textarea>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('corporateContent.markdown')}" id="err-corporateContent.markdown">
 						<p th:each="err : ${#fields.errors('corporateContent.markdown')}" th:text="${err}">Input is incorrect</p>
+					</div>
+				</div>
+				<div class="form-group" th:class="${#fields.hasErrors('description')}? 'has-error form-group' : form-group">
+					<label class="control-label" for="description">Agreement Description</label>
+					<input type="text" class="form-control" th:field="*{description}" placeholder="(i.e. ICLA FINAL 072310)">
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('description')}" id="err-description">
+						<p th:each="err : ${#fields.errors('description')}" th:text="${err}">Input is incorrect</p>
+					</div>
+				</div>
+				<div class="form-group" th:class="${#fields.hasErrors('primary')}? 'has-error form-group' : form-group">
+					<label class="control-label" for="primary">Primary CLA</label>
+					<input type="checkbox" class="form-control" th:field="*{primary}">
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('primary')}" id="err-name">
+						<p th:each="err : ${#fields.errors('primary')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
 				<button id="create-submit" type="submit" class="btn btn-success">Create CLA</button>
