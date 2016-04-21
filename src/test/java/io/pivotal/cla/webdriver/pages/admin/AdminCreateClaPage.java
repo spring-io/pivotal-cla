@@ -21,6 +21,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.Select;
 
 import io.pivotal.cla.webdriver.pages.BasePage;
 
@@ -34,24 +35,32 @@ public class AdminCreateClaPage extends BasePage {
 	WebElement createSubmit;
 	WebElement primary1;
 	WebElement description;
+	WebElement supersedingCla;
 
 	public AdminCreateClaPage(WebDriver driver) {
 		super(driver);
 	}
 
 	public <T extends BasePage> T create(String name, String individual, String corporate, String description, Class<T> page) {
-		return create(name,individual, corporate, description, false, page);
+		return create(name, individual, corporate, description, false, page);
 	}
 
 	public <T extends BasePage> T create(String name, String individual, String corporate, Class<T> page) {
-		return create(name,individual, corporate, false, page);
+		return create(name, individual, corporate, null, false, null, page);
 	}
 
 	public <T extends BasePage> T create(String name, String individual, String corporate, boolean primary, Class<T> page) {
 		return create(name, individual, corporate, null, primary, page);
 	}
+	public <T extends BasePage> T create(String name, String individual, String corporate, Long supersedingCla, Class<T> page) {
+		return create(name, individual, corporate, null, false, supersedingCla, page);
+	}
 
 	public <T extends BasePage> T create(String name, String individual, String corporate, String description, boolean primary, Class<T> page) {
+		return create(name, individual, corporate, description, primary, null, page);
+	}
+
+	public <T extends BasePage> T create(String name, String individual, String corporate, String description, boolean primary, Long supersedingCla, Class<T> page) {
 		this.name.sendKeys(name);
 		this.individualContent.sendKeys(individual);
 		this.corporateContent.sendKeys(corporate);
@@ -60,6 +69,9 @@ public class AdminCreateClaPage extends BasePage {
 		}
 		if(description != null) {
 			this.description.sendKeys(description);
+		}
+		if(supersedingCla != null) {
+			new Select(this.supersedingCla).selectByValue(String.valueOf(supersedingCla));
 		}
 		this.createSubmit.click();
 		return PageFactory.initElements(getDriver(), page);

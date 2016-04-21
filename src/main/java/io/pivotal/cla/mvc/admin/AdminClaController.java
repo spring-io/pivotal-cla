@@ -71,6 +71,8 @@ public class AdminClaController {
 
 	@RequestMapping("/admin/cla/create")
 	public String createClaForm(Map<String, Object> model) throws Exception {
+		Iterable<ContributorLicenseAgreement> clas = claRepo.findAll();
+		model.put("licenses", clas);
 		model.put("createClaForm", new CreateClaForm());
 		return "admin/cla/create";
 	}
@@ -78,25 +80,35 @@ public class AdminClaController {
 	@RequestMapping(value = "/admin/cla/create", method = RequestMethod.POST)
 	public String createCla(@AuthenticationPrincipal User user, @Valid CreateClaForm createClaForm, BindingResult result, Map<String, Object> model)
 			throws Exception {
+		ContributorLicenseAgreement supersedingCla = null;
+		if(createClaForm.getSupersedingCla() != null) {
+			supersedingCla = claRepo.findOne(createClaForm.getSupersedingCla());
+		}
 		if (result.hasErrors()) {
+			Iterable<ContributorLicenseAgreement> clas = claRepo.findAll();
+			model.put("licenses", clas);
 			return "admin/cla/create";
 		}
 
 		String accessToken = user.getAccessToken();
 
-		MarkdownContent individual = contributorLicenseAgreement.getIndividualContent();
+		MarkdownContent individual = createClaForm.getIndividualContent();
 		String individualHtml = github.markdownToHtml(accessToken, individual.getMarkdown());
 		individual.setHtml(individualHtml);
 
-		MarkdownContent corporate = contributorLicenseAgreement.getCorporateContent();
+		MarkdownContent corporate = createClaForm.getCorporateContent();
 		String corperateHtml = github.markdownToHtml(accessToken, corporate.getMarkdown());
 		corporate.setHtml(corperateHtml);
 
-		if(!StringUtils.hasText(contributorLicenseAgreement.getDescription())) {
-			contributorLicenseAgreement.setDescription(null);
-		}
+		ContributorLicenseAgreement cla = new ContributorLicenseAgreement();
+		cla.setCorporateContent(createClaForm.getCorporateContent());
+		cla.setDescription(createClaForm.getDescription());
+		cla.setIndividualContent(createClaForm.getIndividualContent());
+		cla.setName(createClaForm.getName());
+		cla.setPrimary(createClaForm.isPrimary());
+		cla.setSupersedingCla(supersedingCla);
 
-		claRepo.save(contributorLicenseAgreement);
+		claRepo.save(cla);
 		return "redirect:/admin/cla/?success";
 	}
 

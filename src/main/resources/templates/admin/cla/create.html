@@ -41,6 +41,18 @@
 						<p th:each="err : ${#fields.errors('primary')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
+				<div class="form-group" th:class="${#fields.hasErrors('supersedingCla')}? 'has-error form-group' : form-group">
+					<label for="cla">
+						Superseding Agreement
+					</label>
+					<select class="form-control" th:field="*{supersedingCla}">
+						<option value="">-- Please Select --</option>
+						<option th:each="l : ${licenses}" th:value="${l.id}" th:text="${l.description == null} ? ${l.name} : (${l.name} + ' - ' + ${l.description})"></option>
+					</select>
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('supersedingCla')}" id="err-supersedingCla">
+						<p th:each="err : ${#fields.errors('supersedingCla')}" th:text="${err}">Input is incorrect</p>
+					</div>
+				</div>
 				<button id="create-submit" type="submit" class="btn btn-success">Create CLA</button>
 			</form>
 		</div>
