@@ -22,3 +22,7 @@
 	background-color: #eee !important;
 	opacity: 1;
 }
+
+#repositories[disabled]:before {
+	content: "Loading...";
+}
