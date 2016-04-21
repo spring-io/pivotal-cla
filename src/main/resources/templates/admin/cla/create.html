@@ -13,6 +13,13 @@
 						<p th:each="err : ${#fields.errors('name')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
+				<div class="form-group" th:class="${#fields.hasErrors('primary')}? 'has-error form-group' : form-group">
+					<label class="control-label" for="primary">Primary CLA</label>
+					<input type="checkbox" class="form-control" th:field="*{primary}">
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('primary')}" id="err-name">
+						<p th:each="err : ${#fields.errors('primary')}" th:text="${err}">Input is incorrect</p>
+					</div>
+				</div>
 				<div class="form-group" th:class="${#fields.hasErrors('individualContent.markdown')}? 'has-error form-group' : form-group">
 					<label class="control-label" for="individualContent.markdown">Individual Contributor Text</label>
 					<textarea class="form-control" th:field="*{individualContent.markdown}"></textarea>

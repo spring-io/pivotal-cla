@@ -32,15 +32,23 @@ public class AdminCreateClaPage extends BasePage {
 	WebElement name;
 	@FindBy(id = "create-submit")
 	WebElement createSubmit;
+	WebElement primary1;
 
 	public AdminCreateClaPage(WebDriver driver) {
 		super(driver);
 	}
 
 	public <T extends BasePage> T create(String name, String individual, String corporate, Class<T> page) {
+		return create(name,individual, corporate, false, page);
+	}
+
+	public <T extends BasePage> T create(String name, String individual, String corporate, boolean primary, Class<T> page) {
 		this.name.sendKeys(name);
 		this.individualContent.sendKeys(individual);
 		this.corporateContent.sendKeys(corporate);
+		if(primary) {
+			this.primary1.click();
+		}
 		this.createSubmit.click();
 		return PageFactory.initElements(getDriver(), page);
 	}

@@ -89,7 +89,6 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 
 		create.assertName().hasRequiredError();
 		create.assertIndividualContent().hasNoErrors().hasValue("Individual");
-		;
 		create.assertCorporateContent().hasNoErrors().hasValue("Corporate");
 	}
 
@@ -117,6 +116,38 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 
 		ContributorLicenseAgreement cla = captor.getValue();
 		assertThat(cla.getName()).isEqualTo("Eclipse");
+		assertThat(cla.isPrimary()).isFalse();
+		assertThat(cla.getIndividualContent().getHtml()).isEqualTo(individualHtml);
+		assertThat(cla.getIndividualContent().getMarkdown()).isEqualTo(individualMd);
+		assertThat(cla.getCorporateContent().getHtml()).isEqualTo(corporateHtml);
+		assertThat(cla.getCorporateContent().getMarkdown()).isEqualTo(corporateMd);
+	}
+
+	@Test
+	public void createClaSuccessPrimary() {
+		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
+
+		String individualMd = cla.getIndividualContent().getMarkdown();
+		String individualHtml = cla.getIndividualContent().getHtml();
+		String corporateMd = cla.getCorporateContent().getMarkdown();
+		String corporateHtml = cla.getCorporateContent().getHtml();
+
+		String accessToken = WithAdminUserFactory.create().getAccessToken();
+		when(mockGithub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
+		when(mockGithub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
+
+		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
+
+		AdminListClasPage successPage = create.create("Eclipse", individualMd, corporateMd, true, AdminListClasPage.class);
+		successPage.assertAt();
+
+		ArgumentCaptor<ContributorLicenseAgreement> captor = ArgumentCaptor
+				.forClass(ContributorLicenseAgreement.class);
+		verify(mockClaRepository).save(captor.capture());
+
+		ContributorLicenseAgreement cla = captor.getValue();
+		assertThat(cla.getName()).isEqualTo("Eclipse");
+		assertThat(cla.isPrimary()).isTrue();
 		assertThat(cla.getIndividualContent().getHtml()).isEqualTo(individualHtml);
 		assertThat(cla.getIndividualContent().getMarkdown()).isEqualTo(individualMd);
 		assertThat(cla.getCorporateContent().getHtml()).isEqualTo(corporateHtml);
