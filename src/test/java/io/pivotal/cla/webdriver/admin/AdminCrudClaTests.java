@@ -93,6 +93,17 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 	}
 
 	@Test
+	public void createClaInvalidPrimary() throws Exception {
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+
+		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
+
+		create = create.create(cla.getName(), "Individual", "Corporate", true, AdminCreateClaPage.class);
+
+		create.assertPrimary().hasError("A primary CLA with this name already exists");
+	}
+
+	@Test
 	public void createClaSuccess() {
 		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);

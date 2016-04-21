@@ -77,6 +77,10 @@ public class AdminCreateClaPage extends BasePage {
 		return PageFactory.initElements(getDriver(), page);
 	}
 
+	public InputAssert assertPrimary() {
+		return assertInput(primary1);
+	}
+
 	public InputAssert assertIndividualContent() {
 		return assertInput(individualContent);
 	}

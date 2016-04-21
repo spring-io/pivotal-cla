@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -80,9 +79,12 @@ public class AdminClaController {
 	@RequestMapping(value = "/admin/cla/create", method = RequestMethod.POST)
 	public String createCla(@AuthenticationPrincipal User user, @Valid CreateClaForm createClaForm, BindingResult result, Map<String, Object> model)
 			throws Exception {
-		ContributorLicenseAgreement supersedingCla = null;
-		if(createClaForm.getSupersedingCla() != null) {
-			supersedingCla = claRepo.findOne(createClaForm.getSupersedingCla());
+		boolean primary = createClaForm.isPrimary();
+		if(primary) {
+			ContributorLicenseAgreement existingPrimaryCla = claRepo.findByNameAndPrimaryTrue(createClaForm.getName());
+			if(existingPrimaryCla != null) {
+				result.rejectValue("primary","errors.primary.exists", "A primary CLA with this name already exists");
+			}
 		}
 		if (result.hasErrors()) {
 			Iterable<ContributorLicenseAgreement> clas = claRepo.findAll();
@@ -90,6 +92,10 @@ public class AdminClaController {
 			return "admin/cla/create";
 		}
 
+		ContributorLicenseAgreement supersedingCla = null;
+		if(createClaForm.getSupersedingCla() != null) {
+			supersedingCla = claRepo.findOne(createClaForm.getSupersedingCla());
+		}
 		String accessToken = user.getAccessToken();
 
 		MarkdownContent individual = createClaForm.getIndividualContent();
