@@ -71,12 +71,12 @@ public class AdminClaController {
 
 	@RequestMapping("/admin/cla/create")
 	public String createClaForm(Map<String, Object> model) throws Exception {
-		model.put("contributorLicenseAgreement", new ContributorLicenseAgreement());
+		model.put("createClaForm", new CreateClaForm());
 		return "admin/cla/create";
 	}
 
 	@RequestMapping(value = "/admin/cla/create", method = RequestMethod.POST)
-	public String createCla(@AuthenticationPrincipal User user, @Valid ContributorLicenseAgreement contributorLicenseAgreement, BindingResult result)
+	public String createCla(@AuthenticationPrincipal User user, @Valid CreateClaForm createClaForm, BindingResult result, Map<String, Object> model)
 			throws Exception {
 		if (result.hasErrors()) {
 			return "admin/cla/create";
