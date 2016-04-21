@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-var claCclaSign = (function () {
-	var claCclaSign = {};
+var claIclaSign = (function () {
+	var claIclaSign = {};
 
 	function initialize() {
-		$("[data-toggle=popover]").popover({html: true});
 		$("#print").click(function(e) {
 			window.print();
 			e.preventDefault();
@@ -26,10 +25,10 @@ var claCclaSign = (function () {
 	}
 
 	// exports
-	claCclaSign.initialize = initialize;
+	claIclaSign.initialize = initialize;
 
-	return claCclaSign;
+	return claIclaSign;
 })
 ();
 
-claCclaSign.initialize();
+claIclaSign.initialize();
