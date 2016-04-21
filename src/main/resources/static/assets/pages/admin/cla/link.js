@@ -50,6 +50,7 @@ var adminClaLink = (function () {
 				sessionStorage.setItem("repositories", JSON.stringify(data));
 				$('#repositories').removeProp('disabled');
 			});
+		return false;
 	}
 
 	// exports
