@@ -43,9 +43,9 @@ public class DataUtils {
 
 	public static ContributorLicenseAgreement createSpringCla() {
 		MarkdownContent corporate = new MarkdownContent();
-		corporate.setMarkdown("Corporate");
+		corporate.setMarkdown("Spring Corporate");
 		MarkdownContent individual = new MarkdownContent();
-		individual.setMarkdown("Individual");
+		individual.setMarkdown("Spring Individual");
 
 		ContributorLicenseAgreement cla = new ContributorLicenseAgreement();
 		cla.setCorporateContent(corporate);

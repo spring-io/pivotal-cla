@@ -22,6 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.Test;
 
+import io.pivotal.cla.data.ContributorLicenseAgreement;
+import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.webdriver.pages.SignIclaPage;
@@ -40,6 +42,20 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		assertThat(signPage.getIndividualCla()).isEqualTo(cla.getIndividualContent().getHtml());
 		assertThat(signPage.isSigned()).isFalse();
 	}
+
+	@Test
+	public void viewSupersedingCla() {
+		ContributorLicenseAgreement springCla = DataUtils.createSpringCla();
+		springCla.setSupersedingCla(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(springCla.getName())).thenReturn(springCla);
+
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), springCla.getName());
+
+		signPage.assertClaLink(springCla.getName());
+		assertThat(signPage.getIndividualCla()).isEqualTo(cla.getIndividualContent().getHtml());
+		assertThat(signPage.isSigned()).isFalse();
+	}
+
 
 	@Test
 	public void alreadySigned() {

@@ -65,13 +65,15 @@ public class IclaController {
 		if(cla == null) {
 			throw new ResourceNotFoundException();
 		}
+		if(cla.getSupersedingCla() != null) {
+			cla = cla.getSupersedingCla();
+		}
 		SignClaForm form = new SignClaForm();
 		form.setSigned(signed != null);
 		form.setName(user.getName());
 		form.setClaId(cla.getId());
 		form.setRepositoryId(repositoryId);
 		form.setPullRequestId(pullRequestId);
-
 		model.put("signClaForm", form);
 		model.put("cla", cla);
 
