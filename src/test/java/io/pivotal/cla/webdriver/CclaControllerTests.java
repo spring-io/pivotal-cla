@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import io.pivotal.cla.data.ContributorLicenseAgreement;
+import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
@@ -43,6 +45,19 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 		signPage.assertClaLink(cla.getName());
 		assertThat(signPage.getCorporate()).isEqualTo(cla.getCorporateContent().getHtml());
+	}
+
+	@Test
+	public void viewSupersedingCla() {
+		ContributorLicenseAgreement springCla = DataUtils.createSpringCla();
+		springCla.setSupersedingCla(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(springCla.getName())).thenReturn(springCla);
+
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), springCla.getName());
+
+		signPage.assertClaLink(springCla.getName());
+		assertThat(signPage.getCorporate()).isEqualTo(cla.getCorporateContent().getHtml());
+		assertThat(signPage.isSigned()).isFalse();
 	}
 
 	@Test

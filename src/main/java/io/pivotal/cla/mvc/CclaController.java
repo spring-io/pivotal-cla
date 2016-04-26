@@ -67,6 +67,9 @@ public class CclaController {
 		if(cla == null) {
 			throw new ResourceNotFoundException();
 		}
+		if(cla.getSupersedingCla() != null) {
+			cla = cla.getSupersedingCla();
+		}
 
 		SignCorporateClaForm form = new SignCorporateClaForm();
 		form.setSigned(signed != null);

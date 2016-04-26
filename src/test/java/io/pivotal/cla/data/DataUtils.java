@@ -29,9 +29,11 @@ public class DataUtils {
 
 	public static ContributorLicenseAgreement createPivotalCla() {
 		MarkdownContent corporate = new MarkdownContent();
-		corporate.setMarkdown("Corporate");
+		corporate.setMarkdown("# Corporate");
+		corporate.setHtml("Corporate");
 		MarkdownContent individual = new MarkdownContent();
-		individual.setMarkdown("Individual");
+		individual.setMarkdown("# Individual");
+		individual.setHtml("Individual");
 
 		ContributorLicenseAgreement cla = new ContributorLicenseAgreement();
 		cla.setCorporateContent(corporate);
@@ -43,9 +45,11 @@ public class DataUtils {
 
 	public static ContributorLicenseAgreement createSpringCla() {
 		MarkdownContent corporate = new MarkdownContent();
-		corporate.setMarkdown("Spring Corporate");
+		corporate.setMarkdown("# Spring Corporate");
+		corporate.setHtml("Spring Corporate");
 		MarkdownContent individual = new MarkdownContent();
-		individual.setMarkdown("Spring Individual");
+		individual.setMarkdown("# Spring Individual");
+		individual.setHtml("Spring Individual");
 
 		ContributorLicenseAgreement cla = new ContributorLicenseAgreement();
 		cla.setCorporateContent(corporate);
