@@ -86,7 +86,7 @@ public class CclaController {
 	}
 
 	@RequestMapping(value = "/sign/{claName}/ccla", method = RequestMethod.POST)
-	public String signCla(@AuthenticationPrincipal User user, @Valid SignCorporateClaForm signCorporateClaForm, BindingResult result, Map<String, Object> model) throws IOException {
+	public String signCla(@AuthenticationPrincipal User user, @Valid SignCorporateClaForm signCorporateClaForm, BindingResult result, @PathVariable String claName, Map<String, Object> model) throws IOException {
 		if(result.hasErrors()) {
 			ContributorLicenseAgreement cla = clas.findOne(signCorporateClaForm.getClaId());
 			model.put("cla", cla);

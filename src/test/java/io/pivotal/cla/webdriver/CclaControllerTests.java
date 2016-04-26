@@ -360,6 +360,22 @@ public class CclaControllerTests extends BaseWebDriverTests {
 	}
 
 	@Test
+	public void signSupersedingCla() {
+		ContributorLicenseAgreement springCla = DataUtils.createSpringCla();
+		springCla.setSupersedingCla(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(springCla.getName())).thenReturn(springCla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), springCla.getName());
+
+		signPage = signPage.form()
+			.sign(SignCclaPage.class);
+
+		signPage.assertClaLink(springCla.getName());
+		assertThat(signPage.getCorporate()).isEqualTo(cla.getCorporateContent().getHtml());
+	}
+
+	@Test
 	public void signNoRepositoryIdAndNoPullRequestId() throws Exception {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);

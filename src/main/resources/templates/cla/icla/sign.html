@@ -26,7 +26,7 @@
 
 				</div>
 			</div>
-			<form id="sign-form" class="hidden-print" th:if="${!signClaForm.signed}" th:action="@{/sign/{claName}/icla#sign-form(claName=${cla.name})}" method="post" th:object="${signClaForm}">
+			<form id="sign-form" class="hidden-print" th:if="${!signClaForm.signed}" th:action="@{/sign/{claName}/icla#sign-form(claName=${claName})}" method="post" th:object="${signClaForm}">
 				<div class="form-group" th:class="${#fields.hasErrors('name')}? 'has-error form-group' : form-group">
 					<label for="name">
 						Name

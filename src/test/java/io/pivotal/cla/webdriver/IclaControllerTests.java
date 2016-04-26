@@ -26,6 +26,7 @@ import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
+import io.pivotal.cla.webdriver.pages.SignCclaPage;
 import io.pivotal.cla.webdriver.pages.SignIclaPage;
 import io.pivotal.cla.webdriver.pages.SignIclaPage.Form;
 
@@ -227,6 +228,22 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		form.assertCountry().hasNoErrors();
 		form.assertTelephone().hasNoErrors();
 		form.assertConfirm().hasRequiredError();
+	}
+
+	@Test
+	public void signSupersedingCla() {
+		ContributorLicenseAgreement springCla = DataUtils.createSpringCla();
+		springCla.setSupersedingCla(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(springCla.getName())).thenReturn(springCla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), springCla.getName());
+
+		signPage = signPage.form()
+			.sign(SignIclaPage.class);
+
+		signPage.assertClaLink(springCla.getName());
+		assertThat(signPage.getIndividualCla()).isEqualTo(cla.getIndividualContent().getHtml());
 	}
 
 	@Test
