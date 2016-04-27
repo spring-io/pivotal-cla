@@ -5,6 +5,7 @@
 <body>
 	<div layout:fragment="content">
 		<div th:if="${signed}" class="alert alert-success" id="signed">
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			Thank you for signing the Agreement!
 		</div>
 		<div class="jumbotron">

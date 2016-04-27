@@ -62,9 +62,9 @@
 			</nav>
 			<div class="container">
 
-
-			<div id="successMessage" th:if="${successMessage != null}" th:text="${successMessage}" class="alert alert-success">
-
+			<div id="successMessage" th:if="${successMessage != null}" class="alert alert-success">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<span th:text="${successMessage}" ></span>
 			</div>
 			<!-- Main component for a primary marketing message or call to action -->
 			<div layout:fragment="content">

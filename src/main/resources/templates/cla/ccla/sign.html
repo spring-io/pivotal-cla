@@ -9,10 +9,8 @@
 				<li><a id="breadcrumb-cla-link" th:href="@{/sign/{claName}(claName=${claName})}">CLA</a></li>
 				<li class="active">Corporate Contributor License Agreement</li>
 			</ol>
-			<div class="pull-right hidden-print">
-				<a href="#" id="print"><i class="glyphicon glyphicon-print" title="Print"></i></a>
-			</div>
 			<div th:if="${signCorporateClaForm.signed}" class="alert alert-success hidden-print" id="success">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				Thank you for signing the Agreement!
 				<span th:if="${signCorporateClaForm.repositoryId != null}">
 					The contributor license agreement checks on
@@ -20,6 +18,10 @@
 					should now pass.
 				</span>
 			</div>
+			<div class="pull-right hidden-print">
+				<a href="#" id="print"><i class="glyphicon glyphicon-print" title="Print"></i></a>
+			</div>
+
 			<div class="form-group">
 				<div id="corporate-cla" th:utext="${cla.corporateContent.html}" class="container">
 
