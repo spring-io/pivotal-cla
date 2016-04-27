@@ -70,6 +70,10 @@ public class OAuthController {
 
 		User user = github.getCurrentUser(userRequest);
 
+		User existingUser = users.findOne(user.getGithubLogin());
+		boolean isNewUser = existingUser == null;
+		user.setNew(isNewUser);
+
 		users.save(user);
 
 		Authentication authentication = Login.loginAs(user);

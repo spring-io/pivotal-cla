@@ -45,4 +45,6 @@ public class User {
 
 	private transient boolean adminAccessRequested;
 
+	private transient boolean isNew;
+
 }
