@@ -41,8 +41,8 @@ public class User {
 	@ElementCollection
 	private Set<String> emails;
 
-	private boolean admin;
+	private transient boolean admin;
 
-	private boolean adminAccessRequested;
+	private transient boolean adminAccessRequested;
 
 }
