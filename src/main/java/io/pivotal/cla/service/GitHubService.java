@@ -21,6 +21,9 @@ import java.util.List;
 import io.pivotal.cla.data.User;
 
 public interface GitHubService {
+
+	void save(UpdatePullRequestStatusRequest pullShaRequest) throws IOException;
+
 	void save(CommitStatus status);
 
 	List<String> findRepositoryNames(String accessToken) throws IOException;

@@ -22,10 +22,6 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
-import org.eclipse.egit.github.core.PullRequest;
-import org.eclipse.egit.github.core.RepositoryId;
-import org.eclipse.egit.github.core.client.GitHubClient;
-import org.eclipse.egit.github.core.service.PullRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -35,15 +31,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
-import io.pivotal.cla.service.CommitStatus;
 import io.pivotal.cla.service.GitHubService;
+import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
 
 @Controller
 public class CclaController {
@@ -111,24 +106,12 @@ public class CclaController {
 			return "redirect:/sign/" +cla.getName() +"/ccla?success";
 		}
 
-		AccessToken token = tokenRepo.findOne(repositoryId);
-		if (token != null) {
-			GitHubClient client = new GitHubClient();
-			client.setOAuth2Token(token.getToken());
-			RepositoryId id = RepositoryId.createFromId(repositoryId);
+		UpdatePullRequestStatusRequest updatePr = new UpdatePullRequestStatusRequest();
+		updatePr.setCurrentUserGithubLogin(user.getGithubLogin());
+		updatePr.setPullRequestId(pullRequestId);
+		updatePr.setRepositoryId(repositoryId);
 
-			PullRequestService service = new PullRequestService(client);
-			PullRequest pullRequest = service.getPullRequest(id, pullRequestId);
-			if (pullRequest.getUser().getLogin().equals(user.getGithubLogin())) {
-				CommitStatus status = new CommitStatus();
-				status.setPullRequestId(pullRequest.getNumber());
-				status.setRepoId(repositoryId);
-				status.setSha(pullRequest.getHead().getSha());
-				status.setSuccess(true);
-				status.setGithubUsername(user.getGithubLogin());
-				github.save(status);
-			}
-		}
+		github.save(updatePr);
 
 		return "redirect:/sign/" + cla.getName() + "/ccla?success&repositoryId=" + repositoryId + "&pullRequestId="
 				+ pullRequestId;

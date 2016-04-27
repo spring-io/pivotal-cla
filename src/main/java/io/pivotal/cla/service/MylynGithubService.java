@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.egit.github.core.Comment;
 import org.eclipse.egit.github.core.CommitStatus;
+import org.eclipse.egit.github.core.PullRequest;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryHook;
 import org.eclipse.egit.github.core.RepositoryId;
@@ -36,6 +37,7 @@ import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.MarkdownService;
 import org.eclipse.egit.github.core.service.OrganizationService;
+import org.eclipse.egit.github.core.service.PullRequestService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -154,6 +156,36 @@ public class MylynGithubService implements GitHubService {
 				throw new RuntimeException(e);
 			}
 		}
+	}
+
+	public void save(UpdatePullRequestStatusRequest pullShaRequest) throws IOException {
+		String repositoryId = pullShaRequest.getRepositoryId();
+		int pullRequestId = pullShaRequest.getPullRequestId();
+		String currentUserGithubLogin = pullShaRequest.getCurrentUserGithubLogin();
+
+		AccessToken token = tokenRepo.findOne(repositoryId);
+		if(token == null) {
+			return;
+		}
+		GitHubClient client = new GitHubClient();
+		client.setOAuth2Token(token.getToken());
+		RepositoryId id = RepositoryId.createFromId(repositoryId);
+
+		PullRequestService service = new PullRequestService(client);
+		PullRequest pullRequest = service.getPullRequest(id, pullRequestId);
+		if (!pullRequest.getUser().getLogin().equals(currentUserGithubLogin)) {
+			return;
+		}
+
+		String sha = pullRequest.getHead().getSha();
+		io.pivotal.cla.service.CommitStatus status = new io.pivotal.cla.service.CommitStatus();
+		status.setPullRequestId(pullRequest.getNumber());
+		status.setRepoId(repositoryId);
+		status.setSha(sha);
+		status.setSuccess(true);
+		status.setGithubUsername(currentUserGithubLogin);
+
+		save(status);
 	}
 
 	private List<String> getCommentsByClaUser(IssueService issues, RepositoryId id, io.pivotal.cla.service.CommitStatus commitStatus) {
