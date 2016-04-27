@@ -78,7 +78,7 @@ public class SignClaPage extends BasePage {
 	}
 
 	public void assertLogoutSuccess() {
-		assertThat(getSuccessMessage()).isEqualTo("You have been signed out.");
+		assertThat(getSuccessMessage()).contains("You have been signed out.");
 	}
 
 	public static SignClaPage go(WebDriver driver, String claName) {
