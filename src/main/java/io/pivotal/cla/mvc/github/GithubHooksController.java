@@ -104,12 +104,13 @@ public class GithubHooksController {
 		status.setRepoId(repoId.generateId());
 		status.setSha(pullRequest.getHead().getSha());
 		status.setSuccess(success);
-		UrlBuilder url = UrlBuilder
-			.fromRequest(request)
-			.path("/sign/"+cla)
-			.param("repositoryId", status.getRepoId())
-			.param("pullRequestId", String.valueOf(status.getPullRequestId()));
-		status.setUrl(url.build());
+		String signUrl = UrlBuilder.signUrl()
+			.request(request)
+			.claName(cla)
+			.repositoryId(status.getRepoId())
+			.pullRequestId(status.getPullRequestId())
+			.build();
+		status.setUrl(signUrl);
 
 		github.save(status);
 

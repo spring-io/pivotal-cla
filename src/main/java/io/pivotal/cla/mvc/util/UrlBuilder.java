@@ -22,6 +22,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import lombok.Builder;
+
 /**
  * @author Rob Winch
  *
@@ -51,6 +53,16 @@ public class UrlBuilder {
 	public UrlBuilder path(String path) {
 		this.path = path;
 		return this;
+	}
+
+	@Builder(builderMethodName="signUrl")
+	private static String create(HttpServletRequest request, String claName, String repositoryId, int pullRequestId) {
+		UrlBuilder url = UrlBuilder
+				.fromRequest(request)
+				.path("/sign/"+claName)
+				.param("repositoryId", repositoryId)
+				.param("pullRequestId", String.valueOf(pullRequestId));
+		return url.build();
 	}
 
 	public String build() {
