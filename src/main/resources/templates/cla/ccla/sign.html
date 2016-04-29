@@ -3,7 +3,7 @@
 	<head>
 		<title>Sign CCLA</title>
 	</head>
-	<body>
+	<body th:with="claName=${signCorporateClaForm.claName},repositoryId=${signCorporateClaForm.repositoryId},pullRequestId=${signCorporateClaForm.pullRequestId}">
 		<div class="container" layout:fragment="content">
 			<ol class="breadcrumb hidden-print">
 				<li><a id="breadcrumb-cla-link" th:href="@{/sign/{claName}(claName=${claName})}">CLA</a></li>
