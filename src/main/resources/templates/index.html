@@ -2,7 +2,7 @@
 <head>
 <title>Home</title>
 </head>
-<body th:with="claName=${claRequest.claName},repositoryId=${claRequest.repositoryId},pullRequestId=${claRequest.pullRequestId}">
+<body>
 	<div layout:fragment="content">
 		<div th:if="${signed}" class="alert alert-success hidden-print" id="signed">
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
