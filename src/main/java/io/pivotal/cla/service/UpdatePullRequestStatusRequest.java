@@ -26,4 +26,5 @@ public class UpdatePullRequestStatusRequest {
 	private String repositoryId;
 	private int pullRequestId;
 	private String currentUserGithubLogin;
+	private String commitStatusUrl;
 }

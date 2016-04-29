@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
+import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.service.GitHubService;
 import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
 
@@ -76,7 +78,7 @@ public class IclaController {
 	}
 
 	@RequestMapping(value = "/sign/{claName}/icla", method = RequestMethod.POST)
-	public String signCla(@AuthenticationPrincipal User user, @Valid SignClaForm signClaForm, BindingResult result, @PathVariable String claName, Map<String, Object> model) throws IOException {
+	public String signCla(HttpServletRequest request, @AuthenticationPrincipal User user, @Valid SignClaForm signClaForm, BindingResult result, @PathVariable String claName, Map<String, Object> model) throws IOException {
 		if(result.hasErrors()) {
 			ContributorLicenseAgreement cla = clas.findOne(signClaForm.getClaId());
 			model.put("cla", cla);
@@ -102,10 +104,17 @@ public class IclaController {
 		}
 
 
+		String commitStatusUrl = UrlBuilder.signUrl()
+			.request(request)
+			.claName(claName)
+			.repositoryId(repositoryId)
+			.pullRequestId(pullRequestId)
+			.build();
 		UpdatePullRequestStatusRequest updatePr = new UpdatePullRequestStatusRequest();
 		updatePr.setCurrentUserGithubLogin(user.getGithubLogin());
 		updatePr.setPullRequestId(pullRequestId);
 		updatePr.setRepositoryId(repositoryId);
+		updatePr.setCommitStatusUrl(commitStatusUrl);
 
 		github.save(updatePr);
 

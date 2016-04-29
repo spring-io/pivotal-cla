@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
+import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.service.GitHubService;
 import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
 
@@ -81,7 +83,7 @@ public class CclaController {
 	}
 
 	@RequestMapping(value = "/sign/{claName}/ccla", method = RequestMethod.POST)
-	public String signCla(@AuthenticationPrincipal User user, @Valid SignCorporateClaForm signCorporateClaForm, BindingResult result, @PathVariable String claName, Map<String, Object> model) throws IOException {
+	public String signCla(HttpServletRequest request, @AuthenticationPrincipal User user, @Valid SignCorporateClaForm signCorporateClaForm, BindingResult result, @PathVariable String claName, Map<String, Object> model) throws IOException {
 		if(result.hasErrors()) {
 			ContributorLicenseAgreement cla = clas.findOne(signCorporateClaForm.getClaId());
 			model.put("cla", cla);
@@ -106,10 +108,18 @@ public class CclaController {
 			return "redirect:/sign/" +cla.getName() +"/ccla?success";
 		}
 
+		String commitStatusUrl = UrlBuilder.signUrl()
+				.request(request)
+				.claName(claName)
+				.repositoryId(repositoryId)
+				.pullRequestId(pullRequestId)
+				.build();
+
 		UpdatePullRequestStatusRequest updatePr = new UpdatePullRequestStatusRequest();
 		updatePr.setCurrentUserGithubLogin(user.getGithubLogin());
 		updatePr.setPullRequestId(pullRequestId);
 		updatePr.setRepositoryId(repositoryId);
+		updatePr.setCommitStatusUrl(commitStatusUrl);
 
 		github.save(updatePr);
 

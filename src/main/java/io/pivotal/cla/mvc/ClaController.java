@@ -18,6 +18,8 @@ package io.pivotal.cla.mvc;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -31,6 +33,7 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
+import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.service.GitHubService;
 import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
 
@@ -48,7 +51,7 @@ public class ClaController {
 	CorporateSignatureRepository corporate;
 
 	@RequestMapping("/sign/{claName}")
-	public String signIndex(@AuthenticationPrincipal User user, @PathVariable String claName,
+	public String signIndex(HttpServletRequest request, @AuthenticationPrincipal User user, @PathVariable String claName,
 			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
 			Map<String, Object> model) throws Exception {
 
@@ -65,10 +68,18 @@ public class ClaController {
 		}
 
 		if(user.isNew() && signed && pullRequestId != null && repositoryId != null) {
+			String commitStatusUrl = UrlBuilder.signUrl()
+					.request(request)
+					.claName(claName)
+					.repositoryId(repositoryId)
+					.pullRequestId(pullRequestId)
+					.build();
+
 			UpdatePullRequestStatusRequest pullShaRequest = new UpdatePullRequestStatusRequest();
 			pullShaRequest.setCurrentUserGithubLogin(user.getGithubLogin());
 			pullShaRequest.setPullRequestId(pullRequestId);
 			pullShaRequest.setRepositoryId(repositoryId);
+			pullShaRequest.setCommitStatusUrl(commitStatusUrl);
 
 			github.save(pullShaRequest);
 			user.setNew(false);
