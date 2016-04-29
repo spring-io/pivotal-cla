@@ -241,13 +241,11 @@ public class MylynGithubService implements GitHubService {
 
 			long hookId;
 			if (optional.isPresent()) {
-				RepositoryHook repositoryHook = optional.get();
-				hookId = repositoryHook.getId();
-
-				if (!repositoryHook.isActive()) {
-					repositoryHook.setActive(true);
-					service.editHook(repositoryId, repositoryHook);
-				}
+				// we must always update because the secret is not exposed
+				hook.setId(optional.get().getId());
+				hook.setActive(true);
+				RepositoryHook editHook = service.editHook(repositoryId, hook);
+				hookId = editHook.getId();
 			} else {
 				RepositoryHook createdHook = service.createHook(repositoryId, hook);
 				hookId = createdHook.getId();

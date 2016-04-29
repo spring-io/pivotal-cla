@@ -200,27 +200,7 @@ public class MylynGithubServiceITests {
 	}
 
 	@Test
-	public void doNotCreatePullRequestHooksTwice() throws Exception {
-		CreatePullRequestHookRequest hookRequest = new CreatePullRequestHookRequest();
-		hookRequest.setAccessToken("access-token-123");
-		hookRequest.setGithubEventUrl("https://example.com/github/hook");
-		hookRequest.setRepositoryIds(Arrays.asList("spring-projects/spring-security"));
-		hookRequest.setSecret("do not guess me");
-
-		List<String> hooks = service.createPullRequestHooks(hookRequest);
-
-		assertThat(hooks).containsOnly("https://github.com/spring-projects/spring-security/settings/hooks/123");
-
-		RecordedRequest request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath()).isEqualTo("/api/v3/repos/spring-projects/spring-security/hooks?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + hookRequest.getAccessToken());
-
-		assertThat(server.getServer().getRequestCount()).isEqualTo(1);
-	}
-
-	@Test
-	public void enableInactivePullRequestHook() throws Exception {
+	public void enableInactivePullRequestHookAndSetSecret() throws Exception {
 		CreatePullRequestHookRequest hookRequest = new CreatePullRequestHookRequest();
 		hookRequest.setAccessToken("access-token-123");
 		hookRequest.setGithubEventUrl("https://example.com/github/hook");
@@ -240,7 +220,7 @@ public class MylynGithubServiceITests {
 		assertThat(request.getPath()).isEqualTo("/api/v3/repos/spring-projects/spring-security/hooks/123");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + hookRequest.getAccessToken());
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"active\":true,\"created_at\":\"2011-09-06T17:26:27Z\",\"updated_at\":\"2011-09-06T20:39:23Z\",\"id\":123,\"last_response\":null,\"name\":\"web\",\"url\":\"https://api.github.com/repos/spring-projects/spring-security/hooks/123\",\"config\":{\"url\":\"https://example.com/github/hook\",\"content_type\":\"json\"}}");
+				"{\"events\":[\"pull_request\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":123,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"secret\":\"do not guess me\",\"url\":\"https://example.com/github/hook\"}}");
 	}
 
 	@Test
