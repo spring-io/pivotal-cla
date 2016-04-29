@@ -15,7 +15,6 @@
  */
 package io.pivotal.cla.mvc;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +27,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.CorporateSignature;
@@ -80,7 +80,7 @@ public class CclaController {
 	}
 
 	@RequestMapping(value = "/sign/{claName}/ccla", method = RequestMethod.POST)
-	public String signCla(@AuthenticationPrincipal User user, @Valid SignCorporateClaForm signCorporateClaForm, BindingResult result, Map<String, Object> model) throws IOException {
+	public String signCla(@AuthenticationPrincipal User user, @Valid SignCorporateClaForm signCorporateClaForm, BindingResult result, Map<String, Object> model, RedirectAttributes redirect) throws Exception {
 		if(result.hasErrors()) {
 			ContributorLicenseAgreement cla = clas.findOne(signCorporateClaForm.getClaId());
 			model.put("cla", cla);
@@ -106,14 +106,17 @@ public class CclaController {
 
 		String repositoryId = signCorporateClaForm.getRepositoryId();
 		Integer pullRequestId = signCorporateClaForm.getPullRequestId();
+		redirect.addAttribute("claName", cla.getName());
 		if(repositoryId == null || pullRequestId == null) {
-			return "redirect:/sign/" +cla.getName() +"/ccla?success";
+			return "redirect:/sign/{claName}/ccla";
 		}
 
 		UpdatePullRequestStatusRequest updatePullRequest = signCorporateClaForm.createUpdatePullRequestStatus(user.getGithubLogin());
 		github.save(updatePullRequest);
 
-		return "redirect:/sign/" + cla.getName() + "/ccla?success&repositoryId=" + repositoryId + "&pullRequestId="
-				+ pullRequestId;
+		redirect.addAttribute("repositoryId", repositoryId);
+		redirect.addAttribute("pullRequestId", pullRequestId);
+
+		return "redirect:/sign/{claName}/ccla";
 	}
 }

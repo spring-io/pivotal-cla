@@ -15,6 +15,8 @@
  */
 package io.pivotal.cla.mvc.util;
 
+import java.net.URLEncoder;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -56,10 +58,11 @@ public class UrlBuilder {
 	}
 
 	@Builder(builderMethodName="signUrl")
-	private static String create(HttpServletRequest request, String claName, String repositoryId, int pullRequestId) {
+	private static String create(HttpServletRequest request, String claName, String repositoryId, int pullRequestId) throws Exception{
+		String urlEncodedClaName = URLEncoder.encode(claName, "UTF-8");
 		UrlBuilder url = UrlBuilder
 				.fromRequest(request)
-				.path("/sign/"+claName)
+				.path("/sign/"+urlEncodedClaName)
 				.param("repositoryId", repositoryId)
 				.param("pullRequestId", String.valueOf(pullRequestId));
 		return url.build();

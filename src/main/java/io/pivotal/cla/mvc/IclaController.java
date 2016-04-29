@@ -15,7 +15,6 @@
  */
 package io.pivotal.cla.mvc;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
@@ -28,6 +27,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.IndividualSignature;
@@ -71,7 +71,7 @@ public class IclaController {
 	}
 
 	@RequestMapping(value = "/sign/{claName}/icla", method = RequestMethod.POST)
-	public String signCla(@AuthenticationPrincipal User user, @Valid SignClaForm signClaForm, BindingResult result, Map<String, Object> model) throws IOException {
+	public String signCla(@AuthenticationPrincipal User user, @Valid SignClaForm signClaForm, BindingResult result, Map<String, Object> model, RedirectAttributes redirect) throws Exception {
 		String claName = signClaForm.getClaName();
 		Integer pullRequestId = signClaForm.getPullRequestId();
 		String repositoryId = signClaForm.getRepositoryId();
@@ -95,8 +95,9 @@ public class IclaController {
 
 		// update github
 
+		redirect.addAttribute("claName", claName);
 		if(repositoryId == null || pullRequestId == null) {
-			return "redirect:/sign/" +claName +"/icla?success";
+			return "redirect:/sign/{claName}/icla";
 		}
 
 
@@ -104,7 +105,9 @@ public class IclaController {
 
 		github.save(updatePullRequest);
 
-		return "redirect:/sign/" + cla.getName() + "/icla?success&repositoryId=" + repositoryId + "&pullRequestId="
-				+ pullRequestId;
+		redirect.addAttribute("repositoryId", repositoryId);
+		redirect.addAttribute("pullRequestId", pullRequestId);
+
+		return "redirect:/sign/{claName}/icla";
 	}
 }

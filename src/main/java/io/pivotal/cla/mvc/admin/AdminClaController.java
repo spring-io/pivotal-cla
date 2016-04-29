@@ -15,6 +15,7 @@
  */
 package io.pivotal.cla.mvc.admin;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -146,10 +147,11 @@ public class AdminClaController {
 		UrlBuilder pullRequestUrlBldr = UrlBuilder.fromRequest(request);
 		UrlBuilder signClaUrlBldr = UrlBuilder.fromRequest(request);
 
+		String urlEncodedClaName = URLEncoder.encode(linkClaForm.getClaName(), "UTF-8");
 		String pullRequestHookUrl = pullRequestUrlBldr
-				.path("/github/hooks/pull_request/" + linkClaForm.getClaName())
+				.path("/github/hooks/pull_request/" + urlEncodedClaName)
 				.build();
-		String signClaUrl = signClaUrlBldr.path("/sign/" + linkClaForm.getClaName()).build();
+		String signClaUrl = signClaUrlBldr.path("/sign/" + urlEncodedClaName).build();
 
 		CreatePullRequestHookRequest createPullRequest = new CreatePullRequestHookRequest();
 		createPullRequest.setAccessToken(user.getAccessToken());

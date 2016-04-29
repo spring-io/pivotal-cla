@@ -34,7 +34,7 @@ public class ClaRequest {
 	String repositoryId;
 	Integer pullRequestId;
 
-	public UpdatePullRequestStatusRequest createUpdatePullRequestStatus(String currentUserName) {
+	public UpdatePullRequestStatusRequest createUpdatePullRequestStatus(String currentUserName) throws Exception {
 		UpdatePullRequestStatusRequest request = new UpdatePullRequestStatusRequest();
 		request.setCurrentUserGithubLogin(currentUserName);
 		request.setPullRequestId(pullRequestId);
@@ -43,7 +43,7 @@ public class ClaRequest {
 		return request;
 	}
 
-	private String signUrl() {
+	private String signUrl() throws Exception {
 		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 		HttpServletRequest request = requestAttributes.getRequest();
 

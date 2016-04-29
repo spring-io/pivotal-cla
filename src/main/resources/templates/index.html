@@ -9,7 +9,7 @@
 			Thank you for signing the Agreement!
 			<span th:if="${repositoryId != null}">
 				The contributor license agreement checks on
-				<a th:href="@{'https://github.com/' + ${repositoryId} + '/pull/' + ${pullRequestId}}" th:text="${repositoryId} + '/pull/' + ${pullRequestId}">your pull request</a>
+				<a th:href="@{https://github.com/{repositoryId}/pull/{pullRequestId}(repositoryId=${repositoryId},pullRequestId=${pullRequestId})}" th:text="${repositoryId} + '/pull/' + ${pullRequestId}">your pull request</a>
 				should now pass.
 			</span>
 		</div>
