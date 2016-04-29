@@ -16,21 +16,29 @@
 package io.pivotal.cla.webdriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import io.pivotal.cla.data.ContributorLicenseAgreement;
+import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
+import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
 import io.pivotal.cla.webdriver.pages.SignCclaPage;
 import io.pivotal.cla.webdriver.pages.SignCclaPage.Form;
 
@@ -373,6 +381,90 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 		signPage.assertClaLink(springCla.getName());
 		assertThat(signPage.getCorporate()).isEqualTo(cla.getCorporateContent().getHtml());
+	}
+
+	@Test
+	public void sign() throws Exception {
+		String organization = "pivotal";
+		String name = "Rob Winch";
+		String email = "rob@gmail.com";
+		String address = "123 Seasame St";
+		String country = "USA";
+		String telephone = "123.456.7890";
+		String companyName = "Pivotal";
+		String title = "Director";
+
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring",organization));
+
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
+
+		signPage = signPage.form()
+				.name(name)
+				.email(email)
+				.mailingAddress(address)
+				.country(country)
+				.telephone(telephone)
+				.companyName(companyName)
+				.gitHubOrganization(organization)
+				.title(title)
+				.confirm()
+				.sign(SignCclaPage.class);
+
+		signPage.assertAt();
+
+		ArgumentCaptor<CorporateSignature> signatureCaptor = ArgumentCaptor.forClass(CorporateSignature.class);
+		verify(mockCorporateSignatureRepository).save(signatureCaptor.capture());
+
+		CorporateSignature signature = signatureCaptor.getValue();
+
+		assertThat(signature.getCla()).isEqualTo(cla);
+		assertThat(signature.getCountry()).isEqualTo(country);
+		assertThat(signature.getName()).isEqualTo(name);
+		assertThat(signature.getEmail()).isEqualTo(email);
+		assertThat(signature.getMailingAddress()).isEqualTo(address);
+		assertThat(signature.getTelephone()).isEqualTo(telephone);
+		assertThat(signature.getCompanyName()).isEqualTo(companyName);
+		assertThat(signature.getGitHubOrganization()).isEqualTo(organization);
+		assertThat(signature.getTitle()).isEqualTo(title);
+		assertThat(signature.getDateOfSignature()).isCloseTo(new Date(), TimeUnit.SECONDS.toMillis(5));
+
+		verify(mockGithub, never()).save(any(UpdatePullRequestStatusRequest.class));
+	}
+
+	@Test
+	public void signWithRepositoryIdWithPullRequestId() throws Exception {
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+
+		String repositoryId = "rwinch/176_test";
+		int pullRequestId = 2;
+		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName(), repositoryId, pullRequestId);
+
+		signPage = signPage.form()
+				.name("Rob Winch")
+				.email("rob@gmail.com")
+				.mailingAddress("123 Seasame St")
+				.country("USA")
+				.telephone("123.456.7890")
+				.companyName("Pivotal")
+				.gitHubOrganization("pivotal")
+				.title("Director")
+				.confirm()
+				.sign(SignCclaPage.class);
+
+		signPage.assertAt();
+
+		ArgumentCaptor<UpdatePullRequestStatusRequest> updatePullRequestCaptor = ArgumentCaptor.forClass(UpdatePullRequestStatusRequest.class);
+		verify(mockGithub).save(updatePullRequestCaptor.capture());
+		UpdatePullRequestStatusRequest updatePr = updatePullRequestCaptor.getValue();
+		String commitStatusUrl = "http://localhost/sign/"+cla.getName()+"?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId;
+		assertThat(updatePr.getCommitStatusUrl()).isEqualTo(commitStatusUrl);
+		assertThat(updatePr.getCurrentUserGithubLogin()).isEqualTo(WithSigningUserFactory.create().getGithubLogin());
+		assertThat(updatePr.getPullRequestId()).isEqualTo(pullRequestId);
+		assertThat(updatePr.getRepositoryId()).isEqualTo(repositoryId);
 	}
 
 	@Test

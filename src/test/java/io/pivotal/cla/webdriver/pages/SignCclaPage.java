@@ -153,8 +153,8 @@ public class SignCclaPage extends BasePage {
 			return assertInput(companyName);
 		}
 
-		public Form companyName(String name) {
-			this.companyName.sendKeys(name);
+		public Form companyName(String companyName) {
+			this.companyName.sendKeys(companyName);
 			return this;
 		}
 
@@ -167,8 +167,8 @@ public class SignCclaPage extends BasePage {
 			return this;
 		}
 
-		public Form title(String country) {
-			this.title.sendKeys(country);
+		public Form title(String title) {
+			this.title.sendKeys(title);
 			return this;
 		}
 

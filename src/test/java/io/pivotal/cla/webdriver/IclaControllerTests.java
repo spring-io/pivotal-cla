@@ -16,16 +16,24 @@
 package io.pivotal.cla.webdriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.DataUtils;
+import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
+import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
 import io.pivotal.cla.webdriver.pages.SignIclaPage;
 import io.pivotal.cla.webdriver.pages.SignIclaPage.Form;
 
@@ -292,17 +300,60 @@ public class IclaControllerTests extends BaseWebDriverTests {
 			.mailingAddress("123 Seasame St")
 			.country("USA")
 			.telephone("123.456.7890")
+			.confirm()
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
+		verifyZeroInteractions(mockGithub);
 	}
 
 	@Test
-	public void signNoRepositoryIdWithPullRequestId() {
+	public void sign() {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
-		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName(), "rwinch/176_test", 2);
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
+
+		String country = "USA";
+		String name = "Rob Winch";
+		String email = "rob@gmail.com";
+		String address = "123 Seasame St";
+		String telephone = "123.456.7890";
+		signPage = signPage.form()
+			.name(name)
+			.email(email)
+			.mailingAddress(address)
+			.country(country)
+			.telephone(telephone)
+			.confirm()
+			.sign(SignIclaPage.class);
+
+		signPage.assertAt();
+
+		ArgumentCaptor<IndividualSignature> signatureCaptor = ArgumentCaptor.forClass(IndividualSignature.class);
+		verify(mockIndividualSignatureRepository).save(signatureCaptor.capture());
+
+		IndividualSignature signature = signatureCaptor.getValue();
+
+		assertThat(signature.getCla()).isEqualTo(cla);
+		assertThat(signature.getCountry()).isEqualTo(country);
+		assertThat(signature.getName()).isEqualTo(name);
+		assertThat(signature.getEmail()).isEqualTo(email);
+		assertThat(signature.getMailingAddress()).isEqualTo(address);
+		assertThat(signature.getTelephone()).isEqualTo(telephone);
+		assertThat(signature.getDateOfSignature()).isCloseTo(new Date(), TimeUnit.SECONDS.toMillis(5));
+
+		verifyZeroInteractions(mockGithub);
+	}
+
+	@Test
+	public void signWithRepositoryIdWithPullRequestId() throws Exception {
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+
+		String repositoryId = "rwinch/176_test";
+		int pullRequestId = 2;
+		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName(), repositoryId, pullRequestId);
 
 		signPage = signPage.form()
 			.name("Rob Winch")
@@ -310,9 +361,19 @@ public class IclaControllerTests extends BaseWebDriverTests {
 			.mailingAddress("123 Seasame St")
 			.country("USA")
 			.telephone("123.456.7890")
+			.confirm()
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
+
+		ArgumentCaptor<UpdatePullRequestStatusRequest> updatePullRequestCaptor = ArgumentCaptor.forClass(UpdatePullRequestStatusRequest.class);
+		verify(mockGithub).save(updatePullRequestCaptor.capture());
+		UpdatePullRequestStatusRequest updatePr = updatePullRequestCaptor.getValue();
+		String commitStatusUrl = "http://localhost/sign/"+cla.getName()+"?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId;
+		assertThat(updatePr.getCommitStatusUrl()).isEqualTo(commitStatusUrl);
+		assertThat(updatePr.getCurrentUserGithubLogin()).isEqualTo(WithSigningUserFactory.create().getGithubLogin());
+		assertThat(updatePr.getPullRequestId()).isEqualTo(pullRequestId);
+		assertThat(updatePr.getRepositoryId()).isEqualTo(repositoryId);
 	}
 
 	@Test

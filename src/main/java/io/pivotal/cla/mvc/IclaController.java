@@ -84,6 +84,7 @@ public class IclaController {
 		ContributorLicenseAgreement cla = clas.findOne(signClaForm.getClaId());
 		IndividualSignature signature = new IndividualSignature();
 		signature.setCla(cla);
+		signature.setName(signClaForm.getName());
 		signature.setCountry(signClaForm.getCountry());
 		signature.setEmail(signClaForm.getEmail());
 		signature.setMailingAddress(signClaForm.getMailingAddress());

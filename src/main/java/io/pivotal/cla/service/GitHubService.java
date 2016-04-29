@@ -22,7 +22,7 @@ import io.pivotal.cla.data.User;
 
 public interface GitHubService {
 
-	void save(UpdatePullRequestStatusRequest pullShaRequest) throws IOException;
+	void save(UpdatePullRequestStatusRequest updatePullRequest) throws IOException;
 
 	void save(CommitStatus status);
 

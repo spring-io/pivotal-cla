@@ -95,6 +95,11 @@ public class CclaController {
 		signature.setGithubLogin(user.getGithubLogin());
 		signature.setGitHubOrganization(signCorporateClaForm.getGitHubOrganization());
 		signature.setTitle(signCorporateClaForm.getTitle());
+		signature.setCountry(signCorporateClaForm.getCountry());
+		signature.setName(signCorporateClaForm.getName());
+		signature.setMailingAddress(signCorporateClaForm.getMailingAddress());
+		signature.setTelephone(signCorporateClaForm.getTelephone());
+		signature.setCompanyName(signCorporateClaForm.getCompanyName());
 		corporate.save(signature);
 
 		// update github
@@ -106,7 +111,6 @@ public class CclaController {
 		}
 
 		UpdatePullRequestStatusRequest updatePullRequest = signCorporateClaForm.createUpdatePullRequestStatus(user.getGithubLogin());
-
 		github.save(updatePullRequest);
 
 		return "redirect:/sign/" + cla.getName() + "/ccla?success&repositoryId=" + repositoryId + "&pullRequestId="
