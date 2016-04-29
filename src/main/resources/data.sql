@@ -182,3 +182,6 @@ insert into contributor_license_agreement (superseding_cla_id,name,description,p
 insert into contributor_license_agreement (superseding_cla_id,name,description,primary_cla,created,individual_markdown,individual_html,corporate_markdown,corporate_html) values (1,'vert.x','ICLA FINAL 010912',true, null, 'Agreement on file.','Agreement on file.','Agreement on file.','Agreement on file.');
 insert into contributor_license_agreement (superseding_cla_id,name,description,primary_cla,created,individual_markdown,individual_html,corporate_markdown,corporate_html) values (1,'vert.x','ICLA FINAL 072310',false, null, 'Agreement on file.','Agreement on file.','Agreement on file.','Agreement on file.');
 insert into contributor_license_agreement (superseding_cla_id,name,description,primary_cla,created,individual_markdown,individual_html,corporate_markdown,corporate_html) values (1,'vert.x','ICLA FINAL 090414',false, null, 'Agreement on file.','Agreement on file.','Agreement on file.','Agreement on file.');
+
+
+insert into corporate_signature (cla_id,email_domain) values(1, 'gmail.com');

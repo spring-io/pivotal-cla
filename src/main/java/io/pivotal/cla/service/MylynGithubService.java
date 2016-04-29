@@ -185,6 +185,8 @@ public class MylynGithubService implements GitHubService {
 		status.setSuccess(true);
 		status.setGithubUsername(currentUserGithubLogin);
 
+		// FIXME need the URL back to the application populated otherwise we see two "Thank you for signing" comments and the link is broken
+
 		save(status);
 	}
 

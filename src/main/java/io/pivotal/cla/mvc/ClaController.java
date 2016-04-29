@@ -32,6 +32,7 @@ import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.service.GitHubService;
+import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
 
 @Controller
 public class ClaController {
@@ -61,6 +62,16 @@ public class ClaController {
 		if(!signed) {
 			List<String> organizations = github.getOrganizations(user.getGithubLogin());
 			signed = corporate.findSignature(claName, organizations, user.getEmails()) != null;
+		}
+
+		if(user.isNew() && signed && pullRequestId != null && repositoryId != null) {
+			UpdatePullRequestStatusRequest pullShaRequest = new UpdatePullRequestStatusRequest();
+			pullShaRequest.setCurrentUserGithubLogin(user.getGithubLogin());
+			pullShaRequest.setPullRequestId(pullRequestId);
+			pullShaRequest.setRepositoryId(repositoryId);
+
+			github.save(pullShaRequest);
+			user.setNew(false);
 		}
 
 		model.put("repositoryId",repositoryId);

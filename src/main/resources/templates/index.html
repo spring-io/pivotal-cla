@@ -4,9 +4,14 @@
 </head>
 <body>
 	<div layout:fragment="content">
-		<div th:if="${signed}" class="alert alert-success" id="signed">
+		<div th:if="${signed}" class="alert alert-success hidden-print" id="signed">
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			Thank you for signing the Agreement!
+			<span th:if="${repositoryId != null}">
+				The contributor license agreement checks on
+				<a th:href="@{'https://github.com/' + ${repositoryId} + '/pull/' + ${pullRequestId}}" th:text="${repositoryId} + '/pull/' + ${pullRequestId}">your pull request</a>
+				should now pass.
+			</span>
 		</div>
 		<div class="jumbotron">
 			<h1>Contributing to Pivotal Open Source Projects</h1>
