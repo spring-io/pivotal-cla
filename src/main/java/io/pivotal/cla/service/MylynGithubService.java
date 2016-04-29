@@ -158,10 +158,10 @@ public class MylynGithubService implements GitHubService {
 		}
 	}
 
-	public void save(UpdatePullRequestStatusRequest pullShaRequest) throws IOException {
-		String repositoryId = pullShaRequest.getRepositoryId();
-		int pullRequestId = pullShaRequest.getPullRequestId();
-		String currentUserGithubLogin = pullShaRequest.getCurrentUserGithubLogin();
+	public void save(UpdatePullRequestStatusRequest updatePullRequest) throws IOException {
+		String repositoryId = updatePullRequest.getRepositoryId();
+		int pullRequestId = updatePullRequest.getPullRequestId();
+		String currentUserGithubLogin = updatePullRequest.getCurrentUserGithubLogin();
 
 		AccessToken token = tokenRepo.findOne(repositoryId);
 		if(token == null) {
@@ -184,8 +184,7 @@ public class MylynGithubService implements GitHubService {
 		status.setSha(sha);
 		status.setSuccess(true);
 		status.setGithubUsername(currentUserGithubLogin);
-
-		// FIXME need the URL back to the application populated otherwise we see two "Thank you for signing" comments and the link is broken
+		status.setUrl(updatePullRequest.getCommitStatusUrl());
 
 		save(status);
 	}
