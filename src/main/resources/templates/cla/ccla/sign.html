@@ -6,7 +6,7 @@
 	<body>
 		<div class="container" layout:fragment="content">
 			<ol class="breadcrumb hidden-print">
-				<li><a id="breadcrumb-cla-link" th:href="@{/sign/{claName}(claName=${claName})}">CLA</a></li>
+				<li><a id="breadcrumb-cla-link" th:href="@{/sign/{claName}(claName=${signCorporateClaForm.claName})}">CLA</a></li>
 				<li class="active">Corporate Contributor License Agreement</li>
 			</ol>
 			<div th:if="${signCorporateClaForm.signed}" class="alert alert-success hidden-print" id="success">
@@ -27,7 +27,7 @@
 
 				</div>
 			</div>
-			<form id="sign-form" class="hidden-print" th:if="${!signCorporateClaForm.signed}" th:action="@{/sign/{claName}/ccla#sign-form(claName=${claName})}" method="post" th:object="${signCorporateClaForm}">
+			<form id="sign-form" class="hidden-print" th:if="${!signCorporateClaForm.signed}" th:action="@{/sign/{claName}/ccla#sign-form(claName=${signCorporateClaForm.claName})}" method="post" th:object="${signCorporateClaForm}">
 				<div class="form-group" th:class="${#fields.hasErrors('name')}? 'has-error form-group' : form-group">
 					<label for="name">
 						Name

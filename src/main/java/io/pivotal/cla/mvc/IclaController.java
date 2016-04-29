@@ -19,17 +19,15 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.IndividualSignature;
@@ -37,7 +35,6 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
-import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.service.GitHubService;
 import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
 
@@ -53,9 +50,9 @@ public class IclaController {
 	AccessTokenRepository tokenRepo;
 
 	@RequestMapping("/sign/{claName}/icla")
-	public String claForm(@AuthenticationPrincipal User user, @PathVariable String claName,
-			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
+	public String claForm(@AuthenticationPrincipal User user, @ModelAttribute SignClaForm signClaForm,
 			Map<String, Object> model) {
+		String claName = signClaForm.getClaName();
 
 		IndividualSignature signed = individual.findSignaturesFor(user, claName);
 		ContributorLicenseAgreement cla = signed == null ? clas.findByNameAndPrimaryTrue(claName) : signed.getCla();
@@ -65,20 +62,20 @@ public class IclaController {
 		if(cla.getSupersedingCla() != null) {
 			cla = cla.getSupersedingCla();
 		}
-		SignClaForm form = new SignClaForm();
-		form.setSigned(signed != null);
-		form.setName(user.getName());
-		form.setClaId(cla.getId());
-		form.setRepositoryId(repositoryId);
-		form.setPullRequestId(pullRequestId);
-		model.put("signClaForm", form);
+		signClaForm.setSigned(signed != null);
+		signClaForm.setName(user.getName());
+		signClaForm.setClaId(cla.getId());
 		model.put("cla", cla);
 
 		return "cla/icla/sign";
 	}
 
 	@RequestMapping(value = "/sign/{claName}/icla", method = RequestMethod.POST)
-	public String signCla(HttpServletRequest request, @AuthenticationPrincipal User user, @Valid SignClaForm signClaForm, BindingResult result, @PathVariable String claName, Map<String, Object> model) throws IOException {
+	public String signCla(@AuthenticationPrincipal User user, @Valid SignClaForm signClaForm, BindingResult result, Map<String, Object> model) throws IOException {
+		String claName = signClaForm.getClaName();
+		Integer pullRequestId = signClaForm.getPullRequestId();
+		String repositoryId = signClaForm.getRepositoryId();
+
 		if(result.hasErrors()) {
 			ContributorLicenseAgreement cla = clas.findOne(signClaForm.getClaId());
 			model.put("cla", cla);
@@ -97,26 +94,14 @@ public class IclaController {
 
 		// update github
 
-		String repositoryId = signClaForm.getRepositoryId();
-		Integer pullRequestId = signClaForm.getPullRequestId();
 		if(repositoryId == null || pullRequestId == null) {
-			return "redirect:/sign/" +cla.getName() +"/icla?success";
+			return "redirect:/sign/" +claName +"/icla?success";
 		}
 
 
-		String commitStatusUrl = UrlBuilder.signUrl()
-			.request(request)
-			.claName(claName)
-			.repositoryId(repositoryId)
-			.pullRequestId(pullRequestId)
-			.build();
-		UpdatePullRequestStatusRequest updatePr = new UpdatePullRequestStatusRequest();
-		updatePr.setCurrentUserGithubLogin(user.getGithubLogin());
-		updatePr.setPullRequestId(pullRequestId);
-		updatePr.setRepositoryId(repositoryId);
-		updatePr.setCommitStatusUrl(commitStatusUrl);
+		UpdatePullRequestStatusRequest updatePullRequest = signClaForm.createUpdatePullRequestStatus(user.getGithubLogin());
 
-		github.save(updatePr);
+		github.save(updatePullRequest);
 
 		return "redirect:/sign/" + cla.getName() + "/icla?success&repositoryId=" + repositoryId + "&pullRequestId="
 				+ pullRequestId;

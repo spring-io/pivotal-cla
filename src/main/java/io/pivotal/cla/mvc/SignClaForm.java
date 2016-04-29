@@ -21,9 +21,13 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
-public class SignClaForm {
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper=true)
+public class SignClaForm extends ClaRequest {
 
 	@NotNull
 	private Long claId;
@@ -45,10 +49,6 @@ public class SignClaForm {
 
 	@AssertTrue(message = "This is required")
 	private Boolean confirm;
-
-	private String repositoryId;
-
-	private Integer pullRequestId;
 
 	private boolean signed;
 

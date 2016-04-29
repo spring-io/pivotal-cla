@@ -21,9 +21,11 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper=true)
 public class SignCorporateClaForm extends SignClaForm {
 	@NotEmpty(message = "This is required")
 	private String companyName;

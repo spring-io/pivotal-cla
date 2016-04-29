@@ -18,14 +18,11 @@ package io.pivotal.cla.mvc;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.IndividualSignature;
@@ -33,7 +30,6 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
-import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.service.GitHubService;
 import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
 
@@ -51,10 +47,11 @@ public class ClaController {
 	CorporateSignatureRepository corporate;
 
 	@RequestMapping("/sign/{claName}")
-	public String signIndex(HttpServletRequest request, @AuthenticationPrincipal User user, @PathVariable String claName,
-			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
+	public String signIndex(@AuthenticationPrincipal User user, @ModelAttribute ClaRequest claRequest,
 			Map<String, Object> model) throws Exception {
-
+		String claName = claRequest.getClaName();
+		Integer pullRequestId = claRequest.getPullRequestId();
+		String repositoryId = claRequest.getRepositoryId();
 		ContributorLicenseAgreement cla = clas.findByNameAndPrimaryTrue(claName);
 		if(cla == null) {
 			throw new ResourceNotFoundException();
@@ -68,20 +65,9 @@ public class ClaController {
 		}
 
 		if(user.isNew() && signed && pullRequestId != null && repositoryId != null) {
-			String commitStatusUrl = UrlBuilder.signUrl()
-					.request(request)
-					.claName(claName)
-					.repositoryId(repositoryId)
-					.pullRequestId(pullRequestId)
-					.build();
+			UpdatePullRequestStatusRequest updatePullRequest = claRequest.createUpdatePullRequestStatus(user.getGithubLogin());
 
-			UpdatePullRequestStatusRequest pullShaRequest = new UpdatePullRequestStatusRequest();
-			pullShaRequest.setCurrentUserGithubLogin(user.getGithubLogin());
-			pullShaRequest.setPullRequestId(pullRequestId);
-			pullShaRequest.setRepositoryId(repositoryId);
-			pullShaRequest.setCommitStatusUrl(commitStatusUrl);
-
-			github.save(pullShaRequest);
+			github.save(updatePullRequest);
 			user.setNew(false);
 		}
 

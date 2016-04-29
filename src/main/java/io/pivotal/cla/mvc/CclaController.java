@@ -20,17 +20,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.CorporateSignature;
@@ -38,7 +35,6 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
-import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.service.GitHubService;
 import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
 
@@ -54,9 +50,12 @@ public class CclaController {
 	AccessTokenRepository tokenRepo;
 
 	@RequestMapping("/sign/{claName}/ccla")
-	public String claForm(@AuthenticationPrincipal User user, @PathVariable String claName,
-			@RequestParam(required = false) String repositoryId, @RequestParam(required = false) Integer pullRequestId,
+	public String claForm(@AuthenticationPrincipal User user, SignCorporateClaForm signCorporateClaForm,
 			Map<String, Object> model) throws Exception {
+		String claName = signCorporateClaForm.getClaName();
+		Integer pullRequestId = signCorporateClaForm.getPullRequestId();
+		String repositoryId = signCorporateClaForm.getRepositoryId();
+
 		List<String> organizations = github.getOrganizations(user.getGithubLogin());
 		CorporateSignature signed = corporate.findSignature(claName, organizations, user.getEmails());
 		ContributorLicenseAgreement cla = signed == null ? clas.findByNameAndPrimaryTrue(claName) : signed.getCla();
@@ -68,22 +67,20 @@ public class CclaController {
 			cla = cla.getSupersedingCla();
 		}
 
-		SignCorporateClaForm form = new SignCorporateClaForm();
-		form.setSigned(signed != null);
-		form.setName(user.getName());
-		form.setClaId(cla.getId());
-		form.setRepositoryId(repositoryId);
-		form.setPullRequestId(pullRequestId);
-		form.setGitHubOrganizations(github.getOrganizations(user.getGithubLogin()));
+		signCorporateClaForm.setSigned(signed != null);
+		signCorporateClaForm.setName(user.getName());
+		signCorporateClaForm.setClaId(cla.getId());
+		signCorporateClaForm.setRepositoryId(repositoryId);
+		signCorporateClaForm.setPullRequestId(pullRequestId);
+		signCorporateClaForm.setGitHubOrganizations(github.getOrganizations(user.getGithubLogin()));
 
-		model.put("signCorporateClaForm", form);
 		model.put("cla", cla);
 
 		return "cla/ccla/sign";
 	}
 
 	@RequestMapping(value = "/sign/{claName}/ccla", method = RequestMethod.POST)
-	public String signCla(HttpServletRequest request, @AuthenticationPrincipal User user, @Valid SignCorporateClaForm signCorporateClaForm, BindingResult result, @PathVariable String claName, Map<String, Object> model) throws IOException {
+	public String signCla(@AuthenticationPrincipal User user, @Valid SignCorporateClaForm signCorporateClaForm, BindingResult result, Map<String, Object> model) throws IOException {
 		if(result.hasErrors()) {
 			ContributorLicenseAgreement cla = clas.findOne(signCorporateClaForm.getClaId());
 			model.put("cla", cla);
@@ -108,20 +105,9 @@ public class CclaController {
 			return "redirect:/sign/" +cla.getName() +"/ccla?success";
 		}
 
-		String commitStatusUrl = UrlBuilder.signUrl()
-				.request(request)
-				.claName(claName)
-				.repositoryId(repositoryId)
-				.pullRequestId(pullRequestId)
-				.build();
+		UpdatePullRequestStatusRequest updatePullRequest = signCorporateClaForm.createUpdatePullRequestStatus(user.getGithubLogin());
 
-		UpdatePullRequestStatusRequest updatePr = new UpdatePullRequestStatusRequest();
-		updatePr.setCurrentUserGithubLogin(user.getGithubLogin());
-		updatePr.setPullRequestId(pullRequestId);
-		updatePr.setRepositoryId(repositoryId);
-		updatePr.setCommitStatusUrl(commitStatusUrl);
-
-		github.save(updatePr);
+		github.save(updatePullRequest);
 
 		return "redirect:/sign/" + cla.getName() + "/ccla?success&repositoryId=" + repositoryId + "&pullRequestId="
 				+ pullRequestId;
