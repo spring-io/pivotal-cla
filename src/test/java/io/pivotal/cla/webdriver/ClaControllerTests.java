@@ -15,6 +15,10 @@
  */
 package io.pivotal.cla.webdriver;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -24,10 +28,13 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
+import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
 import io.pivotal.cla.webdriver.pages.AboutPage;
 import io.pivotal.cla.webdriver.pages.SignCclaPage;
 import io.pivotal.cla.webdriver.pages.SignClaPage;
@@ -43,6 +50,29 @@ public class ClaControllerTests extends BaseWebDriverTests {
 	}
 
 	@Test
+	public void viewSignedWithRepositoryIdAndPullRequestIdNewUser() throws Exception {
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		user.setNew(true);
+
+		when(mockIndividualSignatureRepository.findSignaturesFor(WithSigningUserFactory.create(),cla.getName())).thenReturn(individualSignature);
+
+		String repositoryId = "spring-projects/spring-security";
+		int pullRequestId = 123;
+		SignClaPage home = SignClaPage.go(driver, cla.getName(), repositoryId, pullRequestId);
+		home.assertAt();
+		home.assertClaLinksWithPullRequest(cla.getName(), repositoryId, pullRequestId);
+
+		ArgumentCaptor<UpdatePullRequestStatusRequest> updatePullRequestCaptor = ArgumentCaptor.forClass(UpdatePullRequestStatusRequest.class);
+		verify(mockGithub).save(updatePullRequestCaptor.capture());
+		UpdatePullRequestStatusRequest updatePr = updatePullRequestCaptor.getValue();
+		String commitStatusUrl = "http://localhost/sign/"+cla.getName()+"?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId;
+		assertThat(updatePr.getCommitStatusUrl()).isEqualTo(commitStatusUrl);
+		assertThat(updatePr.getCurrentUserGithubLogin()).isEqualTo(WithSigningUserFactory.create().getGithubLogin());
+		assertThat(updatePr.getPullRequestId()).isEqualTo(pullRequestId);
+		assertThat(updatePr.getRepositoryId()).isEqualTo(repositoryId);
+	}
+
+	@Test
 	public void claPivotal() throws Exception {
 		SignClaPage home = SignClaPage.go(driver, cla.getName());
 		home.assertAt();
@@ -52,10 +82,12 @@ public class ClaControllerTests extends BaseWebDriverTests {
 	@Test
 	public void claPivotalWithPullRequest() throws Exception {
 		String repositoryId = "spring-projects/spring-security";
-		String pullRequestId = "123";
+		int pullRequestId = 123;
 		SignClaPage home = SignClaPage.go(driver, cla.getName(), repositoryId, pullRequestId);
 		home.assertAt();
 		home.assertClaLinksWithPullRequest(cla.getName(), repositoryId, pullRequestId);
+
+		verify(mockGithub, never()).save(any(UpdatePullRequestStatusRequest.class));
 	}
 
 	@Test
@@ -64,7 +96,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 
 		String repositoryId = "spring-projects/spring-security";
 		int pullRequestId = 123;
-		SignClaPage home = SignClaPage.go(driver, cla.getName(), repositoryId, String.valueOf(pullRequestId));
+		SignClaPage home = SignClaPage.go(driver, cla.getName(), repositoryId, pullRequestId);
 		home.assertAt();
 		home.assertPullRequestLink(repositoryId, pullRequestId);
 	}
