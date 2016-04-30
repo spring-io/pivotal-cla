@@ -64,9 +64,8 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		assertThat(signPage.isSigned()).isFalse();
 	}
 
-
 	@Test
-	public void alreadySigned() {
+	public void viewAlreadySigned() {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockIndividualSignatureRepository.findSignaturesFor(WithSigningUserFactory.create(), cla.getName())).thenReturn(individualSignature);
 
@@ -350,6 +349,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 	public void signWithRepositoryIdWithPullRequestId() throws Exception {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
+		when(mockIndividualSignatureRepository.findSignaturesFor(WithSigningUserFactory.create(), cla.getName())).thenReturn(null, individualSignature);
 
 		String repositoryId = "rwinch/176_test";
 		int pullRequestId = 2;
@@ -365,6 +365,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
+		signPage.assertPullRequestLink(repositoryId, pullRequestId);
 
 		ArgumentCaptor<UpdatePullRequestStatusRequest> updatePullRequestCaptor = ArgumentCaptor.forClass(UpdatePullRequestStatusRequest.class);
 		verify(mockGithub).save(updatePullRequestCaptor.capture());

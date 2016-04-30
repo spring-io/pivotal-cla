@@ -50,12 +50,23 @@ public class ClaControllerTests extends BaseWebDriverTests {
 	}
 
 	@Test
-	public void claPivotaWithPullRequest() throws Exception {
+	public void claPivotalWithPullRequest() throws Exception {
 		String repositoryId = "spring-projects/spring-security";
 		String pullRequestId = "123";
 		SignClaPage home = SignClaPage.go(driver, cla.getName(), repositoryId, pullRequestId);
 		home.assertAt();
 		home.assertClaLinksWithPullRequest(cla.getName(), repositoryId, pullRequestId);
+	}
+
+	@Test
+	public void claPivotalSignedWithPullRequest() throws Exception {
+		when(mockIndividualSignatureRepository.findSignaturesFor(WithSigningUserFactory.create(),cla.getName())).thenReturn(individualSignature);
+
+		String repositoryId = "spring-projects/spring-security";
+		int pullRequestId = 123;
+		SignClaPage home = SignClaPage.go(driver, cla.getName(), repositoryId, String.valueOf(pullRequestId));
+		home.assertAt();
+		home.assertPullRequestLink(repositoryId, pullRequestId);
 	}
 
 	@Test

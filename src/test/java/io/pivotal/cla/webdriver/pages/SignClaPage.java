@@ -31,6 +31,8 @@ public class SignClaPage extends BasePage {
 	WebElement cclaLink;
 
 	WebElement signed;
+	@FindBy(id = "pull-request")
+	WebElement pullRequest;
 
 	public SignClaPage(WebDriver driver) {
 		super(driver);
@@ -58,6 +60,11 @@ public class SignClaPage extends BasePage {
 	public void assertClaLinksWithPullRequest(String claName, String repositoryId, String pullRequestId) {
 		assertThat(getIclaHref()).isEqualTo("http://localhost/sign/" + claName + "/icla?repositoryId=" + repositoryId + "&pullRequestId="+pullRequestId);
 		assertThat(getCclaHref()).isEqualTo("http://localhost/sign/" + claName + "/ccla?repositoryId=" + repositoryId + "&pullRequestId="+pullRequestId);
+	}
+
+	public void assertPullRequestLink(String repositoryId, int pullRequestId) {
+		String url = "https://github.com/" + repositoryId + "/pull/" + pullRequestId;
+		assertThat(pullRequest.getAttribute("href")).isEqualTo(url);
 	}
 
 	private String getCclaHref() {

@@ -33,6 +33,8 @@ public class SignCclaPage extends BasePage {
 
 	@FindBy(id = "success")
 	WebElement success;
+	@FindBy(id = "pull-request")
+	WebElement pullRequest;
 
 	public SignCclaPage(WebDriver driver) {
 		super(driver);
@@ -44,6 +46,11 @@ public class SignCclaPage extends BasePage {
 
 	public void assertClaLink(String claName) {
 		assertThat(claLink.getAttribute("href")).endsWith("/sign/"+claName);
+	}
+
+	public void assertPullRequestLink(String repositoryId, int pullRequestId) {
+		String url = "https://github.com/" + repositoryId + "/pull/" + pullRequestId;
+		assertThat(pullRequest.getAttribute("href")).isEqualTo(url);
 	}
 
 	public boolean isSigned() {
@@ -61,6 +68,7 @@ public class SignCclaPage extends BasePage {
 	}
 
 	public void assertAt() {
+		System.out.println(getDriver().getPageSource());
 		assertThat(getDriver().getTitle()).endsWith("- Sign CCLA");
 	}
 

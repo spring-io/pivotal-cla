@@ -33,6 +33,8 @@ public class SignIclaPage extends BasePage {
 
 	@FindBy(id = "breadcrumb-cla-link")
 	WebElement claLink;
+	@FindBy(id = "pull-request")
+	WebElement pullRequest;
 
 	Form form;
 
@@ -42,6 +44,11 @@ public class SignIclaPage extends BasePage {
 
 	public void assertClaLink(String claName) {
 		assertThat(claLink.getAttribute("href")).endsWith("/sign/"+claName);
+	}
+
+	public void assertPullRequestLink(String repositoryId, int pullRequestId) {
+		String url = "https://github.com/" + repositoryId + "/pull/" + pullRequestId;
+		assertThat(pullRequest.getAttribute("href")).isEqualTo(url);
 	}
 
 	public boolean isSigned() {

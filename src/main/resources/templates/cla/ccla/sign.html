@@ -14,7 +14,7 @@
 				Thank you for signing the Agreement!
 				<span th:if="${signCorporateClaForm.repositoryId != null}">
 					The contributor license agreement checks on
-					<a th:href="@{https://github.com/{repositoryId}/pull/{pullRequestId}(repositoryId=${signCorporateClaForm.repositoryId},pullRequestId=${signCorporateClaForm.pullRequestId})}" th:text="${signCorporateClaForm.repositoryId} + '/pull/' + ${signCorporateClaForm.pullRequestId}">your pull request</a>
+					<a id="pull-request" th:href="@{https://github.com/{repositoryId}/pull/{pullRequestId}(repositoryId=${signCorporateClaForm.repositoryId},pullRequestId=${signCorporateClaForm.pullRequestId})}" th:text="${signCorporateClaForm.repositoryId} + '/pull/' + ${signCorporateClaForm.pullRequestId}">your pull request</a>
 					should now pass.
 				</span>
 			</div>

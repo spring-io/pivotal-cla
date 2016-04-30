@@ -17,6 +17,7 @@ package io.pivotal.cla.webdriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -438,6 +439,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+		when(mockCorporateSignatureRepository.findSignature(anyString(), anyCollectionOf(String.class), anyCollectionOf(String.class))).thenReturn(null,corporateSignature);
 
 		String repositoryId = "rwinch/176_test";
 		int pullRequestId = 2;
@@ -456,6 +458,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 				.sign(SignCclaPage.class);
 
 		signPage.assertAt();
+		signPage.assertPullRequestLink(repositoryId, pullRequestId);
 
 		ArgumentCaptor<UpdatePullRequestStatusRequest> updatePullRequestCaptor = ArgumentCaptor.forClass(UpdatePullRequestStatusRequest.class);
 		verify(mockGithub).save(updatePullRequestCaptor.capture());
