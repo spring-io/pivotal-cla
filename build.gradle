@@ -14,7 +14,8 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
-apply from: 'gradle/cf.gradle'
+// apply from: 'gradle/cf.gradle'
+apply from: "gradle/deploy.gradle"
 
 jar {
 	baseName = 'pivotal-github-cla'
