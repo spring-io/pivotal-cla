@@ -9,7 +9,7 @@ CREATE TABLE contributor_license_agreement (
   id                  BIGINT       NOT NULL AUTO_INCREMENT,
   corporate_html      LONGTEXT,
   corporate_markdown  LONGTEXT     NOT NULL,
-  created             DATETIME,
+  created             DATETIME     NOT NULL,
   description         VARCHAR(255),
   individual_html     LONGTEXT,
   individual_markdown LONGTEXT     NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE corporate_signature (
   id                   BIGINT NOT NULL AUTO_INCREMENT,
   company_name         VARCHAR(255),
   country              VARCHAR(255),
-  date_of_signature    DATETIME,
+  date_of_signature    DATETIME NOT NULL,
   email                VARCHAR(255),
   email_domain         VARCHAR(255),
   git_hub_organization VARCHAR(255),
@@ -33,7 +33,7 @@ CREATE TABLE corporate_signature (
   name                 VARCHAR(255),
   telephone            VARCHAR(255),
   title                VARCHAR(255),
-  cla_id               BIGINT,
+  cla_id               BIGINT NOT NULL,
   PRIMARY KEY (id)
 );
 
@@ -41,13 +41,13 @@ CREATE TABLE corporate_signature (
 CREATE TABLE individual_signature (
   id                BIGINT NOT NULL AUTO_INCREMENT,
   country           VARCHAR(255),
-  date_of_signature DATETIME,
+  date_of_signature DATETIME NOT NULL,
   email             VARCHAR(255),
   github_login      VARCHAR(255),
   mailing_address   VARCHAR(255),
   name              VARCHAR(255),
   telephone         VARCHAR(255),
-  cla_id            BIGINT,
+  cla_id            BIGINT NOT NULL,
   PRIMARY KEY (id)
 );
 
