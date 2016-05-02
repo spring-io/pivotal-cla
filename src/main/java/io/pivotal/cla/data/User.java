@@ -17,18 +17,22 @@ package io.pivotal.cla.data;
 
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.persistence.JoinColumn;
 
 import lombok.Data;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Data
 public class User {
 	@Id
+	@Column(name = "github_login")
 	private String githubLogin;
 
 	private String name;
@@ -39,6 +43,9 @@ public class User {
 	private String avatarUrl;
 
 	@ElementCollection
+	@Column(name = "email")
+	@CollectionTable(name = "user_email",
+			joinColumns = @JoinColumn(name = "github_login") )
 	private Set<String> emails;
 
 	private transient boolean admin;

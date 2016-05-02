@@ -41,7 +41,7 @@ import io.pivotal.cla.data.User;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(GithubClaApplication.class)
-@TestPropertySource(locations="/application-test.properties",properties="spring.datasource.data=")
+@TestPropertySource(locations="/application-test.properties")
 @Transactional
 public class IndividualSignatureRepositoryTests {
 
@@ -63,8 +63,7 @@ public class IndividualSignatureRepositoryTests {
 	public void setup() {
 		user = DataUtils.createUser();
 
-		cla = DataUtils.createPivotalCla();
-		cla = clas.save(cla);
+		cla = clas.findByNameAndPrimaryTrue("pivotal");
 		signature = createSignature(cla, user);
 
 		signatures.save(signature);
