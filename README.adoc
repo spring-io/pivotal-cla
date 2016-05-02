@@ -1,4 +1,4 @@
-image:https://travis-ci.org/rwinch/pivotal-cla.svg?branch=master["Build Status", link="https://travis-ci.org/rwinch/pivotal-cla"]
+image:https://travis-ci.org/pivotalsoftware/pivotal-cla.svg?branch=master["Build Status", link="https://travis-ci.org/pivotalsoftware/pivotal-cla"]
 
 This tool is intended to allow managing GitHub Contributor License Agreements.
 
