@@ -61,6 +61,8 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		SignClaPage home = SignClaPage.go(driver, cla.getName(), repositoryId, pullRequestId);
 		home.assertAt();
 		home.assertClaLinksWithPullRequest(cla.getName(), repositoryId, pullRequestId);
+		home.assertPullRequestLink(repositoryId, pullRequestId);
+		home.assertImported();
 
 		ArgumentCaptor<UpdatePullRequestStatusRequest> updatePullRequestCaptor = ArgumentCaptor.forClass(UpdatePullRequestStatusRequest.class);
 		verify(mockGithub).save(updatePullRequestCaptor.capture());

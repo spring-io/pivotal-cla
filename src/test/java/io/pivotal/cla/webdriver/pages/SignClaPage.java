@@ -33,6 +33,7 @@ public class SignClaPage extends BasePage {
 	WebElement signed;
 	@FindBy(id = "pull-request")
 	WebElement pullRequest;
+	WebElement imported;
 
 	public SignClaPage(WebDriver driver) {
 		super(driver);
@@ -65,6 +66,10 @@ public class SignClaPage extends BasePage {
 	public void assertPullRequestLink(String repositoryId, int pullRequestId) {
 		String url = "https://github.com/" + repositoryId + "/pull/" + pullRequestId;
 		assertThat(pullRequest.getAttribute("href")).isEqualTo(url);
+	}
+
+	public void assertImported() {
+		assertThat(imported.getText()).contains("We noticed you or a company on your behalf previously signed an agreement and imported it into our new tooling!");
 	}
 
 	private String getCclaHref() {

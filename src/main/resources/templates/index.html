@@ -4,6 +4,10 @@
 </head>
 <body>
 	<div layout:fragment="content">
+		<div id="imported" th:if="${importedSignature}" class="alert alert-success hidden-print">
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			We noticed you or a company on your behalf previously signed an agreement and imported it into our new tooling!
+		</div>
 		<div th:if="${signed}" class="alert alert-success hidden-print" id="signed">
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			Thank you for signing the Agreement!

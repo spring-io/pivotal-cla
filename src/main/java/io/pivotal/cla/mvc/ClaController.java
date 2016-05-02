@@ -69,6 +69,7 @@ public class ClaController {
 
 			github.save(updatePullRequest);
 			user.setNew(false);
+			model.put("importedSignature", true);
 		}
 
 		model.put("repositoryId",repositoryId);
