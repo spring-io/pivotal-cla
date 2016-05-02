@@ -55,8 +55,6 @@ CREATE TABLE individual_signature (
 CREATE TABLE USER (
   github_login           VARCHAR(255) NOT NULL,
   access_token           VARCHAR(255),
-  ADMIN                  BIT          NOT NULL,
-  admin_access_requested BIT          NOT NULL,
   avatar_url             VARCHAR(255),
   name                   VARCHAR(255),
   PRIMARY KEY (github_login)
