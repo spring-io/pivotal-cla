@@ -51,7 +51,7 @@ cloudfoundry {
 
     host = "$application"
     domain = 'cfapps.io'
-    memory = 512
+    memory = 1024
     variants = ['-blue', '-green']
     healthCheckTimeout = 180
     instances = 2
@@ -109,6 +109,7 @@ gradle.taskGraph.whenReady {
                         "SECURITY_OAUTH2_MAIN_CLIENT_ID"         : project.ext.'security.oauth2.main.clientId',
                         "SECURITY_OAUTH2_MAIN_CLIENT_SECRET"     : project.ext.'security.oauth2.main.clientSecret',
                         "SECURITY_OAUTH2_PIVOTAL-CLA_TOKENSECRET": project.ext.'security.oauth2.pivotal-cla.tokenSecret',
+                        "SPRING_PROFILES_ACTIVE": "cloudfoundry",
                 ]
             }
 
