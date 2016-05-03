@@ -52,7 +52,7 @@ CREATE TABLE individual_signature (
 );
 
 
-CREATE TABLE USER (
+CREATE TABLE user (
   github_login           VARCHAR(255) NOT NULL,
   access_token           VARCHAR(255),
   avatar_url             VARCHAR(255),
@@ -84,7 +84,7 @@ FOREIGN KEY (cla_id) REFERENCES contributor_license_agreement (id);
 
 ALTER TABLE user_email
   ADD CONSTRAINT FK_USER_EMAIL
-FOREIGN KEY (github_login) REFERENCES USER (github_login);
+FOREIGN KEY (github_login) REFERENCES user (github_login);
 
 
 CREATE UNIQUE INDEX UQ_USER_EMAIL ON user_email (github_login, email);
