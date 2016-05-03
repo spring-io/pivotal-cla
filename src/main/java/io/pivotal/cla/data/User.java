@@ -15,6 +15,7 @@
  */
 package io.pivotal.cla.data;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.CollectionTable;
@@ -23,14 +24,17 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Transient;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Data
-public class User {
+@EqualsAndHashCode(exclude = {"admin", "adminAccessRequested", "isNew"})
+public class User implements Serializable {
 	@Id
 	@Column(name = "github_login")
 	private String githubLogin;
@@ -48,10 +52,13 @@ public class User {
 			joinColumns = @JoinColumn(name = "github_login") )
 	private Set<String> emails;
 
-	private transient boolean admin;
+	@Transient
+	private boolean admin;
 
-	private transient boolean adminAccessRequested;
+	@Transient
+	private boolean adminAccessRequested;
 
-	private transient boolean isNew;
+	@Transient
+	private boolean isNew;
 
 }
