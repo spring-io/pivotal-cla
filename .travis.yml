@@ -3,9 +3,6 @@ language: java
 jdk:
   - oraclejdk8
 
-services:
-  - redis-server
-
 os:
   - linux
 

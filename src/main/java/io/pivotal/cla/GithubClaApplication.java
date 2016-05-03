@@ -17,8 +17,10 @@ package io.pivotal.cla;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.session.SessionAutoConfiguration;
 
-@SpringBootApplication
+
+@SpringBootApplication(exclude = SessionAutoConfiguration.class) // disable Session auto-config by default to enable it on demand using the "cloudfoundry" profile
 public class GithubClaApplication {
 
 	public static void main(String[] args) {
