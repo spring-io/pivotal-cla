@@ -4,8 +4,8 @@ gradle.rootProject.allprojects { project ->
 }
 
 def final TARGET_SPACE = 'space'
-def final PRODUCTION_SPACE = 'contributor-license-agreements'
-def final STAGING_SPACE = 'contributor-license-agreements-staging'
+def final PRODUCTION_SPACE = 'production'
+def final STAGING_SPACE = 'staging'
 
 // Gather information about the build environment. Is it a Travis CI build?
 def travisBranch = System.getenv().get("TRAVIS_BRANCH")
@@ -46,13 +46,12 @@ apply plugin: 'cloudfoundry'
 
 cloudfoundry {
     target = "https://api.run.pivotal.io"
-    organization = "FrameworksAndRuntimes"
+    organization = "pivotal-cla"
     application = 'pivotal-cla'
 
     host = "$application"
     domain = 'cfapps.io'
     memory = 1024
-    variants = ['-blue', '-green']
     healthCheckTimeout = 180
     instances = 2
     buildpack = 'https://github.com/cloudfoundry/java-buildpack/'
@@ -133,12 +132,12 @@ if (project.hasProperty(TARGET_SPACE)) {
         ]
 
         services {
-            'pivotal-cla-redis' {
+            "$application-redis-${space}" {
                 label = 'rediscloud'
                 plan = '30mb'
             }
 
-            'pivotal-cla-mysql' {
+            "$application-mysql-${space}" {
                 label = 'p-mysql'
                 plan = '1gb'
             }
@@ -146,6 +145,12 @@ if (project.hasProperty(TARGET_SPACE)) {
     }
 
     cloudfoundry {
-        uris = (space == PRODUCTION_SPACE ? ["pivotal-cla.cfapps.io"] : ["${space}.cfapps.io"])
+        uris = (space == PRODUCTION_SPACE ? ["pivotal-cla.cfapps.io"] : ["pivotal-cla-${space}.cfapps.io"])
+    }
+
+    if (space == PRODUCTION_SPACE || space == STAGING_SPACE) {
+        cloudfoundry {
+            variants = ['-blue', '-green']
+        }
     }
 }
