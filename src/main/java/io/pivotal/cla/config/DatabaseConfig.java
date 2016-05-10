@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cla;
+package io.pivotal.cla.config;
 
 import javax.sql.DataSource;
 
@@ -23,8 +23,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.util.Assert;
-
-import io.pivotal.cla.config.GithubClaProfiles;
 
 /**
  * @author Mark Paluch
