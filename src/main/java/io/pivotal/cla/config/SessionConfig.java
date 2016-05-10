@@ -28,11 +28,11 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 /**
  * @author Mark Paluch
  */
-@Profile(GithubClaProfiles.CLOUDFOUNDRY)
 @Configuration
 @Import(SessionAutoConfiguration.class)
 public class SessionConfig {
 
+	@Profile(GithubClaProfiles.CLOUDFOUNDRY)
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
 		CloudFactory cloudFactory = new CloudFactory();
