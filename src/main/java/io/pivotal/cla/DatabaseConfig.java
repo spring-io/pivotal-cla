@@ -31,36 +31,36 @@ import io.pivotal.cla.config.GithubClaProfiles;
  */
 public abstract class DatabaseConfig {
 
-    @Bean
-    public abstract DataSource dataSource();
+	@Bean
+	public abstract DataSource dataSource();
 
-    protected void configureDataSource(org.apache.tomcat.jdbc.pool.DataSource dataSource) {
-        dataSource.setMaxActive(20);
-        dataSource.setMaxIdle(8);
-        dataSource.setMinIdle(8);
-        dataSource.setTestOnBorrow(true);
-        dataSource.setTestOnReturn(false);
-    }
+	protected void configureDataSource(org.apache.tomcat.jdbc.pool.DataSource dataSource) {
+		dataSource.setMaxActive(20);
+		dataSource.setMaxIdle(8);
+		dataSource.setMinIdle(8);
+		dataSource.setTestOnBorrow(true);
+		dataSource.setTestOnReturn(false);
+	}
 }
 
 @Configuration
 @Profile(GithubClaProfiles.LOCAL)
 class LocalDatabaseConfig extends DatabaseConfig {
 
-    @Bean
-    public DataSource dataSource() {
-        org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
+	@Bean
+	public DataSource dataSource() {
+		org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
 
-        dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:mem:pivotalcla;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
-        dataSource.setUsername("sa");
-        dataSource.setPassword("");
-        dataSource.setValidationQuery("SELECT 1");
+		dataSource.setDriverClassName("org.h2.Driver");
+		dataSource.setUrl("jdbc:h2:mem:pivotalcla;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
+		dataSource.setUsername("sa");
+		dataSource.setPassword("");
+		dataSource.setValidationQuery("SELECT 1");
 
-        configureDataSource(dataSource);
+		configureDataSource(dataSource);
 
-        return dataSource;
-    }
+		return dataSource;
+	}
 }
 
 @Configuration
@@ -87,20 +87,20 @@ class LocalMysqlDatabaseConfig extends DatabaseConfig {
 @Profile(GithubClaProfiles.CLOUDFOUNDRY)
 class CloudFoundryDatabaseConfig extends DatabaseConfig {
 
-    @Bean
-    public Cloud cloud() {
-        return new CloudFactory().getCloud();
-    }
+	@Bean
+	public Cloud cloud() {
+		return new CloudFactory().getCloud();
+	}
 
-    @Bean
-    public DataSource dataSource() {
+	@Bean
+	public DataSource dataSource() {
 
-        DataSource service = cloud().getSingletonServiceConnector(DataSource.class, null);
-        Assert.isInstanceOf(org.apache.tomcat.jdbc.pool.DataSource.class, service);
-        org.apache.tomcat.jdbc.pool.DataSource dataSource = (org.apache.tomcat.jdbc.pool.DataSource) service;
+		DataSource service = cloud().getSingletonServiceConnector(DataSource.class, null);
+		Assert.isInstanceOf(org.apache.tomcat.jdbc.pool.DataSource.class, service);
+		org.apache.tomcat.jdbc.pool.DataSource dataSource = (org.apache.tomcat.jdbc.pool.DataSource) service;
 
-        dataSource.setValidationQuery("/* PING */ SELECT 1");
-        configureDataSource(dataSource);
-        return dataSource;
-    }
+		dataSource.setValidationQuery("/* PING */ SELECT 1");
+		configureDataSource(dataSource);
+		return dataSource;
+	}
 }
