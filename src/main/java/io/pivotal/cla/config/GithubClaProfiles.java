@@ -20,7 +20,8 @@ package io.pivotal.cla.config;
  */
 public class GithubClaProfiles {
 
-    public final static String LOCAL = "local";
-    public final static String CLOUDFOUNDRY = "cloudfoundry";
+	public final static String LOCAL = "local";
+	public final static String LOCAL_MYSQL = "local-mysql";
+	public final static String CLOUDFOUNDRY = "cloudfoundry";
 
 }

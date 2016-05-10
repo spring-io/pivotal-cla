@@ -64,6 +64,26 @@ class LocalDatabaseConfig extends DatabaseConfig {
 }
 
 @Configuration
+@Profile(GithubClaProfiles.LOCAL_MYSQL)
+class LocalMysqlDatabaseConfig extends DatabaseConfig {
+
+	@Bean
+	public DataSource dataSource() {
+		org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
+
+		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+		dataSource.setUrl("jdbc:mysql://localhost:3306/pivotalcla");
+		dataSource.setUsername("spring");
+		dataSource.setPassword("password");
+		dataSource.setValidationQuery("SELECT 1");
+
+		configureDataSource(dataSource);
+
+		return dataSource;
+	}
+}
+
+@Configuration
 @Profile(GithubClaProfiles.CLOUDFOUNDRY)
 class CloudFoundryDatabaseConfig extends DatabaseConfig {
 
