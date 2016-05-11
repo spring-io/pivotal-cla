@@ -1,5 +1,8 @@
 language: java
 
+services:
+  - redis
+
 jdk:
   - oraclejdk8
 
