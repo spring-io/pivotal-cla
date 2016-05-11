@@ -41,11 +41,21 @@ public class ClaOAuthConfig {
 
 	private String gitHubApiHost = "api.github.com";
 
-	private String accessTokenHost = "github.com";
+	private String gitHubHost = "github.com";
 
-	public String getGitHubApiBaseUrl() {
-		return scheme + "://" + gitHubApiHost + ":" + port + "/";
+	public String getGitHubBaseUrl() {
+		return getBaseUrl(gitHubHost);
 	}
 
+	public String getGitHubApiBaseUrl() {
+		return getBaseUrl(gitHubApiHost);
+	}
 
+	private String getBaseUrl(String host) {
+		String optionalPort = ":" + port;
+		if("https".equals(scheme) && port == 443) {
+			optionalPort = "";
+		}
+		return scheme + "://" + host + optionalPort + "/";
+	}
 }

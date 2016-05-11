@@ -35,7 +35,7 @@ import lombok.Data;
  */
 @Component
 public class AccessTokenService {
-	private static final String AUTHORIZE_URI = "/login/oauth/access_token";
+	private static final String AUTHORIZE_URI = "login/oauth/access_token";
 
 	private RestTemplate rest = new RestTemplate();
 
@@ -43,7 +43,7 @@ public class AccessTokenService {
 
 	@Autowired
 	public AccessTokenService(ClaOAuthConfig config) {
-		this.authorizeUrl = config.getScheme() + "://" + config.getAccessTokenHost() + ":" + config.getPort() + AUTHORIZE_URI;
+		this.authorizeUrl = config.getGitHubBaseUrl() + AUTHORIZE_URI;
 	}
 
 	public String getToken(AccessTokenRequest request) {
