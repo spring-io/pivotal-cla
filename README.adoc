@@ -68,7 +68,8 @@ You can run the application using:
 $ ./gradlew bootRun
 ----
 
-This mode enables the `local` profile which uses H2 for the in-memory database. You don't require a Redis instance.
+This mode enables the `local` profile which uses H2 for the in-memory database and Redis for storing sessions.
+Redis *must* be started locally on port `6379`.
 
 === Open the Application
 
