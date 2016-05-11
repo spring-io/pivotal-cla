@@ -1,0 +1,30 @@
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+Cache-Control: private, max-age=60, s-maxage=60
+Content-Security-Policy: default-src 'none'
+Content-Type: application/json; charset=utf-8
+Date: Wed, 11 May 2016 13:34:30 GMT
+ETag: W/"9f41291bea78e2da9efb1f08439b24f5"
+Server: GitHub.com
+Status: 200 OK
+Strict-Transport-Security: max-age=31536000; includeSubdomains; preload
+Vary: Accept, Authorization, Cookie, X-GitHub-OTP
+Vary: Accept-Encoding
+X-Accepted-OAuth-Scopes: admin:org, read:org, repo, write:org
+X-Content-Type-Options: nosniff
+X-Frame-Options: deny
+X-GitHub-Media-Type: github.v3
+X-GitHub-Request-Id: 4ADEC8ED:2CBA:790793E:573334E6
+X-OAuth-Scopes: admin:org, admin:org_hook, admin:public_key, admin:repo_hook, delete_repo, gist, notifications, repo, user
+X-RateLimit-Limit: 5000
+X-RateLimit-Remaining: 4988
+X-RateLimit-Reset: 1462975735
+X-Served-By: cee4c0729c8e9147e7abcb45b9d69689
+X-XSS-Protection: 1; mode=block
+
+{
+    "role": "member",
+    "state": "active",
+    "url": "https://api.github.com/teams/2006839/memberships/rwinch"
+}

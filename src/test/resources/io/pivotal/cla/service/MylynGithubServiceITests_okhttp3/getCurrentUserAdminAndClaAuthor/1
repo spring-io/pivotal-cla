@@ -1,0 +1,38 @@
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+Cache-Control: private, max-age=60, s-maxage=60
+Content-Security-Policy: default-src 'none'
+Content-Type: application/json; charset=utf-8
+Date: Sat, 05 Mar 2016 02:23:48 GMT
+ETag: W/"3cc23789c35581fee740d53e76750ddc"
+Server: GitHub.com
+Status: 200 OK
+Strict-Transport-Security: max-age=31536000; includeSubdomains; preload
+Vary: Accept, Authorization, Cookie, X-GitHub-OTP
+Vary: Accept-Encoding
+X-Accepted-OAuth-Scopes: user, user:email
+X-Content-Type-Options: nosniff
+X-Frame-Options: deny
+X-GitHub-Media-Type: github.v3
+X-GitHub-Request-Id: 4ADEC8ED:13E78:4A48235:56DA4334
+X-OAuth-Scopes: admin:org, admin:org_hook, admin:public_key, admin:repo_hook, delete_repo, gist, notifications, repo, user
+X-RateLimit-Limit: 5000
+X-RateLimit-Remaining: 4997
+X-RateLimit-Reset: 1457145439
+X-Served-By: bae57931a6fe678a3dffe9be8e7819c8
+X-XSS-Protection: 1; mode=block
+
+[
+    {
+        "email": "rob@example.com",
+        "primary": true,
+        "verified": true
+    },
+
+    {
+        "email": "rob@pivotal.io",
+        "primary": false,
+        "verified": true
+    }
+]

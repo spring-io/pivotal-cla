@@ -1,0 +1,25 @@
+HTTP/1.1 404 Not Found
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+Content-Encoding: gzip
+Content-Security-Policy: default-src 'none'
+Content-Type: application/json; charset=utf-8
+Date: Wed, 11 May 2016 13:59:13 GMT
+Server: GitHub.com
+Status: 404 Not Found
+Strict-Transport-Security: max-age=31536000; includeSubdomains; preload
+X-Accepted-OAuth-Scopes: admin:org, read:org, repo, user, write:org
+X-Content-Type-Options: nosniff
+X-Frame-Options: deny
+X-GitHub-Media-Type: github.v3
+X-GitHub-Request-Id: 4ADEC8ED:2CBD:AB4492D:57333AB1
+X-OAuth-Scopes: admin:org, admin:org_hook, admin:public_key, admin:repo_hook, delete_repo, gist, notifications, repo, user
+X-RateLimit-Limit: 5000
+X-RateLimit-Remaining: 4964
+X-RateLimit-Reset: 1462975735
+X-XSS-Protection: 1; mode=block
+
+{
+    "documentation_url": "https://developer.github.com/v3",
+    "message": "Not Found"
+}

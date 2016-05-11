@@ -119,6 +119,78 @@ public class MylynGithubServiceITests {
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + user.getAccessToken());
 	}
 
+	@Test
+	public void getCurrentUserAdminAndClaAuthor() throws Exception {
+		when(tokenService.getToken(any())).thenReturn("access-token-123");
+
+		OAuthAccessTokenParams oauthParams = new OAuthAccessTokenParams();
+		oauthParams.setCallbackUrl("https://example.com/oauth/callback");
+		oauthParams.setCode("code-123");
+		oauthParams.setState("state-456");
+		CurrentUserRequest userRequest = new CurrentUserRequest();
+		userRequest.setOauthParams(oauthParams);
+		userRequest.setRequestAdminAccess(true);
+
+		User user = service.getCurrentUser(userRequest);
+
+		assertThat(user.getAccessToken()).isEqualTo("access-token-123");
+		assertThat(user.getAvatarUrl()).isEqualTo("https://avatars.githubusercontent.com/u/362503?v=3");
+		assertThat(user.getEmails()).containsOnly("rob@example.com","rob@pivotal.io");
+		assertThat(user.getGithubLogin()).isEqualTo("rwinch");
+		assertThat(user.getName()).isEqualTo("Rob Winch");
+		assertThat(user.isAdminAccessRequested()).isTrue();
+		assertThat(user.isAdmin()).isTrue();
+		assertThat(user.isClaAuthor()).isTrue();
+
+		RecordedRequest request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/user/emails?per_page=100&page=1");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + user.getAccessToken());
+
+		request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/user");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + user.getAccessToken());
+	}
+
+	@Test
+	public void getCurrentUserAdminAndNotClaAuthor() throws Exception {
+		when(tokenService.getToken(any())).thenReturn("access-token-123");
+
+		OAuthAccessTokenParams oauthParams = new OAuthAccessTokenParams();
+		oauthParams.setCallbackUrl("https://example.com/oauth/callback");
+		oauthParams.setCode("code-123");
+		oauthParams.setState("state-456");
+		CurrentUserRequest userRequest = new CurrentUserRequest();
+		userRequest.setOauthParams(oauthParams);
+		userRequest.setRequestAdminAccess(true);
+
+		User user = service.getCurrentUser(userRequest);
+
+		assertThat(user.getAccessToken()).isEqualTo("access-token-123");
+		assertThat(user.getAvatarUrl()).isEqualTo("https://avatars.githubusercontent.com/u/362503?v=3");
+		assertThat(user.getEmails()).containsOnly("rob@example.com","rob@pivotal.io");
+		assertThat(user.getGithubLogin()).isEqualTo("rwinch");
+		assertThat(user.getName()).isEqualTo("Rob Winch");
+		assertThat(user.isAdminAccessRequested()).isTrue();
+		assertThat(user.isAdmin()).isTrue();
+		assertThat(user.isClaAuthor()).isFalse();
+
+		RecordedRequest request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/user/emails?per_page=100&page=1");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + user.getAccessToken());
+
+		request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/user");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + user.getAccessToken());
+	}
+
 
 	@Test
 	public void getCurrentUserSigning() throws Exception {

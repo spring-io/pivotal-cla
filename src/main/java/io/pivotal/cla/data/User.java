@@ -56,6 +56,9 @@ public class User implements Serializable {
 	private boolean admin;
 
 	@Transient
+	private boolean claAuthor;
+
+	@Transient
 	private boolean adminAccessRequested;
 
 	@Transient

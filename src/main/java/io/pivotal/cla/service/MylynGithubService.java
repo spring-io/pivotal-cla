@@ -40,6 +40,8 @@ import org.eclipse.egit.github.core.service.OrganizationService;
 import org.eclipse.egit.github.core.service.PullRequestService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -222,7 +224,12 @@ public class MylynGithubService implements GitHubService {
 			user.setEmails(new TreeSet<>(verifiedEmails));
 			user.setGithubLogin(githubUser.getLogin());
 			user.setAdminAccessRequested(request.isRequestAdminAccess());
-			user.setAdmin(request.isRequestAdminAccess() && hasAdminEmail(user));
+			boolean isAdmin = request.isRequestAdminAccess() && hasAdminEmail(user);
+			user.setAdmin(isAdmin);
+			if(isAdmin) {
+				boolean isClaAuthor = isAuthor(user.getGithubLogin(), accessToken);
+				user.setClaAuthor(isClaAuthor);
+			}
 			return user;
 
 		} catch (IOException fail) {
@@ -246,6 +253,18 @@ public class MylynGithubService implements GitHubService {
 
 	private boolean hasAdminEmail(User user) {
 		return user.getEmails().stream().anyMatch(e -> e.endsWith(ADMIN_MAIL_SUFFIX));
+	}
+
+	private boolean isAuthor(String username, String accessToken) {
+		try {
+			ResponseEntity<String> entity = rest.getForEntity(oauthConfig.getBaseUrl() + "/teams/{id}/memberships/{username}?access_token={token}", String.class, "2006839", username, accessToken);
+			return entity.getStatusCodeValue() == 200;
+		} catch(HttpClientErrorException e) {
+			if(e.getStatusCode() == HttpStatus.NOT_FOUND) {
+				return false;
+			}
+			throw e;
+		}
 	}
 
 	@Override
