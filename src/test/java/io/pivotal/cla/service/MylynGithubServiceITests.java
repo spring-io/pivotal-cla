@@ -61,7 +61,7 @@ public class MylynGithubServiceITests {
 	public void setup() throws IOException {
 		oauthConfig = new ClaOAuthConfig();
 		oauthConfig.setScheme("http");
-		oauthConfig.setHost(server.getServer().getHostName());
+		oauthConfig.setGitHubApiHost(server.getServer().getHostName());
 		oauthConfig.setPort(server.getServer().getPort());
 		oauthConfig.setPivotalClaAccessToken("pivotal-cla-accessToken");
 

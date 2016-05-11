@@ -48,7 +48,7 @@ public class EmailService extends GitHubService {
 	}
 
 	public static EmailService forOAuth(String token, ClaOAuthConfig config) {
-		return new EmailService(new EmailGitHubClient(config.getHost(), config.getPort(), config.getScheme()).setOAuth2Token(token));
+		return new EmailService(new EmailGitHubClient(config.getGitHubApiHost(), config.getPort(), config.getScheme()).setOAuth2Token(token));
 	}
 
 	private static final class EmailGitHubClient extends GitHubClient {

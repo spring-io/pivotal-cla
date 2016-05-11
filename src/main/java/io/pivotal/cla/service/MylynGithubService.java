@@ -94,7 +94,7 @@ public class MylynGithubService implements GitHubService {
 	}
 
 	private GitHubClient createClient(String accessToken) {
-		GitHubClient client = new GitHubClient(oauthConfig.getHost(), oauthConfig.getPort(), oauthConfig.getScheme());
+		GitHubClient client = new GitHubClient(oauthConfig.getGitHubApiHost(), oauthConfig.getPort(), oauthConfig.getScheme());
 		client.setOAuth2Token(accessToken);
 		return client;
 	}
