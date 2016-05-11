@@ -257,7 +257,7 @@ public class MylynGithubService implements GitHubService {
 
 	private boolean isAuthor(String username, String accessToken) {
 		try {
-			ResponseEntity<String> entity = rest.getForEntity(oauthConfig.getBaseUrl() + "/teams/{id}/memberships/{username}?access_token={token}", String.class, "2006839", username, accessToken);
+			ResponseEntity<String> entity = rest.getForEntity(oauthConfig.getGitHubApiBaseUrl() + "/teams/{id}/memberships/{username}?access_token={token}", String.class, "2006839", username, accessToken);
 			return entity.getStatusCode().value() == 200;
 		} catch(HttpClientErrorException e) {
 			if(e.getStatusCode() == HttpStatus.NOT_FOUND) {
@@ -350,7 +350,7 @@ public class MylynGithubService implements GitHubService {
 	private Map<String,String> createEditLinks(Collection<String> repoIds, String fileName) {
 		Map<String,String> urls = new HashMap<>();
 		for(String id : repoIds) {
-			String url = oauthConfig.getBaseUrl() + id +"/edit/master/" + fileName;
+			String url = oauthConfig.getGitHubApiBaseUrl() + id +"/edit/master/" + fileName;
 			if(urlExists(url)) {
 				urls.put(id, url);
 			}
@@ -361,7 +361,7 @@ public class MylynGithubService implements GitHubService {
 	private List<String> createNewLinks(Collection<String> repoIds, String fileName) {
 		List<String> urls = new ArrayList<>();
 		for(String id : repoIds) {
-			String url = oauthConfig.getBaseUrl() + id +"/new/master?filename=" + fileName;
+			String url = oauthConfig.getGitHubApiBaseUrl() + id +"/new/master?filename=" + fileName;
 			urls.add(url);
 		}
 		return urls;

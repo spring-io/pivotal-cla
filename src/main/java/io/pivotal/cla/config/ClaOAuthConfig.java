@@ -43,7 +43,7 @@ public class ClaOAuthConfig {
 
 	private String accessTokenHost = "github.com";
 
-	public String getBaseUrl() {
+	public String getGitHubApiBaseUrl() {
 		return scheme + "://" + gitHubApiHost + ":" + port + "/";
 	}
 
