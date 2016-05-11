@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.core.serializer.support.SerializingConverter;
 
 import io.pivotal.cla.config.ClaOAuthConfig;
 import io.pivotal.cla.data.AccessToken;
@@ -405,6 +406,11 @@ public class MylynGithubServiceITests {
 				server.getServerUrl() + "/spring-projects/has-adoc/edit/master/CONTRIBUTING.adoc",
 				server.getServerUrl() + "/spring-projects/no-contributor/new/master?filename=CONTRIBUTING.adoc");
 		assertThat(urls.getMarkdown()).containsOnly(server.getServerUrl() + "/spring-projects/has-md/edit/master/CONTRIBUTING.md");
+
+		SerializingConverter converter = new SerializingConverter();
+		// ensure we can serialize the result as it is placed in FlashMap
+		assertThat(converter.convert(urls.getMarkdown())).isNotNull();
+		assertThat(converter.convert(urls.getAsciidoc())).isNotNull();
 	}
 
 	@Test

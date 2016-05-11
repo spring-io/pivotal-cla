@@ -311,7 +311,7 @@ public class MylynGithubService implements GitHubService {
 		List<String> newUrls = createNewLinks(remainingRepositoryIds, String.format("%s.adoc", CONTRIBUTING_FILE));
 
 		ContributingUrlsResponse response = new ContributingUrlsResponse();
-		response.setMarkdown(mdUrls.values());
+		response.setMarkdown(new ArrayList<>(mdUrls.values()));
 		response.setAsciidoc(new ArrayList<>(adocUrls.values()));
 		response.getAsciidoc().addAll(newUrls);
 
