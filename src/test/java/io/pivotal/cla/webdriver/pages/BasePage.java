@@ -142,6 +142,10 @@ public abstract class BasePage {
 		}
 	}
 
+	public void assertManageLink(boolean displayed) {
+		assertThat(getDriver().findElements( By.id("manage") ).isEmpty()).isEqualTo(!displayed);
+	}
+
 	public AdminListClasPage manage() {
 		manage.click();
 		return PageFactory.initElements(driver, AdminListClasPage.class);

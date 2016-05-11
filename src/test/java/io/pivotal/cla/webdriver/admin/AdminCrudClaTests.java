@@ -27,12 +27,13 @@ import org.mockito.ArgumentCaptor;
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.security.WithAdminUser;
 import io.pivotal.cla.security.WithAdminUserFactory;
+import io.pivotal.cla.security.WithClaAuthorUser;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
 import io.pivotal.cla.webdriver.pages.HomePage;
 import io.pivotal.cla.webdriver.pages.admin.AdminCreateClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
 
-@WithAdminUser
+@WithClaAuthorUser
 public class AdminCrudClaTests extends BaseWebDriverTests {
 
 	@Test

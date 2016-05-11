@@ -19,6 +19,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -34,6 +35,7 @@ import io.pivotal.cla.data.User;
  *
  */
 @Controller
+@PreAuthorize("hasRole('CLA_AUTHOR')")
 public class AdminCrudClaController extends AdminClaController {
 
 	@RequestMapping("/admin/cla/")

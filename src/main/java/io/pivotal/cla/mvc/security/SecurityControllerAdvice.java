@@ -33,4 +33,9 @@ public class SecurityControllerAdvice {
 	boolean isAdmin(@AuthenticationPrincipal User currentUser) {
 		return currentUser == null ? false : currentUser.isAdmin();
 	}
+
+	@ModelAttribute("isClaAuthor")
+	boolean isClaAuthor(@AuthenticationPrincipal User currentUser) {
+		return currentUser == null ? false : currentUser.isClaAuthor();
+	}
 }

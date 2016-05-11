@@ -22,7 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.Test;
 
 import io.pivotal.cla.security.WithAdminUser;
+import io.pivotal.cla.security.WithClaAuthorUser;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
+import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 
 @WithAdminUser
 public class AdminHomeTests extends BaseWebDriverTests {
@@ -32,5 +34,27 @@ public class AdminHomeTests extends BaseWebDriverTests {
 		mockMvc.perform(get("/admin"))
 			.andExpect(status().is3xxRedirection())
 			.andExpect(redirectedUrl("/admin/cla/link"));
+	}
+
+	@Test
+	public void adminUserLinkClaLinkVisible() {
+		AdminLinkClaPage page = AdminLinkClaPage.to(getDriver());
+		page.assertAt();
+
+		page = page.link();
+		page.assertAt();
+	}
+
+	@Test
+	public void adminUserManageLinkNotVisible() {
+		AdminLinkClaPage page = AdminLinkClaPage.to(getDriver());
+		page.assertManageLink(false);
+	}
+
+	@Test
+	@WithClaAuthorUser
+	public void claAuthorUserManageLinkVisible() {
+		AdminLinkClaPage page = AdminLinkClaPage.to(getDriver());
+		page.assertManageLink(true);
 	}
 }

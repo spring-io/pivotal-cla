@@ -16,6 +16,7 @@
 package io.pivotal.cla.security;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,6 +37,12 @@ public class Login {
 	}
 
 	static class UserAuthentication implements Authentication {
+		private static final List<GrantedAuthority> ADMIN_ROLES = AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ADMIN");
+
+		private static final List<GrantedAuthority> CLA_AUTHOR_ROLES = AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ADMIN", "ROLE_CLA_AUTHOR");
+
+		private static final List<GrantedAuthority> USER_ROLES = AuthorityUtils.createAuthorityList("ROLE_USER");
+
 		private static final long serialVersionUID = 4717809728702726728L;
 
 		private final User user;
@@ -51,8 +58,10 @@ public class Login {
 
 		@Override
 		public Collection<? extends GrantedAuthority> getAuthorities() {
-			return user.isAdmin() ? AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ADMIN")
-					: AuthorityUtils.createAuthorityList("ROLE_USER");
+			if(user.isAdmin()) {
+				return user.isClaAuthor() ? CLA_AUTHOR_ROLES : ADMIN_ROLES;
+			}
+			return USER_ROLES;
 		}
 
 		@Override

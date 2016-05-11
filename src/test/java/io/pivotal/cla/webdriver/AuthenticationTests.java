@@ -105,7 +105,7 @@ public class AuthenticationTests extends BaseWebDriverTests {
 		when(mockGithub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
 		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
 
-		AdminListClasPage page = AdminListClasPage.go(getDriver());
+		AdminLinkClaPage page = AdminLinkClaPage.to(getDriver());
 		page.assertAt();
 	}
 

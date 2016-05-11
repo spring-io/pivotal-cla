@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 
 import io.pivotal.cla.security.WithAdminUser;
+import io.pivotal.cla.security.WithClaAuthorUser;
 import io.pivotal.cla.security.WithSigningUser;
 
 /**
@@ -38,14 +39,21 @@ public class ActuatorSecurityTests extends BaseWebDriverTests {
 
 	@Test
 	@WithSigningUser
-	public void actuatorRequiresAdminUser() throws Exception {
+	public void actuatorDeniesSigningUser() throws Exception {
 		mockMvc.perform(get("/manage/beans").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().is4xxClientError());
 	}
 
 	@Test
 	@WithAdminUser
-	public void actuatorAllowsAdminUser() throws Exception {
+	public void actuatorDeniesAdminUser() throws Exception {
+		mockMvc.perform(get("/manage/beans").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	@WithClaAuthorUser
+	public void actuatorAllowsClaAuthorUser() throws Exception {
 		mockMvc.perform(get("/manage/beans").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 	}
