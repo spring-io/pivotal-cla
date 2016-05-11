@@ -145,7 +145,7 @@ if (project.hasProperty(TARGET_SPACE)) {
 	}
 
 	cloudfoundry {
-		uris = (space == PRODUCTION_SPACE ? ["pivotal-cla.cfapps.io"] : ["pivotal-cla-${space}.cfapps.io"])
+		uris = (space == PRODUCTION_SPACE ? ["pivotal-cla.cfapps.io","cla.pivotal.io"] : ["pivotal-cla-${space}.cfapps.io"])
 	}
 
 	if (space == PRODUCTION_SPACE || space == STAGING_SPACE) {
