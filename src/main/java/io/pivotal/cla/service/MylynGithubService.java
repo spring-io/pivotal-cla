@@ -350,7 +350,7 @@ public class MylynGithubService implements GitHubService {
 	private Map<String,String> createEditLinks(Collection<String> repoIds, String fileName) {
 		Map<String,String> urls = new HashMap<>();
 		for(String id : repoIds) {
-			String url = oauthConfig.getGitHubApiBaseUrl() + id +"/edit/master/" + fileName;
+			String url = oauthConfig.getGitHubBaseUrl() + id +"/edit/master/" + fileName;
 			if(urlExists(url)) {
 				urls.put(id, url);
 			}
@@ -361,7 +361,7 @@ public class MylynGithubService implements GitHubService {
 	private List<String> createNewLinks(Collection<String> repoIds, String fileName) {
 		List<String> urls = new ArrayList<>();
 		for(String id : repoIds) {
-			String url = oauthConfig.getGitHubApiBaseUrl() + id +"/new/master?filename=" + fileName;
+			String url = oauthConfig.getGitHubBaseUrl() + id +"/new/master?filename=" + fileName;
 			urls.add(url);
 		}
 		return urls;

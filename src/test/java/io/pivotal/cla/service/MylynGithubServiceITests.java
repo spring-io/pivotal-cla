@@ -470,6 +470,12 @@ public class MylynGithubServiceITests {
 
 	@Test
 	public void getContributingUrls() {
+		// make sure we use GitHubHost and not the GitHubApiHost
+		oauthConfig.setGitHubApiHost("donotuse");
+		oauthConfig.setGitHubHost(server.getServer().getHostName());
+
+		service = new MylynGithubService(tokenRepository, oauthConfig, tokenService);
+
 		List<String> repositoryIds = Arrays.asList("spring-projects/has-md", "spring-projects/has-adoc", "spring-projects/no-contributor");
 
 		ContributingUrlsResponse urls = service.getContributingUrls(repositoryIds);
