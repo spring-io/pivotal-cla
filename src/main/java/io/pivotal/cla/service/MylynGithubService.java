@@ -258,7 +258,7 @@ public class MylynGithubService implements GitHubService {
 	private boolean isAuthor(String username, String accessToken) {
 		try {
 			ResponseEntity<String> entity = rest.getForEntity(oauthConfig.getBaseUrl() + "/teams/{id}/memberships/{username}?access_token={token}", String.class, "2006839", username, accessToken);
-			return entity.getStatusCodeValue() == 200;
+			return entity.getStatusCode().value() == 200;
 		} catch(HttpClientErrorException e) {
 			if(e.getStatusCode() == HttpStatus.NOT_FOUND) {
 				return false;
