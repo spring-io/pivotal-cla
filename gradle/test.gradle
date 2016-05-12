@@ -1,0 +1,5 @@
+test {
+	if(project.hasProperty('spring.active.profiles.data')) {
+		systemProperty 'spring.active.profiles.data', 'local-mysql'
+	}
+}

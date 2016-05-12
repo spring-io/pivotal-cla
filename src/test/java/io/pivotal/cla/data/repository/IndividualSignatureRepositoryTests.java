@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -34,6 +35,8 @@ import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
+import io.pivotal.cla.test.context.SystemActiveProfilesResolver;
+import io.pivotal.cla.test.context.SystemDataActiveProfiles;
 
 /**
  * @author Rob Winch
@@ -43,6 +46,7 @@ import io.pivotal.cla.data.User;
 @SpringApplicationConfiguration(PivotalClaApplication.class)
 @TestPropertySource(locations="/application-test.properties")
 @Transactional
+@SystemDataActiveProfiles
 public class IndividualSignatureRepositoryTests {
 
 	@Autowired

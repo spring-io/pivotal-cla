@@ -2,6 +2,7 @@ language: java
 
 services:
   - redis
+  - mysql
 
 jdk:
   - oraclejdk8
@@ -11,11 +12,16 @@ os:
 
 install: true
 
+before_script:
+  - mysql -e 'create database pivotalcla;'
+  - mysql -e "create user 'spring' identified by 'password';"
+  - mysql -uroot -e "grant all on pivotalcla.* to 'spring'";
+
 script: |
   if [[ "${TRAVIS_PULL_REQUEST}" = "false" && $TRAVIS_BRANCH == 'master' && $TRAVIS_SECURE_ENV_VARS == 'true' ]] ; then
-    ./gradlew deploy -Psecurity.oauth2.main.clientId=$CLIENT_ID -Psecurity.oauth2.main.clientSecret=$CLIENT_SECRET -Psecurity.oauth2.pivotal-cla.tokenSecret=$TOKEN_SECRET -PcfUsername=$CF_USERNAME -PcfPassword=$CF_PASSWORD
+    ./gradlew deploy -Psecurity.oauth2.main.clientId=$CLIENT_ID -Psecurity.oauth2.main.clientSecret=$CLIENT_SECRET -Psecurity.oauth2.pivotal-cla.tokenSecret=$TOKEN_SECRET -PcfUsername=$CF_USERNAME -PcfPassword=$CF_PASSWORD -Pspring.active.profiles.data
   else
-    ./gradlew check
+    ./gradlew check -Pspring.active.profiles.data
   fi
 
 before_cache:
