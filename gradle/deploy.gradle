@@ -33,7 +33,7 @@ task deploy(dependsOn: [build]) {
 	// Always proceed with deployment if it is a local build. If we're on Travis CI, only
 	// deploy if the secure environment vars are available (i.e. this is not a pull request
 	// from a fork) and we're on a branch intended for production deployment.
-	if (!isTravisBuild || (isDeployableTravisBuild && project.hasProperty(TARGET_SPACE))) {
+	if ((!isTravisBuild || isDeployableTravisBuild) && project.hasProperty(TARGET_SPACE)) {
 
 		dependsOn 'cfDeploy'
 
