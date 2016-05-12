@@ -29,7 +29,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import io.pivotal.cla.GithubClaApplication;
+import io.pivotal.cla.PivotalClaApplication;
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.DataUtils;
@@ -40,7 +40,7 @@ import io.pivotal.cla.data.User;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(GithubClaApplication.class)
+@SpringApplicationConfiguration(PivotalClaApplication.class)
 @TestPropertySource(locations="/application-test.properties")
 @Transactional
 public class CorporateSignatureRepositoryTests {

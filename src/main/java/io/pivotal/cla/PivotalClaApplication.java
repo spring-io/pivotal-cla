@@ -20,9 +20,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
-public class GithubClaApplication {
+public class PivotalClaApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GithubClaApplication.class, args);
+		SpringApplication.run(PivotalClaApplication.class, args);
 	}
 }

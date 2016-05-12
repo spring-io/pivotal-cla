@@ -26,13 +26,13 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import io.pivotal.cla.GithubClaApplication;
+import io.pivotal.cla.PivotalClaApplication;
 
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@SpringApplicationConfiguration(classes = GithubClaApplication.class)
+@SpringApplicationConfiguration(classes = PivotalClaApplication.class)
 @WebAppConfiguration
 @ActiveProfiles("test")
 public @interface WebDriverContext {
