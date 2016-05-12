@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Data
 @EqualsAndHashCode(exclude = {"admin", "adminAccessRequested", "isNew"})
 public class User implements Serializable {
+
 	@Id
 	@Column(name = "github_login")
 	private String githubLogin;
@@ -64,4 +65,5 @@ public class User implements Serializable {
 	@Transient
 	private boolean isNew;
 
+	private static final long serialVersionUID = 7285385090438382841L;
 }
