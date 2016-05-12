@@ -34,9 +34,25 @@ task deploy(dependsOn: [build]) {
 	// deploy if the secure environment vars are available (i.e. this is not a pull request
 	// from a fork) and we're on a branch intended for production deployment.
 	if (!isTravisBuild || (isDeployableTravisBuild && project.hasProperty(TARGET_SPACE))) {
-		dependsOn 'cfLogin'
 
-		dependsOn 'cfDeploy', 'cfSwapDeployed'
+		dependsOn 'cfDeploy'
+
+		space = project.getProperty(TARGET_SPACE)
+		if(space == PRODUCTION_SPACE || space == STAGING_SPACE) {
+			// only needed when variants are set up.
+			dependsOn 'cfSwapDeployed'
+
+			if(space == PRODUCTION_SPACE) {
+
+				// this is a workaround to get cla.pivotal.io bound
+				// setup dependency graph for workaround
+				dependsOn unmapProductionRouteFromInactive
+				cfDeploy.mustRunAfter unmapProductionRouteFromInactive
+				dependsOn 'unmapProductionRouteFromInactive', 'mapProductionRouteToActive'
+				mapProductionRouteToActive.mustRunAfter cfSwapDeployed
+			}
+		}
+
 	} else {
 		onlyIf { false }
 	}
@@ -145,7 +161,7 @@ if (project.hasProperty(TARGET_SPACE)) {
 	}
 
 	cloudfoundry {
-		uris = (space == PRODUCTION_SPACE ? ["pivotal-cla.cfapps.io"] : ["pivotal-cla-${space}.cfapps.io"])
+		uris = ["pivotal-cla-${space}.cfapps.io"]
 	}
 
 	if (space == PRODUCTION_SPACE || space == STAGING_SPACE) {

@@ -1,0 +1,143 @@
+/*
+ * Copyright 2016 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.cloudfoundry.client.lib.domain.CloudApplication
+
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath('org.cloudfoundry:cf-gradle-plugin:1.1.2')
+	}
+}
+
+def final PRODUCTION_ROUTE = 'cla.pivotal.io'
+apply plugin: 'cloudfoundry'
+
+
+def final APPLICATION_NAME = 'pivotal-cla'
+/**
+ * Don't look below here otherwise your eyes will hurt.
+ *
+ * For all other feeling adventurous:
+ *
+ * Maps the production route to the active instance. This code is mostly
+ * copy-pasted from the CF plugin. The reason is that the pivotal.io domain
+ * is not listed when querying /v2/spaces/{spaceId}/domains?inline-relations-depth=1.
+ * So the trick here is to obtain domains from /v2/domains?inline-relations-depth=1 and
+ * hope we don't break anything in the controller client.
+ */
+task mapProductionRouteToActive() << {
+
+	def cfSwapDeployed = project.getTasksByName("cfSwapDeployed", false)[0]
+	def gatewayUris = [PRODUCTION_ROUTE]
+
+	cfSwapDeployed.client = null
+
+	cfSwapDeployed.withCloudFoundryClient {
+
+		def controllerClient = cfSwapDeployed.client.cc
+		List<CloudApplication> apps = cfSwapDeployed.client.applications
+
+		List<String> mappedAppVariants = cfSwapDeployed.findMappedVariants(APPLICATION_NAME, apps)
+		List<String> unmappedAppVariants = cfSwapDeployed.findUnmappedVariants(APPLICATION_NAME, apps)
+
+		if (mappedAppVariants) {
+			cfSwapDeployed.log "Mapping URIs ${gatewayUris} for ${mappedAppVariants}"
+		}
+
+		// Note: If comparing this code to the original Plugin task you'll notice
+		// these sections are switched. This is, because the production route mapping
+		// runs after cfSwitchDeployed. So at this time the inactive instance became active.
+		mappedAppVariants.each { appName ->
+			def app = controllerClient.getApplication(appName)
+			List<String> newUris = new ArrayList<String>(app.uris);
+			newUris.addAll(gatewayUris)
+			updateApplicationUris(appName, newUris, controllerClient);
+		}
+
+		if (unmappedAppVariants) {
+			cfSwapDeployed.log "Unmapping URIs ${gatewayUris} for ${unmappedAppVariants}"
+		}
+
+		unmappedAppVariants.each { appName ->
+			def app = controllerClient.getApplication(appName)
+			List<String> newUris = new ArrayList<String>(app.uris);
+			newUris.removeAll(gatewayUris)
+			updateApplicationUris(appName, newUris, controllerClient);
+		}
+	}
+}
+
+task unmapProductionRouteFromInactive << {
+
+	def cfSwapDeployed = project.getTasksByName("cfSwapDeployed", false)[0]
+	def gatewayUris = [PRODUCTION_ROUTE]
+
+	cfSwapDeployed.client = null
+
+	cfSwapDeployed.withCloudFoundryClient {
+
+		def controllerClient = cfSwapDeployed.client.cc
+		List<CloudApplication> apps = cfSwapDeployed.client.applications
+
+		List<String> unmappedAppVariants = cfSwapDeployed.findUnmappedVariants(APPLICATION_NAME, apps)
+
+		if (unmappedAppVariants) {
+			cfSwapDeployed.log "Unmapping URIs ${gatewayUris} for ${unmappedAppVariants}"
+		}
+
+		// Remove the production route from the inactive variant. Why? Well, to not
+		// let the CF plugin crash because of an unknown domain.
+		unmappedAppVariants.each { appName ->
+			def app = controllerClient.getApplication(appName)
+			List<String> newUris = new ArrayList<String>(app.uris);
+			newUris.removeAll(gatewayUris)
+			updateApplicationUris(appName, newUris, controllerClient);
+		}
+	}
+
+	cfSwapDeployed.client = null
+}
+
+
+def updateApplicationUris(String appName, List<String> uris, controllerClient) {
+	def app = controllerClient.getApplication(appName);
+	List<String> newUris = new ArrayList<String>(uris);
+	newUris.removeAll(app.getUris());
+	List<String> removeUris = app.getUris();
+	removeUris.removeAll(uris);
+
+	def sessionSpace = controllerClient.sessionSpace
+	controllerClient.sessionSpace = null
+	Map<String, UUID> domains = controllerClient.getDomainGuids();
+	controllerClient.sessionSpace = sessionSpace;
+
+	for (String uri : removeUris) {
+		Map<String, String> uriInfo = new HashMap<String, String>(2);
+		controllerClient.extractUriInfo(domains, uri, uriInfo);
+		UUID domainGuid = domains.get(uriInfo.get("domainName"));
+		controllerClient.unbindRoute(uriInfo.get("host"), domainGuid, app.getMeta().getGuid());
+	}
+
+	for (String uri : newUris) {
+		Map<String, String> uriInfo = new HashMap<String, String>(2);
+		controllerClient.extractUriInfo(domains, uri, uriInfo);
+		UUID domainGuid = domains.get(uriInfo.get("domainName"));
+		controllerClient.bindRoute(uriInfo.get("host"), domainGuid, app.getMeta().getGuid());
+	}
+}
