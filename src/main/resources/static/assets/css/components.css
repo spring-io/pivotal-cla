@@ -19,3 +19,9 @@
 	border: 1px solid #03786e;
 	color: #fff;
 }
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+	color: white;
+	font-weight: bold;
+	padding-right: .25em;
+}
