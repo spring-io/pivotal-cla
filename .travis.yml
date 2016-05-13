@@ -19,7 +19,7 @@ before_script:
 
 script: |
   if [[ "${TRAVIS_PULL_REQUEST}" = "false" && $TRAVIS_BRANCH == 'master' && $TRAVIS_SECURE_ENV_VARS == 'true' ]] ; then
-    ./gradlew deploy -Psecurity.oauth2.main.clientId=$CLIENT_ID -Psecurity.oauth2.main.clientSecret=$CLIENT_SECRET -Psecurity.oauth2.pivotal-cla.tokenSecret=$TOKEN_SECRET -PcfUsername=$CF_USERNAME -PcfPassword=$CF_PASSWORD
+    ./gradlew deploy -Psecurity.oauth2.main.clientId=$CLIENT_ID -Psecurity.oauth2.main.clientSecret=$CLIENT_SECRET -Psecurity.oauth2.pivotal-cla.tokenSecret=$TOKEN_SECRET -PcfUsername=$CF_USERNAME -PcfPassword=$CF_PASSWORD -PinfoVersion=$TRAVIS_BUILD_NUMBER-$TRAVIS_COMMIT
   else
     ./gradlew check
   fi

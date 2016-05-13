@@ -120,11 +120,13 @@ gradle.taskGraph.whenReady {
 
 			// All required env vars are present. Populate the cloudfoundry environment with them.
 			cloudfoundry {
+				def infoVersion = project.findProperty('infoVersion') ?: project.version
 				env << [
 						"SECURITY_OAUTH2_MAIN_CLIENT_ID"         : project.ext.'security.oauth2.main.clientId',
 						"SECURITY_OAUTH2_MAIN_CLIENT_SECRET"     : project.ext.'security.oauth2.main.clientSecret',
 						"SECURITY_OAUTH2_PIVOTAL-CLA_TOKENSECRET": project.ext.'security.oauth2.pivotal-cla.tokenSecret',
 						"SPRING_PROFILES_ACTIVE"                 : "cloudfoundry",
+						"INFO_VERSION"                           : infoVersion
 				]
 			}
 

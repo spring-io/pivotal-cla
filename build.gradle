@@ -18,9 +18,10 @@ apply from: "gradle/test.gradle"
 apply from: "gradle/workaround.gradle"
 apply from: "gradle/deploy.gradle"
 
+version = '0.0.1-SNAPSHOT'
+
 jar {
 	baseName = 'pivotal-github-cla'
-	version = '0.0.1-SNAPSHOT'
 }
 
 sourceCompatibility = 1.8
