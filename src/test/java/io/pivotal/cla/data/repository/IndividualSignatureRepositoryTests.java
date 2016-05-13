@@ -23,6 +23,7 @@ import javax.transaction.Transactional;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -34,6 +35,8 @@ import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
+import io.pivotal.cla.junit.JpaTests;
+import io.pivotal.cla.test.context.SystemDataActiveProfiles;
 
 /**
  * @author Rob Winch
@@ -43,6 +46,8 @@ import io.pivotal.cla.data.User;
 @SpringApplicationConfiguration(PivotalClaApplication.class)
 @TestPropertySource(locations="/application-test.properties")
 @Transactional
+@SystemDataActiveProfiles
+@Category(JpaTests.class)
 public class IndividualSignatureRepositoryTests {
 
 	@Autowired

@@ -1,0 +1,9 @@
+task testWithMySQL(type: Test) {
+	systemProperty 'spring.active.profiles.data', 'local-mysql'
+	classpath = test.classpath
+	useJUnit {
+		includeCategories 'io.pivotal.cla.junit.JpaTests'
+	}
+}
+
+check.dependsOn testWithMySQL
