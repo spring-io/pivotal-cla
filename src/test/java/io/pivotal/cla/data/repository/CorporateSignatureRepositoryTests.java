@@ -34,6 +34,7 @@ import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.data.User;
+import io.pivotal.cla.test.context.SystemDataActiveProfiles;
 
 /**
  * @author Rob Winch
@@ -43,6 +44,7 @@ import io.pivotal.cla.data.User;
 @SpringApplicationConfiguration(PivotalClaApplication.class)
 @TestPropertySource(locations="/application-test.properties")
 @Transactional
+@SystemDataActiveProfiles
 public class CorporateSignatureRepositoryTests {
 
 	@Autowired
