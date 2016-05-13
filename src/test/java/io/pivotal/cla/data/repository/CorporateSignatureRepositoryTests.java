@@ -132,6 +132,17 @@ public class CorporateSignatureRepositoryTests {
 		assertThat(signatures.findSignature(springCla.getName(), Arrays.asList("notorganization"), null)).isNull();
 	}
 
+	@Test
+	public void findSignatureByEmptyGitHubOrganizations() {
+		CorporateSignature emailSignature = createSignature(cla, user);
+		emailSignature.setGitHubOrganization(null);
+		emailSignature.setEmailDomain("gmail.com");
+
+		emailSignature = signatures.save(emailSignature);
+
+		assertThat(signatures.findSignature(springCla.getName(), Arrays.asList(), null)).isNull();
+	}
+
 	private static CorporateSignature createSignature(ContributorLicenseAgreement cla, User user) {
 		CorporateSignature signature = DataUtils.cclaSignature(cla);
 		signature.setGithubLogin(user.getGithubLogin());

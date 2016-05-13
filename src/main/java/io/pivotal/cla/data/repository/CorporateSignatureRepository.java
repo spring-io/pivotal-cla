@@ -30,9 +30,15 @@ import io.pivotal.cla.data.CorporateSignature;
 
 public interface CorporateSignatureRepository extends CrudRepository<CorporateSignature, Long> {
 
+	/**
+	 * Works around https://hibernate.atlassian.net/browse/HHH-8091
+	 */
+	public static final List<String> EMPTY_LIST_FOR_QUERY = Collections.singletonList("");
+
 	default CorporateSignature findSignature(String claName, Collection<String> organizations, Collection<String> emails) {
 		PageRequest pageable = new PageRequest(0, 1);
-		List<String> emailDomains = emails == null ? Collections.singletonList("") : emails.stream().map( e-> e.substring(e.lastIndexOf("@") + 1)).collect(Collectors.toList());
+		List<String> emailDomains = emails == null ? EMPTY_LIST_FOR_QUERY : emails.stream().map( e-> e.substring(e.lastIndexOf("@") + 1)).collect(Collectors.toList());
+		organizations = organizations.isEmpty() ? EMPTY_LIST_FOR_QUERY : organizations;
 		List<CorporateSignature> results = findSignatures(pageable, claName, organizations, emailDomains);
 		return results.isEmpty() ? null : results.get(0);
 	}
