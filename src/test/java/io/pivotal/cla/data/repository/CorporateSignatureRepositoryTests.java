@@ -18,6 +18,7 @@ package io.pivotal.cla.data.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import javax.transaction.Transactional;
 
@@ -130,6 +131,17 @@ public class CorporateSignatureRepositoryTests {
 		emailSignature = signatures.save(emailSignature);
 
 		assertThat(signatures.findSignature(springCla.getName(), Arrays.asList("notorganization"), null)).isNull();
+	}
+
+	@Test
+	public void findSignatureEmptyEmails() {
+		CorporateSignature emailSignature = createSignature(cla, user);
+		emailSignature.setGitHubOrganization(null);
+		emailSignature.setEmailDomain("gmail.com");
+
+		emailSignature = signatures.save(emailSignature);
+
+		assertThat(signatures.findSignature(springCla.getName(), Arrays.asList("notorganization"), Collections.emptyList())).isNull();
 	}
 
 	@Test
