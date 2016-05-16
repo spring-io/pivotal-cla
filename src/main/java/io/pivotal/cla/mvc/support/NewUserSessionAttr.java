@@ -22,8 +22,8 @@ import org.springframework.web.context.request.WebRequest;
  * @author Rob Winch
  *
  */
-public class NewUserSessionAttr {
-	private static final String ATTR_NAME = "isNewUser";
+public final class NewUserSessionAttr {
+	static final String ATTR_NAME = "isNewUser";
 
 	private final WebRequest webRequest;
 
