@@ -19,6 +19,7 @@ apply from: "gradle/workaround.gradle"
 apply from: "gradle/deploy.gradle"
 
 version = '0.0.1-SNAPSHOT'
+ext['spring-security.version'] = '4.1.0.RELEASE'
 
 jar {
 	baseName = 'pivotal-github-cla'
