@@ -30,8 +30,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 
 import io.pivotal.cla.data.User;
+import io.pivotal.cla.security.WithAdminUser;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
@@ -50,10 +52,9 @@ public class ClaControllerTests extends BaseWebDriverTests {
 	}
 
 	@Test
+	@WithAnonymousUser
 	public void viewSignedWithRepositoryIdAndPullRequestIdNewUser() throws Exception {
-		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		user.setNew(true);
-
+		when(mockGithub.getCurrentUser(any())).thenReturn(WithSigningUserFactory.create());
 		when(mockIndividualSignatureRepository.findSignaturesFor(WithSigningUserFactory.create(),cla.getName())).thenReturn(individualSignature);
 
 		String repositoryId = "spring-projects/spring-security";

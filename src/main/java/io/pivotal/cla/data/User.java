@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Data
-@EqualsAndHashCode(exclude = {"admin", "adminAccessRequested", "isNew"})
+@EqualsAndHashCode(exclude = {"admin", "adminAccessRequested"})
 public class User implements Serializable {
 
 	@Id
@@ -61,9 +61,6 @@ public class User implements Serializable {
 
 	@Transient
 	private boolean adminAccessRequested;
-
-	@Transient
-	private boolean isNew;
 
 	private static final long serialVersionUID = 7285385090438382841L;
 }

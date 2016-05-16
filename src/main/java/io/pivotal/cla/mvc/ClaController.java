@@ -30,6 +30,7 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
+import io.pivotal.cla.mvc.support.NewUserSessionAttr;
 import io.pivotal.cla.service.GitHubService;
 import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
 
@@ -47,7 +48,7 @@ public class ClaController {
 	CorporateSignatureRepository corporate;
 
 	@RequestMapping("/sign/{claName}")
-	public String signIndex(@AuthenticationPrincipal User user, @ModelAttribute ClaRequest claRequest,
+	public String signIndex(NewUserSessionAttr isNewUserAttr, @AuthenticationPrincipal User user, @ModelAttribute ClaRequest claRequest,
 			Map<String, Object> model) throws Exception {
 		String claName = claRequest.getClaName();
 		Integer pullRequestId = claRequest.getPullRequestId();
@@ -64,11 +65,11 @@ public class ClaController {
 			signed = corporate.findSignature(claName, organizations, user.getEmails()) != null;
 		}
 
-		if(user.isNew() && signed && pullRequestId != null && repositoryId != null) {
+		if(isNewUserAttr.getValue() && signed && pullRequestId != null && repositoryId != null) {
 			UpdatePullRequestStatusRequest updatePullRequest = claRequest.createUpdatePullRequestStatus(user.getGithubLogin());
 
 			github.save(updatePullRequest);
-			user.setNew(false);
+			isNewUserAttr.setValue(false);
 			model.put("importedSignature", true);
 		}
 

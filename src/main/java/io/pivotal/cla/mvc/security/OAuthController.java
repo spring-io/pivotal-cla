@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.UserRepository;
+import io.pivotal.cla.mvc.support.NewUserSessionAttr;
 import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.security.GithubAuthenticationEntryPoint;
 import io.pivotal.cla.security.Login;
@@ -50,7 +51,7 @@ public class OAuthController {
 	UserRepository users;
 
 	@RequestMapping("/login/oauth2/github")
-	public void oauth(HttpServletRequest request, HttpServletResponse response, @RequestParam String code,
+	public void oauth(NewUserSessionAttr isNewUserAttr, HttpServletRequest request, HttpServletResponse response, @RequestParam String code,
 			@RequestParam String state) throws Exception {
 		String actualState = (String) request.getSession().getAttribute("state");
 		if(actualState == null || !actualState.equals(state)) {
@@ -72,7 +73,9 @@ public class OAuthController {
 
 		User existingUser = users.findOne(user.getGithubLogin());
 		boolean isNewUser = existingUser == null;
-		user.setNew(isNewUser);
+		if(isNewUser) {
+			isNewUserAttr.setValue(isNewUser);
+		}
 
 		users.save(user);
 
