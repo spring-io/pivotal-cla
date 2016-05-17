@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.htmlunit.webdriver.MockMvcHtmlUnitDriverBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.CorporateSignature;
@@ -48,6 +49,8 @@ public abstract class BaseWebDriverTests {
 
 	@Autowired
 	protected WebApplicationContext wac;
+	@Autowired
+	private HiddenHttpMethodFilter hiddenInputFilter;
 	protected GitHubService mockGithub;
 	protected ContributorLicenseAgreementRepository mockClaRepository;
 	protected IndividualSignatureRepository mockIndividualSignatureRepository;
@@ -67,6 +70,7 @@ public abstract class BaseWebDriverTests {
 	public void setup() {
 		mockMvc = MockMvcBuilders
 				.webAppContextSetup(wac)
+				.addFilter(hiddenInputFilter)
 				.apply(springSecurity())
 //				.alwaysDo(print())
 				.build();

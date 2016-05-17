@@ -23,6 +23,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -91,6 +92,12 @@ public class AdminCrudClaController extends AdminClaController {
 		cla.setSupersedingCla(supersedingCla);
 
 		claRepo.save(cla);
+		return "redirect:/admin/cla/?success";
+	}
+
+	@RequestMapping(value = "/admin/cla/{claId}", method = RequestMethod.DELETE)
+	public String delete(@AuthenticationPrincipal User user, @PathVariable long claId) {
+		claRepo.delete(claId);
 		return "redirect:/admin/cla/?success";
 	}
 }

@@ -6,7 +6,7 @@
 	<body>
 		<div layout:fragment="content">
 			<div class="text-right"><a id="create" th:href="@{/admin/cla/create}">Create New</a></div>
-			<table class="table table-stripped">
+			<table id="clas" class="table table-stripped">
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -20,7 +20,7 @@
 						<td th:text="${cla.name}"></td>
 						<td th:text="${cla.description}"></td>
 						<td>TBD</td>
-						<td>TBD</td>
+						<td><form th:action="@{/admin/cla/{claId}(claId=${cla.id})}" th:method="delete"><input type="submit" value="Delete"/></form></td>
 					</tr>
 				</tbody>
 			</table>
