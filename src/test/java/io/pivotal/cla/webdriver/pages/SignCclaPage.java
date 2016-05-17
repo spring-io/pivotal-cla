@@ -68,7 +68,6 @@ public class SignCclaPage extends BasePage {
 	}
 
 	public void assertAt() {
-		System.out.println(getDriver().getPageSource());
 		assertThat(getDriver().getTitle()).endsWith("- Sign CCLA");
 	}
 
