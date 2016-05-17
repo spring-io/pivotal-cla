@@ -40,3 +40,9 @@ footer {
 footer a {
 	color: #fff;
 }
+
+#gh-logo {
+	height: 1.5em;
+	width: 1.5em;
+	margin-right: 1.5em;
+}
