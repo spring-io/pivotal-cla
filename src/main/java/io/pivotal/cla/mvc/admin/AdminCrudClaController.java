@@ -49,16 +49,16 @@ public class AdminCrudClaController extends AdminClaController {
 	public String createClaForm(Map<String, Object> model) throws Exception {
 		Iterable<ContributorLicenseAgreement> clas = claRepo.findAll();
 		model.put("licenses", clas);
-		model.put("createClaForm", new CreateClaForm());
-		return "admin/cla/create";
+		model.put("claForm", new ClaForm());
+		return "admin/cla/form";
 	}
 
-	@RequestMapping(value = "/admin/cla/create", method = RequestMethod.POST)
-	public String createCla(@AuthenticationPrincipal User user, @Valid CreateClaForm createClaForm, BindingResult result, Map<String, Object> model)
+	@RequestMapping(value = "/admin/cla", method = RequestMethod.POST)
+	public String createCla(@AuthenticationPrincipal User user, @Valid ClaForm claForm, BindingResult result, Map<String, Object> model)
 			throws Exception {
-		boolean primary = createClaForm.isPrimary();
+		boolean primary = claForm.isPrimary();
 		if(primary) {
-			ContributorLicenseAgreement existingPrimaryCla = claRepo.findByNameAndPrimaryTrue(createClaForm.getName());
+			ContributorLicenseAgreement existingPrimaryCla = claRepo.findByNameAndPrimaryTrue(claForm.getName());
 			if(existingPrimaryCla != null) {
 				result.rejectValue("primary","errors.primary.exists", "A primary CLA with this name already exists");
 			}
@@ -66,29 +66,29 @@ public class AdminCrudClaController extends AdminClaController {
 		if (result.hasErrors()) {
 			Iterable<ContributorLicenseAgreement> clas = claRepo.findAll();
 			model.put("licenses", clas);
-			return "admin/cla/create";
+			return "admin/cla/form";
 		}
 
 		ContributorLicenseAgreement supersedingCla = null;
-		if(createClaForm.getSupersedingCla() != null) {
-			supersedingCla = claRepo.findOne(createClaForm.getSupersedingCla());
+		if(claForm.getSupersedingCla() != null) {
+			supersedingCla = claRepo.findOne(claForm.getSupersedingCla());
 		}
 		String accessToken = user.getAccessToken();
 
-		MarkdownContent individual = createClaForm.getIndividualContent();
+		MarkdownContent individual = claForm.getIndividualContent();
 		String individualHtml = github.markdownToHtml(accessToken, individual.getMarkdown());
 		individual.setHtml(individualHtml);
 
-		MarkdownContent corporate = createClaForm.getCorporateContent();
+		MarkdownContent corporate = claForm.getCorporateContent();
 		String corperateHtml = github.markdownToHtml(accessToken, corporate.getMarkdown());
 		corporate.setHtml(corperateHtml);
 
 		ContributorLicenseAgreement cla = new ContributorLicenseAgreement();
-		cla.setCorporateContent(createClaForm.getCorporateContent());
-		cla.setDescription(createClaForm.getDescription());
-		cla.setIndividualContent(createClaForm.getIndividualContent());
-		cla.setName(createClaForm.getName());
-		cla.setPrimary(createClaForm.isPrimary());
+		cla.setCorporateContent(claForm.getCorporateContent());
+		cla.setDescription(claForm.getDescription());
+		cla.setIndividualContent(claForm.getIndividualContent());
+		cla.setName(claForm.getName());
+		cla.setPrimary(claForm.isPrimary());
 		cla.setSupersedingCla(supersedingCla);
 
 		claRepo.save(cla);

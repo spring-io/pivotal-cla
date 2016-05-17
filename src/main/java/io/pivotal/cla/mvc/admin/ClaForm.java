@@ -30,7 +30,7 @@ import lombok.Data;
  *
  */
 @Data
-public class CreateClaForm {
+public class ClaForm {
 
 	@NotEmpty(message = "This is required")
 	private String name;
