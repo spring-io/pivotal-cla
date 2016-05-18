@@ -27,6 +27,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -122,6 +123,25 @@ public class IndividualSignatureRepositoryTests {
 		user.setEmails(Collections.singleton("notfound@example.com"));
 
 		assertThat(signatures.findSignaturesFor(user, cla.getName())).isNull();;
+	}
+
+	@Test
+	public void findAllSignaturesForUserGitHubLoginAndEmails() {
+		assertThat(signatures.findSignaturesFor(new PageRequest(0, 1), user)).isNotNull();
+	}
+
+	@Test
+	public void findAllSignaturesForUserEmailOnly() {
+		user.setGithubLogin("notfound" + user.getGithubLogin());
+
+		assertThat(signatures.findSignaturesFor(new PageRequest(0, 1), user)).isNotNull();
+	}
+
+	@Test
+	public void findAllSignaturesForUserGithubLoginOnly() {
+		user.setEmails(Collections.emptySet());
+
+		assertThat(signatures.findSignaturesFor(new PageRequest(0, 1), user)).isNotNull();
 	}
 
 	private static IndividualSignature createSignature(ContributorLicenseAgreement cla, User user) {

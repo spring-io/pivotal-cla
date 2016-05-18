@@ -38,5 +38,8 @@ public interface IndividualSignatureRepository extends CrudRepository<Individual
 	@Query("select s from IndividualSignature s where (s.cla.name = :#{#claName} or s.cla.name in (select distinct c.supersedingCla.name from ContributorLicenseAgreement c where c.name = :#{#claName})) and (s.githubLogin = :#{#u.githubLogin} or s.email in (:#{#u.emails.empty ? '' : #u.emails}))")
 	List<IndividualSignature> findSignaturesFor(Pageable pageable, @Param("u") User user,  @Param("claName") String claName);
 
+	@Query("select s from IndividualSignature s where (s.githubLogin = :#{#u.githubLogin} or s.email in (:#{#u.emails.empty ? '' : #u.emails}))")
+	List<IndividualSignature> findSignaturesFor(Pageable pageable, @Param("u") User user);
+
 	List<IndividualSignature> findByEmailIn(Set<String> email);
 }
