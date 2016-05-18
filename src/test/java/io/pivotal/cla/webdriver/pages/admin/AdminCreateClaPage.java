@@ -26,71 +26,80 @@ import org.openqa.selenium.support.ui.Select;
 import io.pivotal.cla.webdriver.pages.BasePage;
 
 public class AdminCreateClaPage extends BasePage {
-	@FindBy(id = "individualContent.markdown")
-	WebElement individualContent;
-	@FindBy(id = "corporateContent.markdown")
-	WebElement corporateContent;
-	WebElement name;
-	@FindBy(id = "create-submit")
-	WebElement createSubmit;
-	WebElement primary1;
-	WebElement description;
-	WebElement supersedingCla;
 
 	public AdminCreateClaPage(WebDriver driver) {
 		super(driver);
 	}
 
-	public <T extends BasePage> T create(String name, String individual, String corporate, String description, Class<T> page) {
-		return create(name, individual, corporate, description, false, page);
+	public Form form() {
+		Form form = new Form();
+		PageFactory.initElements(getDriver(), form);
+		return form;
 	}
 
-	public <T extends BasePage> T create(String name, String individual, String corporate, Class<T> page) {
-		return create(name, individual, corporate, null, false, null, page);
-	}
+	public class Form {
+		@FindBy(id = "individualContent.markdown")
+		WebElement individualContent;
+		@FindBy(id = "corporateContent.markdown")
+		WebElement corporateContent;
+		WebElement name;
+		@FindBy(id = "create-submit")
+		WebElement createSubmit;
+		WebElement primary1;
+		WebElement description;
+		WebElement supersedingCla;
 
-	public <T extends BasePage> T create(String name, String individual, String corporate, boolean primary, Class<T> page) {
-		return create(name, individual, corporate, null, primary, page);
-	}
-	public <T extends BasePage> T create(String name, String individual, String corporate, Long supersedingCla, Class<T> page) {
-		return create(name, individual, corporate, null, false, supersedingCla, page);
-	}
 
-	public <T extends BasePage> T create(String name, String individual, String corporate, String description, boolean primary, Class<T> page) {
-		return create(name, individual, corporate, description, primary, null, page);
-	}
-
-	public <T extends BasePage> T create(String name, String individual, String corporate, String description, boolean primary, Long supersedingCla, Class<T> page) {
-		this.name.sendKeys(name);
-		this.individualContent.sendKeys(individual);
-		this.corporateContent.sendKeys(corporate);
-		if(primary) {
-			this.primary1.click();
+		public InputAssert assertPrimary() {
+			return assertInput(primary1);
 		}
-		if(description != null) {
+
+		public InputAssert assertIndividualContent() {
+			return assertInput(individualContent);
+		}
+
+		public InputAssert assertName() {
+			return assertInput(name);
+		}
+
+		public InputAssert assertCorporateContent() {
+			return assertInput(corporateContent);
+		}
+
+		public Form name(String name) {
+			this.name.sendKeys(name);
+			return this;
+		}
+
+		public Form individual(String individual) {
+			this.individualContent.sendKeys(individual);
+			return this;
+		}
+
+		public Form corporate(String corporate) {
+			this.corporateContent.sendKeys(corporate);
+			return this;
+		}
+
+		public Form description(String description) {
 			this.description.sendKeys(description);
+			return this;
 		}
-		if(supersedingCla != null) {
+
+		public Form primary() {
+			this.primary1.click();
+			return this;
+		}
+
+		public Form supersedingCla(long supersedingCla) {
 			new Select(this.supersedingCla).selectByValue(String.valueOf(supersedingCla));
+			return this;
 		}
-		this.createSubmit.click();
-		return PageFactory.initElements(getDriver(), page);
-	}
 
-	public InputAssert assertPrimary() {
-		return assertInput(primary1);
-	}
-
-	public InputAssert assertIndividualContent() {
-		return assertInput(individualContent);
-	}
-
-	public InputAssert assertName() {
-		return assertInput(name);
-	}
-
-	public InputAssert assertCorporateContent() {
-		return assertInput(corporateContent);
+		public <T extends BasePage> T submit(Class<T> page) {
+			this.createSubmit.click();
+			return PageFactory.initElements(getDriver(), page);
+		}
 	}
 
 	public void assertAt() {

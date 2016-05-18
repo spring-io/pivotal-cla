@@ -30,6 +30,7 @@ import io.pivotal.cla.security.WithClaAuthorUser;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
 import io.pivotal.cla.webdriver.pages.HomePage;
 import io.pivotal.cla.webdriver.pages.admin.AdminCreateClaPage;
+import io.pivotal.cla.webdriver.pages.admin.AdminCreateClaPage.Form;
 import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage.Row;
 
@@ -52,33 +53,44 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 
 		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
 
-		create.create("", "", "", AdminCreateClaPage.class);
+		create = create.form()
+				.submit(AdminCreateClaPage.class);
 
-		create.assertName().hasRequiredError();
-		create.assertIndividualContent().hasRequiredError();
-		create.assertCorporateContent().hasRequiredError();
+		Form form = create.form();
+		form.assertName().hasRequiredError();
+		form.assertIndividualContent().hasRequiredError();
+		form.assertCorporateContent().hasRequiredError();
 	}
 
 	@Test
 	public void createClaRequiredFieldsCorporateRequired() throws Exception {
 		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
 
-		create = create.create("Name", "Individual", "", AdminCreateClaPage.class);
+		create = create.form()
+				.name("Name")
+				.individual("Individual")
+				.submit(AdminCreateClaPage.class);
 
-		create.assertName().hasNoErrors();
-		create.assertIndividualContent().hasNoErrors();
-		create.assertCorporateContent().hasRequiredError();
+		Form form = create.form();
+		form.assertName().hasNoErrors();
+		form.assertIndividualContent().hasNoErrors();
+		form.assertCorporateContent().hasRequiredError();
 	}
 
 	@Test
 	public void createClaRequiredFieldsIndividualRequired() throws Exception {
 		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
 
-		create = create.create("Name", "", "Corporate", AdminCreateClaPage.class);
 
-		create.assertName().hasNoErrors().hasValue("Name");
-		create.assertCorporateContent().hasNoErrors();
-		create.assertIndividualContent().hasRequiredError();
+		create = create.form()
+				.name("Name")
+				.corporate("Corporate")
+				.submit(AdminCreateClaPage.class);
+
+		Form form = create.form();
+		form.assertName().hasNoErrors().hasValue("Name");
+		form.assertCorporateContent().hasNoErrors();
+		form.assertIndividualContent().hasRequiredError();
 	}
 
 	@Test
@@ -86,11 +98,15 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 
 		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
 
-		create = create.create("", "Individual", "Corporate", AdminCreateClaPage.class);
+		create = create.form()
+				.individual("Individual")
+				.corporate("Corporate")
+				.submit(AdminCreateClaPage.class);
 
-		create.assertName().hasRequiredError();
-		create.assertIndividualContent().hasNoErrors().hasValue("Individual");
-		create.assertCorporateContent().hasNoErrors().hasValue("Corporate");
+		Form form = create.form();
+		form.assertName().hasRequiredError();
+		form.assertIndividualContent().hasNoErrors().hasValue("Individual");
+		form.assertCorporateContent().hasNoErrors().hasValue("Corporate");
 	}
 
 	@Test
@@ -99,9 +115,15 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 
 		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
 
-		create = create.create(cla.getName(), "Individual", "Corporate", true, AdminCreateClaPage.class);
+		create = create.form()
+				.name(cla.getName())
+				.individual("Individual")
+				.corporate("Corporate")
+				.primary()
+				.submit(AdminCreateClaPage.class);
 
-		create.assertPrimary().hasError("A primary CLA with this name already exists");
+		Form form = create.form();
+		form.assertPrimary().hasError("A primary CLA with this name already exists");
 	}
 
 	@Test
@@ -121,7 +143,11 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 
 		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
 
-		AdminListClasPage successPage = create.create("Eclipse", individualMd, corporateMd, AdminListClasPage.class);
+		AdminListClasPage successPage = create.form()
+				.name("Eclipse")
+				.individual(individualMd)
+				.corporate(corporateMd)
+				.submit(AdminListClasPage.class);
 		successPage.assertAt();
 
 		ArgumentCaptor<ContributorLicenseAgreement> captor = ArgumentCaptor
@@ -156,7 +182,12 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 
 		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
 
-		AdminListClasPage successPage = create.create("Eclipse", individualMd, corporateMd, true, AdminListClasPage.class);
+		AdminListClasPage successPage = create.form()
+				.name("Eclipse")
+				.individual(individualMd)
+				.corporate(corporateMd)
+				.primary()
+				.submit(AdminListClasPage.class);
 		successPage.assertAt();
 
 		ArgumentCaptor<ContributorLicenseAgreement> captor = ArgumentCaptor
@@ -189,7 +220,13 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
 
 		String description = "ICLA FINAL 072310";
-		AdminListClasPage successPage = create.create("Eclipse", individualMd, corporateMd, description, AdminListClasPage.class);
+		AdminListClasPage successPage = create.form()
+				.name("Eclipse")
+				.individual(individualMd)
+				.corporate(corporateMd)
+				.description(description)
+				.submit(AdminListClasPage.class);
+		successPage.assertAt();
 		successPage.assertAt();
 
 		ArgumentCaptor<ContributorLicenseAgreement> captor = ArgumentCaptor
@@ -222,7 +259,12 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 
 		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
 
-		AdminListClasPage successPage = create.create("Eclipse", individualMd, corporateMd, cla.getId(), AdminListClasPage.class);
+		AdminListClasPage successPage = create.form()
+				.name("Eclipse")
+				.individual(individualMd)
+				.corporate(corporateMd)
+				.supersedingCla(cla.getId())
+				.submit(AdminListClasPage.class);
 		successPage.assertAt();
 
 		ArgumentCaptor<ContributorLicenseAgreement> captor = ArgumentCaptor
