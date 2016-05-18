@@ -60,7 +60,7 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 							<ol>
 								<li>
 									<p>
-										This step will a <a
+										This step will a <a target="_blank"
 											href="https://developer.github.com/v3/repos/hooks/#create-a-hook">pull
 											request hook</a> to the GitHub repository.
 									</p>
@@ -76,7 +76,7 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 								</li>
 								<li>
 									<p>This step will save the GitHub access token used to
-										authenticate you in order to update the <a
+										authenticate you in order to update the <a target="_blank"
 											href="https://developer.github.com/v3/repos/statuses/">Commit
 											Status</a> of pull requests to the provided repositories.</p>
 									<p>
@@ -86,7 +86,7 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 											authorize this application to set the Commit Status.
 									</p>
 									<p th:if="${accessTokensUrl}">
-										You can view the access token being used in  <a th:href="${accessTokensUrl}">your GitHub settings</a>.
+										You can view the access token being used in  <a target="_blank" th:href="${accessTokensUrl}">your GitHub settings</a>.
 									</p>
 								</li>
 							</ol>
