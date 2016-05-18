@@ -48,7 +48,6 @@ import io.pivotal.cla.service.CurrentUserRequest;
 import io.pivotal.cla.service.OAuthAccessTokenParams;
 import io.pivotal.cla.webdriver.pages.SignClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
-import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
 
 public class AuthenticationTests extends BaseWebDriverTests {
 

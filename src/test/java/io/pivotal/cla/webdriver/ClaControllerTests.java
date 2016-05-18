@@ -29,11 +29,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 
 import io.pivotal.cla.data.User;
-import io.pivotal.cla.security.WithAdminUser;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
