@@ -25,14 +25,14 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * @author Rob Winch
  *
  */
-public class NewUserSessionAttrResolver implements HandlerMethodArgumentResolver {
+public class ImportedSignaturesSessionAttrResolver implements HandlerMethodArgumentResolver {
 
 	/* (non-Javadoc)
 	 * @see org.springframework.web.method.support.HandlerMethodArgumentResolver#supportsParameter(org.springframework.core.MethodParameter)
 	 */
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
-		return NewUserSessionAttr.class.isAssignableFrom(parameter.getParameterType());
+		return ImportedSignaturesSessionAttr.class.isAssignableFrom(parameter.getParameterType());
 	}
 
 	/* (non-Javadoc)
@@ -41,6 +41,6 @@ public class NewUserSessionAttrResolver implements HandlerMethodArgumentResolver
 	@Override
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-		return new NewUserSessionAttr(webRequest);
+		return new ImportedSignaturesSessionAttr(webRequest);
 	}
 }

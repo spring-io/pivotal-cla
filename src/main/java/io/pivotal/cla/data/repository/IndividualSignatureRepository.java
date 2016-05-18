@@ -29,7 +29,7 @@ import io.pivotal.cla.data.User;
 
 public interface IndividualSignatureRepository extends CrudRepository<IndividualSignature, Long> {
 
-	default IndividualSignature findSignaturesFor(User user,  String claName) {
+	default IndividualSignature findSignaturesFor(User user, String claName) {
 		PageRequest pageable = new PageRequest(0, 1);
 		List<IndividualSignature> results = findSignaturesFor(pageable, user, claName);
 		return results.isEmpty() ? null : results.get(0);

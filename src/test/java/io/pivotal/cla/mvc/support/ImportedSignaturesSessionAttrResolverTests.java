@@ -31,16 +31,16 @@ import org.springframework.web.context.request.ServletWebRequest;
  * @author Rob Winch
  *
  */
-public class NewUserSessionAttrResolverTests {
+public class ImportedSignaturesSessionAttrResolverTests {
 
 	Method method;
 
-	NewUserSessionAttrResolver resolver;
+	ImportedSignaturesSessionAttrResolver resolver;
 
 	@Before
 	public void setup() {
-		resolver = new NewUserSessionAttrResolver();
-		method = ReflectionUtils.findMethod(NewUserSessionAttrResolverTests.class, "methodParameter", NewUserSessionAttr.class, Object.class);
+		resolver = new ImportedSignaturesSessionAttrResolver();
+		method = ReflectionUtils.findMethod(ImportedSignaturesSessionAttrResolverTests.class, "methodParameter", ImportedSignaturesSessionAttr.class, Object.class);
 	}
 
 	@Test
@@ -61,20 +61,20 @@ public class NewUserSessionAttrResolverTests {
 		NativeWebRequest webRequest = new ServletWebRequest(request);
 		MethodParameter parameter = new MethodParameter(method, 0);
 
-		NewUserSessionAttr resolved = (NewUserSessionAttr) resolver.resolveArgument(parameter, null, webRequest, null);
+		ImportedSignaturesSessionAttr resolved = (ImportedSignaturesSessionAttr) resolver.resolveArgument(parameter, null, webRequest, null);
 		assertThat(resolved.getValue()).isFalse();
 	}
 
 	@Test
 	public void resolveArgumentTrue() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.getSession().setAttribute(NewUserSessionAttr.ATTR_NAME, true);
+		request.getSession().setAttribute(ImportedSignaturesSessionAttr.ATTR_NAME, true);
 		NativeWebRequest webRequest = new ServletWebRequest(request);
 		MethodParameter parameter = new MethodParameter(method, 0);
 
-		NewUserSessionAttr resolved = (NewUserSessionAttr) resolver.resolveArgument(parameter, null, webRequest, null);
+		ImportedSignaturesSessionAttr resolved = (ImportedSignaturesSessionAttr) resolver.resolveArgument(parameter, null, webRequest, null);
 		assertThat(resolved.getValue()).isTrue();
 	}
 
-	public void methodParameter(NewUserSessionAttr attr, Object other) {}
+	public void methodParameter(ImportedSignaturesSessionAttr attr, Object other) {}
 }

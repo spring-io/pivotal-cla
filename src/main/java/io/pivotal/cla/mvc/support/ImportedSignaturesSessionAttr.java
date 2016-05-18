@@ -22,12 +22,12 @@ import org.springframework.web.context.request.WebRequest;
  * @author Rob Winch
  *
  */
-public final class NewUserSessionAttr {
-	static final String ATTR_NAME = "isNewUser";
+public final class ImportedSignaturesSessionAttr {
+	static final String ATTR_NAME = "importedSignatures";
 
 	private final WebRequest webRequest;
 
-	public NewUserSessionAttr(WebRequest webRequest) {
+	public ImportedSignaturesSessionAttr(WebRequest webRequest) {
 		this.webRequest = webRequest;
 	}
 

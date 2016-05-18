@@ -17,6 +17,7 @@ package io.pivotal.cla.webdriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,8 +53,10 @@ public class ClaControllerTests extends BaseWebDriverTests {
 	@Test
 	@WithAnonymousUser
 	public void viewSignedWithRepositoryIdAndPullRequestIdNewUser() throws Exception {
-		when(mockGithub.getCurrentUser(any())).thenReturn(WithSigningUserFactory.create());
-		when(mockIndividualSignatureRepository.findSignaturesFor(WithSigningUserFactory.create(),cla.getName())).thenReturn(individualSignature);
+		User signingUser = WithSigningUserFactory.create();
+		when(mockGithub.getCurrentUser(any())).thenReturn(signingUser);
+		when(mockIndividualSignatureRepository.findSignaturesFor(signingUser,cla.getName())).thenReturn(individualSignature);
+		when(mockIndividualSignatureRepository.findSignaturesFor(any(),eq(signingUser))).thenReturn(Arrays.asList(individualSignature));
 
 		String repositoryId = "spring-projects/spring-security";
 		int pullRequestId = 123;
@@ -68,7 +71,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		UpdatePullRequestStatusRequest updatePr = updatePullRequestCaptor.getValue();
 		String commitStatusUrl = "http://localhost/sign/"+cla.getName()+"?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId;
 		assertThat(updatePr.getCommitStatusUrl()).isEqualTo(commitStatusUrl);
-		assertThat(updatePr.getCurrentUserGithubLogin()).isEqualTo(WithSigningUserFactory.create().getGithubLogin());
+		assertThat(updatePr.getCurrentUserGithubLogin()).isEqualTo(signingUser.getGithubLogin());
 		assertThat(updatePr.getPullRequestId()).isEqualTo(pullRequestId);
 		assertThat(updatePr.getRepositoryId()).isEqualTo(repositoryId);
 	}

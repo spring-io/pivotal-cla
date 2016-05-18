@@ -15,14 +15,22 @@
  */
 package io.pivotal.cla.mvc.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import io.pivotal.cla.data.User;
+import io.pivotal.cla.mvc.ClaRequest;
+import io.pivotal.cla.mvc.support.ImportedSignaturesSessionAttr;
+import io.pivotal.cla.service.GitHubService;
+import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
 
 @ControllerAdvice
-public class SecurityControllerAdvice {
+public class UserControllerAdvice {
+
+	@Autowired
+	GitHubService github;
 
 	@ModelAttribute("currentUser")
 	User currentUser(@AuthenticationPrincipal User currentUser) {
@@ -37,5 +45,18 @@ public class SecurityControllerAdvice {
 	@ModelAttribute("isClaAuthor")
 	boolean isClaAuthor(@AuthenticationPrincipal User currentUser) {
 		return currentUser == null ? false : currentUser.isClaAuthor();
+	}
+
+	@ModelAttribute("importedSignature")
+	boolean importedSignature(@AuthenticationPrincipal User currentUser, ImportedSignaturesSessionAttr importedSignaturesSessionAttr, @ModelAttribute ClaRequest claRequest) throws Exception {
+		if(!importedSignaturesSessionAttr.getValue()) {
+			return false;
+		}
+		UpdatePullRequestStatusRequest updatePullRequest = claRequest.createUpdatePullRequestStatus(currentUser.getGithubLogin());
+		if(updatePullRequest != null) {
+			github.save(updatePullRequest);
+		}
+		importedSignaturesSessionAttr.setValue(false);
+		return true;
 	}
 }

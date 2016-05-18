@@ -35,6 +35,9 @@ public class ClaRequest {
 	Integer pullRequestId;
 
 	public UpdatePullRequestStatusRequest createUpdatePullRequestStatus(String currentUserName) throws Exception {
+		if(pullRequestId == null) {
+			return null;
+		}
 		UpdatePullRequestStatusRequest request = new UpdatePullRequestStatusRequest();
 		request.setCurrentUserGithubLogin(currentUserName);
 		request.setPullRequestId(pullRequestId);

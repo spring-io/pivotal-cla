@@ -26,15 +26,15 @@ import org.springframework.web.context.request.ServletWebRequest;
  * @author Rob Winch
  *
  */
-public class NewUserSessionAttrTests {
-	NewUserSessionAttr attr;
+public class ImportedSignaturesSessionAttrTests {
+	ImportedSignaturesSessionAttr attr;
 
 	MockHttpServletRequest request;
 
 	@Before
 	public void setup() {
 		request = new MockHttpServletRequest();
-		attr = new NewUserSessionAttr(new ServletWebRequest(request));
+		attr = new ImportedSignaturesSessionAttr(new ServletWebRequest(request));
 	}
 
 	@Test
@@ -46,7 +46,7 @@ public class NewUserSessionAttrTests {
 	public void setValueTrue() {
 		attr.setValue(true);
 		assertThat(attr.getValue()).isTrue();
-		assertThat(request.getSession().getAttribute(NewUserSessionAttr.ATTR_NAME)).isEqualTo(true);
+		assertThat(request.getSession().getAttribute(ImportedSignaturesSessionAttr.ATTR_NAME)).isEqualTo(true);
 	}
 
 	@Test

@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import io.pivotal.cla.mvc.support.NewUserSessionAttrResolver;
+import io.pivotal.cla.mvc.support.ImportedSignaturesSessionAttrResolver;
 
 /**
  * @author Rob Winch
@@ -35,6 +35,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	 */
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-		resolvers.add(new NewUserSessionAttrResolver());
+		resolvers.add(new ImportedSignaturesSessionAttrResolver());
 	}
 }

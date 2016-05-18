@@ -15,10 +15,13 @@
  */
 package io.pivotal.cla.mvc.security;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -30,9 +33,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
+import io.pivotal.cla.data.repository.CorporateSignatureRepository;
+import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.data.repository.UserRepository;
-import io.pivotal.cla.mvc.support.NewUserSessionAttr;
+import io.pivotal.cla.mvc.support.ImportedSignaturesSessionAttr;
 import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.security.GithubAuthenticationEntryPoint;
 import io.pivotal.cla.security.Login;
@@ -46,12 +52,16 @@ public class OAuthController {
 
 	@Autowired
 	GitHubService github;
+	@Autowired
+	IndividualSignatureRepository individual;
+	@Autowired
+	CorporateSignatureRepository corporate;
 
 	@Autowired
 	UserRepository users;
 
 	@RequestMapping("/login/oauth2/github")
-	public void oauth(NewUserSessionAttr isNewUserAttr, HttpServletRequest request, HttpServletResponse response, @RequestParam String code,
+	public void oauth(ImportedSignaturesSessionAttr importedSignaturesAttr, HttpServletRequest request, HttpServletResponse response, @RequestParam String code,
 			@RequestParam String state) throws Exception {
 		String actualState = (String) request.getSession().getAttribute("state");
 		if(actualState == null || !actualState.equals(state)) {
@@ -73,13 +83,23 @@ public class OAuthController {
 
 		User existingUser = users.findOne(user.getGithubLogin());
 		boolean isNewUser = existingUser == null;
-		if(isNewUser) {
-			isNewUserAttr.setValue(isNewUser);
-		}
 
 		users.save(user);
 
 		Authentication authentication = Login.loginAs(user);
+
+		if(isNewUser) {
+			List<IndividualSignature> individualSignatures = individual.findSignaturesFor(new PageRequest(0, 1), user);
+			boolean signed = !individualSignatures.isEmpty();
+			if(!signed) {
+				List<String> organizations = github.getOrganizations(user.getGithubLogin());
+				signed = !corporate.findSignatures(new PageRequest(0, 1), organizations, user.getEmails()).isEmpty();
+			}
+
+			if(signed) {
+				importedSignaturesAttr.setValue(true);
+			}
+		}
 
 		success.onAuthenticationSuccess(request, response, authentication);
 	}
