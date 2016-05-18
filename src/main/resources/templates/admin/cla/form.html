@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html layout:decorator="layouts/main">
+<html layout:decorator="layouts/main" th:with="isEditCla=${claForm.id != null}">
 	<head>
-		<title>Create CLA</title>
+		<title th:text="${isEditCla ? 'Edit CLA' : 'Create CLA'}">Create CLA</title>
 	</head>
 	<body>
 		<div layout:fragment="content">
@@ -53,7 +53,8 @@
 						<p th:each="err : ${#fields.errors('supersedingCla')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
-				<button id="create-submit" type="submit" class="btn btn-success">Create CLA</button>
+				<input th:if="${isEditCla}" type="hidden" th:field="*{id}"/>
+				<button id="create-submit" type="submit" class="btn btn-success">Save CLA</button>
 			</form>
 		</div>
 	</body>

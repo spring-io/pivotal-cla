@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.MarkdownContent;
 import io.pivotal.cla.data.User;
+import io.pivotal.cla.mvc.ResourceNotFoundException;
 
 /**
  * @author Rob Winch
@@ -47,19 +48,32 @@ public class AdminCrudClaController extends AdminClaController {
 
 	@RequestMapping("/admin/cla/create")
 	public String createClaForm(Map<String, Object> model) throws Exception {
+		return claForm(new ClaForm(), model);
+	}
+
+	@RequestMapping("/admin/cla/{claId}/edit")
+	public String editClaForm(@PathVariable long claId, Map<String, Object> model) throws Exception {
+		ContributorLicenseAgreement cla = claRepo.findOne(claId);
+		return claForm(cla, model);
+	}
+
+	private String claForm(Object claForm, Map<String, Object> model) {
+		if(claForm == null) {
+			throw new ResourceNotFoundException();
+		}
 		Iterable<ContributorLicenseAgreement> clas = claRepo.findAll();
 		model.put("licenses", clas);
-		model.put("claForm", new ClaForm());
+		model.put("claForm", claForm);
 		return "admin/cla/form";
 	}
 
 	@RequestMapping(value = "/admin/cla", method = RequestMethod.POST)
-	public String createCla(@AuthenticationPrincipal User user, @Valid ClaForm claForm, BindingResult result, Map<String, Object> model)
+	public String saveCla(@AuthenticationPrincipal User user, @Valid ClaForm claForm, BindingResult result, Map<String, Object> model)
 			throws Exception {
 		boolean primary = claForm.isPrimary();
 		if(primary) {
 			ContributorLicenseAgreement existingPrimaryCla = claRepo.findByNameAndPrimaryTrue(claForm.getName());
-			if(existingPrimaryCla != null) {
+			if(existingPrimaryCla != null && existingPrimaryCla.getId() != claForm.getId()) {
 				result.rejectValue("primary","errors.primary.exists", "A primary CLA with this name already exists");
 			}
 		}
@@ -83,7 +97,8 @@ public class AdminCrudClaController extends AdminClaController {
 		String corperateHtml = github.markdownToHtml(accessToken, corporate.getMarkdown());
 		corporate.setHtml(corperateHtml);
 
-		ContributorLicenseAgreement cla = new ContributorLicenseAgreement();
+		boolean isCreateNew = claForm.getId() == null;
+		ContributorLicenseAgreement cla = isCreateNew ? new ContributorLicenseAgreement() : claRepo.findOne(claForm.getId());
 		cla.setCorporateContent(claForm.getCorporateContent());
 		cla.setDescription(claForm.getDescription());
 		cla.setIndividualContent(claForm.getIndividualContent());

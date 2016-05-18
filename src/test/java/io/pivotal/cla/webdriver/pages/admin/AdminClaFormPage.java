@@ -20,6 +20,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
+import org.springframework.util.StringUtils;
 
 import io.pivotal.cla.webdriver.pages.BasePage;
 
@@ -65,21 +66,25 @@ public class AdminClaFormPage extends BasePage {
 		}
 
 		public ClaForm name(String name) {
+			this.name.clear();
 			this.name.sendKeys(name);
 			return this;
 		}
 
 		public ClaForm individual(String individual) {
+			this.individualContent.clear();
 			this.individualContent.sendKeys(individual);
 			return this;
 		}
 
 		public ClaForm corporate(String corporate) {
+			this.corporateContent.clear();
 			this.corporateContent.sendKeys(corporate);
 			return this;
 		}
 
 		public ClaForm description(String description) {
+			this.description.clear();
 			this.description.sendKeys(description);
 			return this;
 		}

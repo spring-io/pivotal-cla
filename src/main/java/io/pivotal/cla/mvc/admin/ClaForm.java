@@ -31,6 +31,7 @@ import lombok.Data;
  */
 @Data
 public class ClaForm {
+	private Long id;
 
 	@NotEmpty(message = "This is required")
 	private String name;

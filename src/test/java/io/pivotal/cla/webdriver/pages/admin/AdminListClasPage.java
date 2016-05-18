@@ -49,6 +49,7 @@ public class AdminListClasPage extends BasePage {
 					.driver(getDriver())
 					.name(cols.get(0).getText())
 					.description(cols.get(1).getText())
+					.edit(cols.get(2).findElement(By.cssSelector("a")))
 					.delete(cols.get(3).findElement(By.cssSelector("input[type=\"submit\"]")))
 					.build();
 		})
@@ -82,7 +83,15 @@ public class AdminListClasPage extends BasePage {
 		@Getter(AccessLevel.PRIVATE)
 		final WebElement delete;
 		@Getter(AccessLevel.PRIVATE)
+		final WebElement edit;
+		@Getter(AccessLevel.PRIVATE)
 		final WebDriver driver;
+
+		public AdminEditClaPage edit() {
+			System.out.println(edit);
+			edit.click();
+			return PageFactory.initElements(getDriver(), AdminEditClaPage.class);
+		}
 
 		public AdminListClasPage delete() {
 			delete.click();

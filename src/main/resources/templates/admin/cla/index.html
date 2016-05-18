@@ -19,7 +19,7 @@
 					<tr th:each="cla : ${clas}">
 						<td th:text="${cla.name}"></td>
 						<td th:text="${cla.description}"></td>
-						<td>TBD</td>
+						<td><a th:href="@{/admin/cla/{claId}/edit(claId=${cla.id})}">Edit</a></td>
 						<td><form th:action="@{/admin/cla/{claId}(claId=${cla.id})}" th:method="delete"><input type="submit" value="Delete"/></form></td>
 					</tr>
 				</tbody>
