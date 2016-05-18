@@ -32,10 +32,9 @@ import io.pivotal.cla.webdriver.pages.HomePage;
 import io.pivotal.cla.webdriver.pages.admin.AdminCreateClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminCreateClaPage.Form;
 import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
-import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage.Row;
 
 @WithClaAuthorUser
-public class AdminCrudClaTests extends BaseWebDriverTests {
+public class AdminCreateClaTests extends BaseWebDriverTests {
 
 	@Test
 	public void navigateToCreateCla() {
@@ -279,30 +278,5 @@ public class AdminCrudClaTests extends BaseWebDriverTests {
 		assertThat(cla.getIndividualContent().getMarkdown()).isEqualTo(individualMd);
 		assertThat(cla.getCorporateContent().getHtml()).isEqualTo(corporateHtml);
 		assertThat(cla.getCorporateContent().getMarkdown()).isEqualTo(corporateMd);
-	}
-
-	@Test
-	public void listClas() {
-		cla.setDescription("this here");
-		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
-		AdminListClasPage listPage = AdminListClasPage.go(driver);
-		listPage.assertAt();
-
-		Row row = listPage.row(0);
-		assertThat(row.getName()).isEqualTo(cla.getName());
-		assertThat(row.getDescription()).isEqualTo(cla.getDescription());
-	}
-
-	@Test
-	public void listClasDelete() {
-		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
-		AdminListClasPage listPage = AdminListClasPage.go(driver);
-		listPage.assertAt();
-
-		Row row = listPage.row(0);
-		AdminListClasPage deletePage = row.delete();
-		deletePage.assertAt();
-
-		verify(mockClaRepository).delete(cla.getId());
 	}
 }
