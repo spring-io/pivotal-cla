@@ -29,8 +29,8 @@ import io.pivotal.cla.security.WithAdminUserFactory;
 import io.pivotal.cla.security.WithClaAuthorUser;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
 import io.pivotal.cla.webdriver.pages.HomePage;
+import io.pivotal.cla.webdriver.pages.admin.AdminClaFormPage.ClaForm;
 import io.pivotal.cla.webdriver.pages.admin.AdminCreateClaPage;
-import io.pivotal.cla.webdriver.pages.admin.AdminCreateClaPage.ClaForm;
 import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
 
 @WithClaAuthorUser
