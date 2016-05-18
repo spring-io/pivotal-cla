@@ -30,7 +30,7 @@ import io.pivotal.cla.security.WithClaAuthorUser;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
 import io.pivotal.cla.webdriver.pages.HomePage;
 import io.pivotal.cla.webdriver.pages.admin.AdminCreateClaPage;
-import io.pivotal.cla.webdriver.pages.admin.AdminCreateClaPage.Form;
+import io.pivotal.cla.webdriver.pages.admin.AdminCreateClaPage.ClaForm;
 import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
 
 @WithClaAuthorUser
@@ -55,7 +55,7 @@ public class AdminCreateClaTests extends BaseWebDriverTests {
 		create = create.form()
 				.submit(AdminCreateClaPage.class);
 
-		Form form = create.form();
+		ClaForm form = create.form();
 		form.assertName().hasRequiredError();
 		form.assertIndividualContent().hasRequiredError();
 		form.assertCorporateContent().hasRequiredError();
@@ -70,7 +70,7 @@ public class AdminCreateClaTests extends BaseWebDriverTests {
 				.individual("Individual")
 				.submit(AdminCreateClaPage.class);
 
-		Form form = create.form();
+		ClaForm form = create.form();
 		form.assertName().hasNoErrors();
 		form.assertIndividualContent().hasNoErrors();
 		form.assertCorporateContent().hasRequiredError();
@@ -86,7 +86,7 @@ public class AdminCreateClaTests extends BaseWebDriverTests {
 				.corporate("Corporate")
 				.submit(AdminCreateClaPage.class);
 
-		Form form = create.form();
+		ClaForm form = create.form();
 		form.assertName().hasNoErrors().hasValue("Name");
 		form.assertCorporateContent().hasNoErrors();
 		form.assertIndividualContent().hasRequiredError();
@@ -102,7 +102,7 @@ public class AdminCreateClaTests extends BaseWebDriverTests {
 				.corporate("Corporate")
 				.submit(AdminCreateClaPage.class);
 
-		Form form = create.form();
+		ClaForm form = create.form();
 		form.assertName().hasRequiredError();
 		form.assertIndividualContent().hasNoErrors().hasValue("Individual");
 		form.assertCorporateContent().hasNoErrors().hasValue("Corporate");
@@ -121,7 +121,7 @@ public class AdminCreateClaTests extends BaseWebDriverTests {
 				.primary()
 				.submit(AdminCreateClaPage.class);
 
-		Form form = create.form();
+		ClaForm form = create.form();
 		form.assertPrimary().hasError("A primary CLA with this name already exists");
 	}
 

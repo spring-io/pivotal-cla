@@ -18,88 +18,16 @@ package io.pivotal.cla.webdriver.pages.admin;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.Select;
 
-import io.pivotal.cla.webdriver.pages.BasePage;
-
-public class AdminCreateClaPage extends BasePage {
+/**
+ * @author Rob Winch
+ *
+ */
+public class AdminCreateClaPage extends AdminClaFormPage {
 
 	public AdminCreateClaPage(WebDriver driver) {
 		super(driver);
-	}
-
-	public Form form() {
-		Form form = new Form();
-		PageFactory.initElements(getDriver(), form);
-		return form;
-	}
-
-	public class Form {
-		@FindBy(id = "individualContent.markdown")
-		WebElement individualContent;
-		@FindBy(id = "corporateContent.markdown")
-		WebElement corporateContent;
-		WebElement name;
-		@FindBy(id = "create-submit")
-		WebElement createSubmit;
-		WebElement primary1;
-		WebElement description;
-		WebElement supersedingCla;
-
-
-		public InputAssert assertPrimary() {
-			return assertInput(primary1);
-		}
-
-		public InputAssert assertIndividualContent() {
-			return assertInput(individualContent);
-		}
-
-		public InputAssert assertName() {
-			return assertInput(name);
-		}
-
-		public InputAssert assertCorporateContent() {
-			return assertInput(corporateContent);
-		}
-
-		public Form name(String name) {
-			this.name.sendKeys(name);
-			return this;
-		}
-
-		public Form individual(String individual) {
-			this.individualContent.sendKeys(individual);
-			return this;
-		}
-
-		public Form corporate(String corporate) {
-			this.corporateContent.sendKeys(corporate);
-			return this;
-		}
-
-		public Form description(String description) {
-			this.description.sendKeys(description);
-			return this;
-		}
-
-		public Form primary() {
-			this.primary1.click();
-			return this;
-		}
-
-		public Form supersedingCla(long supersedingCla) {
-			new Select(this.supersedingCla).selectByValue(String.valueOf(supersedingCla));
-			return this;
-		}
-
-		public <T extends BasePage> T submit(Class<T> page) {
-			this.createSubmit.click();
-			return PageFactory.initElements(getDriver(), page);
-		}
 	}
 
 	public void assertAt() {
