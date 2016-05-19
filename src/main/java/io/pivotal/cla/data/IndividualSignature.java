@@ -17,6 +17,7 @@ package io.pivotal.cla.data;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -48,6 +49,7 @@ public class IndividualSignature {
 
 	private String telephone;
 
-	private String githubLogin;
+	@Column(name = "github_login")
+	private String gitHubLogin;
 
 }

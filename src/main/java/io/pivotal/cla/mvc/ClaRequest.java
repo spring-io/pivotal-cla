@@ -34,12 +34,12 @@ public class ClaRequest {
 	String repositoryId;
 	Integer pullRequestId;
 
-	public UpdatePullRequestStatusRequest createUpdatePullRequestStatus(String currentUserName) throws Exception {
+	public UpdatePullRequestStatusRequest createUpdatePullRequestStatus(String currentUserGitHubLogin) throws Exception {
 		if(pullRequestId == null) {
 			return null;
 		}
 		UpdatePullRequestStatusRequest request = new UpdatePullRequestStatusRequest();
-		request.setCurrentUserGithubLogin(currentUserName);
+		request.setCurrentUserGitHubLogin(currentUserGitHubLogin);
 		request.setPullRequestId(pullRequestId);
 		request.setRepositoryId(repositoryId);
 		request.setCommitStatusUrl(signUrl());

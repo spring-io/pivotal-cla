@@ -46,7 +46,7 @@ public class CclaController {
 	@Autowired
 	CorporateSignatureRepository corporate;
 	@Autowired
-	GitHubApi github;
+	GitHubApi gitHub;
 	@Autowired
 	AccessTokenRepository tokenRepo;
 
@@ -57,7 +57,7 @@ public class CclaController {
 		Integer pullRequestId = signCorporateClaForm.getPullRequestId();
 		String repositoryId = signCorporateClaForm.getRepositoryId();
 
-		List<String> organizations = github.getOrganizations(user.getGithubLogin());
+		List<String> organizations = gitHub.getOrganizations(user.getGitHubLogin());
 		CorporateSignature signed = corporate.findSignature(claName, organizations, user.getEmails());
 		ContributorLicenseAgreement cla = signed == null ? clas.findByNameAndPrimaryTrue(claName) : signed.getCla();
 
@@ -73,7 +73,7 @@ public class CclaController {
 		signCorporateClaForm.setClaId(cla.getId());
 		signCorporateClaForm.setRepositoryId(repositoryId);
 		signCorporateClaForm.setPullRequestId(pullRequestId);
-		signCorporateClaForm.setGitHubOrganizations(github.getOrganizations(user.getGithubLogin()));
+		signCorporateClaForm.setGitHubOrganizations(gitHub.getOrganizations(user.getGitHubLogin()));
 
 		model.put("cla", cla);
 
@@ -85,7 +85,7 @@ public class CclaController {
 		if(result.hasErrors()) {
 			ContributorLicenseAgreement cla = clas.findOne(signCorporateClaForm.getClaId());
 			model.put("cla", cla);
-			signCorporateClaForm.setGitHubOrganizations(github.getOrganizations(user.getGithubLogin()));
+			signCorporateClaForm.setGitHubOrganizations(gitHub.getOrganizations(user.getGitHubLogin()));
 			return "cla/ccla/sign";
 		}
 		ContributorLicenseAgreement cla = clas.findOne(signCorporateClaForm.getClaId());
@@ -93,7 +93,7 @@ public class CclaController {
 		signature.setCla(cla);
 		signature.setEmail(signCorporateClaForm.getEmail());
 		signature.setDateOfSignature(new Date());
-		signature.setGithubLogin(user.getGithubLogin());
+		signature.setGitHubLogin(user.getGitHubLogin());
 		signature.setGitHubOrganization(signCorporateClaForm.getGitHubOrganization());
 		signature.setTitle(signCorporateClaForm.getTitle());
 		signature.setCountry(signCorporateClaForm.getCountry());
@@ -112,12 +112,12 @@ public class CclaController {
 			return "redirect:/sign/{claName}/ccla";
 		}
 
-		UpdatePullRequestStatusRequest updatePullRequest = signCorporateClaForm.createUpdatePullRequestStatus(user.getGithubLogin());
+		UpdatePullRequestStatusRequest updatePullRequest = signCorporateClaForm.createUpdatePullRequestStatus(user.getGitHubLogin());
 		if(updatePullRequest != null) {
 			AccessToken accessToken = tokenRepo.findOne(updatePullRequest.getRepositoryId());
 			if(accessToken != null) {
 				updatePullRequest.setAccessToken(accessToken.getToken());
-				github.save(updatePullRequest);
+				gitHub.save(updatePullRequest);
 			}
 		}
 

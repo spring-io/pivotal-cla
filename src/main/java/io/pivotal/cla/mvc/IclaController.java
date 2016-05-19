@@ -46,7 +46,7 @@ public class IclaController {
 	@Autowired
 	IndividualSignatureRepository individual;
 	@Autowired
-	GitHubApi github;
+	GitHubApi gitHub;
 	@Autowired
 	AccessTokenRepository tokenRepo;
 
@@ -91,7 +91,7 @@ public class IclaController {
 		signature.setMailingAddress(signClaForm.getMailingAddress());
 		signature.setDateOfSignature(new Date());
 		signature.setTelephone(signClaForm.getTelephone());
-		signature.setGithubLogin(user.getGithubLogin());
+		signature.setGitHubLogin(user.getGitHubLogin());
 		individual.save(signature);
 
 		// update github
@@ -102,12 +102,12 @@ public class IclaController {
 		}
 
 
-		UpdatePullRequestStatusRequest updatePullRequest = signClaForm.createUpdatePullRequestStatus(user.getGithubLogin());
+		UpdatePullRequestStatusRequest updatePullRequest = signClaForm.createUpdatePullRequestStatus(user.getGitHubLogin());
 		if(updatePullRequest != null) {
 			AccessToken accessToken = tokenRepo.findOne(updatePullRequest.getRepositoryId());
 			if(accessToken != null) {
 				updatePullRequest.setAccessToken(accessToken.getToken());
-				github.save(updatePullRequest);
+				gitHub.save(updatePullRequest);
 			}
 		}
 

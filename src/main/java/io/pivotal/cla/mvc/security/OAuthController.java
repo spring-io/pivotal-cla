@@ -51,7 +51,7 @@ public class OAuthController {
 	AuthenticationSuccessHandler success = new SavedRequestAwareAuthenticationSuccessHandler();
 
 	@Autowired
-	GitHubApi github;
+	GitHubApi gitHub;
 	@Autowired
 	IndividualSignatureRepository individual;
 	@Autowired
@@ -79,9 +79,9 @@ public class OAuthController {
 		userRequest.setOauthParams(params);
 		userRequest.setRequestAdminAccess(admin);
 
-		User user = github.getCurrentUser(userRequest);
+		User user = gitHub.getCurrentUser(userRequest);
 
-		User existingUser = users.findOne(user.getGithubLogin());
+		User existingUser = users.findOne(user.getGitHubLogin());
 		boolean isNewUser = existingUser == null;
 
 		users.save(user);
@@ -92,7 +92,7 @@ public class OAuthController {
 			List<IndividualSignature> individualSignatures = individual.findSignaturesFor(new PageRequest(0, 1), user);
 			boolean signed = !individualSignatures.isEmpty();
 			if(!signed) {
-				List<String> organizations = github.getOrganizations(user.getGithubLogin());
+				List<String> organizations = gitHub.getOrganizations(user.getGitHubLogin());
 				signed = !corporate.findSignatures(new PageRequest(0, 1), organizations, user.getEmails()).isEmpty();
 			}
 

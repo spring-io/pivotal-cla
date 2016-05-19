@@ -48,8 +48,8 @@ import io.pivotal.cla.service.github.CommitStatus;
 import io.pivotal.cla.service.github.GitHubApi;
 
 @RestController
-@PreAuthorize("@githubSignature.check(#request.getHeader('X-Hub-Signature'), #body)")
-public class GithubHooksController {
+@PreAuthorize("@gitHubSignature.check(#request.getHeader('X-Hub-Signature'), #body)")
+public class GitHubHooksController {
 
 	@Autowired
 	AccessTokenRepository tokenRepo;
@@ -64,7 +64,7 @@ public class GithubHooksController {
 	CorporateSignatureRepository corporate;
 
 	@Autowired
-	GitHubApi github;
+	GitHubApi gitHub;
 
 	@RequestMapping(value = "/github/hooks/pull_request/{cla}", headers = "X-GitHub-Event=ping")
 	public String pullRequestPing(HttpServletRequest request, @RequestBody String body, @PathVariable String cla) throws Exception {
@@ -88,12 +88,12 @@ public class GithubHooksController {
 		RepositoryId repoId = RepositoryId.createFromId(repository.getOwner().getLogin() + "/" + repository.getName());
 
 		PullRequest pullRequest = pullRequestPayload.getPullRequest();
-		String githubLogin = pullRequest.getUser().getLogin();
+		String gitHubLogin = pullRequest.getUser().getLogin();
 
-		User user = userRepo.findOne(githubLogin);
+		User user = userRepo.findOne(gitHubLogin);
 		if(user == null) {
 			user = new User();
-			user.setGithubLogin(githubLogin);
+			user.setGitHubLogin(gitHubLogin);
 			user.setEmails(new HashSet<>());
 		}
 
@@ -103,7 +103,7 @@ public class GithubHooksController {
 		String accessTokenValue = accessToken == null ? null : accessToken.getToken();
 
 		CommitStatus status = new CommitStatus();
-		status.setGithubUsername(githubLogin);
+		status.setGitHubUsername(gitHubLogin);
 		status.setPullRequestId(pullRequest.getNumber());
 		status.setRepoId(repoId.generateId());
 		status.setSha(pullRequest.getHead().getSha());
@@ -117,7 +117,7 @@ public class GithubHooksController {
 			.build();
 		status.setUrl(signUrl);
 
-		github.save(status);
+		gitHub.save(status);
 
 		return "FAIL";
 	}
@@ -132,7 +132,7 @@ public class GithubHooksController {
 			return true;
 		}
 
-		List<String> organizations = github.getOrganizations(user.getGithubLogin());
+		List<String> organizations = gitHub.getOrganizations(user.getGitHubLogin());
 		CorporateSignature corporateSignature = corporate.findSignature(claName, organizations, user.getEmails());
 		return corporateSignature != null;
 	}

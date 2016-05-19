@@ -26,7 +26,7 @@ import lombok.Data;
 public class UpdatePullRequestStatusRequest {
 	private String repositoryId;
 	private int pullRequestId;
-	private String currentUserGithubLogin;
+	private String currentUserGitHubLogin;
 	private String commitStatusUrl;
 	/**
 	 * The Access Token used for updating the commit status. This is typically

@@ -137,8 +137,8 @@ public class AdminCreateClaTests extends BaseWebDriverTests {
 		String corporateHtml = cla.getCorporateContent().getHtml();
 
 		String accessToken = WithAdminUserFactory.create().getAccessToken();
-		when(mockGithub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
-		when(mockGithub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
+		when(mockGitHub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
+		when(mockGitHub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
 
 		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
 
@@ -176,8 +176,8 @@ public class AdminCreateClaTests extends BaseWebDriverTests {
 		String corporateHtml = cla.getCorporateContent().getHtml();
 
 		String accessToken = WithAdminUserFactory.create().getAccessToken();
-		when(mockGithub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
-		when(mockGithub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
+		when(mockGitHub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
+		when(mockGitHub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
 
 		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
 
@@ -213,8 +213,8 @@ public class AdminCreateClaTests extends BaseWebDriverTests {
 		String corporateHtml = cla.getCorporateContent().getHtml();
 
 		String accessToken = WithAdminUserFactory.create().getAccessToken();
-		when(mockGithub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
-		when(mockGithub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
+		when(mockGitHub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
+		when(mockGitHub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
 
 		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
 
@@ -253,8 +253,8 @@ public class AdminCreateClaTests extends BaseWebDriverTests {
 		String corporateHtml = cla.getCorporateContent().getHtml();
 
 		String accessToken = WithAdminUserFactory.create().getAccessToken();
-		when(mockGithub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
-		when(mockGithub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
+		when(mockGitHub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
+		when(mockGitHub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
 
 		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
 

@@ -90,11 +90,11 @@ public class AdminCrudClaController extends AdminClaController {
 		String accessToken = user.getAccessToken();
 
 		MarkdownContent individual = claForm.getIndividualContent();
-		String individualHtml = github.markdownToHtml(accessToken, individual.getMarkdown());
+		String individualHtml = gitHub.markdownToHtml(accessToken, individual.getMarkdown());
 		individual.setHtml(individualHtml);
 
 		MarkdownContent corporate = claForm.getCorporateContent();
-		String corperateHtml = github.markdownToHtml(accessToken, corporate.getMarkdown());
+		String corperateHtml = gitHub.markdownToHtml(accessToken, corporate.getMarkdown());
 		corporate.setHtml(corperateHtml);
 
 		boolean isCreateNew = claForm.getId() == null;

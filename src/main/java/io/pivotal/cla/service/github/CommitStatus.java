@@ -25,7 +25,7 @@ public class CommitStatus {
 	private String sha;
 	private boolean success;
 	private String url;
-	private String githubUsername;
+	private String gitHubUsername;
 	/**
 	 * The Access Token used for updating the commit status. This is typically
 	 * looked up using the {@link AccessTokenRepository} by the repoId.

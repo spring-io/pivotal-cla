@@ -40,7 +40,7 @@ public class WithAdminUserFactory implements WithSecurityContextFactory<WithAdmi
 		user.setAccessToken("mocked_access_token");
 		user.setAvatarUrl("https://avatars.githubusercontent.com/u/362503?v=3");
 		user.setEmails(Collections.singleton("rob@pivotal.io"));
-		user.setGithubLogin("rwinch");
+		user.setGitHubLogin("rwinch");
 		user.setAdmin(true);
 		return user;
 	}

@@ -38,7 +38,7 @@ public class User implements Serializable {
 
 	@Id
 	@Column(name = "github_login")
-	private String githubLogin;
+	private String gitHubLogin;
 
 	private String name;
 

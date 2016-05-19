@@ -87,13 +87,13 @@ public class IndividualSignatureRepositoryTests {
 
 	@Test
 	public void findSignaturesForUserEmailOnly() {
-		user.setGithubLogin("notfound" + user.getGithubLogin());
+		user.setGitHubLogin("notfound" + user.getGitHubLogin());
 
 		assertThat(signatures.findSignaturesFor(user, cla.getName())).isNotNull();
 	}
 
 	@Test
-	public void findSignaturesForUserGithubLoginOnly() {
+	public void findSignaturesForUserGitHubLoginOnly() {
 		user.setEmails(Collections.emptySet());
 
 		assertThat(signatures.findSignaturesFor(user, cla.getName())).isNotNull();
@@ -119,7 +119,7 @@ public class IndividualSignatureRepositoryTests {
 
 	@Test
 	public void findSignatureNotUser() {
-		user.setGithubLogin("notfound" + user.getGithubLogin());
+		user.setGitHubLogin("notfound" + user.getGitHubLogin());
 		user.setEmails(Collections.singleton("notfound@example.com"));
 
 		assertThat(signatures.findSignaturesFor(user, cla.getName())).isNull();;
@@ -132,13 +132,13 @@ public class IndividualSignatureRepositoryTests {
 
 	@Test
 	public void findAllSignaturesForUserEmailOnly() {
-		user.setGithubLogin("notfound" + user.getGithubLogin());
+		user.setGitHubLogin("notfound" + user.getGitHubLogin());
 
 		assertThat(signatures.findSignaturesFor(new PageRequest(0, 1), user)).isNotNull();
 	}
 
 	@Test
-	public void findAllSignaturesForUserGithubLoginOnly() {
+	public void findAllSignaturesForUserGitHubLoginOnly() {
 		user.setEmails(Collections.emptySet());
 
 		assertThat(signatures.findSignaturesFor(new PageRequest(0, 1), user)).isNotNull();
@@ -146,7 +146,7 @@ public class IndividualSignatureRepositoryTests {
 
 	private static IndividualSignature createSignature(ContributorLicenseAgreement cla, User user) {
 		IndividualSignature signature = DataUtils.iclaSignature(cla);
-		signature.setGithubLogin(user.getGithubLogin());
+		signature.setGitHubLogin(user.getGitHubLogin());
 		signature.setEmail(user.getEmails().iterator().next());
 		return signature;
 	}

@@ -134,8 +134,8 @@ public class EditAdminClaTests extends BaseWebDriverTests {
 		String corporateHtml = cla.getCorporateContent().getHtml();
 
 		String accessToken = WithAdminUserFactory.create().getAccessToken();
-		when(mockGithub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
-		when(mockGithub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
+		when(mockGitHub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
+		when(mockGitHub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
 
 		AdminEditClaPage create = AdminEditClaPage.to(getDriver(), cla.getId());
 
@@ -172,8 +172,8 @@ public class EditAdminClaTests extends BaseWebDriverTests {
 		String corporateHtml = cla.getCorporateContent().getHtml();
 
 		String accessToken = WithAdminUserFactory.create().getAccessToken();
-		when(mockGithub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
-		when(mockGithub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
+		when(mockGitHub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
+		when(mockGitHub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
 
 		AdminEditClaPage create = AdminEditClaPage.to(getDriver(), cla.getId());
 
@@ -210,8 +210,8 @@ public class EditAdminClaTests extends BaseWebDriverTests {
 		String corporateHtml = cla.getCorporateContent().getHtml();
 
 		String accessToken = WithAdminUserFactory.create().getAccessToken();
-		when(mockGithub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
-		when(mockGithub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
+		when(mockGitHub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
+		when(mockGitHub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
 
 		AdminEditClaPage create = AdminEditClaPage.to(getDriver(), cla.getId());
 
@@ -245,8 +245,8 @@ public class EditAdminClaTests extends BaseWebDriverTests {
 		String corporateHtml = cla.getCorporateContent().getHtml();
 
 		String accessToken = WithAdminUserFactory.create().getAccessToken();
-		when(mockGithub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
-		when(mockGithub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
+		when(mockGitHub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
+		when(mockGitHub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
 
 		AdminEditClaPage create = AdminEditClaPage.to(getDriver(), cla.getId());
 
@@ -290,8 +290,8 @@ public class EditAdminClaTests extends BaseWebDriverTests {
 		String corporateHtml = cla.getCorporateContent().getHtml();
 
 		String accessToken = WithAdminUserFactory.create().getAccessToken();
-		when(mockGithub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
-		when(mockGithub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
+		when(mockGitHub.markdownToHtml(accessToken, individualMd)).thenReturn(individualHtml);
+		when(mockGitHub.markdownToHtml(accessToken, corporateMd)).thenReturn(corporateHtml);
 
 		AdminEditClaPage create = AdminEditClaPage.to(getDriver(), springCla.getId());
 

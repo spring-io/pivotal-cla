@@ -35,7 +35,7 @@ import lombok.SneakyThrows;
  *
  */
 @Component
-public class GithubSignature {
+public class GitHubSignature {
 	static final String SIGNATURE_PREFIX = "sha1=";
 
 	private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
@@ -43,14 +43,14 @@ public class GithubSignature {
 	private AccessTokenRepository accessTokens;
 
 	@Autowired
-	public GithubSignature(AccessTokenRepository accessTokens) {
+	public GitHubSignature(AccessTokenRepository accessTokens) {
 		super();
 		this.accessTokens = accessTokens;
 	}
 
 	@SneakyThrows
-	public boolean check(String githubSignature, String body) {
-		if(githubSignature == null || !githubSignature.startsWith(SIGNATURE_PREFIX)) {
+	public boolean check(String gitHubSignature, String body) {
+		if(gitHubSignature == null || !gitHubSignature.startsWith(SIGNATURE_PREFIX)) {
 			return false;
 		}
 		AccessToken expectedToken = accessTokens.findOne(AccessToken.CLA_ACCESS_TOKEN_ID);
@@ -58,7 +58,7 @@ public class GithubSignature {
 			return false;
 		}
 
-		String providedHmac = githubSignature.substring(SIGNATURE_PREFIX.length());
+		String providedHmac = gitHubSignature.substring(SIGNATURE_PREFIX.length());
 
 		byte[] providedHmacBytes = Hex.decode(providedHmac);
 

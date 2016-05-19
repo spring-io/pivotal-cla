@@ -31,7 +31,7 @@ import io.pivotal.cla.service.github.GitHubApi;
 public class AdminClaController {
 
 	@Autowired
-	GitHubApi github;
+	GitHubApi gitHub;
 
 	@Autowired
 	ContributorLicenseAgreementRepository claRepo;

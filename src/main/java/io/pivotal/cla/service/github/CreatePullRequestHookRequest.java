@@ -30,7 +30,7 @@ public class CreatePullRequestHookRequest {
 
 	private List<String> repositoryIds;
 
-	private String githubEventUrl;
+	private String gitHubEventUrl;
 
 	private String secret;
 

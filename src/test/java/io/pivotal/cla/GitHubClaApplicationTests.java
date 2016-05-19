@@ -26,7 +26,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @SpringApplicationConfiguration(classes = PivotalClaApplication.class)
 @WebAppConfiguration
 @TestPropertySource("/application-test.properties")
-public class GithubClaApplicationTests {
+public class GitHubClaApplicationTests {
 
 	@Test
 	public void contextLoads() {

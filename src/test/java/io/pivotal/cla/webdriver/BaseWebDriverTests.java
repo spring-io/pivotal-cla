@@ -51,7 +51,7 @@ public abstract class BaseWebDriverTests {
 	protected WebApplicationContext wac;
 	@Autowired
 	private HiddenHttpMethodFilter hiddenInputFilter;
-	protected GitHubApi mockGithub;
+	protected GitHubApi mockGitHub;
 	protected ContributorLicenseAgreementRepository mockClaRepository;
 	protected IndividualSignatureRepository mockIndividualSignatureRepository;
 	protected CorporateSignatureRepository mockCorporateSignatureRepository;
@@ -95,7 +95,7 @@ public abstract class BaseWebDriverTests {
 
 		individualSignature = new IndividualSignature();
 		individualSignature.setCla(cla);
-		individualSignature.setGithubLogin("rwinch");
+		individualSignature.setGitHubLogin("rwinch");
 		individualSignature.setEmail("rob@gmail.com");
 		individualSignature.setName("Rob Winch");
 		individualSignature.setMailingAddress("123 Seasame Street");
@@ -103,7 +103,7 @@ public abstract class BaseWebDriverTests {
 
 		corporateSignature = new CorporateSignature();
 		corporateSignature.setCla(cla);
-		corporateSignature.setGithubLogin("rwinch");
+		corporateSignature.setGitHubLogin("rwinch");
 		corporateSignature.setEmail("rob@gmail.com");
 		corporateSignature.setName("Rob Winch");
 		corporateSignature.setMailingAddress("123 Seasame Street");
@@ -120,9 +120,9 @@ public abstract class BaseWebDriverTests {
 	}
 
 	@Autowired
-	public void setMockGithub(GitHubApi mockGithub) {
-		reset(mockGithub);
-		this.mockGithub = mockGithub;
+	public void setMockGitHub(GitHubApi mockGitHub) {
+		reset(mockGitHub);
+		this.mockGitHub = mockGitHub;
 	}
 
 	@Autowired

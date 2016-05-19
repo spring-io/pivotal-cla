@@ -32,7 +32,7 @@ import io.pivotal.cla.config.ClaOAuthConfig;
 import io.pivotal.cla.config.OAuthClientCredentials;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.service.github.CommitStatus;
-import io.pivotal.cla.service.github.MylynGithubApi;
+import io.pivotal.cla.service.github.MylynGitHubApi;
 import okhttp3.mockwebserver.EnqueueResourcesMockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
@@ -47,7 +47,7 @@ public class MylynGitHubApiITests {
 
 	ClaOAuthConfig oauthConfig;
 
-	MylynGithubApi service;
+	MylynGitHubApi service;
 
 	@Before
 	public void setup() throws IOException {
@@ -64,7 +64,7 @@ public class MylynGitHubApiITests {
 		oauthConfig.setPort(server.getServer().getPort());
 		oauthConfig.setPivotalClaAccessToken("pivotal-cla-accessToken");
 
-		service = new MylynGithubApi(oauthConfig);
+		service = new MylynGitHubApi(oauthConfig);
 	}
 
 	@Test
@@ -99,7 +99,7 @@ public class MylynGitHubApiITests {
 		assertThat(user.getAccessToken()).isEqualTo("access-token-123");
 		assertThat(user.getAvatarUrl()).isEqualTo("https://avatars.githubusercontent.com/u/362503?v=3");
 		assertThat(user.getEmails()).containsOnly("rob@example.com");
-		assertThat(user.getGithubLogin()).isEqualTo("rwinch");
+		assertThat(user.getGitHubLogin()).isEqualTo("rwinch");
 		assertThat(user.getName()).isEqualTo("Rob Winch");
 		assertThat(user.isAdminAccessRequested()).isTrue();
 		assertThat(user.isAdmin()).isFalse();
@@ -139,7 +139,7 @@ public class MylynGitHubApiITests {
 		assertThat(user.getAccessToken()).isEqualTo("access-token-123");
 		assertThat(user.getAvatarUrl()).isEqualTo("https://avatars.githubusercontent.com/u/362503?v=3");
 		assertThat(user.getEmails()).containsOnly("rob@example.com","rob@pivotal.io");
-		assertThat(user.getGithubLogin()).isEqualTo("rwinch");
+		assertThat(user.getGitHubLogin()).isEqualTo("rwinch");
 		assertThat(user.getName()).isEqualTo("Rob Winch");
 		assertThat(user.isAdminAccessRequested()).isTrue();
 		assertThat(user.isAdmin()).isTrue();
@@ -180,7 +180,7 @@ public class MylynGitHubApiITests {
 		assertThat(user.getAccessToken()).isEqualTo("access-token-123");
 		assertThat(user.getAvatarUrl()).isEqualTo("https://avatars.githubusercontent.com/u/362503?v=3");
 		assertThat(user.getEmails()).containsOnly("rob@example.com","rob@pivotal.io");
-		assertThat(user.getGithubLogin()).isEqualTo("rwinch");
+		assertThat(user.getGitHubLogin()).isEqualTo("rwinch");
 		assertThat(user.getName()).isEqualTo("Rob Winch");
 		assertThat(user.isAdminAccessRequested()).isTrue();
 		assertThat(user.isAdmin()).isTrue();
@@ -222,7 +222,7 @@ public class MylynGitHubApiITests {
 		assertThat(user.getAccessToken()).isEqualTo("access-token-123");
 		assertThat(user.getAvatarUrl()).isEqualTo("https://avatars.githubusercontent.com/u/362503?v=3");
 		assertThat(user.getEmails()).containsOnly("rob@example.com");
-		assertThat(user.getGithubLogin()).isEqualTo("rwinch");
+		assertThat(user.getGitHubLogin()).isEqualTo("rwinch");
 		assertThat(user.getName()).isEqualTo("Rob Winch");
 		assertThat(user.isAdminAccessRequested()).isFalse();
 		assertThat(user.isAdmin()).isFalse();
@@ -256,7 +256,7 @@ public class MylynGitHubApiITests {
 	public void createPullRequestHooks() throws Exception {
 		CreatePullRequestHookRequest hookRequest = new CreatePullRequestHookRequest();
 		hookRequest.setAccessToken("access-token-123");
-		hookRequest.setGithubEventUrl("https://example.com/github/hook");
+		hookRequest.setGitHubEventUrl("https://example.com/github/hook");
 		hookRequest.setRepositoryIds(Arrays.asList("spring-projects/spring-security","spring-projects/spring-session"));
 		hookRequest.setSecret("do not guess me");
 
@@ -296,7 +296,7 @@ public class MylynGitHubApiITests {
 	public void enableInactivePullRequestHookAndSetSecret() throws Exception {
 		CreatePullRequestHookRequest hookRequest = new CreatePullRequestHookRequest();
 		hookRequest.setAccessToken("access-token-123");
-		hookRequest.setGithubEventUrl("https://example.com/github/hook");
+		hookRequest.setGitHubEventUrl("https://example.com/github/hook");
 		hookRequest.setRepositoryIds(Arrays.asList("spring-projects/spring-security"));
 		hookRequest.setSecret("do not guess me");
 
@@ -321,7 +321,7 @@ public class MylynGitHubApiITests {
 		String accessToken = "access-token-123";
 
 		CommitStatus commitStatus = new CommitStatus();
-		commitStatus.setGithubUsername("rwinch");
+		commitStatus.setGitHubUsername("rwinch");
 		commitStatus.setPullRequestId(1);
 		commitStatus.setRepoId("spring-projects/spring-security");
 		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
@@ -359,7 +359,7 @@ public class MylynGitHubApiITests {
 		String accessToken = "access-token-123";
 
 		CommitStatus commitStatus = new CommitStatus();
-		commitStatus.setGithubUsername("rwinch");
+		commitStatus.setGitHubUsername("rwinch");
 		commitStatus.setPullRequestId(1);
 		commitStatus.setRepoId("spring-projects/spring-security");
 		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
@@ -405,7 +405,7 @@ public class MylynGitHubApiITests {
 		String accessToken = "access-token-123";
 
 		CommitStatus commitStatus = new CommitStatus();
-		commitStatus.setGithubUsername("rwinch");
+		commitStatus.setGitHubUsername("rwinch");
 		commitStatus.setPullRequestId(1);
 		commitStatus.setRepoId("spring-projects/spring-security");
 		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
@@ -443,7 +443,7 @@ public class MylynGitHubApiITests {
 		String accessToken = "access-token-123";
 
 		CommitStatus commitStatus = new CommitStatus();
-		commitStatus.setGithubUsername("rwinch");
+		commitStatus.setGitHubUsername("rwinch");
 		commitStatus.setPullRequestId(1);
 		commitStatus.setRepoId("spring-projects/spring-security");
 		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
@@ -490,7 +490,7 @@ public class MylynGitHubApiITests {
 		oauthConfig.setGitHubApiHost("donotuse");
 		oauthConfig.setGitHubHost(server.getServer().getHostName());
 
-		service = new MylynGithubApi(oauthConfig);
+		service = new MylynGitHubApi(oauthConfig);
 
 		List<String> repositoryIds = Arrays.asList("spring-projects/has-md", "spring-projects/has-adoc", "spring-projects/no-contributor");
 

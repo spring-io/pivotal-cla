@@ -60,7 +60,7 @@ import lombok.Data;
 import lombok.SneakyThrows;
 
 @Component
-public class MylynGithubApi implements GitHubApi {
+public class MylynGitHubApi implements GitHubApi {
 	private static final String AUTHORIZE_URI = "login/oauth/access_token";
 	public final static String CONTRIBUTING_FILE = "CONTRIBUTING";
 	public final static String ADMIN_MAIL_SUFFIX = "@pivotal.io";
@@ -72,7 +72,7 @@ public class MylynGithubApi implements GitHubApi {
 	RestTemplate rest = new RestTemplate();
 
 	@Autowired
-	public MylynGithubApi(ClaOAuthConfig oauthConfig) {
+	public MylynGitHubApi(ClaOAuthConfig oauthConfig) {
 		super();
 		this.oauthConfig = oauthConfig;
 		this.authorizeUrl = oauthConfig.getGitHubBaseUrl() + AUTHORIZE_URI;
@@ -127,7 +127,7 @@ public class MylynGithubApi implements GitHubApi {
 		commitService.createStatus(id, commitStatus.getSha(), status);
 
 		String claLinkMarkdown = String.format("[%s](%s)", claName, status.getUrl());
-		String userMentionMarkdown = String.format("@%s", commitStatus.getGithubUsername());
+		String userMentionMarkdown = String.format("@%s", commitStatus.getGitHubUsername());
 
 		GitHubClient commentClient = createClient(oauthConfig.getPivotalClaAccessToken());
 		IssueService issues = new IssueService(commentClient);
@@ -153,7 +153,7 @@ public class MylynGithubApi implements GitHubApi {
 	public void save(UpdatePullRequestStatusRequest updatePullRequest) {
 		String repositoryId = updatePullRequest.getRepositoryId();
 		int pullRequestId = updatePullRequest.getPullRequestId();
-		String currentUserGithubLogin = updatePullRequest.getCurrentUserGithubLogin();
+		String currentUserGitHubLogin = updatePullRequest.getCurrentUserGitHubLogin();
 
 		String accessToken = updatePullRequest.getAccessToken();
 		if (accessToken == null) {
@@ -164,7 +164,7 @@ public class MylynGithubApi implements GitHubApi {
 
 		PullRequestService service = new PullRequestService(client);
 		PullRequest pullRequest = service.getPullRequest(id, pullRequestId);
-		if (!pullRequest.getUser().getLogin().equals(currentUserGithubLogin)) {
+		if (!pullRequest.getUser().getLogin().equals(currentUserGitHubLogin)) {
 			return;
 		}
 
@@ -175,7 +175,7 @@ public class MylynGithubApi implements GitHubApi {
 		status.setRepoId(repositoryId);
 		status.setSha(sha);
 		status.setSuccess(true);
-		status.setGithubUsername(currentUserGithubLogin);
+		status.setGitHubUsername(currentUserGitHubLogin);
 		status.setUrl(updatePullRequest.getCommitStatusUrl());
 
 		save(status);
@@ -183,7 +183,7 @@ public class MylynGithubApi implements GitHubApi {
 
 	@SneakyThrows
 	private List<String> getCommentsByClaUser(IssueService issues, RepositoryId id, io.pivotal.cla.service.github.CommitStatus commitStatus) {
-		String username = getCurrentGithubUser(oauthConfig.getPivotalClaAccessToken()).getLogin();
+		String username = getCurrentGitHubUser(oauthConfig.getPivotalClaAccessToken()).getLogin();
 		List<Comment> comments = issues.getComments(id, commitStatus.getPullRequestId());
 		return comments.stream()
 				.filter( c -> username.equals(c.getUser().getLogin()))
@@ -200,19 +200,19 @@ public class MylynGithubApi implements GitHubApi {
 		EmailService emailService = EmailService.forOAuth(accessToken, oauthConfig);
 		List<String> verifiedEmails = emailService.getEmails().stream().filter(e -> e.isVerified())
 				.map(Email::getEmail).collect(Collectors.toList());
-		org.eclipse.egit.github.core.User githubUser = getCurrentGithubUser(accessToken);
+		org.eclipse.egit.github.core.User currentGitHubUser = getCurrentGitHubUser(accessToken);
 
 		User user = new User();
-		user.setName(githubUser.getName());
+		user.setName(currentGitHubUser.getName());
 		user.setAccessToken(accessToken);
-		user.setAvatarUrl(githubUser.getAvatarUrl());
+		user.setAvatarUrl(currentGitHubUser.getAvatarUrl());
 		user.setEmails(new TreeSet<>(verifiedEmails));
-		user.setGithubLogin(githubUser.getLogin());
+		user.setGitHubLogin(currentGitHubUser.getLogin());
 		user.setAdminAccessRequested(request.isRequestAdminAccess());
 		boolean isAdmin = request.isRequestAdminAccess() && hasAdminEmail(user);
 		user.setAdmin(isAdmin);
 		if(isAdmin) {
-			boolean isClaAuthor = isAuthor(user.getGithubLogin(), accessToken);
+			boolean isClaAuthor = isAuthor(user.getGitHubLogin(), accessToken);
 			user.setClaAuthor(isClaAuthor);
 		}
 		return user;
@@ -245,7 +245,7 @@ public class MylynGithubApi implements GitHubApi {
 	}
 
 	@SneakyThrows
-	private org.eclipse.egit.github.core.User getCurrentGithubUser(String accessToken) {
+	private org.eclipse.egit.github.core.User getCurrentGitHubUser(String accessToken) {
 		GitHubClient client = createClient(accessToken);
 
 		org.eclipse.egit.github.core.service.UserService githubUsers = new org.eclipse.egit.github.core.service.UserService(
@@ -282,7 +282,7 @@ public class MylynGithubApi implements GitHubApi {
 			{
 		String accessToken = request.getAccessToken();
 		List<String> repositoryIds = request.getRepositoryIds();
-		String githubEventUrl = request.getGithubEventUrl();
+		String gitHubEventUrl = request.getGitHubEventUrl();
 
 		GitHubClient client = createClient(accessToken);
 		RepositoryService service = new RepositoryService(client);
@@ -290,10 +290,10 @@ public class MylynGithubApi implements GitHubApi {
 
 		for (String repository : repositoryIds) {
 			RepositoryId repositoryId = RepositoryId.createFromId(repository);
-			EventsRepositoryHook hook = createHook(githubEventUrl, request.getSecret());
+			EventsRepositoryHook hook = createHook(gitHubEventUrl, request.getSecret());
 
 			List<RepositoryHook> hooks = service.getHooks(repositoryId);
-			Optional<RepositoryHook> optional = hooks.stream().filter(h -> hasUrl(hook, githubEventUrl)).findFirst();
+			Optional<RepositoryHook> optional = hooks.stream().filter(h -> hasUrl(hook, gitHubEventUrl)).findFirst();
 
 			long hookId;
 			if (optional.isPresent()) {

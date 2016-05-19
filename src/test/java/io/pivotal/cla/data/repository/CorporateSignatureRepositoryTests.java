@@ -228,7 +228,7 @@ public class CorporateSignatureRepositoryTests {
 
 	private static CorporateSignature createSignature(ContributorLicenseAgreement cla, User user) {
 		CorporateSignature signature = DataUtils.cclaSignature(cla);
-		signature.setGithubLogin(user.getGithubLogin());
+		signature.setGitHubLogin(user.getGitHubLogin());
 		signature.setEmail(user.getEmails().iterator().next());
 		return signature;
 	}

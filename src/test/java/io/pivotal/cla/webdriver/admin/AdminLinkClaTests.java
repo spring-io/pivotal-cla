@@ -48,7 +48,7 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 	@Before
 	public void claFormData() throws Exception {
 		when(mockClaRepository.findByPrimaryTrue()).thenReturn(Arrays.asList(cla,cla));
-		when(mockGithub.findRepositoryNames(anyString())).thenReturn(Arrays.asList("test/this"));
+		when(mockGitHub.findRepositoryNames(anyString())).thenReturn(Arrays.asList("test/this"));
 	}
 
 	@Test
@@ -99,7 +99,7 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 	public void linkClaValidationRepositories() throws Exception {
 		AccessToken token = new AccessToken(AccessToken.CLA_ACCESS_TOKEN_ID, "linkClaValidationRepositories_access_token_abc123");
 		when(mockTokenRepo.findOne(AccessToken.CLA_ACCESS_TOKEN_ID)).thenReturn(token);
-		when(mockGithub.getContributingUrls(anyList())).thenReturn(new ContributingUrlsResponse());
+		when(mockGitHub.getContributingUrls(anyList())).thenReturn(new ContributingUrlsResponse());
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		AdminLinkClaPage link = AdminLinkClaPage.to(getDriver());
@@ -110,11 +110,11 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 		link.assertClaName().hasNoErrors();
 
 		ArgumentCaptor<CreatePullRequestHookRequest> requestCaptor = ArgumentCaptor.forClass(CreatePullRequestHookRequest.class);
-		verify(mockGithub).createPullRequestHooks(requestCaptor.capture());
+		verify(mockGitHub).createPullRequestHooks(requestCaptor.capture());
 		CreatePullRequestHookRequest request = requestCaptor.getValue();
 		assertThat(request.getAccessToken()).isEqualTo(user.getAccessToken());
 		assertThat(request.getRepositoryIds()).containsOnly("test/this");
-		assertThat(request.getGithubEventUrl()).isEqualTo("http://localhost/github/hooks/pull_request/"+cla.getName());
+		assertThat(request.getGitHubEventUrl()).isEqualTo("http://localhost/github/hooks/pull_request/"+cla.getName());
 		assertThat(request.getSecret()).isEqualTo(token.getToken());
 		assertThat(driver.getPageSource()).doesNotContain(token.getToken());
 

@@ -74,7 +74,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 	public void viewSigned() throws Exception {
 		List<String> organizations = Arrays.asList(corporateSignature.getGitHubOrganization());
 		User user = WithSigningUserFactory.create();
-		when(mockGithub.getOrganizations(user.getGithubLogin())).thenReturn(organizations);
+		when(mockGitHub.getOrganizations(user.getGitHubLogin())).thenReturn(organizations);
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockCorporateSignatureRepository.findSignature(cla.getName(), organizations, user.getEmails())).thenReturn(corporateSignature);
 
@@ -87,7 +87,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 	public void signNameRequired() throws Exception {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
@@ -117,7 +117,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 	public void signEmailRequired() throws Exception {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
@@ -148,7 +148,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 	public void signMailingAddressRequired() throws Exception {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
@@ -179,7 +179,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 	public void signCountryRequired() throws Exception {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
@@ -210,7 +210,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 	public void signTelephoneRequired() throws Exception {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
@@ -241,7 +241,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 	public void signCompanyNameRequired() throws Exception {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
@@ -271,7 +271,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 	public void signOrganizationRequired() throws Exception {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
@@ -301,7 +301,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 	public void signConfirmRequired() throws Exception {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
@@ -332,7 +332,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 	public void fieldsRepopulatedOnError() throws Exception {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
@@ -398,7 +398,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring",organization));
+		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring",organization));
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 
@@ -432,7 +432,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		assertThat(signature.getTitle()).isEqualTo(title);
 		assertThat(signature.getDateOfSignature()).isCloseTo(new Date(), TimeUnit.SECONDS.toMillis(5));
 
-		verify(mockGithub, never()).save(any(UpdatePullRequestStatusRequest.class));
+		verify(mockGitHub, never()).save(any(UpdatePullRequestStatusRequest.class));
 	}
 
 	@Test
@@ -441,7 +441,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 		when(mockCorporateSignatureRepository.findSignature(anyString(), anyCollectionOf(String.class), anyCollectionOf(String.class))).thenReturn(null,corporateSignature);
 		when(mockTokenRepo.findOne(repositoryId)).thenReturn(new AccessToken(repositoryId, "access-token-123"));
 
@@ -464,11 +464,11 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		signPage.assertPullRequestLink(repositoryId, pullRequestId);
 
 		ArgumentCaptor<UpdatePullRequestStatusRequest> updatePullRequestCaptor = ArgumentCaptor.forClass(UpdatePullRequestStatusRequest.class);
-		verify(mockGithub).save(updatePullRequestCaptor.capture());
+		verify(mockGitHub).save(updatePullRequestCaptor.capture());
 		UpdatePullRequestStatusRequest updatePr = updatePullRequestCaptor.getValue();
 		String commitStatusUrl = "http://localhost/sign/"+cla.getName()+"?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId;
 		assertThat(updatePr.getCommitStatusUrl()).isEqualTo(commitStatusUrl);
-		assertThat(updatePr.getCurrentUserGithubLogin()).isEqualTo(WithSigningUserFactory.create().getGithubLogin());
+		assertThat(updatePr.getCurrentUserGitHubLogin()).isEqualTo(WithSigningUserFactory.create().getGitHubLogin());
 		assertThat(updatePr.getPullRequestId()).isEqualTo(pullRequestId);
 		assertThat(updatePr.getRepositoryId()).isEqualTo(repositoryId);
 	}
@@ -477,7 +477,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 	public void signNoRepositoryIdAndNoPullRequestId() throws Exception {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
 

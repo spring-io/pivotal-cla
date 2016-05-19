@@ -304,7 +304,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
-		verifyZeroInteractions(mockGithub);
+		verifyZeroInteractions(mockGitHub);
 	}
 
 	@Test
@@ -343,7 +343,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		assertThat(signature.getTelephone()).isEqualTo(telephone);
 		assertThat(signature.getDateOfSignature()).isCloseTo(new Date(), TimeUnit.SECONDS.toMillis(5));
 
-		verifyZeroInteractions(mockGithub);
+		verifyZeroInteractions(mockGitHub);
 	}
 
 	@Test
@@ -370,11 +370,11 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		signPage.assertPullRequestLink(repositoryId, pullRequestId);
 
 		ArgumentCaptor<UpdatePullRequestStatusRequest> updatePullRequestCaptor = ArgumentCaptor.forClass(UpdatePullRequestStatusRequest.class);
-		verify(mockGithub).save(updatePullRequestCaptor.capture());
+		verify(mockGitHub).save(updatePullRequestCaptor.capture());
 		UpdatePullRequestStatusRequest updatePr = updatePullRequestCaptor.getValue();
 		String commitStatusUrl = "http://localhost/sign/"+cla.getName()+"?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId;
 		assertThat(updatePr.getCommitStatusUrl()).isEqualTo(commitStatusUrl);
-		assertThat(updatePr.getCurrentUserGithubLogin()).isEqualTo(WithSigningUserFactory.create().getGithubLogin());
+		assertThat(updatePr.getCurrentUserGitHubLogin()).isEqualTo(WithSigningUserFactory.create().getGitHubLogin());
 		assertThat(updatePr.getPullRequestId()).isEqualTo(pullRequestId);
 		assertThat(updatePr.getRepositoryId()).isEqualTo(repositoryId);
 	}

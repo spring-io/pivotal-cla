@@ -53,7 +53,7 @@ public class Login {
 
 		@Override
 		public String getName() {
-			return String.valueOf(user.getGithubLogin());
+			return String.valueOf(user.getGitHubLogin());
 		}
 
 		@Override

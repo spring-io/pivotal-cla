@@ -39,7 +39,7 @@ public class ClaController {
 	ContributorLicenseAgreementRepository clas;
 
 	@Autowired
-	GitHubApi github;
+	GitHubApi gitHub;
 	@Autowired
 	IndividualSignatureRepository individual;
 	@Autowired
@@ -59,7 +59,7 @@ public class ClaController {
 		IndividualSignature individualSignature = individual.findSignaturesFor(user, claName);
 		boolean signed = individualSignature != null;
 		if(!signed) {
-			List<String> organizations = github.getOrganizations(user.getGithubLogin());
+			List<String> organizations = gitHub.getOrganizations(user.getGitHubLogin());
 			signed = corporate.findSignature(claName, organizations, user.getEmails()) != null;
 		}
 

@@ -40,7 +40,7 @@ public class AccessDeniedTests extends BaseWebDriverTests {
 	public void adminForbiddenForUserRequestedAdmin() throws Exception {
 		User user = WithSigningUserFactory.create();
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
-		when(mockGithub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
+		when(mockGitHub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
 
 		String url = AdminLinkClaPage.url();
 
@@ -53,7 +53,7 @@ public class AccessDeniedTests extends BaseWebDriverTests {
 	public void adminRedirectForUserNotRequestedAdmin() throws Exception {
 		User user = WithSigningUserFactory.create();
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
-		when(mockGithub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
+		when(mockGitHub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
 
 		String url = AdminLinkClaPage.url();
 

@@ -32,7 +32,7 @@ import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
 public class UserControllerAdvice {
 
 	@Autowired
-	GitHubApi github;
+	GitHubApi gitHub;
 
 	@Autowired
 	AccessTokenRepository accessTokenRepository;
@@ -57,12 +57,12 @@ public class UserControllerAdvice {
 		if(!importedSignaturesSessionAttr.getValue()) {
 			return false;
 		}
-		UpdatePullRequestStatusRequest updatePullRequest = claRequest.createUpdatePullRequestStatus(currentUser.getGithubLogin());
+		UpdatePullRequestStatusRequest updatePullRequest = claRequest.createUpdatePullRequestStatus(currentUser.getGitHubLogin());
 		if(updatePullRequest != null) {
 			AccessToken accessToken = accessTokenRepository.findOne(updatePullRequest.getRepositoryId());
 			if(accessToken != null) {
 				updatePullRequest.setAccessToken(accessToken.getToken());
-				github.save(updatePullRequest);
+				gitHub.save(updatePullRequest);
 			}
 		}
 		importedSignaturesSessionAttr.setValue(false);

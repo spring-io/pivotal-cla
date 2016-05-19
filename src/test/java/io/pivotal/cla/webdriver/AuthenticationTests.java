@@ -101,7 +101,7 @@ public class AuthenticationTests extends BaseWebDriverTests {
 	public void savedRequestUsed() throws Exception {
 		User user = WithAdminUserFactory.create();
 
-		when(mockGithub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
+		when(mockGitHub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
 		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
 
 		AdminLinkClaPage page = AdminLinkClaPage.to(getDriver());
@@ -112,13 +112,13 @@ public class AuthenticationTests extends BaseWebDriverTests {
 	public void authenticateUser() throws Exception {
 		User user = WithSigningUserFactory.create();
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
-		when(mockGithub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
+		when(mockGitHub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
 
 		SignClaPage claPage = SignClaPage.go(driver, cla.getName());
 		claPage.assertAt();
 
 		ArgumentCaptor<CurrentUserRequest> userCaptor = ArgumentCaptor.forClass(CurrentUserRequest.class);
-		verify(mockGithub).getCurrentUser(userCaptor.capture());
+		verify(mockGitHub).getCurrentUser(userCaptor.capture());
 		CurrentUserRequest userRequest = userCaptor.getValue();
 		OAuthAccessTokenParams oauthParams = userRequest.getOauthParams();
 		assertThat(userRequest.isRequestAdminAccess()).isFalse();
@@ -130,13 +130,13 @@ public class AuthenticationTests extends BaseWebDriverTests {
 	public void authenticateAdmin() throws Exception {
 		User user = WithAdminUserFactory.create();
 
-		when(mockGithub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
+		when(mockGitHub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
 
 		AdminLinkClaPage admin = AdminLinkClaPage.to(driver);
 		admin.assertAt();
 
 		ArgumentCaptor<CurrentUserRequest> userCaptor = ArgumentCaptor.forClass(CurrentUserRequest.class);
-		verify(mockGithub).getCurrentUser(userCaptor.capture());
+		verify(mockGitHub).getCurrentUser(userCaptor.capture());
 		CurrentUserRequest userRequest = userCaptor.getValue();
 		OAuthAccessTokenParams oauthParams = userRequest.getOauthParams();
 		assertThat(userRequest.isRequestAdminAccess()).isTrue();
@@ -151,7 +151,7 @@ public class AuthenticationTests extends BaseWebDriverTests {
 		currentUser.setAdmin(false);
 
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
-		when(mockGithub.getCurrentUser(any(CurrentUserRequest.class))).thenAnswer(new Answer<User>() {
+		when(mockGitHub.getCurrentUser(any(CurrentUserRequest.class))).thenAnswer(new Answer<User>() {
 			@Override
 			public User answer(InvocationOnMock invocation) throws Throwable {
 				CurrentUserRequest request = invocation.getArgumentAt(0, CurrentUserRequest.class);
@@ -167,20 +167,20 @@ public class AuthenticationTests extends BaseWebDriverTests {
 		signClaPage.assertAt();
 
 		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
-		when(mockGithub.findRepositoryNames(anyString())).thenReturn(Arrays.asList("test/this"));
+		when(mockGitHub.findRepositoryNames(anyString())).thenReturn(Arrays.asList("test/this"));
 
 		AdminLinkClaPage admin = AdminLinkClaPage.to(driver);
 		admin.assertAt();
 
 		ArgumentCaptor<CurrentUserRequest> userCaptor = ArgumentCaptor.forClass(CurrentUserRequest.class);
-		verify(mockGithub,times(2)).getCurrentUser(userCaptor.capture());
+		verify(mockGitHub,times(2)).getCurrentUser(userCaptor.capture());
 		assertThat(userCaptor.getAllValues()).extracting(CurrentUserRequest::isRequestAdminAccess).containsOnly(false, true);
 	}
 
 	@Test
 	public void loginVerifiesSecretState() throws Exception {
 		User currentUser = WithAdminUserFactory.create();
-		when(mockGithub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(currentUser);
+		when(mockGitHub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(currentUser);
 		MockHttpSession session = new MockHttpSession();
 		String redirect = mockMvc.perform(get("/sign/pivotal").session(session))
 				.andExpect(status().is3xxRedirection())

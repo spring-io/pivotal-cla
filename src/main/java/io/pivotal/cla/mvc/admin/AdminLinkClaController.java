@@ -55,7 +55,7 @@ public class AdminLinkClaController extends AdminClaController {
 	@ResponseBody
 	@RequestMapping("/admin/cla/link/repositories.json")
 	public List<String> repositories(@AuthenticationPrincipal User user) throws Exception {
-		return github.findRepositoryNames(user.getAccessToken());
+		return gitHub.findRepositoryNames(user.getAccessToken());
 	}
 
 	@RequestMapping(value = "/admin/cla/link", method = RequestMethod.POST)
@@ -82,11 +82,11 @@ public class AdminLinkClaController extends AdminClaController {
 		createPullRequest.setAccessToken(user.getAccessToken());
 		List<String> repositoryIds = linkClaForm.getRepositories();
 		createPullRequest.setRepositoryIds(repositoryIds);
-		createPullRequest.setGithubEventUrl(pullRequestHookUrl);
+		createPullRequest.setGitHubEventUrl(pullRequestHookUrl);
 		createPullRequest.setSecret(accessToken.getToken());
 
-		ContributingUrlsResponse contributingUrls = github.getContributingUrls(repositoryIds);
-		List<String> hookUrls = github.createPullRequestHooks(createPullRequest);
+		ContributingUrlsResponse contributingUrls = gitHub.getContributingUrls(repositoryIds);
+		List<String> hookUrls = gitHub.createPullRequestHooks(createPullRequest);
 		for(String repositoryId : repositoryIds) {
 			AccessToken token = new AccessToken();
 			token.setId(repositoryId);

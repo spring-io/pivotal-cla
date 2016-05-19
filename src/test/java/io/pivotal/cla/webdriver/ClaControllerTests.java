@@ -56,7 +56,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 	public void viewSignedWithRepositoryIdAndPullRequestIdNewUser() throws Exception {
 		String repositoryId = "spring-projects/spring-security";
 		User signingUser = WithSigningUserFactory.create();
-		when(mockGithub.getCurrentUser(any())).thenReturn(signingUser);
+		when(mockGitHub.getCurrentUser(any())).thenReturn(signingUser);
 		when(mockIndividualSignatureRepository.findSignaturesFor(signingUser,cla.getName())).thenReturn(individualSignature);
 		when(mockIndividualSignatureRepository.findSignaturesFor(any(),eq(signingUser))).thenReturn(Arrays.asList(individualSignature));
 		when(mockTokenRepo.findOne(repositoryId)).thenReturn(new AccessToken(repositoryId, "access-token-123"));
@@ -69,11 +69,11 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		home.assertImported();
 
 		ArgumentCaptor<UpdatePullRequestStatusRequest> updatePullRequestCaptor = ArgumentCaptor.forClass(UpdatePullRequestStatusRequest.class);
-		verify(mockGithub).save(updatePullRequestCaptor.capture());
+		verify(mockGitHub).save(updatePullRequestCaptor.capture());
 		UpdatePullRequestStatusRequest updatePr = updatePullRequestCaptor.getValue();
 		String commitStatusUrl = "http://localhost/sign/"+cla.getName()+"?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId;
 		assertThat(updatePr.getCommitStatusUrl()).isEqualTo(commitStatusUrl);
-		assertThat(updatePr.getCurrentUserGithubLogin()).isEqualTo(signingUser.getGithubLogin());
+		assertThat(updatePr.getCurrentUserGitHubLogin()).isEqualTo(signingUser.getGitHubLogin());
 		assertThat(updatePr.getPullRequestId()).isEqualTo(pullRequestId);
 		assertThat(updatePr.getRepositoryId()).isEqualTo(repositoryId);
 	}
@@ -93,7 +93,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		home.assertAt();
 		home.assertClaLinksWithPullRequest(cla.getName(), repositoryId, pullRequestId);
 
-		verify(mockGithub, never()).save(any(UpdatePullRequestStatusRequest.class));
+		verify(mockGitHub, never()).save(any(UpdatePullRequestStatusRequest.class));
 	}
 
 	@Test
@@ -120,7 +120,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 	public void claPivotalCorporateSigned() throws Exception {
 		List<String> organizations = Arrays.asList(corporateSignature.getGitHubOrganization());
 		User user = WithSigningUserFactory.create();
-		when(mockGithub.getOrganizations(user.getGithubLogin())).thenReturn(organizations);
+		when(mockGitHub.getOrganizations(user.getGitHubLogin())).thenReturn(organizations);
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockCorporateSignatureRepository.findSignature(cla.getName(), organizations, user.getEmails())).thenReturn(corporateSignature);
 
