@@ -27,7 +27,7 @@ import io.pivotal.cla.config.ClaOAuthConfig;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
-import io.pivotal.cla.service.CurrentUserRequest;
+import io.pivotal.cla.service.github.CurrentUserRequest;
 import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 
 public class AccessDeniedTests extends BaseWebDriverTests {

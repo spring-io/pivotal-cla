@@ -32,7 +32,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 @Import(SessionAutoConfiguration.class)
 public class SessionConfig {
 
-	@Profile(GithubClaProfiles.CLOUDFOUNDRY)
+	@Profile(GitHubClaProfiles.CLOUDFOUNDRY)
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
 		CloudFactory cloudFactory = new CloudFactory();

@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cla.service;
-
-import java.util.List;
+package io.pivotal.cla.service.github;
 
 import lombok.Data;
 
@@ -24,14 +22,13 @@ import lombok.Data;
  *
  */
 @Data
-public class CreatePullRequestHookRequest {
+public class OAuthAccessTokenParams {
 
-	private String accessToken;
+	private String state;
 
-	private List<String> repositoryIds;
+	private String callbackUrl;
 
-	private String githubEventUrl;
+	private String code;
 
-	private String secret;
 
 }

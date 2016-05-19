@@ -13,33 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cla.service;
+package io.pivotal.cla.service.github;
 
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import lombok.Data;
 
+/**
+ * @author Rob Winch
+ *
+ */
 @Data
-public class CommitStatus {
+public class UpdatePullRequestStatusRequest {
+	private String repositoryId;
 	private int pullRequestId;
-	private String repoId;
-	private String sha;
-	private boolean success;
-	private String url;
-	private String githubUsername;
+	private String currentUserGithubLogin;
+	private String commitStatusUrl;
 	/**
 	 * The Access Token used for updating the commit status. This is typically
 	 * looked up using the {@link AccessTokenRepository} by the repoId.
 	 */
 	private String accessToken;
-
-
-	/**
-	 * The URL used to instruct the user of how to resolve the commit status. For example,
-	 * https://123456.ngrok.io/sign/apache?repositoryId=spring-projects/spring-security&pullRequestId=10
-	 *
-	 * @return the url
-	 */
-	public String getUrl() {
-		return url;
-	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cla.service;
-
-import lombok.Data;
+package io.pivotal.cla.config;
 
 /**
- * @author Rob Winch
- *
+ * @author Mark Paluch
  */
-@Data
-public class OAuthAccessTokenParams {
+public class GitHubClaProfiles {
 
-	private String state;
-
-	private String callbackUrl;
-
-	private String code;
-
+	public final static String LOCAL = "local";
+	public final static String LOCAL_MYSQL = "local-mysql";
+	public final static String CLOUDFOUNDRY = "cloudfoundry";
 
 }

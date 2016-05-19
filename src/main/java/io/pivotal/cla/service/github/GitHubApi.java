@@ -13,21 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cla.service;
+package io.pivotal.cla.service.github;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
-import lombok.Data;
+import io.pivotal.cla.data.User;
 
-/**
- * @author Rob Winch
- *
- */
-@Data
-public class ContributingUrlsResponse {
-	private Collection<String> markdown = new ArrayList<>();
+public interface GitHubApi {
 
-	private Collection<String> asciidoc = new ArrayList<>();
+	void save(UpdatePullRequestStatusRequest updatePullRequest);
 
+	void save(CommitStatus status);
+
+	List<String> findRepositoryNames(String accessToken);
+
+	List<String> createPullRequestHooks(CreatePullRequestHookRequest request);
+
+	User getCurrentUser(CurrentUserRequest request);
+
+	List<String> getOrganizations(String username);
+
+	ContributingUrlsResponse getContributingUrls(List<String> repositoryIds);
+
+	String markdownToHtml(String accessToken, String markdown);
 }

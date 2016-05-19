@@ -44,7 +44,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsUtils;
 
 import io.pivotal.cla.data.User;
-import io.pivotal.cla.security.GithubAuthenticationEntryPoint;
+import io.pivotal.cla.security.GitHubAuthenticationEntryPoint;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -96,12 +96,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private AuthenticationEntryPoint entryPoint() {
 		LinkedHashMap<RequestMatcher, AuthenticationEntryPoint> entryPoints = new LinkedHashMap<>();
 		entryPoints.put(new AntPathRequestMatcher("/github/hooks/**"), new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-		entryPoints.put(new AntPathRequestMatcher("/admin/**"), new GithubAuthenticationEntryPoint(oauthConfig.getMain(), "user:email,repo:status,admin:repo_hook,admin:org_hook,read:org"));
+		entryPoints.put(new AntPathRequestMatcher("/admin/**"), new GitHubAuthenticationEntryPoint(oauthConfig.getMain(), "user:email,repo:status,admin:repo_hook,admin:org_hook,read:org"));
 		BasicAuthenticationEntryPoint basicEntryPoint = new BasicAuthenticationEntryPoint();
 		basicEntryPoint.setRealmName("Pivotal CLA");
 		entryPoints.put(new AntPathRequestMatcher("/manage/**"), basicEntryPoint);
 		DelegatingAuthenticationEntryPoint entryPoint = new DelegatingAuthenticationEntryPoint(entryPoints);
-		entryPoint.setDefaultEntryPoint(new GithubAuthenticationEntryPoint(oauthConfig.getMain(), "user:email"));
+		entryPoint.setDefaultEntryPoint(new GitHubAuthenticationEntryPoint(oauthConfig.getMain(), "user:email"));
 		return entryPoint;
 	}
 }

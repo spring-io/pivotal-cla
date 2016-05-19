@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cla.service;
+package io.pivotal.cla.service.github;
 
-import io.pivotal.cla.data.repository.AccessTokenRepository;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -23,14 +24,14 @@ import lombok.Data;
  *
  */
 @Data
-public class UpdatePullRequestStatusRequest {
-	private String repositoryId;
-	private int pullRequestId;
-	private String currentUserGithubLogin;
-	private String commitStatusUrl;
-	/**
-	 * The Access Token used for updating the commit status. This is typically
-	 * looked up using the {@link AccessTokenRepository} by the repoId.
-	 */
+public class CreatePullRequestHookRequest {
+
 	private String accessToken;
+
+	private List<String> repositoryIds;
+
+	private String githubEventUrl;
+
+	private String secret;
+
 }

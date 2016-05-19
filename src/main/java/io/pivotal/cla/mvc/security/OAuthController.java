@@ -40,18 +40,18 @@ import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.data.repository.UserRepository;
 import io.pivotal.cla.mvc.support.ImportedSignaturesSessionAttr;
 import io.pivotal.cla.mvc.util.UrlBuilder;
-import io.pivotal.cla.security.GithubAuthenticationEntryPoint;
+import io.pivotal.cla.security.GitHubAuthenticationEntryPoint;
 import io.pivotal.cla.security.Login;
-import io.pivotal.cla.service.CurrentUserRequest;
-import io.pivotal.cla.service.GitHubService;
-import io.pivotal.cla.service.OAuthAccessTokenParams;
+import io.pivotal.cla.service.github.CurrentUserRequest;
+import io.pivotal.cla.service.github.GitHubApi;
+import io.pivotal.cla.service.github.OAuthAccessTokenParams;
 
 @Controller
 public class OAuthController {
 	AuthenticationSuccessHandler success = new SavedRequestAwareAuthenticationSuccessHandler();
 
 	@Autowired
-	GitHubService github;
+	GitHubApi github;
 	@Autowired
 	IndividualSignatureRepository individual;
 	@Autowired
@@ -68,7 +68,7 @@ public class OAuthController {
 			throw new InvalidSecretState();
 		}
 
-		boolean admin = GithubAuthenticationEntryPoint.isAdmin(state);
+		boolean admin = GitHubAuthenticationEntryPoint.isAdmin(state);
 
 		OAuthAccessTokenParams params = new OAuthAccessTokenParams();
 		params.setCallbackUrl(UrlBuilder.fromRequest(request).callbackUrl());

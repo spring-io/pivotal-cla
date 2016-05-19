@@ -25,14 +25,14 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.mvc.ClaRequest;
 import io.pivotal.cla.mvc.support.ImportedSignaturesSessionAttr;
-import io.pivotal.cla.service.GitHubService;
-import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
+import io.pivotal.cla.service.github.GitHubApi;
+import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
 
 @ControllerAdvice
 public class UserControllerAdvice {
 
 	@Autowired
-	GitHubService github;
+	GitHubApi github;
 
 	@Autowired
 	AccessTokenRepository accessTokenRepository;

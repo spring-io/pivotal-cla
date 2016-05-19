@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cla.service;
+package io.pivotal.cla.service.github;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,6 +31,8 @@ import org.springframework.core.serializer.support.SerializingConverter;
 import io.pivotal.cla.config.ClaOAuthConfig;
 import io.pivotal.cla.config.OAuthClientCredentials;
 import io.pivotal.cla.data.User;
+import io.pivotal.cla.service.github.CommitStatus;
+import io.pivotal.cla.service.github.MylynGithubApi;
 import okhttp3.mockwebserver.EnqueueResourcesMockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
@@ -39,13 +41,13 @@ import okhttp3.mockwebserver.RecordedRequest;
  *
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MylynGithubServiceITests {
+public class MylynGitHubApiITests {
 	@Rule
 	public final EnqueueResourcesMockWebServer server = new EnqueueResourcesMockWebServer();
 
 	ClaOAuthConfig oauthConfig;
 
-	MylynGithubService service;
+	MylynGithubApi service;
 
 	@Before
 	public void setup() throws IOException {
@@ -62,7 +64,7 @@ public class MylynGithubServiceITests {
 		oauthConfig.setPort(server.getServer().getPort());
 		oauthConfig.setPivotalClaAccessToken("pivotal-cla-accessToken");
 
-		service = new MylynGithubService(oauthConfig);
+		service = new MylynGithubApi(oauthConfig);
 	}
 
 	@Test
@@ -488,7 +490,7 @@ public class MylynGithubServiceITests {
 		oauthConfig.setGitHubApiHost("donotuse");
 		oauthConfig.setGitHubHost(server.getServer().getHostName());
 
-		service = new MylynGithubService(oauthConfig);
+		service = new MylynGithubApi(oauthConfig);
 
 		List<String> repositoryIds = Arrays.asList("spring-projects/has-md", "spring-projects/has-adoc", "spring-projects/no-contributor");
 

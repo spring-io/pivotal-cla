@@ -30,7 +30,7 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
-import io.pivotal.cla.service.GitHubService;
+import io.pivotal.cla.service.github.GitHubApi;
 
 @Controller
 public class ClaController {
@@ -39,7 +39,7 @@ public class ClaController {
 	ContributorLicenseAgreementRepository clas;
 
 	@Autowired
-	GitHubService github;
+	GitHubApi github;
 	@Autowired
 	IndividualSignatureRepository individual;
 	@Autowired

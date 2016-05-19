@@ -21,7 +21,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import io.pivotal.cla.mvc.util.UrlBuilder;
-import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
+import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
 import lombok.Data;
 
 /**

@@ -42,7 +42,7 @@ import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.GithubSignature;
 import io.pivotal.cla.security.WithSigningUserFactory;
-import io.pivotal.cla.service.CommitStatus;
+import io.pivotal.cla.service.github.CommitStatus;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
 
 public class GithubHooksControllerTests extends BaseWebDriverTests {

@@ -44,8 +44,8 @@ import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.data.repository.UserRepository;
 import io.pivotal.cla.egit.github.core.event.RepositoryPullRequestPayload;
 import io.pivotal.cla.mvc.util.UrlBuilder;
-import io.pivotal.cla.service.CommitStatus;
-import io.pivotal.cla.service.GitHubService;
+import io.pivotal.cla.service.github.CommitStatus;
+import io.pivotal.cla.service.github.GitHubApi;
 
 @RestController
 @PreAuthorize("@githubSignature.check(#request.getHeader('X-Hub-Signature'), #body)")
@@ -64,7 +64,7 @@ public class GithubHooksController {
 	CorporateSignatureRepository corporate;
 
 	@Autowired
-	GitHubService github;
+	GitHubApi github;
 
 	@RequestMapping(value = "/github/hooks/pull_request/{cla}", headers = "X-GitHub-Event=ping")
 	public String pullRequestPing(HttpServletRequest request, @RequestBody String body, @PathVariable String cla) throws Exception {

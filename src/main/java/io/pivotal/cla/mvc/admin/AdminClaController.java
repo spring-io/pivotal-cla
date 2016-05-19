@@ -25,13 +25,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
-import io.pivotal.cla.service.GitHubService;
+import io.pivotal.cla.service.github.GitHubApi;
 
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminClaController {
 
 	@Autowired
-	GitHubService github;
+	GitHubApi github;
 
 	@Autowired
 	ContributorLicenseAgreementRepository claRepo;

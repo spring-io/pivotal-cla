@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cla.service;
+package io.pivotal.cla.service.github;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ import lombok.Data;
 import lombok.SneakyThrows;
 
 @Component
-public class MylynGithubService implements GitHubService {
+public class MylynGithubApi implements GitHubApi {
 	private static final String AUTHORIZE_URI = "login/oauth/access_token";
 	public final static String CONTRIBUTING_FILE = "CONTRIBUTING";
 	public final static String ADMIN_MAIL_SUFFIX = "@pivotal.io";
@@ -72,7 +72,7 @@ public class MylynGithubService implements GitHubService {
 	RestTemplate rest = new RestTemplate();
 
 	@Autowired
-	public MylynGithubService(ClaOAuthConfig oauthConfig) {
+	public MylynGithubApi(ClaOAuthConfig oauthConfig) {
 		super();
 		this.oauthConfig = oauthConfig;
 		this.authorizeUrl = oauthConfig.getGitHubBaseUrl() + AUTHORIZE_URI;
@@ -100,7 +100,7 @@ public class MylynGithubService implements GitHubService {
 	}
 
 	@SneakyThrows
-	public void save(io.pivotal.cla.service.CommitStatus commitStatus) {
+	public void save(io.pivotal.cla.service.github.CommitStatus commitStatus) {
 		String repoId = commitStatus.getRepoId();
 		String accessToken = commitStatus.getAccessToken();
 		if (accessToken == null) {
@@ -169,7 +169,7 @@ public class MylynGithubService implements GitHubService {
 		}
 
 		String sha = pullRequest.getHead().getSha();
-		io.pivotal.cla.service.CommitStatus status = new io.pivotal.cla.service.CommitStatus();
+		io.pivotal.cla.service.github.CommitStatus status = new io.pivotal.cla.service.github.CommitStatus();
 		status.setAccessToken(accessToken);
 		status.setPullRequestId(pullRequest.getNumber());
 		status.setRepoId(repositoryId);
@@ -182,7 +182,7 @@ public class MylynGithubService implements GitHubService {
 	}
 
 	@SneakyThrows
-	private List<String> getCommentsByClaUser(IssueService issues, RepositoryId id, io.pivotal.cla.service.CommitStatus commitStatus) {
+	private List<String> getCommentsByClaUser(IssueService issues, RepositoryId id, io.pivotal.cla.service.github.CommitStatus commitStatus) {
 		String username = getCurrentGithubUser(oauthConfig.getPivotalClaAccessToken()).getLogin();
 		List<Comment> comments = issues.getComments(id, commitStatus.getPullRequestId());
 		return comments.stream()

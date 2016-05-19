@@ -31,7 +31,7 @@ import io.pivotal.cla.mvc.util.UrlBuilder;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class GithubAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class GitHubAuthenticationEntryPoint implements AuthenticationEntryPoint {
 	private OAuthClientCredentials config;
 	private String scope;
 

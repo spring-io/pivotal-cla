@@ -36,8 +36,8 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
-import io.pivotal.cla.service.GitHubService;
-import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
+import io.pivotal.cla.service.github.GitHubApi;
+import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
 
 @Controller
 public class IclaController {
@@ -46,7 +46,7 @@ public class IclaController {
 	@Autowired
 	IndividualSignatureRepository individual;
 	@Autowired
-	GitHubService github;
+	GitHubApi github;
 	@Autowired
 	AccessTokenRepository tokenRepo;
 

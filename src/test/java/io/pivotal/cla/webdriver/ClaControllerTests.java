@@ -36,7 +36,7 @@ import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
-import io.pivotal.cla.service.UpdatePullRequestStatusRequest;
+import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
 import io.pivotal.cla.webdriver.pages.AboutPage;
 import io.pivotal.cla.webdriver.pages.SignCclaPage;
 import io.pivotal.cla.webdriver.pages.SignClaPage;

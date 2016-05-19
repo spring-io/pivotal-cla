@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cla.service;
+package io.pivotal.cla.service.github;
 
-import io.pivotal.cla.config.OAuthClientCredentials;
 import lombok.Data;
 
 /**
@@ -23,10 +22,9 @@ import lombok.Data;
  *
  */
 @Data
-public class AccessTokenRequest {
-
-	private OAuthClientCredentials credentials;
-
+public class CurrentUserRequest {
 	private OAuthAccessTokenParams oauthParams;
+
+	private boolean requestAdminAccess;
 
 }

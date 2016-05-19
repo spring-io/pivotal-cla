@@ -33,8 +33,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.mvc.util.UrlBuilder;
-import io.pivotal.cla.service.ContributingUrlsResponse;
-import io.pivotal.cla.service.CreatePullRequestHookRequest;
+import io.pivotal.cla.service.github.ContributingUrlsResponse;
+import io.pivotal.cla.service.github.CreatePullRequestHookRequest;
 
 /**
  * @author Rob Winch

@@ -42,7 +42,7 @@ public abstract class DatabaseConfig {
 }
 
 @Configuration
-@Profile(GithubClaProfiles.LOCAL)
+@Profile(GitHubClaProfiles.LOCAL)
 class LocalDatabaseConfig extends DatabaseConfig {
 
 	@Bean
@@ -62,7 +62,7 @@ class LocalDatabaseConfig extends DatabaseConfig {
 }
 
 @Configuration
-@Profile(GithubClaProfiles.LOCAL_MYSQL)
+@Profile(GitHubClaProfiles.LOCAL_MYSQL)
 class LocalMysqlDatabaseConfig extends DatabaseConfig {
 
 	@Bean
@@ -82,7 +82,7 @@ class LocalMysqlDatabaseConfig extends DatabaseConfig {
 }
 
 @Configuration
-@Profile(GithubClaProfiles.CLOUDFOUNDRY)
+@Profile(GitHubClaProfiles.CLOUDFOUNDRY)
 class CloudFoundryDatabaseConfig extends DatabaseConfig {
 
 	@Bean

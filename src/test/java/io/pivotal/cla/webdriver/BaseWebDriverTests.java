@@ -41,7 +41,7 @@ import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.data.repository.UserRepository;
-import io.pivotal.cla.service.GitHubService;
+import io.pivotal.cla.service.github.GitHubApi;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebDriverContext
@@ -51,7 +51,7 @@ public abstract class BaseWebDriverTests {
 	protected WebApplicationContext wac;
 	@Autowired
 	private HiddenHttpMethodFilter hiddenInputFilter;
-	protected GitHubService mockGithub;
+	protected GitHubApi mockGithub;
 	protected ContributorLicenseAgreementRepository mockClaRepository;
 	protected IndividualSignatureRepository mockIndividualSignatureRepository;
 	protected CorporateSignatureRepository mockCorporateSignatureRepository;
@@ -120,7 +120,7 @@ public abstract class BaseWebDriverTests {
 	}
 
 	@Autowired
-	public void setMockGithub(GitHubService mockGithub) {
+	public void setMockGithub(GitHubApi mockGithub) {
 		reset(mockGithub);
 		this.mockGithub = mockGithub;
 	}

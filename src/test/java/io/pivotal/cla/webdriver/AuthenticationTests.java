@@ -44,8 +44,8 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithAdminUserFactory;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
-import io.pivotal.cla.service.CurrentUserRequest;
-import io.pivotal.cla.service.OAuthAccessTokenParams;
+import io.pivotal.cla.service.github.CurrentUserRequest;
+import io.pivotal.cla.service.github.OAuthAccessTokenParams;
 import io.pivotal.cla.webdriver.pages.SignClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 
