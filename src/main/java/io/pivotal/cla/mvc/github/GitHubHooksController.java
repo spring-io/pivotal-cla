@@ -15,9 +15,6 @@
  */
 package io.pivotal.cla.mvc.github;
 
-import java.io.IOException;
-import java.util.HashSet;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.egit.github.core.PullRequest;
@@ -33,31 +30,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 
-import io.pivotal.cla.data.AccessToken;
-import io.pivotal.cla.data.CorporateSignature;
-import io.pivotal.cla.data.IndividualSignature;
-import io.pivotal.cla.data.User;
-import io.pivotal.cla.data.repository.AccessTokenRepository;
-import io.pivotal.cla.data.repository.UserRepository;
 import io.pivotal.cla.egit.github.core.event.RepositoryPullRequestPayload;
 import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.service.ClaService;
-import io.pivotal.cla.service.CorporateSignatureInfo;
 import io.pivotal.cla.service.github.CommitStatus;
-import io.pivotal.cla.service.github.GitHubApi;
 
 @RestController
 @PreAuthorize("@gitHubSignature.check(#request.getHeader('X-Hub-Signature'), #body)")
 public class GitHubHooksController {
-
-	@Autowired
-	AccessTokenRepository tokenRepo;
-
-	@Autowired
-	UserRepository userRepo;
-
-	@Autowired
-	GitHubApi gitHub;
 
 	@Autowired
 	ClaService claService;
@@ -86,25 +66,11 @@ public class GitHubHooksController {
 		PullRequest pullRequest = pullRequestPayload.getPullRequest();
 		String gitHubLogin = pullRequest.getUser().getLogin();
 
-		User user = userRepo.findOne(gitHubLogin);
-		if(user == null) {
-			user = new User();
-			user.setGitHubLogin(gitHubLogin);
-			user.setEmails(new HashSet<>());
-		}
-
-		boolean success = hasSigned(user, cla);
-
-		AccessToken accessToken = tokenRepo.findOne(repoId.generateId());
-		String accessTokenValue = accessToken == null ? null : accessToken.getToken();
-
 		CommitStatus status = new CommitStatus();
 		status.setGitHubUsername(gitHubLogin);
 		status.setPullRequestId(pullRequest.getNumber());
 		status.setRepoId(repoId.generateId());
 		status.setSha(pullRequest.getHead().getSha());
-		status.setSuccess(success);
-		status.setAccessToken(accessTokenValue);
 		String signUrl = UrlBuilder.signUrl()
 			.request(request)
 			.claName(cla)
@@ -113,23 +79,9 @@ public class GitHubHooksController {
 			.build();
 		status.setUrl(signUrl);
 
-		gitHub.save(status);
+		claService.saveCommitStatus(cla, status);
 
-		return "FAIL";
+		return "SUCCESS";
 	}
 
-	private boolean hasSigned(User user, String claName) throws IOException {
-		if(claName == null) {
-			return false;
-		}
-		IndividualSignature signedIndividual = claService.findIndividualSignaturesFor(user, claName);
-
-		if(signedIndividual != null) {
-			return true;
-		}
-
-		CorporateSignatureInfo corporateSignatureInfo = claService.findCorporateSignatureInfoFor(claName, user);
-		CorporateSignature corporateSignature = corporateSignatureInfo.getCorporateSignature();
-		return corporateSignature != null;
-	}
 }

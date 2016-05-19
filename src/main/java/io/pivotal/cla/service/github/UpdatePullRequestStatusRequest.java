@@ -28,6 +28,8 @@ public class UpdatePullRequestStatusRequest {
 	private int pullRequestId;
 	private String currentUserGitHubLogin;
 	private String commitStatusUrl;
+	private boolean success;
+
 	/**
 	 * The Access Token used for updating the commit status. This is typically
 	 * looked up using the {@link AccessTokenRepository} by the repoId.

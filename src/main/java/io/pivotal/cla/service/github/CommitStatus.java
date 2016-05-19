@@ -23,7 +23,7 @@ public class CommitStatus {
 	private int pullRequestId;
 	private String repoId;
 	private String sha;
-	private boolean success;
+	private Boolean success;
 	private String url;
 	private String gitHubUsername;
 	/**
@@ -32,6 +32,10 @@ public class CommitStatus {
 	 */
 	private String accessToken;
 
+
+	public boolean isSuccess() {
+		return Boolean.TRUE.equals(success);
+	}
 
 	/**
 	 * The URL used to instruct the user of how to resolve the commit status. For example,

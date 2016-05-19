@@ -84,9 +84,10 @@ public class CclaController {
 	@RequestMapping(value = "/sign/{claName}/ccla", method = RequestMethod.POST)
 	public String signCla(@AuthenticationPrincipal User user, @Valid SignCorporateClaForm signCorporateClaForm, BindingResult result, Map<String, Object> model, RedirectAttributes redirect) throws Exception {
 		ContributorLicenseAgreement cla = clas.findOne(signCorporateClaForm.getClaId());
+		List<String> currentUserGitHubOrganizations = gitHub.getOrganizations(user.getGitHubLogin());
 		if(result.hasErrors()) {
 			model.put("cla", cla);
-			signCorporateClaForm.setGitHubOrganizations(gitHub.getOrganizations(user.getGitHubLogin()));
+			signCorporateClaForm.setGitHubOrganizations(currentUserGitHubOrganizations);
 			return "cla/ccla/sign";
 		}
 		CorporateSignature signature = new CorporateSignature();
@@ -113,6 +114,7 @@ public class CclaController {
 		}
 
 		UpdatePullRequestStatusRequest updatePullRequest = signCorporateClaForm.createUpdatePullRequestStatus(user.getGitHubLogin());
+		updatePullRequest.setSuccess(true);
 		claService.updatePullRequest(updatePullRequest);
 
 		redirect.addAttribute("repositoryId", repositoryId);

@@ -35,7 +35,6 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.service.ClaService;
-import io.pivotal.cla.service.github.GitHubApi;
 import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
 
 @Controller
@@ -44,8 +43,6 @@ public class IclaController {
 	ContributorLicenseAgreementRepository clas;
 	@Autowired
 	IndividualSignatureRepository individual;
-	@Autowired
-	GitHubApi gitHub;
 	@Autowired
 	ClaService claService;
 
@@ -100,6 +97,7 @@ public class IclaController {
 		}
 
 		UpdatePullRequestStatusRequest updatePullRequest = signClaForm.createUpdatePullRequestStatus(user.getGitHubLogin());
+		updatePullRequest.setSuccess(true);
 		claService.updatePullRequest(updatePullRequest);
 
 		redirect.addAttribute("repositoryId", repositoryId);

@@ -174,7 +174,7 @@ public class MylynGitHubApi implements GitHubApi {
 		status.setPullRequestId(pullRequest.getNumber());
 		status.setRepoId(repositoryId);
 		status.setSha(sha);
-		status.setSuccess(true);
+		status.setSuccess(updatePullRequest.isSuccess());
 		status.setGitHubUsername(currentUserGitHubLogin);
 		status.setUrl(updatePullRequest.getCommitStatusUrl());
 

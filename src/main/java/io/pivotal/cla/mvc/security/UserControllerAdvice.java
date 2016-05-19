@@ -53,7 +53,7 @@ public class UserControllerAdvice {
 			return false;
 		}
 		UpdatePullRequestStatusRequest updatePullRequest = claRequest.createUpdatePullRequestStatus(currentUser.getGitHubLogin());
-		claService.updatePullRequest(updatePullRequest);
+		claService.updatePullRequest(claRequest.getClaName(), updatePullRequest);
 		importedSignaturesSessionAttr.setValue(false);
 		return true;
 	}

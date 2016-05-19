@@ -24,11 +24,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import io.pivotal.cla.data.ContributorLicenseAgreement;
-import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.service.ClaService;
-import io.pivotal.cla.service.CorporateSignatureInfo;
 
 @Controller
 public class ClaController {
@@ -48,12 +46,7 @@ public class ClaController {
 			throw new ResourceNotFoundException();
 		}
 
-		IndividualSignature individualSignature = claService.findIndividualSignaturesFor(user, claName);
-		boolean signed = individualSignature != null;
-		if(!signed) {
-			CorporateSignatureInfo corporate = claService.findCorporateSignatureInfoFor(claName, user);
-			signed = corporate.getCorporateSignature() != null;
-		}
+		boolean signed = claService.hasSigned(user, claName);
 
 		model.put("repositoryId",repositoryId);
 		model.put("pullRequestId", pullRequestId);
