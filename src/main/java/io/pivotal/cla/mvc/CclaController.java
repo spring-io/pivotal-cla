@@ -29,13 +29,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.User;
-import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
+import io.pivotal.cla.service.ClaService;
 import io.pivotal.cla.service.github.GitHubApi;
 import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
 
@@ -48,7 +47,7 @@ public class CclaController {
 	@Autowired
 	GitHubApi gitHub;
 	@Autowired
-	AccessTokenRepository tokenRepo;
+	ClaService claService;
 
 	@RequestMapping("/sign/{claName}/ccla")
 	public String claForm(@AuthenticationPrincipal User user, SignCorporateClaForm signCorporateClaForm,
@@ -113,13 +112,7 @@ public class CclaController {
 		}
 
 		UpdatePullRequestStatusRequest updatePullRequest = signCorporateClaForm.createUpdatePullRequestStatus(user.getGitHubLogin());
-		if(updatePullRequest != null) {
-			AccessToken accessToken = tokenRepo.findOne(updatePullRequest.getRepositoryId());
-			if(accessToken != null) {
-				updatePullRequest.setAccessToken(accessToken.getToken());
-				gitHub.save(updatePullRequest);
-			}
-		}
+		claService.updatePullRequest(updatePullRequest);
 
 		redirect.addAttribute("repositoryId", repositoryId);
 		redirect.addAttribute("pullRequestId", pullRequestId);
