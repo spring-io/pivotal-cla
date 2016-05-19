@@ -17,7 +17,6 @@ package io.pivotal.cla.mvc.github;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,11 +38,12 @@ import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
-import io.pivotal.cla.data.repository.CorporateSignatureRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.data.repository.UserRepository;
 import io.pivotal.cla.egit.github.core.event.RepositoryPullRequestPayload;
 import io.pivotal.cla.mvc.util.UrlBuilder;
+import io.pivotal.cla.service.ClaService;
+import io.pivotal.cla.service.CorporateSignatureInfo;
 import io.pivotal.cla.service.github.CommitStatus;
 import io.pivotal.cla.service.github.GitHubApi;
 
@@ -61,10 +61,10 @@ public class GitHubHooksController {
 	IndividualSignatureRepository individualRepo;
 
 	@Autowired
-	CorporateSignatureRepository corporate;
+	GitHubApi gitHub;
 
 	@Autowired
-	GitHubApi gitHub;
+	ClaService claService;
 
 	@RequestMapping(value = "/github/hooks/pull_request/{cla}", headers = "X-GitHub-Event=ping")
 	public String pullRequestPing(HttpServletRequest request, @RequestBody String body, @PathVariable String cla) throws Exception {
@@ -132,8 +132,8 @@ public class GitHubHooksController {
 			return true;
 		}
 
-		List<String> organizations = gitHub.getOrganizations(user.getGitHubLogin());
-		CorporateSignature corporateSignature = corporate.findSignature(claName, organizations, user.getEmails());
+		CorporateSignatureInfo corporateSignatureInfo = claService.findCorporateSignatureInfoFor(claName, user);
+		CorporateSignature corporateSignature = corporateSignatureInfo.getCorporateSignature();
 		return corporateSignature != null;
 	}
 }

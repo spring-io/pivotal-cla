@@ -15,7 +15,6 @@
  */
 package io.pivotal.cla.mvc;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,8 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
+import io.pivotal.cla.service.ClaService;
+import io.pivotal.cla.service.CorporateSignatureInfo;
 import io.pivotal.cla.service.github.GitHubApi;
 
 @Controller
@@ -44,6 +45,8 @@ public class ClaController {
 	IndividualSignatureRepository individual;
 	@Autowired
 	CorporateSignatureRepository corporate;
+	@Autowired
+	ClaService claService;
 
 	@RequestMapping("/sign/{claName}")
 	public String signIndex(@AuthenticationPrincipal User user, @ModelAttribute ClaRequest claRequest,
@@ -59,8 +62,8 @@ public class ClaController {
 		IndividualSignature individualSignature = individual.findSignaturesFor(user, claName);
 		boolean signed = individualSignature != null;
 		if(!signed) {
-			List<String> organizations = gitHub.getOrganizations(user.getGitHubLogin());
-			signed = corporate.findSignature(claName, organizations, user.getEmails()) != null;
+			CorporateSignatureInfo corporate = claService.findCorporateSignatureInfoFor(claName, user);
+			signed = corporate.getCorporateSignature() != null;
 		}
 
 		model.put("repositoryId",repositoryId);

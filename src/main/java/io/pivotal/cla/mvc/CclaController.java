@@ -35,6 +35,7 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
 import io.pivotal.cla.service.ClaService;
+import io.pivotal.cla.service.CorporateSignatureInfo;
 import io.pivotal.cla.service.github.GitHubApi;
 import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
 
@@ -56,9 +57,10 @@ public class CclaController {
 		Integer pullRequestId = signCorporateClaForm.getPullRequestId();
 		String repositoryId = signCorporateClaForm.getRepositoryId();
 
-		List<String> organizations = gitHub.getOrganizations(user.getGitHubLogin());
-		CorporateSignature signed = corporate.findSignature(claName, organizations, user.getEmails());
-		ContributorLicenseAgreement cla = signed == null ? clas.findByNameAndPrimaryTrue(claName) : signed.getCla();
+		CorporateSignatureInfo corporateResponse = claService.findCorporateSignatureInfoFor(claName, user);
+		ContributorLicenseAgreement cla = corporateResponse.getContributorLicenseAgreement();
+		CorporateSignature signed = corporateResponse.getCorporateSignature();
+		List<String> currentUserGitHubOrganizations = corporateResponse.getGitHubOrganizations();
 
 		if(cla == null) {
 			throw new ResourceNotFoundException();
@@ -72,7 +74,7 @@ public class CclaController {
 		signCorporateClaForm.setClaId(cla.getId());
 		signCorporateClaForm.setRepositoryId(repositoryId);
 		signCorporateClaForm.setPullRequestId(pullRequestId);
-		signCorporateClaForm.setGitHubOrganizations(gitHub.getOrganizations(user.getGitHubLogin()));
+		signCorporateClaForm.setGitHubOrganizations(currentUserGitHubOrganizations);
 
 		model.put("cla", cla);
 
@@ -81,13 +83,12 @@ public class CclaController {
 
 	@RequestMapping(value = "/sign/{claName}/ccla", method = RequestMethod.POST)
 	public String signCla(@AuthenticationPrincipal User user, @Valid SignCorporateClaForm signCorporateClaForm, BindingResult result, Map<String, Object> model, RedirectAttributes redirect) throws Exception {
+		ContributorLicenseAgreement cla = clas.findOne(signCorporateClaForm.getClaId());
 		if(result.hasErrors()) {
-			ContributorLicenseAgreement cla = clas.findOne(signCorporateClaForm.getClaId());
 			model.put("cla", cla);
 			signCorporateClaForm.setGitHubOrganizations(gitHub.getOrganizations(user.getGitHubLogin()));
 			return "cla/ccla/sign";
 		}
-		ContributorLicenseAgreement cla = clas.findOne(signCorporateClaForm.getClaId());
 		CorporateSignature signature = new CorporateSignature();
 		signature.setCla(cla);
 		signature.setEmail(signCorporateClaForm.getEmail());
