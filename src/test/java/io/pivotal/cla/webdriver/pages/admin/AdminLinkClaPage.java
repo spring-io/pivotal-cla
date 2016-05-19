@@ -24,12 +24,11 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.util.StringUtils;
 
 import com.google.common.base.Predicate;
 
 import io.pivotal.cla.webdriver.pages.BasePage;
-
-import org.springframework.util.StringUtils;
 
 public class AdminLinkClaPage extends BasePage {
 	WebElement submit;

@@ -26,10 +26,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Data
