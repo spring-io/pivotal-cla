@@ -46,7 +46,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.pivotal.cla.config.ClaOAuthConfig;
+import io.pivotal.cla.config.OAuthClientCredentials;
 import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
@@ -55,11 +58,12 @@ import io.pivotal.cla.egit.github.core.Email;
 import io.pivotal.cla.egit.github.core.EventsRepositoryHook;
 import io.pivotal.cla.egit.github.core.service.ContextCommitService;
 import io.pivotal.cla.egit.github.core.service.EmailService;
+import lombok.Data;
 import lombok.SneakyThrows;
 
 @Component
 public class MylynGithubService implements GitHubService {
-
+	private static final String AUTHORIZE_URI = "login/oauth/access_token";
 	public final static String CONTRIBUTING_FILE = "CONTRIBUTING";
 	public final static String ADMIN_MAIL_SUFFIX = "@pivotal.io";
 
@@ -67,17 +71,16 @@ public class MylynGithubService implements GitHubService {
 
 	ClaOAuthConfig oauthConfig;
 
-	AccessTokenService tokenService;
+	String authorizeUrl;
 
 	RestTemplate rest = new RestTemplate();
 
 	@Autowired
-	public MylynGithubService(AccessTokenRepository tokenRepo, ClaOAuthConfig oauthConfig,
-			AccessTokenService tokenService) {
+	public MylynGithubService(AccessTokenRepository tokenRepo, ClaOAuthConfig oauthConfig) {
 		super();
 		this.tokenRepo = tokenRepo;
 		this.oauthConfig = oauthConfig;
-		this.tokenService = tokenService;
+		this.authorizeUrl = oauthConfig.getGitHubBaseUrl() + AUTHORIZE_URI;
 	}
 
 	@Override
@@ -183,25 +186,21 @@ public class MylynGithubService implements GitHubService {
 		save(status);
 	}
 
+	@SneakyThrows
 	private List<String> getCommentsByClaUser(IssueService issues, RepositoryId id, io.pivotal.cla.service.CommitStatus commitStatus) {
-
-		try {
-			String username = getCurrentGithubUser(oauthConfig.getPivotalClaAccessToken()).getLogin();
-			List<Comment> comments = issues.getComments(id, commitStatus.getPullRequestId());
-			return comments.stream()
-					.filter( c -> username.equals(c.getUser().getLogin()))
-					.map(c-> c.getBody())
-					.collect(Collectors.toList());
-		}catch(IOException e) {
-			throw new RuntimeException(e);
-		}
+		String username = getCurrentGithubUser(oauthConfig.getPivotalClaAccessToken()).getLogin();
+		List<Comment> comments = issues.getComments(id, commitStatus.getPullRequestId());
+		return comments.stream()
+				.filter( c -> username.equals(c.getUser().getLogin()))
+				.map(c-> c.getBody())
+				.collect(Collectors.toList());
 	}
 
 	public User getCurrentUser(CurrentUserRequest request) {
 		AccessTokenRequest tokenRequest = new AccessTokenRequest();
 		tokenRequest.setCredentials(oauthConfig.getMain());
 		tokenRequest.setOauthParams(request.getOauthParams());
-		String accessToken = tokenService.getToken(tokenRequest);
+		String accessToken = getToken(tokenRequest);
 
 		EmailService emailService = EmailService.forOAuth(accessToken, oauthConfig);
 		List<String> verifiedEmails = emailService.getEmails().stream().filter(e -> e.isVerified())
@@ -222,6 +221,32 @@ public class MylynGithubService implements GitHubService {
 			user.setClaAuthor(isClaAuthor);
 		}
 		return user;
+	}
+
+	private String getToken(AccessTokenRequest request) {
+		OAuthAccessTokenParams oauthParams = request.getOauthParams();
+		Map<String, String> params = new HashMap<String, String>();
+		OAuthClientCredentials credentials = request.getCredentials();
+
+		params.put("client_id", credentials.getClientId());
+		params.put("client_secret", credentials.getClientSecret());
+		params.put("code", oauthParams.getCode());
+		params.put("state", oauthParams.getState());
+		params.put("redirect_url", oauthParams.getCallbackUrl());
+
+		ResponseEntity<AccessTokenResponse> token = rest.postForEntity(this.authorizeUrl, params, AccessTokenResponse.class);
+
+		return token.getBody().getAccessToken();
+	}
+
+	@Data
+	static class AccessTokenResponse {
+		@JsonProperty("access_token")
+		private String accessToken;
+		@JsonProperty("token_type")
+		private String tokenType;
+		private String scope;
+
 	}
 
 	@SneakyThrows

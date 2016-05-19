@@ -16,7 +16,6 @@
 package io.pivotal.cla.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -33,6 +32,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.serializer.support.SerializingConverter;
 
 import io.pivotal.cla.config.ClaOAuthConfig;
+import io.pivotal.cla.config.OAuthClientCredentials;
 import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
@@ -50,8 +50,6 @@ public class MylynGithubServiceITests {
 
 	@Mock
 	AccessTokenRepository tokenRepository;
-	@Mock
-	AccessTokenService tokenService;
 
 	ClaOAuthConfig oauthConfig;
 
@@ -59,13 +57,20 @@ public class MylynGithubServiceITests {
 
 	@Before
 	public void setup() throws IOException {
+
+		OAuthClientCredentials credentials = new OAuthClientCredentials();
+		credentials.setClientId("client-id");
+		credentials.setClientSecret("client-secret");
+
 		oauthConfig = new ClaOAuthConfig();
+		oauthConfig.setMain(credentials);
 		oauthConfig.setScheme("http");
+		oauthConfig.setGitHubHost(server.getServer().getHostName());
 		oauthConfig.setGitHubApiHost(server.getServer().getHostName());
 		oauthConfig.setPort(server.getServer().getPort());
 		oauthConfig.setPivotalClaAccessToken("pivotal-cla-accessToken");
 
-		service = new MylynGithubService(tokenRepository, oauthConfig, tokenService);
+		service = new MylynGithubService(tokenRepository, oauthConfig);
 	}
 
 	@Test
@@ -86,12 +91,11 @@ public class MylynGithubServiceITests {
 
 	@Test
 	public void getCurrentUserAdminRequestedButNotAdmin() throws Exception {
-		when(tokenService.getToken(any())).thenReturn("access-token-123");
-
 		OAuthAccessTokenParams oauthParams = new OAuthAccessTokenParams();
 		oauthParams.setCallbackUrl("https://example.com/oauth/callback");
 		oauthParams.setCode("code-123");
 		oauthParams.setState("state-456");
+
 		CurrentUserRequest userRequest = new CurrentUserRequest();
 		userRequest.setOauthParams(oauthParams);
 		userRequest.setRequestAdminAccess(true);
@@ -107,6 +111,13 @@ public class MylynGithubServiceITests {
 		assertThat(user.isAdmin()).isFalse();
 
 		RecordedRequest request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("POST");
+		assertThat(request.getPath())
+				.isEqualTo("/login/oauth/access_token");
+		assertThat(request.getBody().readUtf8())
+			.isEqualTo("{\"code\":\"code-123\",\"client_secret\":\"client-secret\",\"state\":\"state-456\",\"client_id\":\"client-id\",\"redirect_url\":\"https://example.com/oauth/callback\"}");
+
+		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("GET");
 		assertThat(request.getPath())
 				.isEqualTo("/api/v3/user/emails?per_page=100&page=1");
@@ -121,8 +132,6 @@ public class MylynGithubServiceITests {
 
 	@Test
 	public void getCurrentUserAdminAndClaAuthor() throws Exception {
-		when(tokenService.getToken(any())).thenReturn("access-token-123");
-
 		OAuthAccessTokenParams oauthParams = new OAuthAccessTokenParams();
 		oauthParams.setCallbackUrl("https://example.com/oauth/callback");
 		oauthParams.setCode("code-123");
@@ -143,6 +152,13 @@ public class MylynGithubServiceITests {
 		assertThat(user.isClaAuthor()).isTrue();
 
 		RecordedRequest request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("POST");
+		assertThat(request.getPath())
+				.isEqualTo("/login/oauth/access_token");
+		assertThat(request.getBody().readUtf8())
+			.isEqualTo("{\"code\":\"code-123\",\"client_secret\":\"client-secret\",\"state\":\"state-456\",\"client_id\":\"client-id\",\"redirect_url\":\"https://example.com/oauth/callback\"}");
+
+		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("GET");
 		assertThat(request.getPath())
 				.isEqualTo("/api/v3/user/emails?per_page=100&page=1");
@@ -157,8 +173,6 @@ public class MylynGithubServiceITests {
 
 	@Test
 	public void getCurrentUserAdminAndNotClaAuthor() throws Exception {
-		when(tokenService.getToken(any())).thenReturn("access-token-123");
-
 		OAuthAccessTokenParams oauthParams = new OAuthAccessTokenParams();
 		oauthParams.setCallbackUrl("https://example.com/oauth/callback");
 		oauthParams.setCode("code-123");
@@ -179,6 +193,13 @@ public class MylynGithubServiceITests {
 		assertThat(user.isClaAuthor()).isFalse();
 
 		RecordedRequest request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("POST");
+		assertThat(request.getPath())
+				.isEqualTo("/login/oauth/access_token");
+		assertThat(request.getBody().readUtf8())
+			.isEqualTo("{\"code\":\"code-123\",\"client_secret\":\"client-secret\",\"state\":\"state-456\",\"client_id\":\"client-id\",\"redirect_url\":\"https://example.com/oauth/callback\"}");
+
+		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("GET");
 		assertThat(request.getPath())
 				.isEqualTo("/api/v3/user/emails?per_page=100&page=1");
@@ -194,8 +215,6 @@ public class MylynGithubServiceITests {
 
 	@Test
 	public void getCurrentUserSigning() throws Exception {
-		when(tokenService.getToken(any())).thenReturn("access-token-123");
-
 		OAuthAccessTokenParams oauthParams = new OAuthAccessTokenParams();
 		oauthParams.setCallbackUrl("https://example.com/oauth/callback");
 		oauthParams.setCode("code-123");
@@ -215,6 +234,13 @@ public class MylynGithubServiceITests {
 		assertThat(user.isAdmin()).isFalse();
 
 		RecordedRequest request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("POST");
+		assertThat(request.getPath())
+				.isEqualTo("/login/oauth/access_token");
+		assertThat(request.getBody().readUtf8())
+			.isEqualTo("{\"code\":\"code-123\",\"client_secret\":\"client-secret\",\"state\":\"state-456\",\"client_id\":\"client-id\",\"redirect_url\":\"https://example.com/oauth/callback\"}");
+
+		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("GET");
 		assertThat(request.getPath())
 				.isEqualTo("/api/v3/user/emails?per_page=100&page=1");
@@ -474,7 +500,7 @@ public class MylynGithubServiceITests {
 		oauthConfig.setGitHubApiHost("donotuse");
 		oauthConfig.setGitHubHost(server.getServer().getHostName());
 
-		service = new MylynGithubService(tokenRepository, oauthConfig, tokenService);
+		service = new MylynGithubService(tokenRepository, oauthConfig);
 
 		List<String> repositoryIds = Arrays.asList("spring-projects/has-md", "spring-projects/has-adoc", "spring-projects/no-contributor");
 

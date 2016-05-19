@@ -23,16 +23,4 @@ X-RateLimit-Reset: 1457145439
 X-Served-By: bae57931a6fe678a3dffe9be8e7819c8
 X-XSS-Protection: 1; mode=block
 
-[
-    {
-        "email": "rob@example.com",
-        "primary": true,
-        "verified": true
-    },
-
-    {
-        "email": "rob@pivotal.io",
-        "primary": false,
-        "verified": true
-    }
-]
+{"access_token":"access-token-123", "scope":"repo,gist", "token_type":"bearer"}
