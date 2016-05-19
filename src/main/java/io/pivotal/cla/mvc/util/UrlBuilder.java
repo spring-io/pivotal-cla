@@ -25,6 +25,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import lombok.Builder;
+import lombok.SneakyThrows;
 
 /**
  * @author Rob Winch
@@ -58,7 +59,8 @@ public class UrlBuilder {
 	}
 
 	@Builder(builderMethodName="signUrl")
-	private static String create(HttpServletRequest request, String claName, String repositoryId, int pullRequestId) throws Exception{
+	@SneakyThrows
+	private static String create(HttpServletRequest request, String claName, String repositoryId, int pullRequestId) {
 		String urlEncodedClaName = URLEncoder.encode(claName, "UTF-8");
 		UrlBuilder url = UrlBuilder
 				.fromRequest(request)

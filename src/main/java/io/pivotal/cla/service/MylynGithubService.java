@@ -55,6 +55,7 @@ import io.pivotal.cla.egit.github.core.Email;
 import io.pivotal.cla.egit.github.core.EventsRepositoryHook;
 import io.pivotal.cla.egit.github.core.service.ContextCommitService;
 import io.pivotal.cla.egit.github.core.service.EmailService;
+import lombok.SneakyThrows;
 
 @Component
 public class MylynGithubService implements GitHubService {
@@ -80,7 +81,8 @@ public class MylynGithubService implements GitHubService {
 	}
 
 	@Override
-	public List<String> findRepositoryNames(String accessToken) throws IOException {
+	@SneakyThrows
+	public List<String> findRepositoryNames(String accessToken) {
 		GitHubClient client = createClient(accessToken);
 
 		RepositoryService service = new RepositoryService(client);
@@ -99,6 +101,7 @@ public class MylynGithubService implements GitHubService {
 		return client;
 	}
 
+	@SneakyThrows
 	public void save(io.pivotal.cla.service.CommitStatus commitStatus) {
 		String repoId = commitStatus.getRepoId();
 		AccessToken token = tokenRepo.findOne(repoId);
@@ -123,11 +126,7 @@ public class MylynGithubService implements GitHubService {
 		status.setUrl(commitStatus.getUrl());
 		status.setTargetUrl(status.getUrl());
 
-		try {
-			commitService.createStatus(id, commitStatus.getSha(), status);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		commitService.createStatus(id, commitStatus.getSha(), status);
 
 		String claLinkMarkdown = String.format("[%s](%s)", claName, status.getUrl());
 		String userMentionMarkdown = String.format("@%s", commitStatus.getGithubUsername());
@@ -142,25 +141,18 @@ public class MylynGithubService implements GitHubService {
 			if(claUserComments.contains(body)) {
 				return;
 			}
-			try {
-				issues.createComment(id, commitStatus.getPullRequestId(), body);
-			} catch(IOException e) {
-				throw new RuntimeException(e);
-			}
+			issues.createComment(id, commitStatus.getPullRequestId(), body);
 		} else {
 			String body = String.format("%s %s %s!", userMentionMarkdown, pleasSign, claLinkMarkdown);
 			if(claUserComments.contains(body)) {
 				return;
 			}
-			try {
-				issues.createComment(id, commitStatus.getPullRequestId(), body);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+			issues.createComment(id, commitStatus.getPullRequestId(), body);
 		}
 	}
 
-	public void save(UpdatePullRequestStatusRequest updatePullRequest) throws IOException {
+	@SneakyThrows
+	public void save(UpdatePullRequestStatusRequest updatePullRequest) {
 		String repositoryId = updatePullRequest.getRepositoryId();
 		int pullRequestId = updatePullRequest.getPullRequestId();
 		String currentUserGithubLogin = updatePullRequest.getCurrentUserGithubLogin();
@@ -210,34 +202,30 @@ public class MylynGithubService implements GitHubService {
 		tokenRequest.setCredentials(oauthConfig.getMain());
 		tokenRequest.setOauthParams(request.getOauthParams());
 		String accessToken = tokenService.getToken(tokenRequest);
-		try {
 
-			EmailService emailService = EmailService.forOAuth(accessToken, oauthConfig);
-			List<String> verifiedEmails = emailService.getEmails().stream().filter(e -> e.isVerified())
-					.map(Email::getEmail).collect(Collectors.toList());
-			org.eclipse.egit.github.core.User githubUser = getCurrentGithubUser(accessToken);
+		EmailService emailService = EmailService.forOAuth(accessToken, oauthConfig);
+		List<String> verifiedEmails = emailService.getEmails().stream().filter(e -> e.isVerified())
+				.map(Email::getEmail).collect(Collectors.toList());
+		org.eclipse.egit.github.core.User githubUser = getCurrentGithubUser(accessToken);
 
-			User user = new User();
-			user.setName(githubUser.getName());
-			user.setAccessToken(accessToken);
-			user.setAvatarUrl(githubUser.getAvatarUrl());
-			user.setEmails(new TreeSet<>(verifiedEmails));
-			user.setGithubLogin(githubUser.getLogin());
-			user.setAdminAccessRequested(request.isRequestAdminAccess());
-			boolean isAdmin = request.isRequestAdminAccess() && hasAdminEmail(user);
-			user.setAdmin(isAdmin);
-			if(isAdmin) {
-				boolean isClaAuthor = isAuthor(user.getGithubLogin(), accessToken);
-				user.setClaAuthor(isClaAuthor);
-			}
-			return user;
-
-		} catch (IOException fail) {
-			throw new RuntimeException(fail);
+		User user = new User();
+		user.setName(githubUser.getName());
+		user.setAccessToken(accessToken);
+		user.setAvatarUrl(githubUser.getAvatarUrl());
+		user.setEmails(new TreeSet<>(verifiedEmails));
+		user.setGithubLogin(githubUser.getLogin());
+		user.setAdminAccessRequested(request.isRequestAdminAccess());
+		boolean isAdmin = request.isRequestAdminAccess() && hasAdminEmail(user);
+		user.setAdmin(isAdmin);
+		if(isAdmin) {
+			boolean isClaAuthor = isAuthor(user.getGithubLogin(), accessToken);
+			user.setClaAuthor(isClaAuthor);
 		}
+		return user;
 	}
 
-	private org.eclipse.egit.github.core.User getCurrentGithubUser(String accessToken) throws IOException {
+	@SneakyThrows
+	private org.eclipse.egit.github.core.User getCurrentGithubUser(String accessToken) {
 		GitHubClient client = createClient(accessToken);
 
 		org.eclipse.egit.github.core.service.UserService githubUsers = new org.eclipse.egit.github.core.service.UserService(
@@ -245,7 +233,8 @@ public class MylynGithubService implements GitHubService {
 		return githubUsers.getUser();
 	}
 
-	public List<String> getOrganizations(String username) throws IOException {
+	@SneakyThrows
+	public List<String> getOrganizations(String username) {
 		OrganizationService orgs = new OrganizationService(createClient(oauthConfig.getPivotalClaAccessToken()));
 		List<org.eclipse.egit.github.core.User> organizations = orgs.getOrganizations(username);
 		return organizations.stream().map( o -> o.getLogin()).sorted(String.CASE_INSENSITIVE_ORDER).collect(Collectors.toList());
@@ -268,8 +257,9 @@ public class MylynGithubService implements GitHubService {
 	}
 
 	@Override
+	@SneakyThrows
 	public List<String> createPullRequestHooks(CreatePullRequestHookRequest request)
-			throws IOException {
+			{
 		String accessToken = request.getAccessToken();
 		List<String> repositoryIds = request.getRepositoryIds();
 		String githubEventUrl = request.getGithubEventUrl();

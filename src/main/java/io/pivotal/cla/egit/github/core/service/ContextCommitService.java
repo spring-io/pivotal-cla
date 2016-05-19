@@ -28,6 +28,7 @@ import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.CommitService;
 
 import io.pivotal.cla.egit.github.core.ContextCommitStatus;
+import lombok.SneakyThrows;
 
 public class ContextCommitService extends CommitService {
 
@@ -48,8 +49,9 @@ public class ContextCommitService extends CommitService {
 	 * @return created status
 	 * @throws IOException
 	 */
+	@SneakyThrows
 	public CommitStatus createStatus(IRepositoryIdProvider repository, String sha, ContextCommitStatus status)
-			throws IOException {
+			{
 		String id = getId(repository);
 		if (sha == null)
 			throw new IllegalArgumentException("SHA-1 cannot be null"); //$NON-NLS-1$

@@ -19,7 +19,6 @@ import static org.eclipse.egit.github.core.client.IGitHubConstants.AUTH_TOKEN;
 import static org.eclipse.egit.github.core.client.IGitHubConstants.SEGMENT_EMAILS;
 import static org.eclipse.egit.github.core.client.IGitHubConstants.SEGMENT_USER;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
 
@@ -32,10 +31,12 @@ import com.google.gson.reflect.TypeToken;
 
 import io.pivotal.cla.config.ClaOAuthConfig;
 import io.pivotal.cla.egit.github.core.Email;
+import lombok.SneakyThrows;
 
 public class EmailService extends GitHubService {
 
-	public List<Email> getEmails() throws IOException {
+	@SneakyThrows
+	public List<Email> getEmails() {
 		PagedRequest<Email> request = createPagedRequest();
 		request.setUri(SEGMENT_USER + SEGMENT_EMAILS);
 		request.setType(new TypeToken<List<Email>>() {

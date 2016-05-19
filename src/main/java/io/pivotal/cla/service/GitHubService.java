@@ -15,25 +15,23 @@
  */
 package io.pivotal.cla.service;
 
-import java.io.IOException;
 import java.util.List;
 
 import io.pivotal.cla.data.User;
 
 public interface GitHubService {
 
-	void save(UpdatePullRequestStatusRequest updatePullRequest) throws IOException;
+	void save(UpdatePullRequestStatusRequest updatePullRequest);
 
 	void save(CommitStatus status);
 
-	List<String> findRepositoryNames(String accessToken) throws IOException;
+	List<String> findRepositoryNames(String accessToken);
 
-	List<String> createPullRequestHooks(CreatePullRequestHookRequest request)
-			throws IOException;
+	List<String> createPullRequestHooks(CreatePullRequestHookRequest request);
 
 	User getCurrentUser(CurrentUserRequest request);
 
-	List<String> getOrganizations(String username) throws IOException;
+	List<String> getOrganizations(String username);
 
 	ContributingUrlsResponse getContributingUrls(List<String> repositoryIds);
 

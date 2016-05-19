@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 
 import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
+import lombok.SneakyThrows;
 
 /**
  * @author Rob Winch
@@ -47,7 +48,8 @@ public class GithubSignature {
 		this.accessTokens = accessTokens;
 	}
 
-	public boolean check(String githubSignature, String body) throws Exception {
+	@SneakyThrows
+	public boolean check(String githubSignature, String body) {
 		if(githubSignature == null || !githubSignature.startsWith(SIGNATURE_PREFIX)) {
 			return false;
 		}
@@ -65,7 +67,8 @@ public class GithubSignature {
 		return MessageDigest.isEqual(providedHmacBytes, expectedBytes);
 	}
 
-	public String create(String body, String token) throws Exception {
+	@SneakyThrows
+	public String create(String body, String token) {
 		return SIGNATURE_PREFIX + new String(Hex.encode(sign(body, token)));
 	}
 
