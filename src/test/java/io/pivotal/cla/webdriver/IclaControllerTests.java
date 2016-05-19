@@ -16,12 +16,16 @@
 package io.pivotal.cla.webdriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -68,7 +72,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 	@Test
 	public void viewAlreadySigned() {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
-		when(mockIndividualSignatureRepository.findSignaturesFor(WithSigningUserFactory.create(), cla.getName())).thenReturn(individualSignature);
+		when(mockIndividualSignatureRepository.findSignaturesFor(any(), eq(WithSigningUserFactory.create()),eq(cla.getName()))).thenReturn(Arrays.asList(individualSignature));
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
@@ -347,11 +351,13 @@ public class IclaControllerTests extends BaseWebDriverTests {
 	}
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void signWithRepositoryIdWithPullRequestId() throws Exception {
 		String repositoryId = "rwinch/176_test";
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
-		when(mockIndividualSignatureRepository.findSignaturesFor(WithSigningUserFactory.create(), cla.getName())).thenReturn(null, individualSignature);
+
+		when(mockIndividualSignatureRepository.findSignaturesFor(any(), eq(WithSigningUserFactory.create()),eq(cla.getName()))).thenReturn(Collections.<IndividualSignature>emptyList(), Arrays.asList(individualSignature));
 		when(mockTokenRepo.findOne(repositoryId)).thenReturn(new AccessToken(repositoryId, "access-token-123"));
 
 		int pullRequestId = 2;

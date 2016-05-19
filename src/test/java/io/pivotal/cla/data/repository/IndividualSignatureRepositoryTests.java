@@ -37,6 +37,7 @@ import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.junit.JpaTests;
+import io.pivotal.cla.service.ClaService;
 import io.pivotal.cla.test.context.SystemDataActiveProfiles;
 
 /**
@@ -56,6 +57,9 @@ public class IndividualSignatureRepositoryTests {
 
 	@Autowired
 	IndividualSignatureRepository signatures;
+
+	@Autowired
+	ClaService claService;
 
 	ContributorLicenseAgreement cla;
 
@@ -82,26 +86,26 @@ public class IndividualSignatureRepositoryTests {
 
 	@Test
 	public void findSignaturesForUserGitHubLoginAndEmails() {
-		assertThat(signatures.findSignaturesFor(user, cla.getName())).isNotNull();
+		assertThat(claService.findIndividualSignaturesFor(user, cla.getName())).isNotNull();
 	}
 
 	@Test
 	public void findSignaturesForUserEmailOnly() {
 		user.setGitHubLogin("notfound" + user.getGitHubLogin());
 
-		assertThat(signatures.findSignaturesFor(user, cla.getName())).isNotNull();
+		assertThat(claService.findIndividualSignaturesFor(user, cla.getName())).isNotNull();
 	}
 
 	@Test
 	public void findSignaturesForUserGitHubLoginOnly() {
 		user.setEmails(Collections.emptySet());
 
-		assertThat(signatures.findSignaturesFor(user, cla.getName())).isNotNull();
+		assertThat(claService.findIndividualSignaturesFor(user, cla.getName())).isNotNull();
 	}
 
 	@Test
 	public void findSignatureForSupersedingCla() {
-		assertThat(signatures.findSignaturesFor(user, springCla.getName())).isNotNull();
+		assertThat(claService.findIndividualSignaturesFor(user, springCla.getName())).isNotNull();
 	}
 
 	@Test
@@ -109,12 +113,12 @@ public class IndividualSignatureRepositoryTests {
 		IndividualSignature springSignature = createSignature(springCla, user);
 		signatures.save(springSignature);
 
-		assertThat(signatures.findSignaturesFor(user, springCla.getName())).isNotNull();
+		assertThat(claService.findIndividualSignaturesFor(user, springCla.getName())).isNotNull();
 	}
 
 	@Test
 	public void findSignatureNotFoundCla() {
-		assertThat(signatures.findSignaturesFor(user, "notfound")).isNull();;
+		assertThat(claService.findIndividualSignaturesFor(user, "notfound")).isNull();;
 	}
 
 	@Test
@@ -122,7 +126,7 @@ public class IndividualSignatureRepositoryTests {
 		user.setGitHubLogin("notfound" + user.getGitHubLogin());
 		user.setEmails(Collections.singleton("notfound@example.com"));
 
-		assertThat(signatures.findSignaturesFor(user, cla.getName())).isNull();;
+		assertThat(claService.findIndividualSignaturesFor(user, cla.getName())).isNull();;
 	}
 
 	@Test

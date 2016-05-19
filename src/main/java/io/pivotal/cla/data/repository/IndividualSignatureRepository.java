@@ -18,7 +18,6 @@ package io.pivotal.cla.data.repository;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -28,12 +27,6 @@ import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
 
 public interface IndividualSignatureRepository extends CrudRepository<IndividualSignature, Long> {
-
-	default IndividualSignature findSignaturesFor(User user, String claName) {
-		PageRequest pageable = new PageRequest(0, 1);
-		List<IndividualSignature> results = findSignaturesFor(pageable, user, claName);
-		return results.isEmpty() ? null : results.get(0);
-	}
 
 	@Query("select s from IndividualSignature s where (s.cla.name = :#{#claName} or s.cla.name in (select distinct c.supersedingCla.name from ContributorLicenseAgreement c where c.name = :#{#claName})) and (s.gitHubLogin = :#{#u.gitHubLogin} or s.email in (:#{#u.emails.empty ? '' : #u.emails}))")
 	List<IndividualSignature> findSignaturesFor(Pageable pageable, @Param("u") User user,  @Param("claName") String claName);

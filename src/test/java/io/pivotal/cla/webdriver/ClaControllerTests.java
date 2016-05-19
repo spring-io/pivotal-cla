@@ -57,7 +57,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		String repositoryId = "spring-projects/spring-security";
 		User signingUser = WithSigningUserFactory.create();
 		when(mockGitHub.getCurrentUser(any())).thenReturn(signingUser);
-		when(mockIndividualSignatureRepository.findSignaturesFor(signingUser,cla.getName())).thenReturn(individualSignature);
+		when(mockIndividualSignatureRepository.findSignaturesFor(any(), eq(signingUser),eq(cla.getName()))).thenReturn(Arrays.asList(individualSignature));
 		when(mockIndividualSignatureRepository.findSignaturesFor(any(),eq(signingUser))).thenReturn(Arrays.asList(individualSignature));
 		when(mockTokenRepo.findOne(repositoryId)).thenReturn(new AccessToken(repositoryId, "access-token-123"));
 
@@ -98,7 +98,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void claPivotalSignedWithPullRequest() throws Exception {
-		when(mockIndividualSignatureRepository.findSignaturesFor(WithSigningUserFactory.create(),cla.getName())).thenReturn(individualSignature);
+		when(mockIndividualSignatureRepository.findSignaturesFor(any(), eq(WithSigningUserFactory.create()),eq(cla.getName()))).thenReturn(Arrays.asList(individualSignature));
 
 		String repositoryId = "spring-projects/spring-security";
 		int pullRequestId = 123;
@@ -109,7 +109,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void claPivotalIndividualSigned() {
-		when(mockIndividualSignatureRepository.findSignaturesFor(WithSigningUserFactory.create(),cla.getName())).thenReturn(individualSignature);
+		when(mockIndividualSignatureRepository.findSignaturesFor(any(), eq(WithSigningUserFactory.create()),eq(cla.getName()))).thenReturn(Arrays.asList(individualSignature));
 
 		SignClaPage home = SignClaPage.go(driver, cla.getName());
 		home.assertAt();

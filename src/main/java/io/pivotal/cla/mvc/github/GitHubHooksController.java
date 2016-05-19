@@ -38,7 +38,6 @@ import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
-import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.data.repository.UserRepository;
 import io.pivotal.cla.egit.github.core.event.RepositoryPullRequestPayload;
 import io.pivotal.cla.mvc.util.UrlBuilder;
@@ -56,9 +55,6 @@ public class GitHubHooksController {
 
 	@Autowired
 	UserRepository userRepo;
-
-	@Autowired
-	IndividualSignatureRepository individualRepo;
 
 	@Autowired
 	GitHubApi gitHub;
@@ -126,7 +122,7 @@ public class GitHubHooksController {
 		if(claName == null) {
 			return false;
 		}
-		IndividualSignature signedIndividual = individualRepo.findSignaturesFor(user, claName);
+		IndividualSignature signedIndividual = claService.findIndividualSignaturesFor(user, claName);
 
 		if(signedIndividual != null) {
 			return true;

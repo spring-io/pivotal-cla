@@ -126,7 +126,7 @@ public class GitHubHooksControllerTests extends BaseWebDriverTests {
 		when(mockUserRepo.findOne(anyString())).thenReturn(user);
 		when(mockTokenRepo.findOne("rwinch/176_test"))
 			.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
-		when(mockIndividualSignatureRepository.findSignaturesFor(any(), anyString())).thenReturn(individualSignature);
+		when(mockIndividualSignatureRepository.findSignaturesFor(any(), any(), anyString())).thenReturn(Arrays.asList(individualSignature));
 
 		mockMvc.perform(hookRequest().content(PAYLOAD))
 			.andExpect(status().isOk());

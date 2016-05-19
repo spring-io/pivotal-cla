@@ -54,7 +54,7 @@ public class IclaController {
 			Map<String, Object> model) {
 		String claName = signClaForm.getClaName();
 
-		IndividualSignature signed = individual.findSignaturesFor(user, claName);
+		IndividualSignature signed = claService.findIndividualSignaturesFor(user, claName);
 		ContributorLicenseAgreement cla = signed == null ? clas.findByNameAndPrimaryTrue(claName) : signed.getCla();
 		if(cla == null) {
 			throw new ResourceNotFoundException();
@@ -76,12 +76,11 @@ public class IclaController {
 		Integer pullRequestId = signClaForm.getPullRequestId();
 		String repositoryId = signClaForm.getRepositoryId();
 
+		ContributorLicenseAgreement cla = clas.findOne(signClaForm.getClaId());
 		if(result.hasErrors()) {
-			ContributorLicenseAgreement cla = clas.findOne(signClaForm.getClaId());
 			model.put("cla", cla);
 			return "cla/icla/sign";
 		}
-		ContributorLicenseAgreement cla = clas.findOne(signClaForm.getClaId());
 		IndividualSignature signature = new IndividualSignature();
 		signature.setCla(cla);
 		signature.setName(signClaForm.getName());

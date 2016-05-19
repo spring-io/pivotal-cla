@@ -27,24 +27,13 @@ import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
-import io.pivotal.cla.data.repository.CorporateSignatureRepository;
-import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.service.ClaService;
 import io.pivotal.cla.service.CorporateSignatureInfo;
-import io.pivotal.cla.service.github.GitHubApi;
 
 @Controller
 public class ClaController {
-
 	@Autowired
 	ContributorLicenseAgreementRepository clas;
-
-	@Autowired
-	GitHubApi gitHub;
-	@Autowired
-	IndividualSignatureRepository individual;
-	@Autowired
-	CorporateSignatureRepository corporate;
 	@Autowired
 	ClaService claService;
 
@@ -59,7 +48,7 @@ public class ClaController {
 			throw new ResourceNotFoundException();
 		}
 
-		IndividualSignature individualSignature = individual.findSignaturesFor(user, claName);
+		IndividualSignature individualSignature = claService.findIndividualSignaturesFor(user, claName);
 		boolean signed = individualSignature != null;
 		if(!signed) {
 			CorporateSignatureInfo corporate = claService.findCorporateSignatureInfoFor(claName, user);
