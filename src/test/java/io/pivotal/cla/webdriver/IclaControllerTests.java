@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.data.IndividualSignature;
@@ -347,11 +348,12 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signWithRepositoryIdWithPullRequestId() throws Exception {
+		String repositoryId = "rwinch/176_test";
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockIndividualSignatureRepository.findSignaturesFor(WithSigningUserFactory.create(), cla.getName())).thenReturn(null, individualSignature);
+		when(mockTokenRepo.findOne(repositoryId)).thenReturn(new AccessToken(repositoryId, "access-token-123"));
 
-		String repositoryId = "rwinch/176_test";
 		int pullRequestId = 2;
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName(), repositoryId, pullRequestId);
 

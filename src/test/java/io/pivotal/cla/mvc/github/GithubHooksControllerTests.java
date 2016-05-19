@@ -86,6 +86,7 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 
 		CommitStatus status = statusCaptor.getValue();
 		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
+		assertThat(status.getAccessToken()).isEqualTo("mock_access_token_value");
 		assertThat(status.getPullRequestId()).isEqualTo(2);
 		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
 		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/pivotal?repositoryId=rwinch/176_test&pullRequestId=2");
@@ -135,6 +136,7 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 
 		CommitStatus status = statusCaptor.getValue();
 		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
+		assertThat(status.getAccessToken()).isEqualTo("mock_access_token_value");
 		assertThat(status.getPullRequestId()).isEqualTo(2);
 		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
 		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/pivotal?repositoryId=rwinch/176_test&pullRequestId=2");
@@ -160,6 +162,7 @@ public class GithubHooksControllerTests extends BaseWebDriverTests {
 
 		CommitStatus status = statusCaptor.getValue();
 		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
+		assertThat(status.getAccessToken()).isEqualTo("mock_access_token_value");
 		assertThat(status.getPullRequestId()).isEqualTo(2);
 		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
 		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/pivotal?repositoryId=rwinch/176_test&pullRequestId=2");

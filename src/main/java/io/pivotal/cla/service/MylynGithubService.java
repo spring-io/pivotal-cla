@@ -50,9 +50,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.pivotal.cla.config.ClaOAuthConfig;
 import io.pivotal.cla.config.OAuthClientCredentials;
-import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
-import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.egit.github.core.ContextCommitStatus;
 import io.pivotal.cla.egit.github.core.Email;
 import io.pivotal.cla.egit.github.core.EventsRepositoryHook;
@@ -67,8 +65,6 @@ public class MylynGithubService implements GitHubService {
 	public final static String CONTRIBUTING_FILE = "CONTRIBUTING";
 	public final static String ADMIN_MAIL_SUFFIX = "@pivotal.io";
 
-	AccessTokenRepository tokenRepo;
-
 	ClaOAuthConfig oauthConfig;
 
 	String authorizeUrl;
@@ -76,9 +72,8 @@ public class MylynGithubService implements GitHubService {
 	RestTemplate rest = new RestTemplate();
 
 	@Autowired
-	public MylynGithubService(AccessTokenRepository tokenRepo, ClaOAuthConfig oauthConfig) {
+	public MylynGithubService(ClaOAuthConfig oauthConfig) {
 		super();
-		this.tokenRepo = tokenRepo;
 		this.oauthConfig = oauthConfig;
 		this.authorizeUrl = oauthConfig.getGitHubBaseUrl() + AUTHORIZE_URI;
 	}
@@ -107,8 +102,8 @@ public class MylynGithubService implements GitHubService {
 	@SneakyThrows
 	public void save(io.pivotal.cla.service.CommitStatus commitStatus) {
 		String repoId = commitStatus.getRepoId();
-		AccessToken token = tokenRepo.findOne(repoId);
-		if (token == null) {
+		String accessToken = commitStatus.getAccessToken();
+		if (accessToken == null) {
 			return;
 		}
 
@@ -118,7 +113,7 @@ public class MylynGithubService implements GitHubService {
 
 		boolean success = commitStatus.isSuccess();
 		RepositoryId id = RepositoryId.createFromId(repoId);
-		GitHubClient client = createClient(token.getToken());
+		GitHubClient client = createClient(accessToken);
 		ContextCommitService commitService = new ContextCommitService(client);
 		ContextCommitStatus status = new ContextCommitStatus();
 		status.setDescription(success ? String.format("%s %s!", thankYou, claName)
@@ -160,12 +155,11 @@ public class MylynGithubService implements GitHubService {
 		int pullRequestId = updatePullRequest.getPullRequestId();
 		String currentUserGithubLogin = updatePullRequest.getCurrentUserGithubLogin();
 
-		AccessToken token = tokenRepo.findOne(repositoryId);
-		if(token == null) {
+		String accessToken = updatePullRequest.getAccessToken();
+		if (accessToken == null) {
 			return;
 		}
-		GitHubClient client = new GitHubClient();
-		client.setOAuth2Token(token.getToken());
+		GitHubClient client = createClient(accessToken);
 		RepositoryId id = RepositoryId.createFromId(repositoryId);
 
 		PullRequestService service = new PullRequestService(client);
@@ -176,6 +170,7 @@ public class MylynGithubService implements GitHubService {
 
 		String sha = pullRequest.getHead().getSha();
 		io.pivotal.cla.service.CommitStatus status = new io.pivotal.cla.service.CommitStatus();
+		status.setAccessToken(accessToken);
 		status.setPullRequestId(pullRequest.getNumber());
 		status.setRepoId(repositoryId);
 		status.setSha(sha);
@@ -294,12 +289,6 @@ public class MylynGithubService implements GitHubService {
 		List<String> hookUrls = new ArrayList<>();
 
 		for (String repository : repositoryIds) {
-			AccessToken token = new AccessToken();
-			token.setId(repository);
-			token.setToken(accessToken);
-
-			tokenRepo.save(token);
-
 			RepositoryId repositoryId = RepositoryId.createFromId(repository);
 			EventsRepositoryHook hook = createHook(githubEventUrl, request.getSecret());
 

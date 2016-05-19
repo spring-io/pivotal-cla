@@ -20,7 +20,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
+import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.mvc.ClaRequest;
 import io.pivotal.cla.mvc.support.ImportedSignaturesSessionAttr;
 import io.pivotal.cla.service.GitHubService;
@@ -31,6 +33,9 @@ public class UserControllerAdvice {
 
 	@Autowired
 	GitHubService github;
+
+	@Autowired
+	AccessTokenRepository accessTokenRepository;
 
 	@ModelAttribute("currentUser")
 	User currentUser(@AuthenticationPrincipal User currentUser) {
@@ -54,7 +59,11 @@ public class UserControllerAdvice {
 		}
 		UpdatePullRequestStatusRequest updatePullRequest = claRequest.createUpdatePullRequestStatus(currentUser.getGithubLogin());
 		if(updatePullRequest != null) {
-			github.save(updatePullRequest);
+			AccessToken accessToken = accessTokenRepository.findOne(updatePullRequest.getRepositoryId());
+			if(accessToken != null) {
+				updatePullRequest.setAccessToken(accessToken.getToken());
+				github.save(updatePullRequest);
+			}
 		}
 		importedSignaturesSessionAttr.setValue(false);
 		return true;

@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 
+import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
@@ -98,12 +99,16 @@ public class GithubHooksController {
 
 		boolean success = hasSigned(user, cla);
 
+		AccessToken accessToken = tokenRepo.findOne(repoId.generateId());
+		String accessTokenValue = accessToken == null ? null : accessToken.getToken();
+
 		CommitStatus status = new CommitStatus();
 		status.setGithubUsername(githubLogin);
 		status.setPullRequestId(pullRequest.getNumber());
 		status.setRepoId(repoId.generateId());
 		status.setSha(pullRequest.getHead().getSha());
 		status.setSuccess(success);
+		status.setAccessToken(accessTokenValue);
 		String signUrl = UrlBuilder.signUrl()
 			.request(request)
 			.claName(cla)

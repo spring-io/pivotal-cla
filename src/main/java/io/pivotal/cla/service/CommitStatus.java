@@ -15,6 +15,7 @@
  */
 package io.pivotal.cla.service;
 
+import io.pivotal.cla.data.repository.AccessTokenRepository;
 import lombok.Data;
 
 @Data
@@ -25,6 +26,11 @@ public class CommitStatus {
 	private boolean success;
 	private String url;
 	private String githubUsername;
+	/**
+	 * The Access Token used for updating the commit status. This is typically
+	 * looked up using the {@link AccessTokenRepository} by the repoId.
+	 */
+	private String accessToken;
 
 
 	/**

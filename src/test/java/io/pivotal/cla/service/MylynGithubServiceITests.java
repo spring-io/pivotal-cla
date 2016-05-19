@@ -16,8 +16,6 @@
 package io.pivotal.cla.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -27,15 +25,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.serializer.support.SerializingConverter;
 
 import io.pivotal.cla.config.ClaOAuthConfig;
 import io.pivotal.cla.config.OAuthClientCredentials;
-import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
-import io.pivotal.cla.data.repository.AccessTokenRepository;
 import okhttp3.mockwebserver.EnqueueResourcesMockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
@@ -47,9 +42,6 @@ import okhttp3.mockwebserver.RecordedRequest;
 public class MylynGithubServiceITests {
 	@Rule
 	public final EnqueueResourcesMockWebServer server = new EnqueueResourcesMockWebServer();
-
-	@Mock
-	AccessTokenRepository tokenRepository;
 
 	ClaOAuthConfig oauthConfig;
 
@@ -70,7 +62,7 @@ public class MylynGithubServiceITests {
 		oauthConfig.setPort(server.getServer().getPort());
 		oauthConfig.setPivotalClaAccessToken("pivotal-cla-accessToken");
 
-		service = new MylynGithubService(tokenRepository, oauthConfig);
+		service = new MylynGithubService(oauthConfig);
 	}
 
 	@Test
@@ -324,9 +316,7 @@ public class MylynGithubServiceITests {
 
 	@Test
 	public void saveSuccessAlreadyCommented() throws Exception {
-		AccessToken token = new AccessToken();
-		token.setToken("access-token-123");
-		when(tokenRepository.findOne(anyString())).thenReturn(token);
+		String accessToken = "access-token-123";
 
 		CommitStatus commitStatus = new CommitStatus();
 		commitStatus.setGithubUsername("rwinch");
@@ -335,6 +325,7 @@ public class MylynGithubServiceITests {
 		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
 		commitStatus.setSuccess(true);
 		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setAccessToken(accessToken);
 
 		service.save(commitStatus);
 
@@ -344,7 +335,7 @@ public class MylynGithubServiceITests {
 		assertThat(request.getMethod()).isEqualTo("POST");
 		assertThat(request.getPath())
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + token.getToken());
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
 		assertThat(request.getBody().readUtf8()).isEqualTo(
 				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Thank you for signing the Contributor License Agreement!\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
 
@@ -363,9 +354,7 @@ public class MylynGithubServiceITests {
 
 	@Test
 	public void saveSuccessNoComments() throws Exception {
-		AccessToken token = new AccessToken();
-		token.setToken("access-token-123");
-		when(tokenRepository.findOne(anyString())).thenReturn(token);
+		String accessToken = "access-token-123";
 
 		CommitStatus commitStatus = new CommitStatus();
 		commitStatus.setGithubUsername("rwinch");
@@ -374,6 +363,7 @@ public class MylynGithubServiceITests {
 		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
 		commitStatus.setSuccess(true);
 		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setAccessToken(accessToken);
 
 		service.save(commitStatus);
 
@@ -383,7 +373,7 @@ public class MylynGithubServiceITests {
 		assertThat(request.getMethod()).isEqualTo("POST");
 		assertThat(request.getPath())
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + token.getToken());
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
 		assertThat(request.getBody().readUtf8()).isEqualTo(
 				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Thank you for signing the Contributor License Agreement!\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
 
@@ -410,9 +400,7 @@ public class MylynGithubServiceITests {
 
 	@Test
 	public void saveFailureAlreadyCommented() throws Exception {
-		AccessToken token = new AccessToken();
-		token.setToken("access-token-123");
-		when(tokenRepository.findOne(anyString())).thenReturn(token);
+		String accessToken = "access-token-123";
 
 		CommitStatus commitStatus = new CommitStatus();
 		commitStatus.setGithubUsername("rwinch");
@@ -421,6 +409,7 @@ public class MylynGithubServiceITests {
 		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
 		commitStatus.setSuccess(false);
 		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setAccessToken(accessToken);
 
 		service.save(commitStatus);
 
@@ -430,7 +419,7 @@ public class MylynGithubServiceITests {
 		assertThat(request.getMethod()).isEqualTo("POST");
 		assertThat(request.getPath())
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + token.getToken());
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
 		assertThat(request.getBody().readUtf8()).isEqualTo(
 				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Please sign the Contributor License Agreement!\",\"state\":\"failure\",\"target_url\":\"https://status.example.com/uri\"}");
 
@@ -449,9 +438,7 @@ public class MylynGithubServiceITests {
 
 	@Test
 	public void saveFailureNoComments() throws Exception {
-		AccessToken token = new AccessToken();
-		token.setToken("access-token-123");
-		when(tokenRepository.findOne(anyString())).thenReturn(token);
+		String accessToken = "access-token-123";
 
 		CommitStatus commitStatus = new CommitStatus();
 		commitStatus.setGithubUsername("rwinch");
@@ -460,6 +447,7 @@ public class MylynGithubServiceITests {
 		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
 		commitStatus.setSuccess(false);
 		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setAccessToken(accessToken);
 
 		service.save(commitStatus);
 
@@ -469,7 +457,7 @@ public class MylynGithubServiceITests {
 		assertThat(request.getMethod()).isEqualTo("POST");
 		assertThat(request.getPath())
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + token.getToken());
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
 		assertThat(request.getBody().readUtf8()).isEqualTo(
 				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Please sign the Contributor License Agreement!\",\"state\":\"failure\",\"target_url\":\"https://status.example.com/uri\"}");
 
@@ -500,7 +488,7 @@ public class MylynGithubServiceITests {
 		oauthConfig.setGitHubApiHost("donotuse");
 		oauthConfig.setGitHubHost(server.getServer().getHostName());
 
-		service = new MylynGithubService(tokenRepository, oauthConfig);
+		service = new MylynGithubService(oauthConfig);
 
 		List<String> repositoryIds = Arrays.asList("spring-projects/has-md", "spring-projects/has-adoc", "spring-projects/no-contributor");
 

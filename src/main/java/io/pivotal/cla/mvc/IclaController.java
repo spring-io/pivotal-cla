@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
@@ -102,8 +103,13 @@ public class IclaController {
 
 
 		UpdatePullRequestStatusRequest updatePullRequest = signClaForm.createUpdatePullRequestStatus(user.getGithubLogin());
-
-		github.save(updatePullRequest);
+		if(updatePullRequest != null) {
+			AccessToken accessToken = tokenRepo.findOne(updatePullRequest.getRepositoryId());
+			if(accessToken != null) {
+				updatePullRequest.setAccessToken(accessToken.getToken());
+				github.save(updatePullRequest);
+			}
+		}
 
 		redirect.addAttribute("repositoryId", repositoryId);
 		redirect.addAttribute("pullRequestId", pullRequestId);

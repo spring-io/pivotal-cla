@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 
+import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
@@ -53,12 +54,13 @@ public class ClaControllerTests extends BaseWebDriverTests {
 	@Test
 	@WithAnonymousUser
 	public void viewSignedWithRepositoryIdAndPullRequestIdNewUser() throws Exception {
+		String repositoryId = "spring-projects/spring-security";
 		User signingUser = WithSigningUserFactory.create();
 		when(mockGithub.getCurrentUser(any())).thenReturn(signingUser);
 		when(mockIndividualSignatureRepository.findSignaturesFor(signingUser,cla.getName())).thenReturn(individualSignature);
 		when(mockIndividualSignatureRepository.findSignaturesFor(any(),eq(signingUser))).thenReturn(Arrays.asList(individualSignature));
+		when(mockTokenRepo.findOne(repositoryId)).thenReturn(new AccessToken(repositoryId, "access-token-123"));
 
-		String repositoryId = "spring-projects/spring-security";
 		int pullRequestId = 123;
 		SignClaPage home = SignClaPage.go(driver, cla.getName(), repositoryId, pullRequestId);
 		home.assertAt();

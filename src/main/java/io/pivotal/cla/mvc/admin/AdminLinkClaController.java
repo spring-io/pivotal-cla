@@ -87,6 +87,14 @@ public class AdminLinkClaController extends AdminClaController {
 
 		ContributingUrlsResponse contributingUrls = github.getContributingUrls(repositoryIds);
 		List<String> hookUrls = github.createPullRequestHooks(createPullRequest);
+		for(String repositoryId : repositoryIds) {
+			AccessToken token = new AccessToken();
+			token.setId(repositoryId);
+			token.setToken(user.getAccessToken());
+
+			tokenRepo.save(token);
+		}
+
 		attrs.addFlashAttribute("signClaUrl", signClaUrl);
 		attrs.addFlashAttribute("hookUrls", hookUrls);
 		attrs.addFlashAttribute("success", true);

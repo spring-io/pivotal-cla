@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.DataUtils;
@@ -436,12 +437,14 @@ public class CclaControllerTests extends BaseWebDriverTests {
 
 	@Test
 	public void signWithRepositoryIdWithPullRequestId() throws Exception {
+		String repositoryId = "rwinch/176_test";
+
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGithub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 		when(mockCorporateSignatureRepository.findSignature(anyString(), anyCollectionOf(String.class), anyCollectionOf(String.class))).thenReturn(null,corporateSignature);
+		when(mockTokenRepo.findOne(repositoryId)).thenReturn(new AccessToken(repositoryId, "access-token-123"));
 
-		String repositoryId = "rwinch/176_test";
 		int pullRequestId = 2;
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName(), repositoryId, pullRequestId);
 
