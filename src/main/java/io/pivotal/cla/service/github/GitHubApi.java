@@ -18,8 +18,11 @@ package io.pivotal.cla.service.github;
 import java.util.List;
 
 import io.pivotal.cla.data.User;
+import io.pivotal.cla.service.MigratePullRequestStatusRequest;
 
 public interface GitHubApi {
+
+	List<CommitStatus> createUpdatePullRequestStatuses(MigratePullRequestStatusRequest request);
 
 	void save(UpdatePullRequestStatusRequest updatePullRequest);
 

@@ -56,6 +56,7 @@ import io.pivotal.cla.egit.github.core.Email;
 import io.pivotal.cla.egit.github.core.EventsRepositoryHook;
 import io.pivotal.cla.egit.github.core.service.ContextCommitService;
 import io.pivotal.cla.egit.github.core.service.EmailService;
+import io.pivotal.cla.service.MigratePullRequestStatusRequest;
 import lombok.Data;
 import lombok.SneakyThrows;
 
@@ -179,6 +180,36 @@ public class MylynGitHubApi implements GitHubApi {
 		status.setUrl(updatePullRequest.getCommitStatusUrl());
 
 		save(status);
+	}
+
+	@Override
+	@SneakyThrows
+	public List<io.pivotal.cla.service.github.CommitStatus> createUpdatePullRequestStatuses(
+			MigratePullRequestStatusRequest request) {
+		GitHubClient client = createClient(request.getAccessToken());
+		PullRequestService pullRequestService = new PullRequestService(client);
+		String commitStatusUrl = request.getCommitStatusUrl();
+		String accessToken = request.getAccessToken();
+		List<io.pivotal.cla.service.github.CommitStatus> results = new ArrayList<>();
+
+		for(String repositoryId : request.getRepositoryIds()) {
+			RepositoryId repository = RepositoryId.createFromId(repositoryId);
+			List<PullRequest> repositoryPullRequests = pullRequestService.getPullRequests(repository, "open");
+
+			for(PullRequest pullRequest : repositoryPullRequests) {
+				io.pivotal.cla.service.github.CommitStatus status = new io.pivotal.cla.service.github.CommitStatus();
+				String sha = pullRequest.getHead().getSha();
+				status.setPullRequestId(pullRequest.getNumber());
+				status.setRepoId(repositoryId);
+				status.setSha(sha);
+				status.setGitHubUsername(pullRequest.getUser().getLogin());
+				status.setUrl(commitStatusUrl);
+				status.setAccessToken(accessToken);
+
+				results.add(status);
+			}
+		}
+		return results;
 	}
 
 	@SneakyThrows

@@ -25,6 +25,7 @@ import javax.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,6 +34,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.mvc.util.UrlBuilder;
+import io.pivotal.cla.service.MigratePullRequestStatusRequest;
 import io.pivotal.cla.service.github.ContributingUrlsResponse;
 import io.pivotal.cla.service.github.CreatePullRequestHookRequest;
 
@@ -95,12 +97,37 @@ public class AdminLinkClaController extends AdminClaController {
 			tokenRepo.save(token);
 		}
 
+		UpdatePullRequestStatusesForm updatePullRequestStatusesForm = new UpdatePullRequestStatusesForm();
+		updatePullRequestStatusesForm.setClaName(linkClaForm.getClaName());
+		updatePullRequestStatusesForm.setRepositories(repositoryIds);
+
 		attrs.addFlashAttribute("signClaUrl", signClaUrl);
 		attrs.addFlashAttribute("hookUrls", hookUrls);
 		attrs.addFlashAttribute("success", true);
 		attrs.addFlashAttribute("editContributingAdocUrls", contributingUrls.getAsciidoc());
 		attrs.addFlashAttribute("editContributingMdUrls", contributingUrls.getMarkdown());
+		attrs.addFlashAttribute("updatePullRequestStatusesForm", updatePullRequestStatusesForm);
 
 		return "redirect:/admin/cla/link";
 	}
+
+	@RequestMapping(value = "/admin/cla/link/migrate", method = RequestMethod.POST)
+	public String updatePullRequestStatuses(@AuthenticationPrincipal User user, @ModelAttribute UpdatePullRequestStatusesForm updatePullRequestStatusesForm, HttpServletRequest request) throws Exception {
+		String claName = updatePullRequestStatusesForm.getClaName();
+		String urlEncodedClaName = URLEncoder.encode(claName, "UTF-8");
+
+
+		UrlBuilder signClaUrlBldr = UrlBuilder.fromRequest(request);
+		String signClaUrl = signClaUrlBldr.path("/sign/" + urlEncodedClaName).build();
+
+		MigratePullRequestStatusRequest migratePullRequests = MigratePullRequestStatusRequest.builder()
+							.accessToken(user.getAccessToken())
+							.commitStatusUrl(signClaUrl)
+							.repositoryIds(updatePullRequestStatusesForm.getRepositories())
+							.build();
+
+		claService.migratePullRequestStatus(updatePullRequestStatusesForm.getClaName(), migratePullRequests);
+		return "redirect:/admin/cla/link";
+	}
+
 }

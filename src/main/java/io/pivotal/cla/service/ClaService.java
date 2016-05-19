@@ -20,6 +20,7 @@ import io.pivotal.cla.data.repository.UserRepository;
 import io.pivotal.cla.service.github.CommitStatus;
 import io.pivotal.cla.service.github.GitHubApi;
 import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
+import lombok.SneakyThrows;
 
 @Component
 public class ClaService {
@@ -99,6 +100,16 @@ public class ClaService {
 			commitStatus.setAccessToken(accessTokenValue);
 		}
 		gitHub.save(commitStatus);
+	}
+
+	@SneakyThrows
+	public void migratePullRequestStatus(String claName, MigratePullRequestStatusRequest request) {
+		List<CommitStatus> commitStatuses = gitHub.createUpdatePullRequestStatuses(request);
+		for(CommitStatus status : commitStatuses) {
+			boolean success = hasSigned(status.getGitHubUsername(), claName);
+			status.setSuccess(success);
+			gitHub.save(status);
+		}
 	}
 
 	private boolean hasSigned(String gitHubLogin, String claName) {

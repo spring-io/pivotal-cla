@@ -25,6 +25,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
+import io.pivotal.cla.service.ClaService;
 import io.pivotal.cla.service.github.GitHubApi;
 
 @PreAuthorize("hasRole('ADMIN')")
@@ -39,7 +40,8 @@ public class AdminClaController {
 	@Autowired
 	AccessTokenRepository tokenRepo;
 
-
+	@Autowired
+	ClaService claService;
 
 	protected List<ContributorLicenseAgreement> findPrimaryClas() {
 		List<ContributorLicenseAgreement> result = claRepo.findByPrimaryTrue();
