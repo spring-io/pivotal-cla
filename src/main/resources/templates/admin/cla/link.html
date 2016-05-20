@@ -52,7 +52,7 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 				<form th:action="@{/admin/cla/link/migrate}" th:object="${updatePullRequestStatusesForm}" method="post">
 					<input type="hidden" th:field="*{claName}"/>
 					<input type="hidden" th:field="*{repositories}"/>
-					<input type="submit" class="btn btn-success" value="Migrate Pull Requests"/>
+					<input id="migrate-submit" type="submit" class="btn btn-success" value="Migrate Pull Requests"/>
 				</form>
 				<h3>Link more Contributor Agreements</h3>
 			</div>

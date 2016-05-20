@@ -43,8 +43,16 @@ public class AdminLinkClaPage extends BasePage {
 	@FindBy(id = "contributing-md")
 	WebElement contributingMd;
 
+	@FindBy(id = "migrate-submit")
+	WebElement migrateSubmit;
+
 	public AdminLinkClaPage(WebDriver driver) {
 		super(driver);
+	}
+
+	public AdminLinkClaPage migrate() {
+		migrateSubmit.click();
+		return PageFactory.initElements(getDriver(), getClass());
 	}
 
 	public String contributingMd() {

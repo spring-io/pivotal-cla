@@ -17,6 +17,7 @@ package io.pivotal.cla.webdriver.admin;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -36,6 +37,7 @@ import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithAdminUser;
 import io.pivotal.cla.security.WithSigningUser;
+import io.pivotal.cla.service.github.CommitStatus;
 import io.pivotal.cla.service.github.ContributingUrlsResponse;
 import io.pivotal.cla.service.github.CreatePullRequestHookRequest;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
@@ -96,7 +98,7 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void linkClaValidationRepositories() throws Exception {
+	public void linkClaRepositories() throws Exception {
 		AccessToken token = new AccessToken(AccessToken.CLA_ACCESS_TOKEN_ID, "linkClaValidationRepositories_access_token_abc123");
 		when(mockTokenRepo.findOne(AccessToken.CLA_ACCESS_TOKEN_ID)).thenReturn(token);
 		when(mockGitHub.getContributingUrls(anyList())).thenReturn(new ContributingUrlsResponse());
@@ -123,6 +125,30 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 		AccessToken savedToken = tokenCaptor.getValue();
 		assertThat(savedToken.getId()).isEqualTo("test/this");
 		assertThat(savedToken.getToken()).isEqualTo(user.getAccessToken());
+
+		CommitStatus expectedStatus = new CommitStatus();
+		expectedStatus.setAccessToken("access-token-123");
+		expectedStatus.setGitHubUsername("username");
+		expectedStatus.setPullRequestId(1);
+		expectedStatus.setRepoId("repo");
+		expectedStatus.setSha("12345678");
+		expectedStatus.setUrl("https://cla.pivotal.io/sign/pivotal");
+
+		when(mockGitHub.createUpdatePullRequestStatuses(any())).thenReturn(Arrays.asList(expectedStatus));
+
+		link = link.migrate();
+
+		ArgumentCaptor<CommitStatus> statusCaptor = ArgumentCaptor.forClass(CommitStatus.class);
+		verify(mockGitHub).save(statusCaptor.capture());
+
+		CommitStatus status = statusCaptor.getValue();
+		assertThat(status.getAccessToken()).isEqualTo(expectedStatus.getAccessToken());
+		assertThat(status.getGitHubUsername()).isEqualTo(expectedStatus.getGitHubUsername());
+		assertThat(status.getPullRequestId()).isEqualTo(expectedStatus.getPullRequestId());
+		assertThat(status.getRepoId()).isEqualTo(expectedStatus.getRepoId());
+		assertThat(status.getSha()).isEqualTo(expectedStatus.getSha());
+		assertThat(status.getSuccess()).isFalse();
+		assertThat(status.getUrl()).isEqualTo(expectedStatus.getUrl());
 	}
 
 	@WithSigningUser
