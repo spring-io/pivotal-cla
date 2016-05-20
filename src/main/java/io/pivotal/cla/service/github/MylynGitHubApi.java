@@ -15,7 +15,6 @@
  */
 package io.pivotal.cla.service.github;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -373,13 +372,10 @@ public class MylynGitHubApi implements GitHubApi {
 	}
 
 	@Override
+	@SneakyThrows
 	public String markdownToHtml(String accessToken, String markdown) {
 		MarkdownService markdownService = new MarkdownService(createClient(accessToken));
-		try {
-			return markdownService.getHtml(markdown, "gfm");
-		} catch(IOException e) {
-			throw new RuntimeException("Couldn't convert markdown", e);
-		}
+		return markdownService.getHtml(markdown, "gfm");
 	}
 
 	private Map<String,String> createEditLinks(Collection<String> repoIds, String fileName) {
