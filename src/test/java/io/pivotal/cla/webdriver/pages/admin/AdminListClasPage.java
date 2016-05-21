@@ -88,7 +88,6 @@ public class AdminListClasPage extends BasePage {
 		final WebDriver driver;
 
 		public AdminEditClaPage edit() {
-			System.out.println(edit);
 			edit.click();
 			return PageFactory.initElements(getDriver(), AdminEditClaPage.class);
 		}
