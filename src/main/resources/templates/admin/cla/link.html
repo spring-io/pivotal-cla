@@ -51,8 +51,8 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 					To perform the migration click the button below:
 				</p>
 				<form th:action="@{/admin/cla/link/migrate}" th:object="${updatePullRequestStatusesForm}" method="post">
-					<input type="hidden" th:field="*{claName}"/>
-					<input type="hidden" th:field="*{repositories}"/>
+					<input type="hidden" id="migrate-claName" th:field="*{claName}"/>
+					<input type="hidden" id="migrate-repositories" th:field="*{repositories}"/>
 					<input id="migrate-submit" type="submit" class="btn btn-success" value="Migrate Pull Requests"/>
 				</form>
 			</div>
