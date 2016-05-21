@@ -17,8 +17,9 @@
 					<li>Will use your OAuth access token to update the commit status of the linked repositories <a class="glyphicon glyphicon-question-sign" href="#" data-toggle="modal" data-target="#what-happened"></a></li>
 				</ul>
 			</div>
-			<div class="container" th:if="${success}">
-				<h3>Next Steps</h3>
+			<div th:if="${success}">
+				<h2>Next Steps</h2>
+				<h3>Update CONTRIBUTING</h3>
 				<p>The next step is to update all of the contributor guide lines in your repositories to include a link to the
 					contributor license agreement.</p>
 				<div th:if="${not #lists.isEmpty(editContributingMdUrls)}">
@@ -46,16 +47,16 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 				<h3>Update Existing Pull Requests</h3>
 				<p>
 					You can also (optionally) update the existing Pull Requests with a status.
-					Depending on the number of open pull requests, this can take quite some time.
-					to perform the migration click the button below:
+					Depending on the number of open pull requests, this can take some time.
+					To perform the migration click the button below:
 				</p>
 				<form th:action="@{/admin/cla/link/migrate}" th:object="${updatePullRequestStatusesForm}" method="post">
 					<input type="hidden" th:field="*{claName}"/>
 					<input type="hidden" th:field="*{repositories}"/>
 					<input id="migrate-submit" type="submit" class="btn btn-success" value="Migrate Pull Requests"/>
 				</form>
-				<h3>Link more Contributor Agreements</h3>
 			</div>
+			<h2>Link to a Contributor License Agreement</h2>
 			<div class="modal fade" tabindex="-1" role="dialog" id="what-happened">
 				<div class="modal-dialog">
 					<div class="modal-content">
