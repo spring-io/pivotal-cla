@@ -19,7 +19,6 @@ import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.data.repository.UserRepository;
 import io.pivotal.cla.service.github.CommitStatus;
 import io.pivotal.cla.service.github.GitHubApi;
-import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
 import lombok.SneakyThrows;
 
 @Component
@@ -46,27 +45,30 @@ public class ClaService {
 
 	}
 
-	public void updatePullRequest(String claName, UpdatePullRequestStatusRequest updatePullRequest) {
-		if(updatePullRequest == null) {
-			return;
-		}
-
-		String gitHubLogin = updatePullRequest.getCurrentUserGitHubLogin();
-		boolean hasSigned = hasSigned(gitHubLogin, claName);
-		updatePullRequest.setSuccess(hasSigned);
-		updatePullRequest(updatePullRequest);
-	}
-
-	public void updatePullRequest(UpdatePullRequestStatusRequest updatePullRequest) {
-		if(updatePullRequest.getAccessToken() == null) {
-			AccessToken accessToken = accessTokenRepository.findOne(updatePullRequest.getRepositoryId());
+	public void savePullRequestStatus(ClaPullRequestStatusRequest request) {
+		String claName = request.getClaName();
+		CommitStatus commitStatus = request.getCommitStatus();
+		String gitHubLogin = commitStatus.getGitHubUsername();
+		if(commitStatus.getAccessToken() == null) {
+			AccessToken accessToken = accessTokenRepository.findOne(commitStatus.getRepoId());
 			if(accessToken == null) {
 				return;
 			}
-			updatePullRequest.setAccessToken(accessToken.getToken());
+			String token = accessToken.getToken();
+			commitStatus.setAccessToken(token);
 		}
-
-		gitHub.save(updatePullRequest);
+		if(commitStatus.getSha() == null) {
+			String sha = gitHub.getShaForPullRequest(commitStatus);
+			if(sha == null) {
+				return;
+			}
+			commitStatus.setSha(sha);
+		}
+		if(commitStatus.getSuccess() == null) {
+			boolean hasSigned = hasSigned(gitHubLogin, claName);
+			commitStatus.setSuccess(hasSigned);
+		}
+		gitHub.save(commitStatus);
 	}
 
 	public IndividualSignature findIndividualSignaturesFor(User user, String claName) {
@@ -83,23 +85,6 @@ public class ClaService {
 				: corporateSignature.getCla();
 
 		return new CorporateSignatureInfo(contributorLicenseAgreement, corporateSignature, gitHubOrganizations);
-	}
-
-	public void saveCommitStatus(String claName, CommitStatus commitStatus) {
-		String gitHubLogin = commitStatus.getGitHubUsername();
-		if(commitStatus.getSuccess() == null) {
-			boolean hasSigned = hasSigned(gitHubLogin, claName);
-			commitStatus.setSuccess(hasSigned);
-		}
-		if(commitStatus.getAccessToken() == null) {
-			AccessToken accessToken = accessTokenRepository.findOne(commitStatus.getRepoId());
-			String accessTokenValue = accessToken == null ? null : accessToken.getToken();
-			if(accessTokenValue == null) {
-				return;
-			}
-			commitStatus.setAccessToken(accessTokenValue);
-		}
-		gitHub.save(commitStatus);
 	}
 
 	@SneakyThrows

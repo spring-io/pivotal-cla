@@ -24,7 +24,15 @@ public interface GitHubApi {
 
 	List<CommitStatus> createUpdatePullRequestStatuses(MigratePullRequestStatusRequest request);
 
-	void save(UpdatePullRequestStatusRequest updatePullRequest);
+	/**
+	 * Gets the sha hash for a particular pull request. If
+	 * {@link CommitStatus#getGitHubUsername()} does not match the user who
+	 * submitted the pull request, then null is returned.
+	 *
+	 * @param commitStatus
+	 * @return
+	 */
+	String getShaForPullRequest(CommitStatus commitStatus);
 
 	void save(CommitStatus status);
 

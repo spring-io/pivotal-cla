@@ -40,7 +40,7 @@ import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
-import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
+import io.pivotal.cla.service.github.CommitStatus;
 import io.pivotal.cla.webdriver.pages.SignCclaPage;
 import io.pivotal.cla.webdriver.pages.SignCclaPage.Form;
 
@@ -432,7 +432,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		assertThat(signature.getTitle()).isEqualTo(title);
 		assertThat(signature.getDateOfSignature()).isCloseTo(new Date(), TimeUnit.SECONDS.toMillis(5));
 
-		verify(mockGitHub, never()).save(any(UpdatePullRequestStatusRequest.class));
+		verify(mockGitHub, never()).save(any(CommitStatus.class));
 	}
 
 	@Test
@@ -442,6 +442,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
+		when(mockGitHub.getShaForPullRequest(any())).thenReturn("abc123");
 		when(mockCorporateSignatureRepository.findSignature(anyString(), anyCollectionOf(String.class), anyCollectionOf(String.class))).thenReturn(null,corporateSignature);
 		when(mockTokenRepo.findOne(repositoryId)).thenReturn(new AccessToken(repositoryId, "access-token-123"));
 
@@ -463,14 +464,14 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		signPage.assertAt();
 		signPage.assertPullRequestLink(repositoryId, pullRequestId);
 
-		ArgumentCaptor<UpdatePullRequestStatusRequest> updatePullRequestCaptor = ArgumentCaptor.forClass(UpdatePullRequestStatusRequest.class);
+		ArgumentCaptor<CommitStatus> updatePullRequestCaptor = ArgumentCaptor.forClass(CommitStatus.class);
 		verify(mockGitHub).save(updatePullRequestCaptor.capture());
-		UpdatePullRequestStatusRequest updatePr = updatePullRequestCaptor.getValue();
+		CommitStatus updatePr = updatePullRequestCaptor.getValue();
 		String commitStatusUrl = "http://localhost/sign/"+cla.getName()+"?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId;
-		assertThat(updatePr.getCommitStatusUrl()).isEqualTo(commitStatusUrl);
-		assertThat(updatePr.getCurrentUserGitHubLogin()).isEqualTo(WithSigningUserFactory.create().getGitHubLogin());
+		assertThat(updatePr.getUrl()).isEqualTo(commitStatusUrl);
+		assertThat(updatePr.getGitHubUsername()).isEqualTo(WithSigningUserFactory.create().getGitHubLogin());
 		assertThat(updatePr.getPullRequestId()).isEqualTo(pullRequestId);
-		assertThat(updatePr.getRepositoryId()).isEqualTo(repositoryId);
+		assertThat(updatePr.getRepoId()).isEqualTo(repositoryId);
 	}
 
 	@Test

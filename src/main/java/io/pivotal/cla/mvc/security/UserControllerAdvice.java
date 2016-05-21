@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.mvc.ClaRequest;
 import io.pivotal.cla.mvc.support.ImportedSignaturesSessionAttr;
+import io.pivotal.cla.service.ClaPullRequestStatusRequest;
 import io.pivotal.cla.service.ClaService;
-import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
 
 @ControllerAdvice
 public class UserControllerAdvice {
@@ -52,8 +52,10 @@ public class UserControllerAdvice {
 		if(!importedSignaturesSessionAttr.getValue()) {
 			return false;
 		}
-		UpdatePullRequestStatusRequest updatePullRequest = claRequest.createUpdatePullRequestStatus(currentUser.getGitHubLogin());
-		claService.updatePullRequest(claRequest.getClaName(), updatePullRequest);
+		ClaPullRequestStatusRequest updatePullRequest = claRequest.createUpdatePullRequestStatus(currentUser.getGitHubLogin());
+		if(updatePullRequest != null) {
+			claService.savePullRequestStatus(updatePullRequest);
+		}
 		importedSignaturesSessionAttr.setValue(false);
 		return true;
 	}

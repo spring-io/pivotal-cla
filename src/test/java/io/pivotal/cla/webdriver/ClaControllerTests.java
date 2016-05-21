@@ -36,7 +36,7 @@ import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
-import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
+import io.pivotal.cla.service.github.CommitStatus;
 import io.pivotal.cla.webdriver.pages.AboutPage;
 import io.pivotal.cla.webdriver.pages.SignCclaPage;
 import io.pivotal.cla.webdriver.pages.SignClaPage;
@@ -57,6 +57,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		String repositoryId = "spring-projects/spring-security";
 		User signingUser = WithSigningUserFactory.create();
 		when(mockGitHub.getCurrentUser(any())).thenReturn(signingUser);
+		when(mockGitHub.getShaForPullRequest(any())).thenReturn("abc123");
 		when(mockIndividualSignatureRepository.findSignaturesFor(any(), eq(signingUser),eq(cla.getName()))).thenReturn(Arrays.asList(individualSignature));
 		when(mockIndividualSignatureRepository.findSignaturesFor(any(),eq(signingUser))).thenReturn(Arrays.asList(individualSignature));
 		when(mockTokenRepo.findOne(repositoryId)).thenReturn(new AccessToken(repositoryId, "access-token-123"));
@@ -68,14 +69,14 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		home.assertPullRequestLink(repositoryId, pullRequestId);
 		home.assertImported();
 
-		ArgumentCaptor<UpdatePullRequestStatusRequest> updatePullRequestCaptor = ArgumentCaptor.forClass(UpdatePullRequestStatusRequest.class);
+		ArgumentCaptor<CommitStatus> updatePullRequestCaptor = ArgumentCaptor.forClass(CommitStatus.class);
 		verify(mockGitHub).save(updatePullRequestCaptor.capture());
-		UpdatePullRequestStatusRequest updatePr = updatePullRequestCaptor.getValue();
+		CommitStatus updatePr = updatePullRequestCaptor.getValue();
 		String commitStatusUrl = "http://localhost/sign/"+cla.getName()+"?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId;
-		assertThat(updatePr.getCommitStatusUrl()).isEqualTo(commitStatusUrl);
-		assertThat(updatePr.getCurrentUserGitHubLogin()).isEqualTo(signingUser.getGitHubLogin());
+		assertThat(updatePr.getUrl()).isEqualTo(commitStatusUrl);
+		assertThat(updatePr.getGitHubUsername()).isEqualTo(signingUser.getGitHubLogin());
 		assertThat(updatePr.getPullRequestId()).isEqualTo(pullRequestId);
-		assertThat(updatePr.getRepositoryId()).isEqualTo(repositoryId);
+		assertThat(updatePr.getRepoId()).isEqualTo(repositoryId);
 	}
 
 	@Test
@@ -93,7 +94,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		home.assertAt();
 		home.assertClaLinksWithPullRequest(cla.getName(), repositoryId, pullRequestId);
 
-		verify(mockGitHub, never()).save(any(UpdatePullRequestStatusRequest.class));
+		verify(mockGitHub, never()).save(any(CommitStatus.class));
 	}
 
 	@Test

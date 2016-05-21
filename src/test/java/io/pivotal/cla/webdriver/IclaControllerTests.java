@@ -38,7 +38,7 @@ import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
-import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
+import io.pivotal.cla.service.github.CommitStatus;
 import io.pivotal.cla.webdriver.pages.SignIclaPage;
 import io.pivotal.cla.webdriver.pages.SignIclaPage.Form;
 
@@ -359,6 +359,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 		when(mockIndividualSignatureRepository.findSignaturesFor(any(), eq(WithSigningUserFactory.create()),eq(cla.getName()))).thenReturn(Collections.<IndividualSignature>emptyList(), Arrays.asList(individualSignature));
 		when(mockTokenRepo.findOne(repositoryId)).thenReturn(new AccessToken(repositoryId, "access-token-123"));
+		when(mockGitHub.getShaForPullRequest(any())).thenReturn("abc123");
 
 		int pullRequestId = 2;
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName(), repositoryId, pullRequestId);
@@ -375,14 +376,14 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		signPage.assertAt();
 		signPage.assertPullRequestLink(repositoryId, pullRequestId);
 
-		ArgumentCaptor<UpdatePullRequestStatusRequest> updatePullRequestCaptor = ArgumentCaptor.forClass(UpdatePullRequestStatusRequest.class);
+		ArgumentCaptor<CommitStatus> updatePullRequestCaptor = ArgumentCaptor.forClass(CommitStatus.class);
 		verify(mockGitHub).save(updatePullRequestCaptor.capture());
-		UpdatePullRequestStatusRequest updatePr = updatePullRequestCaptor.getValue();
+		CommitStatus updatePr = updatePullRequestCaptor.getValue();
 		String commitStatusUrl = "http://localhost/sign/"+cla.getName()+"?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId;
-		assertThat(updatePr.getCommitStatusUrl()).isEqualTo(commitStatusUrl);
-		assertThat(updatePr.getCurrentUserGitHubLogin()).isEqualTo(WithSigningUserFactory.create().getGitHubLogin());
+		assertThat(updatePr.getUrl()).isEqualTo(commitStatusUrl);
+		assertThat(updatePr.getGitHubUsername()).isEqualTo(WithSigningUserFactory.create().getGitHubLogin());
 		assertThat(updatePr.getPullRequestId()).isEqualTo(pullRequestId);
-		assertThat(updatePr.getRepositoryId()).isEqualTo(repositoryId);
+		assertThat(updatePr.getRepoId()).isEqualTo(repositoryId);
 	}
 
 	@Test

@@ -34,8 +34,8 @@ import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
+import io.pivotal.cla.service.ClaPullRequestStatusRequest;
 import io.pivotal.cla.service.ClaService;
-import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
 
 @Controller
 public class IclaController {
@@ -96,9 +96,11 @@ public class IclaController {
 			return "redirect:/sign/{claName}/icla";
 		}
 
-		UpdatePullRequestStatusRequest updatePullRequest = signClaForm.createUpdatePullRequestStatus(user.getGitHubLogin());
-		updatePullRequest.setSuccess(true);
-		claService.updatePullRequest(updatePullRequest);
+		ClaPullRequestStatusRequest updatePullRequest = signClaForm.createUpdatePullRequestStatus(user.getGitHubLogin());
+		if(updatePullRequest != null) {
+			updatePullRequest.getCommitStatus().setSuccess(true);
+			claService.savePullRequestStatus(updatePullRequest);
+		}
 
 		redirect.addAttribute("repositoryId", repositoryId);
 		redirect.addAttribute("pullRequestId", pullRequestId);

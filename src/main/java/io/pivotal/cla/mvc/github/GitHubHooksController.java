@@ -32,6 +32,7 @@ import com.google.gson.Gson;
 
 import io.pivotal.cla.egit.github.core.event.RepositoryPullRequestPayload;
 import io.pivotal.cla.mvc.util.UrlBuilder;
+import io.pivotal.cla.service.ClaPullRequestStatusRequest;
 import io.pivotal.cla.service.ClaService;
 import io.pivotal.cla.service.github.CommitStatus;
 
@@ -79,7 +80,10 @@ public class GitHubHooksController {
 			.build();
 		status.setUrl(signUrl);
 
-		claService.saveCommitStatus(cla, status);
+		ClaPullRequestStatusRequest pullRequestStatusRequest = new ClaPullRequestStatusRequest();
+		pullRequestStatusRequest.setClaName(cla);
+		pullRequestStatusRequest.setCommitStatus(status);
+		claService.savePullRequestStatus(pullRequestStatusRequest);
 
 		return "SUCCESS";
 	}

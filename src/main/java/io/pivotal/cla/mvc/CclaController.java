@@ -34,10 +34,10 @@ import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
+import io.pivotal.cla.service.ClaPullRequestStatusRequest;
 import io.pivotal.cla.service.ClaService;
 import io.pivotal.cla.service.CorporateSignatureInfo;
 import io.pivotal.cla.service.github.GitHubApi;
-import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
 
 @Controller
 public class CclaController {
@@ -113,9 +113,11 @@ public class CclaController {
 			return "redirect:/sign/{claName}/ccla";
 		}
 
-		UpdatePullRequestStatusRequest updatePullRequest = signCorporateClaForm.createUpdatePullRequestStatus(user.getGitHubLogin());
-		updatePullRequest.setSuccess(true);
-		claService.updatePullRequest(updatePullRequest);
+		ClaPullRequestStatusRequest updatePullRequest = signCorporateClaForm.createUpdatePullRequestStatus(user.getGitHubLogin());
+		if(updatePullRequest != null) {
+			updatePullRequest.getCommitStatus().setSuccess(true);
+			claService.savePullRequestStatus(updatePullRequest);
+		}
 
 		redirect.addAttribute("repositoryId", repositoryId);
 		redirect.addAttribute("pullRequestId", pullRequestId);

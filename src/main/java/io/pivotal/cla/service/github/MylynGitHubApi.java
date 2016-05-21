@@ -150,14 +150,14 @@ public class MylynGitHubApi implements GitHubApi {
 	}
 
 	@SneakyThrows
-	public void save(UpdatePullRequestStatusRequest updatePullRequest) {
-		String repositoryId = updatePullRequest.getRepositoryId();
-		int pullRequestId = updatePullRequest.getPullRequestId();
-		String currentUserGitHubLogin = updatePullRequest.getCurrentUserGitHubLogin();
+	public String getShaForPullRequest(io.pivotal.cla.service.github.CommitStatus commitStatus) {
+		String repositoryId = commitStatus.getRepoId();
+		int pullRequestId = commitStatus.getPullRequestId();
+		String currentUserGitHubLogin = commitStatus.getGitHubUsername();
 
-		String accessToken = updatePullRequest.getAccessToken();
+		String accessToken = commitStatus.getAccessToken();
 		if (accessToken == null) {
-			return;
+			return null;
 		}
 		GitHubClient client = createClient(accessToken);
 		RepositoryId id = RepositoryId.createFromId(repositoryId);
@@ -165,20 +165,10 @@ public class MylynGitHubApi implements GitHubApi {
 		PullRequestService service = new PullRequestService(client);
 		PullRequest pullRequest = service.getPullRequest(id, pullRequestId);
 		if (!pullRequest.getUser().getLogin().equals(currentUserGitHubLogin)) {
-			return;
+			return null;
 		}
 
-		String sha = pullRequest.getHead().getSha();
-		io.pivotal.cla.service.github.CommitStatus status = new io.pivotal.cla.service.github.CommitStatus();
-		status.setAccessToken(accessToken);
-		status.setPullRequestId(pullRequest.getNumber());
-		status.setRepoId(repositoryId);
-		status.setSha(sha);
-		status.setSuccess(updatePullRequest.isSuccess());
-		status.setGitHubUsername(currentUserGitHubLogin);
-		status.setUrl(updatePullRequest.getCommitStatusUrl());
-
-		save(status);
+		return pullRequest.getHead().getSha();
 	}
 
 	@Override

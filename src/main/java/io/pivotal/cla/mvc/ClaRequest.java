@@ -21,7 +21,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import io.pivotal.cla.mvc.util.UrlBuilder;
-import io.pivotal.cla.service.github.UpdatePullRequestStatusRequest;
+import io.pivotal.cla.service.ClaPullRequestStatusRequest;
+import io.pivotal.cla.service.github.CommitStatus;
 import lombok.Data;
 
 /**
@@ -34,15 +35,20 @@ public class ClaRequest {
 	String repositoryId;
 	Integer pullRequestId;
 
-	public UpdatePullRequestStatusRequest createUpdatePullRequestStatus(String currentUserGitHubLogin) throws Exception {
+	public ClaPullRequestStatusRequest createUpdatePullRequestStatus(String currentUserGitHubLogin) throws Exception {
 		if(pullRequestId == null) {
 			return null;
 		}
-		UpdatePullRequestStatusRequest request = new UpdatePullRequestStatusRequest();
-		request.setCurrentUserGitHubLogin(currentUserGitHubLogin);
-		request.setPullRequestId(pullRequestId);
-		request.setRepositoryId(repositoryId);
-		request.setCommitStatusUrl(signUrl());
+		CommitStatus commitStatus = new CommitStatus();
+		commitStatus.setRepoId(repositoryId);
+		commitStatus.setPullRequestId(pullRequestId);
+		commitStatus.setUrl(signUrl());
+		commitStatus.setGitHubUsername(currentUserGitHubLogin);
+
+		ClaPullRequestStatusRequest request = new ClaPullRequestStatusRequest();
+		request.setClaName(claName);
+		request.setCommitStatus(commitStatus);
+
 		return request;
 	}
 
