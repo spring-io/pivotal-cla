@@ -22,19 +22,19 @@ import io.pivotal.cla.service.MigratePullRequestStatusRequest;
 
 public interface GitHubApi {
 
-	List<CommitStatus> createUpdatePullRequestStatuses(MigratePullRequestStatusRequest request);
+	List<PullRequestStatus> createUpdatePullRequestStatuses(MigratePullRequestStatusRequest request);
 
 	/**
 	 * Gets the sha hash for a particular pull request. If
-	 * {@link CommitStatus#getGitHubUsername()} does not match the user who
+	 * {@link PullRequestStatus#getGitHubUsername()} does not match the user who
 	 * submitted the pull request, then null is returned.
 	 *
 	 * @param commitStatus
 	 * @return
 	 */
-	String getShaForPullRequest(CommitStatus commitStatus);
+	String getShaForPullRequest(PullRequestStatus commitStatus);
 
-	void save(CommitStatus status);
+	void save(PullRequestStatus status);
 
 	List<String> findRepositoryNames(String accessToken);
 

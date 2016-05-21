@@ -40,7 +40,7 @@ import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
-import io.pivotal.cla.service.github.CommitStatus;
+import io.pivotal.cla.service.github.PullRequestStatus;
 import io.pivotal.cla.webdriver.pages.SignCclaPage;
 import io.pivotal.cla.webdriver.pages.SignCclaPage.Form;
 
@@ -432,7 +432,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		assertThat(signature.getTitle()).isEqualTo(title);
 		assertThat(signature.getDateOfSignature()).isCloseTo(new Date(), TimeUnit.SECONDS.toMillis(5));
 
-		verify(mockGitHub, never()).save(any(CommitStatus.class));
+		verify(mockGitHub, never()).save(any(PullRequestStatus.class));
 	}
 
 	@Test
@@ -464,9 +464,9 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		signPage.assertAt();
 		signPage.assertPullRequestLink(repositoryId, pullRequestId);
 
-		ArgumentCaptor<CommitStatus> updatePullRequestCaptor = ArgumentCaptor.forClass(CommitStatus.class);
+		ArgumentCaptor<PullRequestStatus> updatePullRequestCaptor = ArgumentCaptor.forClass(PullRequestStatus.class);
 		verify(mockGitHub).save(updatePullRequestCaptor.capture());
-		CommitStatus updatePr = updatePullRequestCaptor.getValue();
+		PullRequestStatus updatePr = updatePullRequestCaptor.getValue();
 		String commitStatusUrl = "http://localhost/sign/"+cla.getName()+"?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId;
 		assertThat(updatePr.getUrl()).isEqualTo(commitStatusUrl);
 		assertThat(updatePr.getGitHubUsername()).isEqualTo(WithSigningUserFactory.create().getGitHubLogin());

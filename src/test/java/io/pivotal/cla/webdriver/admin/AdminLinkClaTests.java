@@ -37,7 +37,7 @@ import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithAdminUser;
 import io.pivotal.cla.security.WithSigningUser;
-import io.pivotal.cla.service.github.CommitStatus;
+import io.pivotal.cla.service.github.PullRequestStatus;
 import io.pivotal.cla.service.github.ContributingUrlsResponse;
 import io.pivotal.cla.service.github.CreatePullRequestHookRequest;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
@@ -126,7 +126,7 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 		assertThat(savedToken.getId()).isEqualTo("test/this");
 		assertThat(savedToken.getToken()).isEqualTo(user.getAccessToken());
 
-		CommitStatus expectedStatus = new CommitStatus();
+		PullRequestStatus expectedStatus = new PullRequestStatus();
 		expectedStatus.setAccessToken("access-token-123");
 		expectedStatus.setGitHubUsername("username");
 		expectedStatus.setPullRequestId(1);
@@ -138,10 +138,10 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 
 		link = link.migrate();
 
-		ArgumentCaptor<CommitStatus> statusCaptor = ArgumentCaptor.forClass(CommitStatus.class);
+		ArgumentCaptor<PullRequestStatus> statusCaptor = ArgumentCaptor.forClass(PullRequestStatus.class);
 		verify(mockGitHub).save(statusCaptor.capture());
 
-		CommitStatus status = statusCaptor.getValue();
+		PullRequestStatus status = statusCaptor.getValue();
 		assertThat(status.getAccessToken()).isEqualTo(expectedStatus.getAccessToken());
 		assertThat(status.getGitHubUsername()).isEqualTo(expectedStatus.getGitHubUsername());
 		assertThat(status.getPullRequestId()).isEqualTo(expectedStatus.getPullRequestId());

@@ -42,7 +42,7 @@ import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.GitHubSignature;
 import io.pivotal.cla.security.WithSigningUserFactory;
-import io.pivotal.cla.service.github.CommitStatus;
+import io.pivotal.cla.service.github.PullRequestStatus;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
 
 public class GitHubHooksControllerTests extends BaseWebDriverTests {
@@ -81,10 +81,10 @@ public class GitHubHooksControllerTests extends BaseWebDriverTests {
 		mockMvc.perform(hookRequest().content(PAYLOAD))
 			.andExpect(status().isOk());
 
-		ArgumentCaptor<CommitStatus> statusCaptor = ArgumentCaptor.forClass(CommitStatus.class);
+		ArgumentCaptor<PullRequestStatus> statusCaptor = ArgumentCaptor.forClass(PullRequestStatus.class);
 		verify(mockGitHub).save(statusCaptor.capture());
 
-		CommitStatus status = statusCaptor.getValue();
+		PullRequestStatus status = statusCaptor.getValue();
 		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
 		assertThat(status.getAccessToken()).isEqualTo("mock_access_token_value");
 		assertThat(status.getPullRequestId()).isEqualTo(2);
@@ -131,10 +131,10 @@ public class GitHubHooksControllerTests extends BaseWebDriverTests {
 		mockMvc.perform(hookRequest().content(PAYLOAD))
 			.andExpect(status().isOk());
 
-		ArgumentCaptor<CommitStatus> statusCaptor = ArgumentCaptor.forClass(CommitStatus.class);
+		ArgumentCaptor<PullRequestStatus> statusCaptor = ArgumentCaptor.forClass(PullRequestStatus.class);
 		verify(mockGitHub).save(statusCaptor.capture());
 
-		CommitStatus status = statusCaptor.getValue();
+		PullRequestStatus status = statusCaptor.getValue();
 		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
 		assertThat(status.getAccessToken()).isEqualTo("mock_access_token_value");
 		assertThat(status.getPullRequestId()).isEqualTo(2);
@@ -157,10 +157,10 @@ public class GitHubHooksControllerTests extends BaseWebDriverTests {
 		mockMvc.perform(hookRequest().content(PAYLOAD))
 			.andExpect(status().isOk());
 
-		ArgumentCaptor<CommitStatus> statusCaptor = ArgumentCaptor.forClass(CommitStatus.class);
+		ArgumentCaptor<PullRequestStatus> statusCaptor = ArgumentCaptor.forClass(PullRequestStatus.class);
 		verify(mockGitHub).save(statusCaptor.capture());
 
-		CommitStatus status = statusCaptor.getValue();
+		PullRequestStatus status = statusCaptor.getValue();
 		assertThat(status.getRepoId()).isEqualTo("rwinch/176_test");
 		assertThat(status.getAccessToken()).isEqualTo("mock_access_token_value");
 		assertThat(status.getPullRequestId()).isEqualTo(2);

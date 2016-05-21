@@ -34,7 +34,7 @@ import io.pivotal.cla.egit.github.core.event.RepositoryPullRequestPayload;
 import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.service.ClaPullRequestStatusRequest;
 import io.pivotal.cla.service.ClaService;
-import io.pivotal.cla.service.github.CommitStatus;
+import io.pivotal.cla.service.github.PullRequestStatus;
 
 @RestController
 @PreAuthorize("@gitHubSignature.check(#request.getHeader('X-Hub-Signature'), #body)")
@@ -67,7 +67,7 @@ public class GitHubHooksController {
 		PullRequest pullRequest = pullRequestPayload.getPullRequest();
 		String gitHubLogin = pullRequest.getUser().getLogin();
 
-		CommitStatus status = new CommitStatus();
+		PullRequestStatus status = new PullRequestStatus();
 		status.setGitHubUsername(gitHubLogin);
 		status.setPullRequestId(pullRequest.getNumber());
 		status.setRepoId(repoId.generateId());

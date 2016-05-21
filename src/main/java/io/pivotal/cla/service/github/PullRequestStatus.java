@@ -19,7 +19,7 @@ import io.pivotal.cla.data.repository.AccessTokenRepository;
 import lombok.Data;
 
 @Data
-public class CommitStatus {
+public class PullRequestStatus {
 	private int pullRequestId;
 	private String repoId;
 	private String sha;

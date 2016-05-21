@@ -1,14 +1,14 @@
 package io.pivotal.cla.service;
 
-import io.pivotal.cla.service.github.CommitStatus;
+import io.pivotal.cla.service.github.PullRequestStatus;
 import lombok.Data;
 
 @Data
 public class ClaPullRequestStatusRequest {
 	/**
-	 * Used to default {@link CommitStatus#getSuccess()} if it is null.
+	 * Used to default {@link PullRequestStatus#getSuccess()} if it is null.
 	 */
 	private String claName;
 
-	private CommitStatus commitStatus;
+	private PullRequestStatus commitStatus;
 }

@@ -17,7 +17,7 @@ import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.data.repository.UserRepository;
-import io.pivotal.cla.service.github.CommitStatus;
+import io.pivotal.cla.service.github.PullRequestStatus;
 import io.pivotal.cla.service.github.GitHubApi;
 import lombok.SneakyThrows;
 
@@ -47,7 +47,7 @@ public class ClaService {
 
 	public void savePullRequestStatus(ClaPullRequestStatusRequest request) {
 		String claName = request.getClaName();
-		CommitStatus commitStatus = request.getCommitStatus();
+		PullRequestStatus commitStatus = request.getCommitStatus();
 		String gitHubLogin = commitStatus.getGitHubUsername();
 		if(commitStatus.getAccessToken() == null) {
 			AccessToken accessToken = accessTokenRepository.findOne(commitStatus.getRepoId());
@@ -89,8 +89,8 @@ public class ClaService {
 
 	@SneakyThrows
 	public void migratePullRequestStatus(String claName, MigratePullRequestStatusRequest request) {
-		List<CommitStatus> commitStatuses = gitHub.createUpdatePullRequestStatuses(request);
-		for(CommitStatus status : commitStatuses) {
+		List<PullRequestStatus> commitStatuses = gitHub.createUpdatePullRequestStatuses(request);
+		for(PullRequestStatus status : commitStatuses) {
 			boolean success = hasSigned(status.getGitHubUsername(), claName);
 			status.setSuccess(success);
 			gitHub.save(status);

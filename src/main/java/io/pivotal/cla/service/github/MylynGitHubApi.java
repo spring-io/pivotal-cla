@@ -100,7 +100,7 @@ public class MylynGitHubApi implements GitHubApi {
 	}
 
 	@SneakyThrows
-	public void save(io.pivotal.cla.service.github.CommitStatus commitStatus) {
+	public void save(PullRequestStatus commitStatus) {
 		String repoId = commitStatus.getRepoId();
 		String accessToken = commitStatus.getAccessToken();
 		if (accessToken == null) {
@@ -150,7 +150,7 @@ public class MylynGitHubApi implements GitHubApi {
 	}
 
 	@SneakyThrows
-	public String getShaForPullRequest(io.pivotal.cla.service.github.CommitStatus commitStatus) {
+	public String getShaForPullRequest(PullRequestStatus commitStatus) {
 		String repositoryId = commitStatus.getRepoId();
 		int pullRequestId = commitStatus.getPullRequestId();
 		String currentUserGitHubLogin = commitStatus.getGitHubUsername();
@@ -173,20 +173,20 @@ public class MylynGitHubApi implements GitHubApi {
 
 	@Override
 	@SneakyThrows
-	public List<io.pivotal.cla.service.github.CommitStatus> createUpdatePullRequestStatuses(
+	public List<PullRequestStatus> createUpdatePullRequestStatuses(
 			MigratePullRequestStatusRequest request) {
 		GitHubClient client = createClient(request.getAccessToken());
 		PullRequestService pullRequestService = new PullRequestService(client);
 		String commitStatusUrl = request.getCommitStatusUrl();
 		String accessToken = request.getAccessToken();
-		List<io.pivotal.cla.service.github.CommitStatus> results = new ArrayList<>();
+		List<PullRequestStatus> results = new ArrayList<>();
 
 		for(String repositoryId : request.getRepositoryIds()) {
 			RepositoryId repository = RepositoryId.createFromId(repositoryId);
 			List<PullRequest> repositoryPullRequests = pullRequestService.getPullRequests(repository, "open");
 
 			for(PullRequest pullRequest : repositoryPullRequests) {
-				io.pivotal.cla.service.github.CommitStatus status = new io.pivotal.cla.service.github.CommitStatus();
+				PullRequestStatus status = new PullRequestStatus();
 				String sha = pullRequest.getHead().getSha();
 				status.setPullRequestId(pullRequest.getNumber());
 				status.setRepoId(repositoryId);
@@ -202,7 +202,7 @@ public class MylynGitHubApi implements GitHubApi {
 	}
 
 	@SneakyThrows
-	private List<String> getCommentsByClaUser(IssueService issues, RepositoryId id, io.pivotal.cla.service.github.CommitStatus commitStatus) {
+	private List<String> getCommentsByClaUser(IssueService issues, RepositoryId id, PullRequestStatus commitStatus) {
 		String username = getCurrentGitHubUser(oauthConfig.getPivotalClaAccessToken()).getLogin();
 		List<Comment> comments = issues.getComments(id, commitStatus.getPullRequestId());
 		return comments.stream()

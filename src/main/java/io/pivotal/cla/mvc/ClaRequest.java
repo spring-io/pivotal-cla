@@ -22,7 +22,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.service.ClaPullRequestStatusRequest;
-import io.pivotal.cla.service.github.CommitStatus;
+import io.pivotal.cla.service.github.PullRequestStatus;
 import lombok.Data;
 
 /**
@@ -39,7 +39,7 @@ public class ClaRequest {
 		if(pullRequestId == null) {
 			return null;
 		}
-		CommitStatus commitStatus = new CommitStatus();
+		PullRequestStatus commitStatus = new PullRequestStatus();
 		commitStatus.setRepoId(repositoryId);
 		commitStatus.setPullRequestId(pullRequestId);
 		commitStatus.setUrl(signUrl());

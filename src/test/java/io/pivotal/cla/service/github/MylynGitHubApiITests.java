@@ -31,7 +31,7 @@ import org.springframework.core.serializer.support.SerializingConverter;
 import io.pivotal.cla.config.ClaOAuthConfig;
 import io.pivotal.cla.config.OAuthClientCredentials;
 import io.pivotal.cla.data.User;
-import io.pivotal.cla.service.github.CommitStatus;
+import io.pivotal.cla.service.github.PullRequestStatus;
 import io.pivotal.cla.service.github.MylynGitHubApi;
 import okhttp3.mockwebserver.EnqueueResourcesMockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -320,7 +320,7 @@ public class MylynGitHubApiITests {
 	public void saveSuccessAlreadyCommented() throws Exception {
 		String accessToken = "access-token-123";
 
-		CommitStatus commitStatus = new CommitStatus();
+		PullRequestStatus commitStatus = new PullRequestStatus();
 		commitStatus.setGitHubUsername("rwinch");
 		commitStatus.setPullRequestId(1);
 		commitStatus.setRepoId("spring-projects/spring-security");
@@ -358,7 +358,7 @@ public class MylynGitHubApiITests {
 	public void saveSuccessNoComments() throws Exception {
 		String accessToken = "access-token-123";
 
-		CommitStatus commitStatus = new CommitStatus();
+		PullRequestStatus commitStatus = new PullRequestStatus();
 		commitStatus.setGitHubUsername("rwinch");
 		commitStatus.setPullRequestId(1);
 		commitStatus.setRepoId("spring-projects/spring-security");
@@ -404,7 +404,7 @@ public class MylynGitHubApiITests {
 	public void saveFailureAlreadyCommented() throws Exception {
 		String accessToken = "access-token-123";
 
-		CommitStatus commitStatus = new CommitStatus();
+		PullRequestStatus commitStatus = new PullRequestStatus();
 		commitStatus.setGitHubUsername("rwinch");
 		commitStatus.setPullRequestId(1);
 		commitStatus.setRepoId("spring-projects/spring-security");
@@ -442,7 +442,7 @@ public class MylynGitHubApiITests {
 	public void saveFailureNoComments() throws Exception {
 		String accessToken = "access-token-123";
 
-		CommitStatus commitStatus = new CommitStatus();
+		PullRequestStatus commitStatus = new PullRequestStatus();
 		commitStatus.setGitHubUsername("rwinch");
 		commitStatus.setPullRequestId(1);
 		commitStatus.setRepoId("spring-projects/spring-security");
