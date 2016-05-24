@@ -58,8 +58,6 @@ task deploy(dependsOn: [build]) {
 	}
 }
 
-apply plugin: 'cloudfoundry'
-
 cloudfoundry {
 	target = "https://api.run.pivotal.io"
 	organization = "pivotal-cla"

@@ -1,0 +1,35 @@
+import org.cloudfoundry.gradle.tasks.*
+
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath('org.cloudfoundry:cf-gradle-plugin:1.1.2')
+	}
+}
+
+//apply plugin: org.cloudfoundry.gradle.CloudFoundryPlugin
+
+task(stagingDeleteService, type: DeleteServiceCloudFoundryTask) {
+}
+
+task(stagingSetupService, type: CreateServiceCloudFoundryTask) {
+}
+
+configure([stagingDeleteService, stagingSetupService]) {
+	cloudfoundry {
+		target = "https://api.run.pivotal.io"
+		organization = 'pivotal-cla'
+		space = 'production'
+		services {
+			[
+				"pivotal-cla-mysql-staging" {
+					label = "p-mysql"
+					plan = "100mb"
+				}
+			]
+		}
+	}
+}

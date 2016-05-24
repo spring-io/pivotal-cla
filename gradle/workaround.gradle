@@ -26,7 +26,7 @@ buildscript {
 }
 
 def final PRODUCTION_ROUTE = 'cla.pivotal.io'
-apply plugin: 'cloudfoundry'
+//apply plugin: org.cloudfoundry.gradle.CloudFoundryPlugin
 
 
 def final APPLICATION_NAME = 'pivotal-cla'
