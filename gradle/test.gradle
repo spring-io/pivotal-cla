@@ -1,9 +1,35 @@
+test {
+	useJUnit {
+		excludeCategories 'io.pivotal.cla.junit.SmokeTests'
+	}
+}
+
 task testWithMySQL(type: Test) {
 	systemProperty 'spring.active.profiles.data', 'local-mysql'
 	classpath = test.classpath
 	useJUnit {
 		includeCategories 'io.pivotal.cla.junit.JpaTests'
+		excludeCategories 'io.pivotal.cla.junit.SmokeTests'
 	}
 }
 
 check.dependsOn testWithMySQL
+
+
+task smokeTest(type: Test, dependsOn: jar) {
+	group 'Verification'
+	description 'Runs the smoke tests.'
+	systemProperty 'webdriver.baseUrl', 'https://pivotal-cla-staging.cfapps.io'
+	classpath = test.classpath
+	useJUnit {
+		includeCategories 'io.pivotal.cla.junit.SmokeTests'
+	}
+	doFirst {
+		systemProperty 'smokeTest.linkUser.password', project.ext.'smokeTest.linkUser.password'
+		systemProperty 'smokeTest.linkUser.token', project.ext.'smokeTest.linkUser.token'
+		systemProperty 'smokeTest.signUser.password', project.ext.'smokeTest.signUser.password'
+		systemProperty 'smokeTest.signUser.token', project.ext.'smokeTest.signUser.token'
+	}
+}
+
+check.dependsOn smokeTest

@@ -24,6 +24,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 
+import io.pivotal.cla.webdriver.pages.github.GitHubPullRequestPage;
+
 public class SignIclaPage extends BasePage {
 	@FindBy(id = "individual-cla")
 	WebElement individualCla;
@@ -49,6 +51,11 @@ public class SignIclaPage extends BasePage {
 	public void assertPullRequestLink(String repositoryId, int pullRequestId) {
 		String url = "https://github.com/" + repositoryId + "/pull/" + pullRequestId;
 		assertThat(pullRequest.getAttribute("href")).isEqualTo(url);
+	}
+
+	public GitHubPullRequestPage pullRequest() {
+		pullRequest.click();
+		return PageFactory.initElements(getDriver(), GitHubPullRequestPage.class);
 	}
 
 	public boolean isSigned() {
@@ -126,6 +133,11 @@ public class SignIclaPage extends BasePage {
 
 		public Form email(String email) {
 			new Select(this.email).selectByValue(email);
+			return this;
+		}
+
+		public Form email(int index) {
+			new Select(this.email).selectByIndex(index);
 			return this;
 		}
 

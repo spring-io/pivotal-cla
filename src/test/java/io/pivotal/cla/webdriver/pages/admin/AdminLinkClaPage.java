@@ -17,6 +17,7 @@ package io.pivotal.cla.webdriver.pages.admin;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -95,7 +96,7 @@ public class AdminLinkClaPage extends BasePage {
 
 
 	public void waitForRepositories() {
-		new WebDriverWait(getDriver(), 3).until(new Predicate<WebDriver>() {
+		new WebDriverWait(getDriver(), 60).until(new Predicate<WebDriver>() {
 			@Override
 			public boolean apply(WebDriver input) {
 				return repositories.isEnabled();

@@ -32,6 +32,8 @@ import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
 
 public abstract class BasePage {
+	public static final String WEBDRIVER_BASE_URL = "webdriver.baseUrl";
+
 	private WebDriver driver;
 
 	private WebElement manage;
@@ -58,7 +60,8 @@ public abstract class BasePage {
 	}
 
 	public static void get(WebDriver driver, String get) {
-		driver.get("http://localhost" + get);
+		String baseUrl = System.getProperty(WEBDRIVER_BASE_URL, "http://localhost");
+		driver.get(baseUrl + get);
 	}
 
 	protected SelectAssert assertSelect(WebElement input) {

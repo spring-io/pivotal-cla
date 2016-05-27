@@ -10,19 +10,27 @@ jdk:
 os:
   - linux
 
-install: true
-
 before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
   - mysql -e 'create database pivotalcla;'
   - mysql -e "create user 'spring' identified by 'password';"
   - mysql -uroot -e "grant all on pivotalcla.* to 'spring'";
 
-script: |
-  if [[ "${TRAVIS_PULL_REQUEST}" = "false" && $TRAVIS_BRANCH == 'master' && $TRAVIS_SECURE_ENV_VARS == 'true' ]] ; then
-    ./gradlew deploy -Psecurity.oauth2.main.clientId=$CLIENT_ID -Psecurity.oauth2.main.clientSecret=$CLIENT_SECRET -Psecurity.oauth2.pivotal-cla.tokenSecret=$TOKEN_SECRET -PcfUsername=$CF_USERNAME -PcfPassword=$CF_PASSWORD -PinfoVersion=$TRAVIS_BUILD_NUMBER-$TRAVIS_COMMIT
-  else
-    ./gradlew check
-  fi
+script:
+  - ./gradlew check -x smokeTest
+  - |
+    if [[ "${TRAVIS_PULL_REQUEST}" = "false" && $TRAVIS_BRANCH == 'master' && $TRAVIS_SECURE_ENV_VARS == 'true' ]] ; then
+      ./gradlew -b staging.gradle cfStage -Psecurity.oauth2.main.clientId=$STAGING_CLIENT_ID -Psecurity.oauth2.main.clientSecret=$STAGING_CLIENT_SECRET -Psecurity.oauth2.pivotal-cla.tokenSecret=$TOKEN_SECRET -PcfUsername=$CF_USERNAME -PcfPassword=$CF_PASSWORD -PinfoVersion=$TRAVIS_BUILD_NUMBER-$TRAVIS_COMMIT
+    fi
+  - |
+    if [[ "${TRAVIS_PULL_REQUEST}" = "false" && $TRAVIS_BRANCH == 'master' && $TRAVIS_SECURE_ENV_VARS == 'true' ]] ; then
+      ./gradlew smokeTest -PsmokeTest.linkUser.password=$STAGING_LINK_USER_PASSWORD -PsmokeTest.linkUser.token=$STAGING_LINK_USER_TOKEN -PsmokeTest.signUser.password=$STAGING_SIGN_USER_PASSWORD -PsmokeTest.signUser.token=$STAGING_SIGN_USER_TOKEN
+    fi
+  - |
+    if [[ "${TRAVIS_PULL_REQUEST}" = "false" && $TRAVIS_BRANCH == 'master' && $TRAVIS_SECURE_ENV_VARS == 'true' ]] ; then
+      ./gradlew deploy -Psecurity.oauth2.main.clientId=$CLIENT_ID -Psecurity.oauth2.main.clientSecret=$CLIENT_SECRET -Psecurity.oauth2.pivotal-cla.tokenSecret=$TOKEN_SECRET -PcfUsername=$CF_USERNAME -PcfPassword=$CF_PASSWORD -PinfoVersion=$TRAVIS_BUILD_NUMBER-$TRAVIS_COMMIT
+    fi
 
 after_failure: cat $HOME/build/pivotalsoftware/pivotal-cla/build/reports/*/classes/*.html
 
