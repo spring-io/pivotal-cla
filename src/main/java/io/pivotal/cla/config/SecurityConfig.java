@@ -82,7 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.ignoringAntMatchers("/github/hooks/**").and()
 			.authorizeRequests()
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-				.antMatchers("/login/**", "/", "/about").permitAll()
+				.antMatchers("/login/**", "/", "/about", "/faq").permitAll()
 				.antMatchers("/webjars/**", "/assets/**").permitAll()
 				.antMatchers("/github/hooks/**").permitAll()
 				.antMatchers("/admin","/admin/cla/link/**","/admin/help/**").hasRole("ADMIN")

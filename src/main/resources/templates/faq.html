@@ -1,0 +1,60 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layouts/main">
+<head>
+<title>FAQ</title>
+</head>
+<body>
+	<div layout:fragment="content">
+		<h2 id="f1">I already signed a CLA</h2>
+		<div>
+			<p>
+				If you already signed a Contributor License Agreement, then  your data has been imported into the new tooling in order to provide automatic integration with GitHub.
+				If your signature did not include your GitHub username, then you will need to perform a few steps to link your GitHub account to your signature.
+			</p>
+			<ol>
+				<li><a href="https://help.github.com/articles/adding-an-email-address-to-your-github-account/">Associate the email address used to sign the agreement to your Github account</a></li>
+				<li><a href="https://help.github.com/articles/verifying-your-email-address/">Verify your email address</a></li>
+				<li>
+					<a href="https://cla.pivotal.io/">Sign into the new CLA tool</a>.
+					You must sign into the tool after you have linked your email address.
+					This is necessary because, for privacy reasons, GitHub will not allow the tooling to view your email addresses without your consent.
+			</ol>
+			<p>
+			Note: If you do not want to follow these steps, you can always sign the <a href="https://cla.pivotal.io/">Contributor License Agreement</a> again.
+			</p>
+		</div>
+		<h2 id="f2">I should be covered under a Corporate Signature</h2>
+		<div>
+			<p>
+				A corporate signature is either associated to the domain of a verified email address or a GitHub organization.
+			</p>
+			<h5>Email Domain</h5>
+			<p>
+				If your company signed the agreement based upon an email domain, then you will need to perform a few steps to link your GitHub account to your signature.
+				This flow is only for legacy signatures.
+			</p>
+			<ol>
+				<li>
+					<a href="https://help.github.com/articles/adding-an-email-address-to-your-github-account/">Associate an email email address</a> with your company's domain to your Github account.
+					For example, if your company is Pivotal, you would want to associate myemail@pivotal.io to your GitHub account.
+				</li>
+				<li><a href="https://help.github.com/articles/verifying-your-email-address/">Verify your email address</a></li>
+				<li>
+					<a href="https://cla.pivotal.io/">Sign into the new CLA tool</a>.
+					You must sign into the tool after you have linked your email address.
+					This is necessary because, for privacy reasons, GitHub will not allow the tooling to view your email addresses without your consent.
+			</ol>
+			<h5>GitHub Organization</h5>
+			<p>If your company associated the signature to a GitHub organization, then you must ensure the following is true.</p>
+			<ul>
+				<li>Your GitHub account is a member of the selected organization</li>
+				<li>You have made your <a href='https://help.github.com/articles/publicizing-or-hiding-organization-membership/'>membership public</a></li>
+			</ul>
+			<h2 id="f3">The Pull Request Status Did Not Update</h2>
+			<p>
+				If the GitHub status did not update, check <a href="https://status.github.com">https://status.github.com</a>.
+				You can re-trigger a notification by closing and reopening the issue.
+			</p>
+		</div>
+	</div>
+</body>
+</html>
