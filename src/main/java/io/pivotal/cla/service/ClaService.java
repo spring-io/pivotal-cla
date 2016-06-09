@@ -2,6 +2,7 @@ package io.pivotal.cla.service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -90,10 +91,15 @@ public class ClaService {
 	@SneakyThrows
 	public void migratePullRequestStatus(String claName, MigratePullRequestStatusRequest request) {
 		List<PullRequestStatus> commitStatuses = gitHub.createUpdatePullRequestStatuses(request);
+		long oneSecondInMs = TimeUnit.SECONDS.toMillis(1L);
 		for(PullRequestStatus status : commitStatuses) {
 			boolean success = hasSigned(status.getGitHubUsername(), claName);
 			status.setSuccess(success);
 			gitHub.save(status);
+
+			// necessary to help prevent abuse rate limits
+			// https://developer.github.com/guides/best-practices-for-integrators/#dealing-with-abuse-rate-limits
+			Thread.sleep(oneSecondInMs);
 		}
 	}
 
