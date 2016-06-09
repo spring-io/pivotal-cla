@@ -28,6 +28,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import io.pivotal.cla.webdriver.pages.admin.AdminHelpPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
 
@@ -37,6 +38,9 @@ public abstract class BasePage {
 	private WebDriver driver;
 
 	private WebElement manage;
+
+	@FindBy(id = "admin-help")
+	private WebElement adminHelp;
 
 	private WebElement link;
 
@@ -174,6 +178,12 @@ public abstract class BasePage {
 		adminMenu();
 		link.click();
 		return PageFactory.initElements(driver, AdminLinkClaPage.class);
+	}
+
+	public AdminHelpPage adminHelp() {
+		adminMenu();
+		adminHelp.click();
+		return PageFactory.initElements(driver, AdminHelpPage.class);
 	}
 
 	public SignClaPage signOut() {

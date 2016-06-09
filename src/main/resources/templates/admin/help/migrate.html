@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/main">
+	<head>
+		<title>Migrating</title>
+		<link th:href="@{/assets/pages/admin/help/migrate.css}" rel="stylesheet"/>
+	</head>
+	<body>
+		<div layout:fragment="content">
+			<h1 id="data">Migrating Existing Data</h1>
+			<p>
+				If you have existing signatures, the you will want to migrate them into the new tooling.
+			</p>
+			<p>
+				All imports are done in the form of SQL statements.
+				Once  you have the data available, you can contact <a href="mailto:cla@pivotal.io">cla@pivotal.io</a>
+			</p>
+			<p>
+				Below are the steps to migrate the existing signatures data.
+				<ul>
+					<li><a href="#cla">Migrating Contributor License Agreements</a></li>
+					<li><a href="#icla">Migrating Individual Signatures</a></li>
+					<li><a href="#ccla">Migrating Corporate Signatures</a></li>
+					<li><a href="#email">Emailing Users</a></li>
+				</ul>
+			</p>
+			<h2 id="cla">Migrating Contributor License Agreements</h2>
+			<p>
+				The first step is to ensure that your existing Contributor License agreement is imported.
+				You can find an example insert below with detailed description of each field below.
+			</p>
+			<pre>
+insert into contributor_license_agreement (
+	superseding_cla_id,
+	name,
+	description,
+	primary_cla,
+	created,
+	individual_markdown,
+	individual_html,
+	corporate_markdown,
+	corporate_html)
+values (
+	1,
+	'greenplum',
+	'Some optional description that you care to have',
+	true,
+	'Agreement on file.',
+	'Agreement on file.',
+	'Agreement on file.',
+	'Agreement on file.'
+);
+</pre>
+			<ul>
+				<li>
+					<span class="define">superseding_cla_id</span> - will be 1.
+						This is the id of the new pivotal CLA.
+						It means that if the user hasn't signed the greenplum agreement, check to see if they have signed the Pivotal one.
+						If not, the Pivotal agreement is presented to the user (i.e. Pivotal CLA replaces the legacy Greenplum CLA).
+				</li>
+				<li>
+					<span class="define">name</span> - should be the unique name of the project (i.e. "greenplum", "spring", etc).
+						This identifies the CLA that will be checked by the tooling.
+						The tool first checks to see if there is a signature for this name, if not the superseding_cla_id of the primary CLA is used.
+				</li>
+				<li>
+					<span class="define">description</span> - This is just a description of the CLA.
+						Typically this is used to identify which revision of the <span class="identifier">name</span> CLA was signed.
+						If you only have a single revision, then you can leave this blank.
+				</li>
+				<li>
+					<span class="define">primary_cla</span> - Exactly one CLA with a specific <span class="identifier">name</span> should be marked as primary.
+						This is used to indicate which agreement would get signed by new users if there is no signature
+						(either the CLA marked as the <span class="identifier">primary_cla</span> or the <span class="identifier">superseding_cla_id</span> of the CLA marked as <span class="identifier">primary_cla</span>)
+				</li>
+				<li>
+					<span class="define">individual_markdown</span> - the markdown for the individual CLA.
+						This will be used in the admin tool when modifying the HTML displayed to users who have signed the CLA.
+						For migrated records we typically use 'Agreement on file.'
+						However, you can use whatever text you like.
+				</li>
+				<li>
+					<span class="define">individual_html</span> - the html for the individual CLA.
+						This will be displayed to users who have previously signed the individual CLA.
+						Currently we are always using 'Agreement on file.'
+						However, you can use whatever text you like.
+				</li>
+				<li>
+					<span class="define">corporate_markdown</span> - the markdown for the corporate CLA.
+						This will be used in the admin tool to generate the HTML displayed to users who have previously signed the corporate CLA.
+						Currently we are always using 'Agreement on file.'
+						However, you can use whatever text you like.
+				</li>
+			</ul>
+
+			<h2 id="icla">Migrating Individual Signatures</h2>
+			<p>
+				The next step is to ensure that your existing individual signatures are imported (i.e. someone signs on behalf of themself).
+				You can find an example insert below with detailed description of each field below.
+			</p>
+			<pre>
+insert into individual_signature (
+	country,
+	date_of_signature,
+	email,
+	github_login,
+	mailing_address,
+	name,
+	telephone,
+	cla_id)
+values(
+	null,
+	'2012-01-09',
+	'something@somewhere.com',
+	'octocat',
+	'123 Seasame St',
+	'FirstName LastName',
+	'123.456.7890',
+	(select id from contributor_license_agreement where name = 'greenplum' and description = 'Some optional description that you care to have')
+);
+</pre>
+			<ul>
+				<li>
+					<span class="define">country</span> - the optional country of the person who signed the CLA.
+				</li>
+				<li>
+					<span class="define">date_of_signature</span> - The date of the signature.
+				</li>
+				<li>
+					<span class="define">email</span> - The email address of the user who signed the CLA.
+						This is optional if a <span class="identifier">github_login</span> is provided.
+						If no GitHub username is provided, this is used to link the signature to the GitHub account.
+						For the linking to occur, an <a href="#email">email</a> is sent to all users explaining they need to associate their email with their GitHub account.
+						The users are then required to sign into the tooling (for privacy reasons, GitHub does not allow access to their email without their consent)
+				</li>
+				<li>
+					<span class="define">github_login</span> - The github user name of the person who signed the CLA.
+					This is optional if an <span class="identifier">email</span> is provided.
+				</li>
+				<li>
+					<span class="define">mailing_address</span> - The (optional) mailing address of the person who signed the CLA.
+				</li>
+				<li>
+					<span class="define">name</span> - The first and last name of the person who signed the CLA.
+				</li>
+				<li>
+					<span class="define">telephone</span> - The (optional) telephone number of the person who signed the CLA.
+				</li>
+				<li>
+					<span class="define">cla_id</span> - The id of the CLA that they signed. Typically this is expressed via a select statement of a CLA imported via "Migrating Contributor License Agreements".
+				</li>
+			</ul>
+
+			<h2 id="ccla">Migrating Corporate Signatures</h2>
+			<p>
+				The next step is to ensure that your existing corporate signatures are imported (i.e. someone signs on behalf of a company).
+				You can find an example insert below with detailed description of each field below.
+			</p>
+			<pre>
+insert into corporate_signature (
+	company_name,
+	country,
+	date_of_signature,
+	email,
+	email_domain,
+	git_hub_organization,
+	github_login,
+	mailing_address,
+	name,
+	telephone,
+	title,
+	cla_id
+) values(
+	'Pivotal',
+	null,
+	'2016-05-06',
+	'rwinch@pivotal.io',
+	'pivotal.io',
+	null,
+	'rwinch',
+	null,
+	'Rob Winch',
+	null,
+	'Principal Engineer',
+	(select id from contributor_license_agreement where name = 'greenplum' and description = 'Some optional description that you care to have')
+);
+</pre>
+			<ul>
+				<li>
+					<span class="define">company_name</span> - the name of the company that is covered by this signature
+				</li>
+				<li>
+					<span class="define">country</span> - the optional country of the person who signed the CLA.
+				</li>
+				<li>
+					<span class="define">date_of_signature</span> - The date of the signature.
+				</li>
+				<li>
+					<span class="define">email</span> - The optional email address of the user who signed the CLA.
+				</li>
+				<li>
+					<span class="define">email_domain</span> - the domain of the email addresses to cover this signature.
+						For example, if the value is pivotal.io then any GitHub user with an email address associated to pivotal.io would be covered by this signature.
+						This is optional if a <span class="identifier">git_hub_organization</span> is provided.
+				</li>
+				<li>
+					<span class="define">git_hub_organization</span> - The GitHub organization that is covered by this signature.
+						This signature will be used if the GitHub user:
+						<ul>
+							<li>Is a member of the selected organization</li>
+							<li>Has made their <a href='https://help.github.com/articles/publicizing-or-hiding-organization-membership/'>membership public</a></li>
+						</ul>
+						This is optional if a <span class="identifier">email_domain</span> is provided.
+				</li>
+				<li>
+					<span class="define">github_login</span> - The (optional) github user name of the person who signed the CLA.
+				</li>
+				<li>
+					<span class="define">mailing_address</span> - The (optional) mailing address of the person who signed the CLA.
+				</li>
+				<li>
+					<span class="define">name</span> - The first and last name of the person who signed the CLA.
+				</li>
+				<li>
+					<span class="define">telephone</span> - The (optional) telephone number of the person who signed the CLA.
+				</li>
+				<li>
+					<span class="define">title</span> - The (optional) title of the user who signed the CLA.
+				</li>
+				<li>
+					<span class="define">cla_id</span> - The id of the CLA that they signed. Typically this is expressed via a select statement of a CLA imported via "Migrating Contributor License Agreements".
+				</li>
+			</ul>
+
+			<h2 id="email">Emailing Users</h2>
+			<p>
+				If existing signatures only contain an email address and not the GitHub username, it is a good idea to email your users with the necessary steps to migrate their data.
+				Users will need to ensure that the associate their email address they used to sign the CLA to their GitHub account and then sign into the tooling.
+				It is necessary for the user to sign into the tooling to link their GitHub account to their email address since (for privacy reasons) GitHub will not allow the tooling to view their email address without their consent.
+			</p>
+			<p>
+				You can find a sample email below:
+			</p>
+			<hr/>
+			<p>
+Community,</p>
+<p>
+We are streamlining our contribution process by integrating Contributor License Agreements (CLAs) directly into Github’s workflow. Onboarding new individual and corporate contributors will be a more intuitive and automated process. Existing contributors will also benefit since automated checks will be made against our CLA database, eliminating manual verification by project leads. That will result in less time spent on process and more time spent reviewing contributions. Finally, this will allow contributors to contribute to any of Pivotal’s open source projects. We will roll out this process incrementally across projects over the coming months.
+</p>
+<p></p>
+<p>
+As part of this initiative, we have migrated existing CLAs to the new system. To streamline the transition, we ask that you complete the following three steps:
+</p>
+<ol>
+<li><a href="https://help.github.com/articles/adding-an-email-address-to-your-github-account/">Associate this email address to your Github account</a></li>
+<li><a href="https://help.github.com/articles/verifying-your-email-address/">Verify your email address</a></li>
+<li><a href="https://cla.pivotal.io/">Sign into the new CLA tool</a></li>
+</ol>
+<p></p>
+<p>
+Note: If you do not want to follow these steps, you can always sign the <a href="https://cla.pivotal.io/">Contributor License Agreement</a> again.
+</p>
+<p></p>
+<p>
+We hope that this improved process will simplify the overall contribution process and encourage broad participation from the community while ensuring IP cleanliness in Pivotal’s open source projects.
+</p>
+<p></p>
+<p>
+We appreciate your past participation and look forward to your future contributions to our open source communities!
+</p>
+<p></p>
+<p>
+Thanks,
+</p>
+<p>
+Spring Engineering Team
+</p>
+
+			</p>
+		</div>
+	</body>
+</html>

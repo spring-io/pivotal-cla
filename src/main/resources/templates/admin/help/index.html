@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/main">
+	<head>
+		<title>Admin Help</title>
+		<link th:href="@{/assets/pages/admin/help/index.css}" rel="stylesheet"/>
+	</head>
+	<body th:with="img_path=@{/assets/images/help}">
+		<div layout:fragment="content">
+			<h1>Setup Instructions</h1>
+			<h2>Migrating Existing Signatures</h2>
+			<p>
+				If you have existing signatures, then the data will need to be <a id="migrate" th:href="@{/admin/help/migrate}">migrated</a>. Data has already been migrated for
+				<ul>
+					<li>Spring Team - use Contributor Agreement "spring"</li>
+				</ul>
+			</p>
+			<h2>Linking to Your Repository</h2>
+			<p>
+				The next step is to link your project to a contributor license agreement. Navigate to <a th:href="@{/admin/link}">Link to CLA</a>.
+				<ul>
+					<li>Select the repositories you wish to link to a CLA</li>
+					<li>Select the Contributor Agreement you wish to associate to your project.</li>
+				</ul>
+			</p>
+			<div class="container">
+				<img class="screenshot" th:src="@{{img_path}/000_cla-link.png(img_path=${img_path})}">
+			</div>
+			<h2>Additional Steps</h2>
+			<p>
+				Afterwards you will see a success message along with some additional steps. Follow the instructions provided to:
+				<ul>
+					<li>Update CONTRIBUTING</li>
+					<li>Update Existing Pull Requests</li>
+				</ul>
+			</p>
+			<div class="container">
+				<img class="screenshot" th:src="@{{img_path}/001_cla-link-success.png(img_path=${img_path})}">
+			</div>
+			<h1>User Instructions</h1>
+			<h2>Creating a Pull Request</h2>
+			<p>The first time users create a pull request they will be instructed to sign the Contributor License Agreement</p>
+			<div class="container">
+				<img class="screenshot" th:src="@{{img_path}/002_gh-pull-request-please-sign.png(img_path=${img_path})}">
+			</div>
+			<h2>Selecting a CLA to Sign</h2>
+			<p>
+				Users are then instructed to sign the CLA.
+				Most users will select to sign the Individual Contributor License Agreement.
+			</p>
+			<div class="container">
+				<img class="screenshot" th:src="@{{img_path}/003_cla-signclapage-please-sign.png(img_path=${img_path})}">
+			</div>
+			<h2>Signing Individual Contributor License Agreement</h2>
+			<p>
+				The user can then sign the Individual Contributor License Agreement.
+				After signing, the UI will then prompt the user to return back to the Pull Request.
+			</p>
+			<div class="container">
+				<img class="screenshot" th:src="@{{img_path}/004_cla-signicla-please-sign.png(img_path=${img_path})}">
+			</div>
+			<h2>Updated Pull Request</h2>
+			<p>
+				The Pull Request indicates that the Pull Request has been successfully signed.
+			</p>
+			<div class="container">
+				<img class="screenshot" th:src="@{{img_path}/005_gh-pull-request-thanks.png(img_path=${img_path})}">
+			</div>
+			<h2>Already Signed</h2>
+			<p>
+				The next Pull Request will indicate the the user has already signed the agreement.
+			</p>
+			<div class="container">
+				<img class="screenshot" th:src="@{{img_path}/006_gh-pull-request-already-signed.png(img_path=${img_path})}">
+			</div>
+		</div>
+	</body>
+</html>

@@ -212,15 +212,18 @@ public class SmokeTests {
 		SignIclaPage signIcla = sign.signIcla(SignIclaPage.class);
 		signIcla.assertAt();
 
-		takeScreenShot(driverForSignUser, "cla-signicla-please-sign");
 
-		signIcla = signIcla.form()
+		signIcla.form()
 			.name("Big Bird")
 			.email(1)
 			.mailingAddress("123 Seasame St")
 			.telephone("123.456.7890")
 			.country("USA")
-			.confirm()
+			.confirm();
+
+		takeScreenShot(driverForSignUser, "cla-signicla-please-sign");
+
+		signIcla = signIcla.form()
 			.sign(SignIclaPage.class);
 
 		pull = signIcla.pullRequest();
