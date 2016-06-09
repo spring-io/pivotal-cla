@@ -48,6 +48,9 @@ public abstract class BasePage {
 	@FindBy(id = "user-menu")
 	private WebElement userMenu;
 
+	@FindBy(id = "admin-menu")
+	private WebElement adminMenu;
+
 	@FindBy(id = "successMessage")
 	private WebElement successMessage;
 
@@ -150,6 +153,7 @@ public abstract class BasePage {
 	}
 
 	public AdminListClasPage manage() {
+		adminMenu();
 		manage.click();
 		return PageFactory.initElements(driver, AdminListClasPage.class);
 	}
@@ -160,7 +164,14 @@ public abstract class BasePage {
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(signout.getAttribute("id"))));
 	}
 
+	protected void adminMenu() {
+		adminMenu.click();
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(link.getAttribute("id"))));
+	}
+
 	public AdminLinkClaPage link() {
+		adminMenu();
 		link.click();
 		return PageFactory.initElements(driver, AdminLinkClaPage.class);
 	}
