@@ -264,6 +264,7 @@ public class MylynGitHubApiITests {
 	}
 
 	@Test
+	@EnqueueRequests("getOrganizations")
 	public void getOrganizations() throws Exception {
 		assertThat(service.getOrganizations("rwinch")).containsExactly("asciidoctor","cla-test","spring-projects");
 	}
