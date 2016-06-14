@@ -15,6 +15,8 @@
  */
 package io.pivotal.cla.mvc;
 
+import java.net.URLEncoder;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.context.request.RequestContextHolder;
@@ -43,6 +45,7 @@ public class ClaRequest {
 		commitStatus.setRepoId(repositoryId);
 		commitStatus.setPullRequestId(pullRequestId);
 		commitStatus.setUrl(signUrl());
+		commitStatus.setSyncUrl(syncUrl());
 		commitStatus.setGitHubUsername(currentUserGitHubLogin);
 
 		ClaPullRequestStatusRequest request = new ClaPullRequestStatusRequest();
@@ -62,5 +65,18 @@ public class ClaRequest {
 				.repositoryId(repositoryId)
 				.pullRequestId(pullRequestId)
 				.build();
+	}
+
+	private String syncUrl() throws Exception {
+		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpServletRequest request = requestAttributes.getRequest();
+
+		String urlEncodedClaName = URLEncoder.encode(claName, "UTF-8");
+		UrlBuilder url = UrlBuilder
+				.fromRequest(request)
+				.path("/sync/"+urlEncodedClaName)
+				.param("repositoryId", repositoryId)
+				.param("pullRequestId", String.valueOf(pullRequestId));
+		return url.build();
 	}
 }

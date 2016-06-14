@@ -25,6 +25,11 @@ public class PullRequestStatus {
 	private String sha;
 	private Boolean success;
 	private String url;
+	/**
+	 * The URL used to sync the Pull Request. For example,
+	 * https://cla.pivotal.io/sync/pivotal?repositoryId=spring-projects/spring-security&pullRequestId=10
+	 */
+	private String syncUrl;
 	private String gitHubUsername;
 	/**
 	 * The Access Token used for updating the commit status. This is typically
@@ -39,7 +44,7 @@ public class PullRequestStatus {
 
 	/**
 	 * The URL used to instruct the user of how to resolve the commit status. For example,
-	 * https://123456.ngrok.io/sign/apache?repositoryId=spring-projects/spring-security&pullRequestId=10
+	 * https://cla.pivotal.io/sign/pivotal?repositoryId=spring-projects/spring-security&pullRequestId=10
 	 *
 	 * @return the url
 	 */

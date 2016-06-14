@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/main">
+	<head>
+		<title>Synch Pull Request</title>
+	</head>
+	<body>
+		<div class="container" layout:fragment="content">
+			<p>Would you like to synchronize the status of the Pull Request?</p>
+			<form id="synch-form" th:action="@{/sync/{claName}(claName=${claRequest.claName})}" method="post" th:object="${claRequest}">
+				<input type="hidden" th:field="*{claName}"/>
+				<input type="hidden" th:field="*{repositoryId}"/>
+				<input type="hidden" th:field="*{pullRequestId}"/>
+				<button id="sign" type="submit" class="btn btn-success">Synch Pull Request</button>
+			</form>
+		</div>
+	</body>
+</html>
