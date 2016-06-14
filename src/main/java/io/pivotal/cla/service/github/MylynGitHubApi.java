@@ -217,9 +217,7 @@ public class MylynGitHubApi implements GitHubApi {
 		tokenRequest.setOauthParams(request.getOauthParams());
 		String accessToken = getToken(tokenRequest);
 
-		EmailService emailService = EmailService.forOAuth(accessToken, oauthConfig);
-		List<String> verifiedEmails = emailService.getEmails().stream().filter(e -> e.isVerified())
-				.map(Email::getEmail).collect(Collectors.toList());
+		Set<String> verifiedEmails = getVerifiedEmails(accessToken);
 		org.eclipse.egit.github.core.User currentGitHubUser = getCurrentGitHubUser(accessToken);
 
 		User user = new User();
@@ -236,6 +234,12 @@ public class MylynGitHubApi implements GitHubApi {
 			user.setClaAuthor(isClaAuthor);
 		}
 		return user;
+	}
+
+	public Set<String> getVerifiedEmails(String accessToken) {
+		EmailService emailService = EmailService.forOAuth(accessToken, oauthConfig);
+		return emailService.getEmails().stream().filter(e -> e.isVerified())
+				.map(Email::getEmail).collect(Collectors.toSet());
 	}
 
 	private String getToken(AccessTokenRequest request) {

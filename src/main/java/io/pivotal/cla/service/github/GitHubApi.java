@@ -16,6 +16,7 @@
 package io.pivotal.cla.service.github;
 
 import java.util.List;
+import java.util.Set;
 
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.service.MigratePullRequestStatusRequest;
@@ -41,6 +42,8 @@ public interface GitHubApi {
 	List<String> createPullRequestHooks(CreatePullRequestHookRequest request);
 
 	User getCurrentUser(CurrentUserRequest request);
+
+	Set<String> getVerifiedEmails(String accessToken);
 
 	List<String> getOrganizations(String username);
 

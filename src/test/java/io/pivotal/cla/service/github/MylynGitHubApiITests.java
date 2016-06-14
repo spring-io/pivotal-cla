@@ -569,4 +569,19 @@ public class MylynGitHubApiITests {
 
 		assertThat(html).isEqualTo("<p>Hello world <a href=\"http://github.com/github/linguist/issues/1\" class=\"issue-link\" title=\"This is a simple issue\">github/linguist#1</a> <strong>cool</strong>, and <a href=\"http://github.com/github/gollum/issues/1\" class=\"issue-link\" title=\"This is another issue\">#1</a>!</p>");
 	}
+
+	@Test
+	@EnqueueRequests("getEmailsPivotal")
+	public void getVerifiedEmails() throws Exception {
+		String token = "access-token-123";
+
+		assertThat(service.getVerifiedEmails(token)).containsOnly("rob@example.com","rob@pivotal.io");
+
+		RecordedRequest request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/user/emails?per_page=100&page=1");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token access-token-123");
+
+	}
 }
