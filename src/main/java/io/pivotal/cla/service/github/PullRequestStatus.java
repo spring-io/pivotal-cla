@@ -30,6 +30,11 @@ public class PullRequestStatus {
 	 * https://cla.pivotal.io/sync/pivotal?repositoryId=spring-projects/spring-security&pullRequestId=10
 	 */
 	private String syncUrl;
+	/**
+	 * The URL to the FAQ. For example,
+	 * https://cla.pivotal.io/faq
+	 */
+	private String faqUrl;
 	private String gitHubUsername;
 	/**
 	 * The Access Token used for updating the commit status. This is typically

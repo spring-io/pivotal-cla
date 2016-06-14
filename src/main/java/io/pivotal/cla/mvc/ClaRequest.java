@@ -46,6 +46,7 @@ public class ClaRequest {
 		commitStatus.setPullRequestId(pullRequestId);
 		commitStatus.setUrl(signUrl());
 		commitStatus.setSyncUrl(syncUrl());
+		commitStatus.setFaqUrl(faqUrl());
 		commitStatus.setGitHubUsername(currentUserGitHubLogin);
 
 		ClaPullRequestStatusRequest request = new ClaPullRequestStatusRequest();
@@ -77,6 +78,16 @@ public class ClaRequest {
 				.path("/sync/"+urlEncodedClaName)
 				.param("repositoryId", repositoryId)
 				.param("pullRequestId", String.valueOf(pullRequestId));
+		return url.build();
+	}
+
+	private String faqUrl() throws Exception {
+		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpServletRequest request = requestAttributes.getRequest();
+
+		UrlBuilder url = UrlBuilder
+				.fromRequest(request)
+				.path("/faq");
 		return url.build();
 	}
 }

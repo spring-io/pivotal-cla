@@ -146,7 +146,8 @@ public class MylynGitHubApi implements GitHubApi {
 			issues.createComment(id, commitStatus.getPullRequestId(), body);
 		} else {
 			String sync = String.format("\n\n[Click here](%s) to manually synchronize the status of this Pull Request.", commitStatus.getSyncUrl());
-			String body = String.format("%s %s %s!%s", userMentionMarkdown, pleasSign, claLinkMarkdown, sync);
+			String faq = String.format("\n\nSee the [FAQ](%s) for frequently asked questions.", commitStatus.getFaqUrl());
+			String body = String.format("%s %s %s!%s%s", userMentionMarkdown, pleasSign, claLinkMarkdown, sync, faq);
 			if(claUserComments.contains(body)) {
 				return;
 			}
