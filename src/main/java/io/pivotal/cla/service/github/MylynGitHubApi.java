@@ -135,23 +135,32 @@ public class MylynGitHubApi implements GitHubApi {
 
 		GitHubClient commentClient = createClient(oauthConfig.getPivotalClaAccessToken());
 		IssueService issues = new IssueService(commentClient);
-		List<String> claUserComments = getCommentsByClaUser(issues, id, commitStatus);
+		List<Comment> claUserComments = getCommentsByClaUser(issues, id, commitStatus);
 
 		if(success) {
 
 			String body = String.format("%s %s %s!", userMentionMarkdown, thankYou, claLinkMarkdown);
-			if(claUserComments.contains(body)) {
+			if(claUserComments.stream().anyMatch( c-> c.getBody().equals(body))) {
 				return;
 			}
 			issues.createComment(id, commitStatus.getPullRequestId(), body);
 		} else {
 			String sync = String.format("\n\n[Click here](%s) to manually synchronize the status of this Pull Request.", commitStatus.getSyncUrl());
 			String faq = String.format("\n\nSee the [FAQ](%s) for frequently asked questions.", commitStatus.getFaqUrl());
-			String body = String.format("%s %s %s!%s%s", userMentionMarkdown, pleasSign, claLinkMarkdown, sync, faq);
-			if(claUserComments.contains(body)) {
+			String oldBody = String.format("%s %s %s!", userMentionMarkdown, pleasSign, claLinkMarkdown);
+			String body = String.format("%s%s%s", oldBody, sync, faq);
+			if(claUserComments.stream().anyMatch( c-> c.getBody().equals(body))) {
 				return;
 			}
-			issues.createComment(id, commitStatus.getPullRequestId(), body);
+
+			Optional<Comment> oldComment = claUserComments.stream().filter( c-> c.getBody().trim().equals(oldBody)).findFirst();
+			if(oldComment.isPresent()) {
+				Comment toEdit = oldComment.get();
+				toEdit.setBody(body);
+				issues.editComment(id, toEdit);
+			} else {
+				issues.createComment(id, commitStatus.getPullRequestId(), body);
+			}
 		}
 	}
 
@@ -208,12 +217,11 @@ public class MylynGitHubApi implements GitHubApi {
 	}
 
 	@SneakyThrows
-	private List<String> getCommentsByClaUser(IssueService issues, RepositoryId id, PullRequestStatus commitStatus) {
+	private List<Comment> getCommentsByClaUser(IssueService issues, RepositoryId id, PullRequestStatus commitStatus) {
 		String username = getCurrentGitHubUser(oauthConfig.getPivotalClaAccessToken()).getLogin();
 		List<Comment> comments = issues.getComments(id, commitStatus.getPullRequestId());
 		return comments.stream()
 				.filter( c -> username.equals(c.getUser().getLogin()))
-				.map(c-> c.getBody())
 				.collect(Collectors.toList());
 	}
 
