@@ -130,6 +130,10 @@ public class MylynGitHubApiITests {
 	}
 
 	@Test
+	@EnqueueRequests({"getAccessToken",
+		"getEmailsPivotal",
+		"getUserRwinch",
+		"getTeamMembers"})
 	public void getCurrentUserAdminAndClaAuthor() throws Exception {
 		OAuthAccessTokenParams oauthParams = new OAuthAccessTokenParams();
 		oauthParams.setCallbackUrl("https://example.com/oauth/callback");
