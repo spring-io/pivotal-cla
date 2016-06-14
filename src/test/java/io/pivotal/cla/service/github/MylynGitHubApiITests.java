@@ -560,6 +560,7 @@ public class MylynGitHubApiITests {
 	}
 
 	@Test
+	@EnqueueRequests("markdownToHtml")
 	public void markdownToHtml() {
 		String accessToken = "access-token-123";
 		String markdown = "Hello world github/linguist#1 **cool**, and #1!";
