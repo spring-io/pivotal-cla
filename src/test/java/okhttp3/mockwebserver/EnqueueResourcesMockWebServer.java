@@ -131,6 +131,29 @@ public final class EnqueueResourcesMockWebServer implements TestRule {
 	}
 
 	private void enqueue(Description description) {
+		EnqueueRequests toEnqueue = description.getAnnotation(EnqueueRequests.class);
+		if(toEnqueue == null) {
+			enqueueDefault(description);
+		} else {
+			enqueue(description.getTestClass(), toEnqueue);
+		}
+	}
+
+	private void enqueue(Class<?> testClass, EnqueueRequests toEnqueue) {
+		String[] resources = toEnqueue.value();
+		for(String resource : resources) {
+			if(!resource.startsWith("/")) {
+				resource = "/"+ (testClass.getName().replaceAll("\\.", "/")) + "_okhttp3/" + resource;
+			}
+			MockResponse response = getResponse(resource);
+			if(response == null) {
+				throw new IllegalStateException("Couldn't load " + resource);
+			}
+			server.enqueue(response);
+		}
+	}
+
+	private void enqueueDefault(Description description) {
 		String resourceBaseName = getResourceBaseName(description);
 
 		for (int i = 1; i < Integer.MAX_VALUE; i++) {

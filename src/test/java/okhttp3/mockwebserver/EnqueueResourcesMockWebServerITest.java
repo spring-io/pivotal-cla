@@ -76,4 +76,32 @@ public class EnqueueResourcesMockWebServerITest {
 		assertEquals(500, response.code());
 		assertEquals("Fail", response.body().string());
 	}
+
+	@Test
+	@EnqueueRequests("body-relative")
+	public void enqueueRequestsRelative() throws Exception {
+		OkHttpClient client = new OkHttpClient.Builder().build();
+		HttpUrl url = server.getServer().url("/");
+
+		Request request = new Request.Builder().get().url(url).build();
+
+		Response response = client.newCall(request).execute();
+
+		assertEquals(200, response.code());
+		assertEquals("body-relative", response.body().string());
+	}
+
+	@Test
+	@EnqueueRequests("/okhttp3/mockwebserver/EnqueueResourcesMockWebServerITest/body-absolute")
+	public void enqueueRequestsAbsolute() throws Exception {
+		OkHttpClient client = new OkHttpClient.Builder().build();
+		HttpUrl url = server.getServer().url("/");
+
+		Request request = new Request.Builder().get().url(url).build();
+
+		Response response = client.newCall(request).execute();
+
+		assertEquals(200, response.code());
+		assertEquals("body-absolute", response.body().string());
+	}
 }
