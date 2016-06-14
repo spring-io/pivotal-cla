@@ -33,6 +33,7 @@ import io.pivotal.cla.config.OAuthClientCredentials;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.service.github.PullRequestStatus;
 import io.pivotal.cla.service.github.MylynGitHubApi;
+import okhttp3.mockwebserver.EnqueueRequests;
 import okhttp3.mockwebserver.EnqueueResourcesMockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
@@ -68,6 +69,7 @@ public class MylynGitHubApiITests {
 	}
 
 	@Test
+	@EnqueueRequests("findRepositoryNames")
 	public void findRepositoryNames() throws Exception {
 		String accessToken = "accessToken";
 
