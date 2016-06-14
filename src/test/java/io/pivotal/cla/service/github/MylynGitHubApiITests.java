@@ -314,6 +314,8 @@ public class MylynGitHubApiITests {
 	}
 
 	@Test
+	@EnqueueRequests({"getPullRequestInactive",
+		"updatePullRequestHooks"})
 	public void enableInactivePullRequestHookAndSetSecret() throws Exception {
 		CreatePullRequestHookRequest hookRequest = new CreatePullRequestHookRequest();
 		hookRequest.setAccessToken("access-token-123");
