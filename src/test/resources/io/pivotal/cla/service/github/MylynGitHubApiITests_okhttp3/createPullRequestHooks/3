@@ -1,6 +1,0 @@
-HTTP/1.1 200 OK
-X-RateLimit-Limit: 5000
-X-RateLimit-Remaining: 4999
-
-[
-]

@@ -270,6 +270,10 @@ public class MylynGitHubApiITests {
 	}
 
 	@Test
+	@EnqueueRequests({"getPullRequestHooksEmpty",
+		"createPullRequestHooks",
+		"getPullRequestHooksEmpty",
+		"createPullRequestHooks456"})
 	public void createPullRequestHooks() throws Exception {
 		CreatePullRequestHookRequest hookRequest = new CreatePullRequestHookRequest();
 		hookRequest.setAccessToken("access-token-123");
