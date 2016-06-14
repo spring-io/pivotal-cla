@@ -30,7 +30,7 @@ public class GitHubPullRequestPage {
 	public void assertCommentPleaseSignFor(String gitHubUsername) {
 		List<WebElement> comments = driver.findElements(By.cssSelector(".comment-content"));
 
-		assertThat(comments).extracting(WebElement::getText).contains("@" + gitHubUsername + " Please sign the Contributor License Agreement!");
+		assertThat(comments).extracting(e-> e.getText().replaceAll("\n", " ")).contains("@" + gitHubUsername + " Please sign the Contributor License Agreement! Click here to manually synchronize the status of this Pull Request. See the FAQ for frequently asked questions.");
 	}
 
 	public void assertCommentThankYouFor(String gitHubUsername) {
