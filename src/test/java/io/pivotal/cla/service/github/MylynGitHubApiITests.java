@@ -221,6 +221,9 @@ public class MylynGitHubApiITests {
 
 
 	@Test
+	@EnqueueRequests({"getAccessToken",
+		"getEmailsNotPivotal",
+		"getUserRwinch"})
 	public void getCurrentUserSigning() throws Exception {
 		OAuthAccessTokenParams oauthParams = new OAuthAccessTokenParams();
 		oauthParams.setCallbackUrl("https://example.com/oauth/callback");
