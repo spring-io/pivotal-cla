@@ -528,6 +528,15 @@ public class MylynGitHubApiITests {
 	}
 
 	@Test
+	@EnqueueRequests({
+		"getContributingUrls302",
+		"getContributingUrls200",
+		"getContributingUrls404",
+		"getContributingUrls404",
+		"getContributingUrls302",
+		"getContributingUrls200",
+		"getContributingUrls404"
+	})
 	public void getContributingUrls() {
 		// make sure we use GitHubHost and not the GitHubApiHost
 		oauthConfig.setGitHubApiHost("donotuse");
