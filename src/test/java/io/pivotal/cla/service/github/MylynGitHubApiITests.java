@@ -86,6 +86,9 @@ public class MylynGitHubApiITests {
 	}
 
 	@Test
+	@EnqueueRequests({"getAccessToken",
+		"getEmailsNotPivotal",
+		"getUserRwinch"})
 	public void getCurrentUserAdminRequestedButNotAdmin() throws Exception {
 		OAuthAccessTokenParams oauthParams = new OAuthAccessTokenParams();
 		oauthParams.setCallbackUrl("https://example.com/oauth/callback");
