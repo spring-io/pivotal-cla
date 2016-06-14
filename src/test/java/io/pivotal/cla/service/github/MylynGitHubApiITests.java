@@ -383,6 +383,10 @@ public class MylynGitHubApiITests {
 	}
 
 	@Test
+	@EnqueueRequests({"saveStatus",
+		"getUserPivotalIssueMaster",
+		"getIssueCommentsNone",
+		"createComment"})
 	public void saveSuccessNoComments() throws Exception {
 		String accessToken = "access-token-123";
 
