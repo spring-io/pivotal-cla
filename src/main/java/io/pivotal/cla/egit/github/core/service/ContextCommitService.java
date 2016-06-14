@@ -20,12 +20,16 @@ import static org.eclipse.egit.github.core.client.IGitHubConstants.SEGMENT_STATU
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.egit.github.core.CommitStatus;
 import org.eclipse.egit.github.core.IRepositoryIdProvider;
 import org.eclipse.egit.github.core.client.GitHubClient;
+import org.eclipse.egit.github.core.client.PagedRequest;
 import org.eclipse.egit.github.core.service.CommitService;
+
+import com.google.gson.reflect.TypeToken;
 
 import io.pivotal.cla.egit.github.core.ContextCommitStatus;
 import lombok.SneakyThrows;
@@ -76,5 +80,33 @@ public class ContextCommitService extends CommitService {
 		uri.append('/').append(sha);
 
 		return client.post(uri.toString(), params, CommitStatus.class);
+	}
+
+	/**
+	 * Get statuses for commit SHA-1
+	 *
+	 * @param repository
+	 * @param sha
+	 * @return list of statuses
+	 * @throws IOException
+	 */
+	@SneakyThrows
+	public List<ContextCommitStatus> getContextStatuses(IRepositoryIdProvider repository,
+			String sha) {
+		String id = getId(repository);
+		if (sha == null)
+			throw new IllegalArgumentException("SHA-1 cannot be null"); //$NON-NLS-1$
+		if (sha.length() == 0)
+			throw new IllegalArgumentException("SHA-1 cannot be empty"); //$NON-NLS-1$
+
+		StringBuilder uri = new StringBuilder(SEGMENT_REPOS);
+		uri.append('/').append(id);
+		uri.append(SEGMENT_STATUSES);
+		uri.append('/').append(sha);
+		PagedRequest<ContextCommitStatus> request = createPagedRequest();
+		request.setType(new TypeToken<List<ContextCommitStatus>>() {
+		}.getType());
+		request.setUri(uri);
+		return getAll(request);
 	}
 }

@@ -124,7 +124,11 @@ public class MylynGitHubApi implements GitHubApi {
 		status.setUrl(commitStatus.getUrl());
 		status.setTargetUrl(status.getUrl());
 
-		commitService.createStatus(id, commitStatus.getSha(), status);
+		List<ContextCommitStatus> statuses = commitService.getContextStatuses(id, commitStatus.getSha());
+		if(!statuses.stream()
+				.anyMatch(s -> s.getContext().equals(status.getContext()) && s.getState().equals(status.getState()))) {
+			commitService.createStatus(id, commitStatus.getSha(), status);
+		}
 
 		String claLinkMarkdown = String.format("[%s](%s)", claName, status.getUrl());
 		String userMentionMarkdown = String.format("@%s", commitStatus.getGitHubUsername());
