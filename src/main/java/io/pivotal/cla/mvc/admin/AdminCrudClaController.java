@@ -15,6 +15,8 @@
  */
 package io.pivotal.cla.mvc.admin;
 
+import static org.apache.commons.lang3.ObjectUtils.notEqual;
+
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -73,7 +75,7 @@ public class AdminCrudClaController extends AdminClaController {
 		boolean primary = claForm.isPrimary();
 		if(primary) {
 			ContributorLicenseAgreement existingPrimaryCla = claRepo.findByNameAndPrimaryTrue(claForm.getName());
-			if(existingPrimaryCla != null && existingPrimaryCla.getId() != claForm.getId()) {
+			if(existingPrimaryCla != null && notEqual(existingPrimaryCla.getId(), claForm.getId())) {
 				result.rejectValue("primary","errors.primary.exists", "A primary CLA with this name already exists");
 			}
 		}
