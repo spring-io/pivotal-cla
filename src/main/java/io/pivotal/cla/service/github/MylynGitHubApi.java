@@ -180,7 +180,10 @@ public class MylynGitHubApi implements GitHubApi {
 
 		PullRequestService service = new PullRequestService(client);
 		PullRequest pullRequest = service.getPullRequest(id, pullRequestId);
-		if (!commitStatus.isAdmin() && !pullRequest.getUser().getLogin().equals(currentUserGitHubLogin)) {
+		String githubLoginForContributor = pullRequest.getUser().getLogin();
+		if(commitStatus.isAdmin()) {
+			commitStatus.setGitHubUsername(githubLoginForContributor);
+		}else if (!githubLoginForContributor.equals(currentUserGitHubLogin)) {
 			return null;
 		}
 
