@@ -87,8 +87,8 @@ Deployment scripts for `pivotal-cla` require a set of properties to be deployed.
 
 * `cfUsername`: Your username to log into Pivotal Cloud Foundry
 * `cfPassword`: Your password to log into Pivotal Cloud Foundry
-* `security.oauth2.main.clientId`: Github Client ID
-* `security.oauth2.main.clientSecret`: Github Client Secret
+* `security.oauth2.main.clientId`: GitHub Client ID
+* `security.oauth2.main.clientSecret`: GitHub Client Secret
 * `security.oauth2.pivotal-cla.tokenSecret`: A Personal Access Token with public_repo scope
 * For manual deployment only: `space`: Name of the space
 
