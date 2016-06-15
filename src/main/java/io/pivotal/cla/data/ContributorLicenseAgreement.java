@@ -41,16 +41,16 @@ public class ContributorLicenseAgreement {
 
 	@Id
 	@GeneratedValue
-	private Long id;
+	Long id;
 
 	@NotEmpty(message = "This is required")
-	private String name;
+	String name;
 
 	/**
 	 * Allows differentiating agreements from one another. This is currently
 	 * only able to be filled out via sql import.
 	 */
-	private String description;
+	String description;
 
 	/**
 	 * Allows defining if the is the primary agreement. There may be additional
@@ -58,7 +58,7 @@ public class ContributorLicenseAgreement {
 	 * agreement, variations of the agreement for different companies, etc.
 	 */
 	@Column(name = "primary_cla")
-	private boolean primary;
+	boolean primary;
 
 	/**
 	 * The {@link ContributorLicenseAgreement} that replaces this
@@ -67,24 +67,24 @@ public class ContributorLicenseAgreement {
 	 * then the user signs {@link #getSupersedingCla()}.
 	 */
 	@OneToOne
-	private ContributorLicenseAgreement supersedingCla;
+	ContributorLicenseAgreement supersedingCla;
 
 	// TODO java 8?
 	@Version
-	private Date created = new Date();
+	Date created = new Date();
 
 	@Lob
 	@NotNull(message = "This is required")
 	@Valid
 	@AttributeOverrides({ @AttributeOverride(name = "markdown", column = @Column(name = "individual_markdown") ),
 			@AttributeOverride(name = "html", column = @Column(name = "individual_html") ) })
-	private MarkdownContent individualContent;
+	MarkdownContent individualContent;
 
 	@Lob
 	@Valid
 	@NotNull(message = "This is required")
 	@AttributeOverrides({ @AttributeOverride(name = "markdown", column = @Column(name = "corporate_markdown") ),
 			@AttributeOverride(name = "html", column = @Column(name = "corporate_html") ) })
-	private MarkdownContent corporateContent;
+	MarkdownContent corporateContent;
 
 }

@@ -26,12 +26,12 @@ import lombok.Data;
 @Data
 public class CreatePullRequestHookRequest {
 
-	private String accessToken;
+	String accessToken;
 
-	private List<String> repositoryIds;
+	List<String> repositoryIds;
 
-	private String gitHubEventUrl;
+	String gitHubEventUrl;
 
-	private String secret;
+	String secret;
 
 }

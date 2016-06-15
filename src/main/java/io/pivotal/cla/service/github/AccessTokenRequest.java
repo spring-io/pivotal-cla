@@ -25,8 +25,8 @@ import lombok.Data;
 @Data
 public class AccessTokenRequest {
 
-	private OAuthClientCredentials credentials;
+	OAuthClientCredentials credentials;
 
-	private OAuthAccessTokenParams oauthParams;
+	OAuthAccessTokenParams oauthParams;
 
 }

@@ -23,8 +23,8 @@ import lombok.Data;
  */
 @Data
 public class CurrentUserRequest {
-	private OAuthAccessTokenParams oauthParams;
+	OAuthAccessTokenParams oauthParams;
 
-	private boolean requestAdminAccess;
+	boolean requestAdminAccess;
 
 }

@@ -8,7 +8,7 @@ public class ClaPullRequestStatusRequest {
 	/**
 	 * Used to default {@link PullRequestStatus#getSuccess()} if it is null.
 	 */
-	private String claName;
+	String claName;
 
-	private PullRequestStatus commitStatus;
+	PullRequestStatus commitStatus;
 }

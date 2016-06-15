@@ -32,41 +32,41 @@ public class CorporateSignature {
 
 	@Id
 	@GeneratedValue
-	private Long id;
+	Long id;
 
 	@ManyToOne
-	private ContributorLicenseAgreement cla;
+	ContributorLicenseAgreement cla;
 
 	@Version
-	private Date dateOfSignature;
+	Date dateOfSignature;
 
-	private String name;
+	String name;
 
-	private String email;
+	String email;
 
-	private String mailingAddress;
+	String mailingAddress;
 
-	private String country;
+	String country;
 
-	private String telephone;
+	String telephone;
 
 	@Column(name = "github_login")
-	private String gitHubLogin;
+	String gitHubLogin;
 
-	private String companyName;
+	String companyName;
 
 	/**
 	 * The GitHub organization that is covered by this signature (null if
 	 * emailDomain is non-null)
 	 */
-	private String gitHubOrganization;
+	String gitHubOrganization;
 
 	/**
 	 * The email domain that is covered by this signature (null if
 	 * gitHubOrganization is non-null)
 	 */
-	private String emailDomain;
+	String emailDomain;
 
-	private String title;
+	String title;
 
 }

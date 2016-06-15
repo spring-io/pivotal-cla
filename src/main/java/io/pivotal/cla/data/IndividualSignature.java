@@ -31,25 +31,25 @@ import lombok.Data;
 public class IndividualSignature {
 	@Id
 	@GeneratedValue
-	private Long id;
+	Long id;
 
 	@ManyToOne
-	private ContributorLicenseAgreement cla;
+	ContributorLicenseAgreement cla;
 
 	@Version
-	private Date dateOfSignature;
+	Date dateOfSignature;
 
-	private String name;
+	String name;
 
-	private String email;
+	String email;
 
-	private String mailingAddress;
+	String mailingAddress;
 
-	private String country;
+	String country;
 
-	private String telephone;
+	String telephone;
 
 	@Column(name = "github_login")
-	private String gitHubLogin;
+	String gitHubLogin;
 
 }

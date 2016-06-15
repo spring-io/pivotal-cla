@@ -24,7 +24,7 @@ import org.springframework.test.context.support.DefaultActiveProfilesResolver;
  *
  */
 public class SystemActiveProfilesResolver implements ActiveProfilesResolver {
-	private DefaultActiveProfilesResolver resolver = new DefaultActiveProfilesResolver();
+	DefaultActiveProfilesResolver resolver = new DefaultActiveProfilesResolver();
 
 	/*
 	 * (non-Javadoc)

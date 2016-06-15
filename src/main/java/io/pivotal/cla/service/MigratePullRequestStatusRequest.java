@@ -12,13 +12,13 @@ public class MigratePullRequestStatusRequest {
 	/**
 	 * Repository ids in the format of spring-projects/spring-security
 	 */
-	private final List<String> repositoryIds;
+	final List<String> repositoryIds;
 
-	private final String commitStatusUrl;
+	final String commitStatusUrl;
 
-	private final String accessToken;
+	final String accessToken;
 
-	private final String faqUrl;
+	final String faqUrl;
 
-	private final String baseSyncUrl;
+	final String baseSyncUrl;
 }

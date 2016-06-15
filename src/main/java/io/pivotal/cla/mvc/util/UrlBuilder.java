@@ -33,11 +33,11 @@ import lombok.SneakyThrows;
  */
 public class UrlBuilder {
 
-	private final HttpServletRequest request;
+	final HttpServletRequest request;
 
-	private String path;
+	String path;
 
-	private MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+	MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
 	private UrlBuilder(HttpServletRequest request) {
 		super();

@@ -33,9 +33,9 @@ import lombok.Getter;
 
 public class AdminListClasPage extends BasePage {
 
-	private WebElement create;
+	WebElement create;
 
-	private List<Row> rows;
+	List<Row> rows;
 
 	public AdminListClasPage(WebDriver driver) {
 		super(driver);

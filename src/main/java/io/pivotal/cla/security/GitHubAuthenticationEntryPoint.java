@@ -32,8 +32,8 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class GitHubAuthenticationEntryPoint implements AuthenticationEntryPoint {
-	private OAuthClientCredentials config;
-	private String scope;
+	OAuthClientCredentials config;
+	String scope;
 
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException, ServletException {

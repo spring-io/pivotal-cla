@@ -50,7 +50,7 @@ public abstract class BaseWebDriverTests {
 	@Autowired
 	protected WebApplicationContext wac;
 	@Autowired
-	private HiddenHttpMethodFilter hiddenInputFilter;
+	HiddenHttpMethodFilter hiddenInputFilter;
 	protected GitHubApi mockGitHub;
 	protected ContributorLicenseAgreementRepository mockClaRepository;
 	protected IndividualSignatureRepository mockIndividualSignatureRepository;

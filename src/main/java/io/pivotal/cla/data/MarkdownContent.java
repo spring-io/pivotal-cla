@@ -31,9 +31,9 @@ import lombok.Data;
 public class MarkdownContent {
 	@NotEmpty(message = "This is required")
 	@Lob
-	private String markdown;
+	String markdown;
 
 	@Lob
-	private String html;
+	String html;
 
 }

@@ -20,28 +20,28 @@ import lombok.Data;
 
 @Data
 public class PullRequestStatus {
-	private int pullRequestId;
-	private String repoId;
-	private String sha;
-	private Boolean success;
-	private String url;
+	int pullRequestId;
+	String repoId;
+	String sha;
+	Boolean success;
+	String url;
 	/**
 	 * The URL used to sync the Pull Request. For example,
 	 * https://cla.pivotal.io/sync/pivotal?repositoryId=spring-projects/spring-security&pullRequestId=10
 	 */
-	private String syncUrl;
+	String syncUrl;
 	/**
 	 * The URL to the FAQ. For example,
 	 * https://cla.pivotal.io/faq
 	 */
-	private String faqUrl;
-	private String gitHubUsername;
-	private boolean admin;
+	String faqUrl;
+	String gitHubUsername;
+	boolean admin;
 	/**
 	 * The Access Token used for updating the commit status. This is typically
 	 * looked up using the {@link AccessTokenRepository} by the repoId.
 	 */
-	private String accessToken;
+	String accessToken;
 
 
 	public boolean isSuccess() {

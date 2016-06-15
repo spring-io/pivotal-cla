@@ -26,8 +26,8 @@ import lombok.Data;
  */
 @Data
 public class ContributingUrlsResponse {
-	private Collection<String> markdown = new ArrayList<>();
+	Collection<String> markdown = new ArrayList<>();
 
-	private Collection<String> asciidoc = new ArrayList<>();
+	Collection<String> asciidoc = new ArrayList<>();
 
 }

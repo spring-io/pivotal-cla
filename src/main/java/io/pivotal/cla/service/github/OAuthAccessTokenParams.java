@@ -24,11 +24,11 @@ import lombok.Data;
 @Data
 public class OAuthAccessTokenParams {
 
-	private String state;
+	String state;
 
-	private String callbackUrl;
+	String callbackUrl;
 
-	private String code;
+	String code;
 
 
 }

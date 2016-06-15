@@ -28,12 +28,12 @@ import lombok.ToString;
 @ToString(callSuper=true)
 public class SignCorporateClaForm extends SignClaForm {
 	@NotEmpty(message = "This is required")
-	private String companyName;
+	String companyName;
 	@NotEmpty(message = "This is required")
-	private String gitHubOrganization;
+	String gitHubOrganization;
 	@NotEmpty(message = "This is required")
-	private String title;
+	String title;
 
-	private List<String> gitHubOrganizations;
+	List<String> gitHubOrganizations;
 
 }

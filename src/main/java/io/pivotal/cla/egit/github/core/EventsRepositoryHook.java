@@ -22,7 +22,7 @@ import org.eclipse.egit.github.core.RepositoryHook;
 
 public class EventsRepositoryHook extends RepositoryHook {
 
-	private List<String> events = new ArrayList<>();
+	List<String> events = new ArrayList<>();
 
 	public void addEvent(String event) {
 		events.add(event);

@@ -30,27 +30,27 @@ import lombok.ToString;
 public class SignClaForm extends ClaRequest {
 
 	@NotNull
-	private Long claId;
+	Long claId;
 
 	@NotEmpty(message = "This is required")
-	private String name;
+	String name;
 
 	@NotEmpty(message = "This is required")
-	private String email;
+	String email;
 
 	@NotEmpty(message = "This is required")
-	private String mailingAddress;
+	String mailingAddress;
 
 	@NotEmpty(message = "This is required")
-	private String country;
+	String country;
 
 	@NotEmpty(message = "This is required")
-	private String telephone;
+	String telephone;
 
 	@AssertTrue(message = "This is required")
-	private Boolean confirm;
+	Boolean confirm;
 
-	private boolean signed;
+	boolean signed;
 
 
 }

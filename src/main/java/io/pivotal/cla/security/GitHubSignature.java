@@ -40,7 +40,7 @@ public class GitHubSignature {
 
 	private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
 
-	private AccessTokenRepository accessTokens;
+	AccessTokenRepository accessTokens;
 
 	@Autowired
 	public GitHubSignature(AccessTokenRepository accessTokens) {

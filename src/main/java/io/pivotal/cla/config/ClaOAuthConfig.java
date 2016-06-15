@@ -31,17 +31,17 @@ import lombok.Data;
 public class ClaOAuthConfig {
 
 	@Value("${security.oauth2.pivotal-cla.tokenSecret}")
-	private String pivotalClaAccessToken;
+	String pivotalClaAccessToken;
 
-	private OAuthClientCredentials main;
+	OAuthClientCredentials main;
 
-	private String scheme = "https";
+	String scheme = "https";
 
-	private int port = 443;
+	int port = 443;
 
-	private String gitHubApiHost = "api.github.com";
+	String gitHubApiHost = "api.github.com";
 
-	private String gitHubHost = "github.com";
+	String gitHubHost = "github.com";
 
 	public String getGitHubBaseUrl() {
 		return getBaseUrl(gitHubHost);

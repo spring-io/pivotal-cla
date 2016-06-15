@@ -24,9 +24,9 @@ import lombok.Data;
 @Data
 public class LinkClaForm {
 	@NotEmpty(message = "This is required")
-	private List<String> repositories;
+	List<String> repositories;
 
 	@NotEmpty(message = "This is required")
-	private String claName;
+	String claName;
 
 }
