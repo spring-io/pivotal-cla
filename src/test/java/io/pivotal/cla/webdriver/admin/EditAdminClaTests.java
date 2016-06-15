@@ -200,6 +200,7 @@ public class EditAdminClaTests extends BaseWebDriverTests {
 
 	@Test
 	public void editClaSuccessPrimaryExistingButSameId() {
+		cla.setId(new Long(1L));
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
