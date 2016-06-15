@@ -73,7 +73,8 @@ public class AdminCrudClaController extends AdminClaController {
 		boolean primary = claForm.isPrimary();
 		if(primary) {
 			ContributorLicenseAgreement existingPrimaryCla = claRepo.findByNameAndPrimaryTrue(claForm.getName());
-			if(existingPrimaryCla != null && existingPrimaryCla.getId() != claForm.getId()) {
+			Long existingPrimaryClaId = existingPrimaryCla == null ? null : existingPrimaryCla.getId();
+			if(existingPrimaryClaId != null && !existingPrimaryClaId.equals(claForm.getId())) {
 				result.rejectValue("primary","errors.primary.exists", "A primary CLA with this name already exists");
 			}
 		}

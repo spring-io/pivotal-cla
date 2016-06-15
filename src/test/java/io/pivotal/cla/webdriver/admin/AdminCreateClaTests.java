@@ -25,12 +25,14 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import io.pivotal.cla.data.ContributorLicenseAgreement;
+import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.security.WithAdminUserFactory;
 import io.pivotal.cla.security.WithClaAuthorUser;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
 import io.pivotal.cla.webdriver.pages.HomePage;
 import io.pivotal.cla.webdriver.pages.admin.AdminClaFormPage.ClaForm;
 import io.pivotal.cla.webdriver.pages.admin.AdminCreateClaPage;
+import io.pivotal.cla.webdriver.pages.admin.AdminEditClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
 
 @WithClaAuthorUser
@@ -109,20 +111,42 @@ public class AdminCreateClaTests extends BaseWebDriverTests {
 	}
 
 	@Test
-	public void createClaInvalidPrimary() throws Exception {
+	public void editClaInvalidPrimary() throws Exception {
+		ContributorLicenseAgreement otherCla = DataUtils.createSpringCla();
+		otherCla.setId(cla.getId() + 1L);
+		otherCla.setPrimary(true);
+
+		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+		when(mockClaRepository.findByNameAndPrimaryTrue(otherCla.getName())).thenReturn(otherCla);
+
+		AdminEditClaPage edit = AdminEditClaPage.to(getDriver(), cla.getId());
+
+		edit = edit.form()
+				.name(otherCla.getName())
+				.individual("Individual")
+				.corporate("Corporate")
+				.primary()
+				.submit(AdminEditClaPage.class);
+
+		ClaForm form = edit.form();
+		form.assertPrimary().hasError("A primary CLA with this name already exists");
+	}
+
+	@Test
+	public void createClaValidPrimary() throws Exception {
+		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
 
 		AdminCreateClaPage create = AdminCreateClaPage.to(getDriver());
 
-		create = create.form()
+		AdminListClasPage success = create.form()
 				.name(cla.getName())
 				.individual("Individual")
 				.corporate("Corporate")
 				.primary()
-				.submit(AdminCreateClaPage.class);
+				.submit(AdminListClasPage.class);
 
-		ClaForm form = create.form();
-		form.assertPrimary().hasError("A primary CLA with this name already exists");
+		success.assertAt();
 	}
 
 	@Test
