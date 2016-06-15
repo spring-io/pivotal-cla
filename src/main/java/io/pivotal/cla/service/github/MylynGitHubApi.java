@@ -331,7 +331,7 @@ public class MylynGitHubApi implements GitHubApi {
 			EventsRepositoryHook hook = createHook(gitHubEventUrl, request.getSecret());
 
 			List<RepositoryHook> hooks = service.getHooks(repositoryId);
-			Optional<RepositoryHook> optional = hooks.stream().filter(h -> hasUrl(hook, gitHubEventUrl)).findFirst();
+			Optional<RepositoryHook> optional = hooks.stream().filter(h -> hasUrl(h, gitHubEventUrl)).findFirst();
 
 			long hookId;
 			if (optional.isPresent()) {
@@ -354,7 +354,7 @@ public class MylynGitHubApi implements GitHubApi {
 	private boolean hasUrl(RepositoryHook hook, String githubEventUrl) {
 
 		if(hook.getConfig() != null){
-			if(githubEventUrl.endsWith(hook.getConfig().get("url"))){
+			if(githubEventUrl.equals(hook.getConfig().get("url"))){
 				return true;
 			}
 		}

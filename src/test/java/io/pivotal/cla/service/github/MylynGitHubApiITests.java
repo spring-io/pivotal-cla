@@ -314,6 +314,34 @@ public class MylynGitHubApiITests {
 	}
 
 	@Test
+	@EnqueueRequests({"getPullRequestHooksEmptyUrl",
+		"createPullRequestHooks"})
+	public void createPullRequestHooksExistingEmptyUrl() throws Exception {
+		CreatePullRequestHookRequest hookRequest = new CreatePullRequestHookRequest();
+		hookRequest.setAccessToken("access-token-123");
+		hookRequest.setGitHubEventUrl("https://example.com/github/hook");
+		hookRequest.setRepositoryIds(Arrays.asList("spring-projects/spring-security"));
+		hookRequest.setSecret("do not guess me");
+
+		List<String> hooks = service.createPullRequestHooks(hookRequest);
+
+		assertThat(hooks).containsOnly("https://github.com/spring-projects/spring-security/settings/hooks/123");
+
+		RecordedRequest request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/hooks?per_page=100&page=1");
+
+		request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("POST");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/hooks");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + hookRequest.getAccessToken());
+		assertThat(request.getBody().readUtf8()).isEqualTo(
+				"{\"events\":[\"pull_request\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":0,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"secret\":\"do not guess me\",\"url\":\"https://example.com/github/hook\"}}");
+	}
+
+	@Test
 	@EnqueueRequests({"getPullRequestInactive",
 		"updatePullRequestHooks"})
 	public void enableInactivePullRequestHookAndSetSecret() throws Exception {
