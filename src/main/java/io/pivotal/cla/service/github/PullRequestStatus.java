@@ -36,6 +36,7 @@ public class PullRequestStatus {
 	 */
 	private String faqUrl;
 	private String gitHubUsername;
+	private boolean admin;
 	/**
 	 * The Access Token used for updating the commit status. This is typically
 	 * looked up using the {@link AccessTokenRepository} by the repoId.

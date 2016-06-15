@@ -41,6 +41,7 @@ public class SyncGitHubStatusController {
 
 		ClaPullRequestStatusRequest updatePullRequest = claRequest.createUpdatePullRequestStatus(currentUser.getGitHubLogin());
 		if(updatePullRequest != null) {
+			updatePullRequest.getCommitStatus().setAdmin(currentUser.isAdmin());
 			claService.savePullRequestStatus(updatePullRequest);
 		}
 		String[] repositoryParts = claRequest.getRepositoryId().split("/");

@@ -120,10 +120,18 @@ public class AdminLinkClaController extends AdminClaController {
 		UrlBuilder signClaUrlBldr = UrlBuilder.fromRequest(request);
 		String signClaUrl = signClaUrlBldr.path("/sign/" + urlEncodedClaName).build();
 
+		UrlBuilder faqUrlBldr = UrlBuilder.fromRequest(request);
+		String faqUrl = faqUrlBldr.path("/faq").build();
+
+		UrlBuilder baseSyncUrlBldr = UrlBuilder.fromRequest(request);
+		String baseSyncUrl = baseSyncUrlBldr.path("/sync/" + urlEncodedClaName).build();
+
 		MigratePullRequestStatusRequest migratePullRequests = MigratePullRequestStatusRequest.builder()
 							.accessToken(user.getAccessToken())
 							.commitStatusUrl(signClaUrl)
 							.repositoryIds(updatePullRequestStatusesForm.getRepositories())
+							.faqUrl(faqUrl)
+							.baseSyncUrl(baseSyncUrl)
 							.build();
 
 		claService.migratePullRequestStatus(updatePullRequestStatusesForm.getClaName(), migratePullRequests);

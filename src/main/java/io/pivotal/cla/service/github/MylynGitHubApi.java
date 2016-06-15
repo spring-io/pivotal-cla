@@ -44,6 +44,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -153,7 +154,7 @@ public class MylynGitHubApi implements GitHubApi {
 				return;
 			}
 
-			Optional<Comment> oldComment = claUserComments.stream().filter( c-> c.getBody().trim().equals(oldBody)).findFirst();
+			Optional<Comment> oldComment = claUserComments.stream().filter( c-> c.getBody().trim().contains(oldBody)).findFirst();
 			if(oldComment.isPresent()) {
 				Comment toEdit = oldComment.get();
 				toEdit.setBody(body);
@@ -179,7 +180,7 @@ public class MylynGitHubApi implements GitHubApi {
 
 		PullRequestService service = new PullRequestService(client);
 		PullRequest pullRequest = service.getPullRequest(id, pullRequestId);
-		if (!pullRequest.getUser().getLogin().equals(currentUserGitHubLogin)) {
+		if (!commitStatus.isAdmin() && !pullRequest.getUser().getLogin().equals(currentUserGitHubLogin)) {
 			return null;
 		}
 
@@ -203,12 +204,19 @@ public class MylynGitHubApi implements GitHubApi {
 			for(PullRequest pullRequest : repositoryPullRequests) {
 				PullRequestStatus status = new PullRequestStatus();
 				String sha = pullRequest.getHead().getSha();
+				String syncUrl = UriComponentsBuilder.fromHttpUrl(request.getBaseSyncUrl())
+						.queryParam("repositoryId", repositoryId)
+						.queryParam("pullRequestId", pullRequest.getNumber())
+						.build()
+						.toUriString();
 				status.setPullRequestId(pullRequest.getNumber());
 				status.setRepoId(repositoryId);
 				status.setSha(sha);
 				status.setGitHubUsername(pullRequest.getUser().getLogin());
 				status.setUrl(commitStatusUrl);
 				status.setAccessToken(accessToken);
+				status.setFaqUrl(request.getFaqUrl());
+				status.setSyncUrl(syncUrl);
 
 				results.add(status);
 			}

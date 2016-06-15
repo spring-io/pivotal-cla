@@ -17,4 +17,8 @@ public class MigratePullRequestStatusRequest {
 	private final String commitStatusUrl;
 
 	private final String accessToken;
+
+	private final String faqUrl;
+
+	private final String baseSyncUrl;
 }
