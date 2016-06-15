@@ -67,7 +67,7 @@ public class SystemActiveProfilesResolverTests {
 
 	@ActiveProfiles(ValueWithSystemProperty.NAME)
 	static class ValueWithSystemProperty {
-		static final String NAME = "spring.active.profiles.SystemActiveProfilesResolverTests.valueWithSystemProperty";
+		public static final String NAME = "spring.active.profiles.SystemActiveProfilesResolverTests.valueWithSystemProperty";
 
 	}
 }
