@@ -30,9 +30,9 @@ public class AccessToken {
 	public static String CLA_ACCESS_TOKEN_ID = "this";
 
 	@Id
-	private String id;
+	String id;
 
-	private String token;
+	String token;
 
 	/**
 	 * <p>

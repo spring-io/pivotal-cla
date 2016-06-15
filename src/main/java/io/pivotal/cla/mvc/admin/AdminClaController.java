@@ -32,16 +32,16 @@ import io.pivotal.cla.service.github.GitHubApi;
 public class AdminClaController {
 
 	@Autowired
-	GitHubApi gitHub;
+	protected GitHubApi gitHub;
 
 	@Autowired
-	ContributorLicenseAgreementRepository claRepo;
+	protected ContributorLicenseAgreementRepository claRepo;
 
 	@Autowired
-	AccessTokenRepository tokenRepo;
+	protected AccessTokenRepository tokenRepo;
 
 	@Autowired
-	ClaService claService;
+	protected ClaService claService;
 
 	protected List<ContributorLicenseAgreement> findPrimaryClas() {
 		List<ContributorLicenseAgreement> result = claRepo.findByPrimaryTrue();

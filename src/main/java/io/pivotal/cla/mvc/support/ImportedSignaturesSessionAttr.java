@@ -18,14 +18,18 @@ package io.pivotal.cla.mvc.support;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 
+import lombok.experimental.PackagePrivate;
+
 /**
  * @author Rob Winch
  *
  */
 public final class ImportedSignaturesSessionAttr {
+
+	@PackagePrivate // visible for testing
 	static final String ATTR_NAME = "importedSignatures";
 
-	private final WebRequest webRequest;
+	final WebRequest webRequest;
 
 	public ImportedSignaturesSessionAttr(WebRequest webRequest) {
 		this.webRequest = webRequest;

@@ -286,10 +286,10 @@ public class MylynGitHubApi implements GitHubApi {
 	@Data
 	static class AccessTokenResponse {
 		@JsonProperty("access_token")
-		private String accessToken;
+		String accessToken;
 		@JsonProperty("token_type")
-		private String tokenType;
-		private String scope;
+		String tokenType;
+		String scope;
 
 	}
 

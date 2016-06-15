@@ -31,23 +31,23 @@ import lombok.Data;
  */
 @Data
 public class ClaForm {
-	private Long id;
+	Long id;
 
 	@NotEmpty(message = "This is required")
-	private String name;
+	String name;
 
 	/**
 	 * Allows differentiating agreements from one another. This is currently
 	 * only able to be filled out via sql import.
 	 */
-	private String description;
+	String description;
 
 	/**
 	 * Allows defining if the is the primary agreement. There may be additional
 	 * agreements that have the same name, but are older versions of the
 	 * agreement, variations of the agreement for different companies, etc.
 	 */
-	private boolean primary;
+	boolean primary;
 
 	/**
 	 * The {@link ContributorLicenseAgreement} that replaces this
@@ -55,15 +55,15 @@ public class ClaForm {
 	 * see if {@link #getSupersedingCla()} is signed. If neither are signed,
 	 * then the user signs {@link #getSupersedingCla()}.
 	 */
-	private Long supersedingCla;
+	Long supersedingCla;
 
 	@NotNull(message = "This is required")
 	@Valid
-	private MarkdownContent individualContent;
+	MarkdownContent individualContent;
 
 	@Valid
 	@NotNull(message = "This is required")
-	private MarkdownContent corporateContent;
+	MarkdownContent corporateContent;
 
 	public void setDescription(String description) {
 		if(StringUtils.hasLength(description)) {

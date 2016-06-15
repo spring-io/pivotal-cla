@@ -26,7 +26,7 @@ import org.openqa.selenium.support.PageFactory;
  *
  */
 public class ErrorPage extends SignClaPage {
-	private WebElement error;
+	WebElement error;
 
 	/**
 	 * @param driver

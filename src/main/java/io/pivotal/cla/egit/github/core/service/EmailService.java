@@ -53,7 +53,7 @@ public class EmailService extends GitHubService {
 	}
 
 	private static final class EmailGitHubClient extends GitHubClient {
-		private String credentials;
+		String credentials;
 
 
 		public EmailGitHubClient(String hostname, int port, String scheme) {

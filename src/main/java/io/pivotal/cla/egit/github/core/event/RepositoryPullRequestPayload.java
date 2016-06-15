@@ -25,6 +25,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class RepositoryPullRequestPayload extends PullRequestPayload {
-	private Repository repository;
+	Repository repository;
 
 }

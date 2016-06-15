@@ -20,8 +20,8 @@ import lombok.Data;
 @Data
 public class OAuthClientCredentials {
 
-	private String clientSecret;
+	String clientSecret;
 
-	private String clientId;
+	String clientId;
 
 }

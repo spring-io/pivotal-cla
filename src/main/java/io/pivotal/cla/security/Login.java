@@ -45,7 +45,7 @@ public class Login {
 
 		private static final long serialVersionUID = 4717809728702726728L;
 
-		private final User user;
+		final User user;
 
 		public UserAuthentication(User user) {
 			this.user = user;

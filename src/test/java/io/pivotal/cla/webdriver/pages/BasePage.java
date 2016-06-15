@@ -35,30 +35,30 @@ import io.pivotal.cla.webdriver.pages.admin.AdminListClasPage;
 public abstract class BasePage {
 	public static final String WEBDRIVER_BASE_URL = "webdriver.baseUrl";
 
-	private WebDriver driver;
+	WebDriver driver;
 
-	private WebElement manage;
+	WebElement manage;
 
-	private WebElement faq;
+	WebElement faq;
 
 	@FindBy(id = "admin-help")
-	private WebElement adminHelp;
+	WebElement adminHelp;
 
-	private WebElement link;
+	WebElement link;
 
 	@FindBy(id = "sign-out")
-	private WebElement signout;
+	WebElement signout;
 
-	private WebElement profile;
+	WebElement profile;
 
 	@FindBy(id = "user-menu")
-	private WebElement userMenu;
+	WebElement userMenu;
 
 	@FindBy(id = "admin-menu")
-	private WebElement adminMenu;
+	WebElement adminMenu;
 
 	@FindBy(id = "successMessage")
-	private WebElement successMessage;
+	WebElement successMessage;
 
 	protected BasePage(WebDriver driver) {
 		this.driver = driver;

@@ -38,29 +38,29 @@ public class User implements Serializable {
 
 	@Id
 	@Column(name = "github_login")
-	private String gitHubLogin;
+	String gitHubLogin;
 
-	private String name;
+	String name;
 
-	private String accessToken;
+	String accessToken;
 
 	@JsonProperty("avatar_url")
-	private String avatarUrl;
+	String avatarUrl;
 
 	@ElementCollection
 	@Column(name = "email")
 	@CollectionTable(name = "user_email",
 			joinColumns = @JoinColumn(name = "github_login") )
-	private Set<String> emails;
+	Set<String> emails;
 
 	@Transient
-	private boolean admin;
+	boolean admin;
 
 	@Transient
-	private boolean claAuthor;
+	boolean claAuthor;
 
 	@Transient
-	private boolean adminAccessRequested;
+	boolean adminAccessRequested;
 
 	private static final long serialVersionUID = 7285385090438382841L;
 }

@@ -23,7 +23,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class ContextCommitStatus extends CommitStatus {
-	private String context;
+	String context;
 
 	private static final long serialVersionUID = -1578730338049714284L;
 }

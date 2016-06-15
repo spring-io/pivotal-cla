@@ -94,9 +94,9 @@ import org.junit.runners.model.Statement;
  * @author Rob Winch
  */
 public final class EnqueueResourcesMockWebServer implements TestRule {
-	private final QueueDispatcher dispatcher;
+	final QueueDispatcher dispatcher;
 
-	private final MockWebServer server;
+	final MockWebServer server;
 
 	public EnqueueResourcesMockWebServer() {
 		dispatcher = new QueueDispatcher();
@@ -104,7 +104,7 @@ public final class EnqueueResourcesMockWebServer implements TestRule {
 		server.setDispatcher(dispatcher);
 	}
 
-	private final MockResponseParser parser = new MockResponseParser();
+	final MockResponseParser parser = new MockResponseParser();
 
 	public MockResponse peek() {
 		return dispatcher.peek();
