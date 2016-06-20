@@ -5,6 +5,7 @@
 	</head>
 	<body>
 		<div class="container" layout:fragment="content">
+			<h2>Sync Pull Request</h2>
 			<p>Would you like to synchronize the status of the Pull Request?</p>
 			<form id="synch-form" th:action="@{/sync/{claName}(claName=${claRequest.claName})}" method="post" th:object="${claRequest}">
 				<input type="hidden" th:field="*{claName}"/>
