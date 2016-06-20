@@ -110,7 +110,7 @@ public class MylynGitHubApi implements GitHubApi {
 
 		String claName ="Contributor License Agreement";
 		String thankYou = "Thank you for signing the";
-		String pleasSign = "Please sign the";
+		String pleaseSign = "Please sign the";
 
 		boolean success = commitStatus.isSuccess();
 		RepositoryId id = RepositoryId.createFromId(repoId);
@@ -118,7 +118,7 @@ public class MylynGitHubApi implements GitHubApi {
 		ContextCommitService commitService = new ContextCommitService(client);
 		ContextCommitStatus status = new ContextCommitStatus();
 		status.setDescription(success ? String.format("%s %s!", thankYou, claName)
-				:  String.format("%s %s!", pleasSign, claName));
+				:  String.format("%s %s!", pleaseSign, claName));
 
 		status.setState(success ? CommitStatus.STATE_SUCCESS : CommitStatus.STATE_FAILURE);
 		status.setContext("ci/pivotal-cla");
@@ -141,14 +141,17 @@ public class MylynGitHubApi implements GitHubApi {
 		if(success) {
 
 			String body = String.format("%s %s %s!", userMentionMarkdown, thankYou, claLinkMarkdown);
-			if(claUserComments.stream().anyMatch( c-> c.getBody().equals(body))) {
+			if(!claUserComments.stream().anyMatch( c-> c.getBody().contains(pleaseSign))) {
+				return;
+			}
+			if(claUserComments.stream().anyMatch( c-> c.getBody().contains(thankYou))) {
 				return;
 			}
 			issues.createComment(id, commitStatus.getPullRequestId(), body);
 		} else {
 			String sync = String.format("\n\n[Click here](%s) to manually synchronize the status of this Pull Request.", commitStatus.getSyncUrl());
 			String faq = String.format("\n\nSee the [FAQ](%s) for frequently asked questions.", commitStatus.getFaqUrl());
-			String oldBody = String.format("%s %s %s!", userMentionMarkdown, pleasSign, claLinkMarkdown);
+			String oldBody = String.format("%s %s %s!", userMentionMarkdown, pleaseSign, claLinkMarkdown);
 			String body = String.format("%s%s%s", oldBody, sync, faq);
 			if(claUserComments.stream().anyMatch( c-> c.getBody().equals(body))) {
 				return;
