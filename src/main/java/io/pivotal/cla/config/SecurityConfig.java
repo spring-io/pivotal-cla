@@ -68,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 									Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 									User currentUser = authentication == null ? null : (User) authentication.getPrincipal();
 
-									if(currentUser.isAdminAccessRequested()) {
+									if(currentUser == null || currentUser.isAdminAccessRequested()) {
 										new AccessDeniedHandlerImpl().handle(request, response, accessDeniedException);
 										return;
 									}
