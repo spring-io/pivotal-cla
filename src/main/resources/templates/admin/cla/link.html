@@ -126,7 +126,7 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 										th:text="${repo}">githubOrg/repoName</option>
 					</select>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('repositories')}" id="err-repositories">
-						<p th:each="err : ${#fields.errors('repositories')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{repositories}">Input is incorrect</p>
 					</div>
 				</div>
 				<div id="tags" class="form-group">
@@ -141,7 +141,7 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 						<option th:each="l : ${licenses}" th:value="${l.name}" th:text="${l.name}"></option>
 					</select>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('claName')}" id="err-claName">
-						<p th:each="err : ${#fields.errors('claName')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{claName}">Input is incorrect</p>
 					</div>
 				</div>
 				<button id="submit" type="submit" class="btn btn-success">Use CLA</button>

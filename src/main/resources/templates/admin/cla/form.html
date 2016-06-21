@@ -10,35 +10,35 @@
 					<label class="control-label" for="name">Agreement Name</label>
 					<input type="text" class="form-control" th:field="*{name}" placeholder="(i.e. apache)">
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('name')}" id="err-name">
-						<p th:each="err : ${#fields.errors('name')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{name}">Input is incorrect</p>
 					</div>
 				</div>
 				<div class="form-group" th:classAppend="${#fields.hasErrors('individualContent.markdown')}? 'has-error'">
 					<label class="control-label" for="individualContent.markdown">Individual Contributor Text</label>
 					<textarea class="form-control" th:field="*{individualContent.markdown}"></textarea>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('individualContent.markdown')}" id="err-individualContent.markdown">
-						<p th:each="err : ${#fields.errors('individualContent.markdown')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{individualContent.markdown}">Input is incorrect</p>
 					</div>
 				</div>
 				<div class="form-group" th:classAppend="${#fields.hasErrors('corporateContent.markdown')}? 'has-error'">
 					<label class="control-label" for="corporateContent.markdown">Corporate Contributor Text</label>
 					<textarea class="form-control" th:field="*{corporateContent.markdown}"></textarea>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('corporateContent.markdown')}" id="err-corporateContent.markdown">
-						<p th:each="err : ${#fields.errors('corporateContent.markdown')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{corporateContent.markdown}">Input is incorrect</p>
 					</div>
 				</div>
 				<div class="form-group" th:classAppend="${#fields.hasErrors('description')}? 'has-error'">
 					<label class="control-label" for="description">Agreement Description</label>
 					<input type="text" class="form-control" th:field="*{description}" placeholder="(i.e. ICLA FINAL 072310)">
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('description')}" id="err-description">
-						<p th:each="err : ${#fields.errors('description')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{description}">Input is incorrect</p>
 					</div>
 				</div>
 				<div class="form-group" th:classAppend="${#fields.hasErrors('primary')}? 'has-error'">
 					<label class="control-label" for="primary">Primary CLA</label>
 					<input type="checkbox" class="form-control" th:field="*{primary}">
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('primary')}" id="err-primary">
-						<p th:each="err : ${#fields.errors('primary')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{primary}">Input is incorrect</p>
 					</div>
 				</div>
 				<div class="form-group" th:classAppend="${#fields.hasErrors('supersedingCla')}? 'has-error'">
@@ -50,7 +50,7 @@
 						<option th:each="l : ${licenses}" th:value="${l.id}" th:text="${l.description == null} ? ${l.name} : (${l.name} + ' - ' + ${l.description})"></option>
 					</select>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('supersedingCla')}" id="err-supersedingCla">
-						<p th:each="err : ${#fields.errors('supersedingCla')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{supersedingCla}">Input is incorrect</p>
 					</div>
 				</div>
 				<input th:if="${isEditCla}" type="hidden" th:field="*{id}"/>
