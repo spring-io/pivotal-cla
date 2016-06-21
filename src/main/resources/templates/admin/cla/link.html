@@ -115,7 +115,7 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 			<p>This step will associate a Contributor License Agreement to specific GitHub repositories
 				<a href="#" class="glyphicon glyphicon-question-sign" data-toggle="modal" data-target="#what-happened"></a></p>
 			<form id="form" th:action="@{/admin/cla/link}" method="post" th:object="${linkClaForm}">
-				<div class="form-group" th:class="${#fields.hasErrors('repositories')}? 'has-error form-group' : form-group">
+				<div class="form-group" th:classAppend="${#fields.hasErrors('repositories')}? 'has-error'">
 					<label for="repositories">
 						Repository <a href="#" id="reload-repo-list" title="refresh list of repositories">
 												<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> refresh list</a>
@@ -126,14 +126,14 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 										th:text="${repo}">githubOrg/repoName</option>
 					</select>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('repositories')}" id="err-repositories">
-						<p th:each="err : ${#fields.errors('repositories')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{repositories}">Input is incorrect</p>
 					</div>
 				</div>
 				<div id="tags" class="form-group">
 
 				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('claName')}? 'has-error form-group' : form-group">
-					<label for="cla">
+				<div class="form-group" th:classAppend="${#fields.hasErrors('claName')}? 'has-error'">
+					<label for="claName">
 						Contributor Agreement
 					</label>
 					<select class="form-control" th:field="*{claName}">
@@ -141,7 +141,7 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 						<option th:each="l : ${licenses}" th:value="${l.name}" th:text="${l.name}"></option>
 					</select>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('claName')}" id="err-claName">
-						<p th:each="err : ${#fields.errors('claName')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{claName}">Input is incorrect</p>
 					</div>
 				</div>
 				<button id="submit" type="submit" class="btn btn-success">Use CLA</button>
