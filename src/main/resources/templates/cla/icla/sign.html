@@ -29,7 +29,7 @@
 				</div>
 			</div>
 			<form id="sign-form" class="hidden-print" th:if="${!signClaForm.signed}" th:action="@{/sign/{claName}/icla#sign-form(claName=${signClaForm.claName})}" method="post" th:object="${signClaForm}">
-				<div class="form-group" th:class="${#fields.hasErrors('name')}? 'has-error form-group' : form-group">
+				<div class="form-group" th:classAppend="${#fields.hasErrors('name')}? 'has-error'">
 					<label for="name">
 						Name
 					</label>
@@ -38,7 +38,7 @@
 						<p th:each="err : ${#fields.errors('name')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('email')}? 'has-error form-group' : form-group">
+				<div class="form-group" th:classAppend="${#fields.hasErrors('email')}? 'has-error'">
 					<label for="email">
 						Email
 					</label>
@@ -50,7 +50,7 @@
 						<p th:each="err : ${#fields.errors('email')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('mailingAddress')}? 'has-error form-group' : form-group">
+				<div class="form-group" th:classAppend="${#fields.hasErrors('mailingAddress')}? 'has-error'">
 					<label for="mailingAddress">
 						Mailing Address
 					</label>
@@ -59,7 +59,7 @@
 						<p th:each="err : ${#fields.errors('mailingAddress')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('country')}? 'has-error form-group' : form-group">
+				<div class="form-group" th:classAppend="${#fields.hasErrors('country')}? 'has-error'">
 					<label for="country">
 						Country
 					</label>
@@ -68,7 +68,7 @@
 						<p th:each="err : ${#fields.errors('country')}" th:text="${err}">Input is incorrect</p>
 					</div>
 				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('telephone')}? 'has-error form-group' : form-group">
+				<div class="form-group" th:classAppend="${#fields.hasErrors('telephone')}? 'has-error'">
 					<label for="telephone">
 						Telephone
 					</label>
@@ -78,7 +78,7 @@
 					</div>
 				</div>
 				<hr/>
-				<div class="checkbox" th:class="${#fields.hasErrors('confirm')}? 'has-error checkbox' : checkbox">
+				<div class="checkbox" th:classAppend="${#fields.hasErrors('confirm')}? 'has-error'">
 					<label for="confirm">
 						<input type="checkbox" id="confirm" th:field="*{confirm}"/> I have read and agree to the terms and conditions of the above Contributor License Agreement.
 					</label>
