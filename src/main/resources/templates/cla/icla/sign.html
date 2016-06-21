@@ -79,7 +79,7 @@
 				</div>
 				<hr/>
 				<div class="checkbox" th:classAppend="${#fields.hasErrors('confirm')}? 'has-error'">
-					<label for="confirm">
+					<label>
 						<input type="checkbox" id="confirm" th:field="*{confirm}"/> I have read and agree to the terms and conditions of the above Contributor License Agreement.
 					</label>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('confirm')}" id="err-confirm">
