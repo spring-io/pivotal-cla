@@ -62,20 +62,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.exceptionHandling()
 				.authenticationEntryPoint(entryPoint)
 				.accessDeniedHandler( new AccessDeniedHandler() {
+
 					@Override
 					public void handle(HttpServletRequest request, HttpServletResponse response,
 							AccessDeniedException accessDeniedException) throws IOException, ServletException {
-									Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-									User currentUser = authentication == null ? null : (User) authentication.getPrincipal();
+						User currentUser = getUser(SecurityContextHolder.getContext().getAuthentication());
 
-									if(currentUser == null || currentUser.isAdminAccessRequested()) {
-										new AccessDeniedHandlerImpl().handle(request, response, accessDeniedException);
-										return;
-									}
+						if (currentUser == null || currentUser.isAdminAccessRequested()) {
+							new AccessDeniedHandlerImpl().handle(request, response, accessDeniedException);
+							return;
+						}
 
-									new HttpSessionRequestCache().saveRequest(request, response);
-									entryPoint.commence(request, response, new InsufficientAuthenticationException("Additional OAuth Scopes required", accessDeniedException));
-								}
+						new HttpSessionRequestCache().saveRequest(request, response);
+						entryPoint.commence(request, response,
+								new InsufficientAuthenticationException("Additional OAuth Scopes required", accessDeniedException));
+					}
+
+					private User getUser(Authentication authentication) {
+
+						if (authentication != null && authentication.getPrincipal() instanceof User) {
+							return (User) authentication.getPrincipal();
+						}
+
+						return null;
+					}
 				})
 				.and()
 			.csrf()
