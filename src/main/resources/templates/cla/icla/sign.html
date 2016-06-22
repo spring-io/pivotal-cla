@@ -29,16 +29,16 @@
 				</div>
 			</div>
 			<form id="sign-form" class="hidden-print" th:if="${!signClaForm.signed}" th:action="@{/sign/{claName}/icla#sign-form(claName=${signClaForm.claName})}" method="post" th:object="${signClaForm}">
-				<div class="form-group" th:class="${#fields.hasErrors('name')}? 'has-error form-group' : form-group">
+				<div class="form-group" th:classAppend="${#fields.hasErrors('name')}? 'has-error'">
 					<label for="name">
 						Name
 					</label>
 					<input class="form-control"  type="text" th:field="*{name}"/>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('name')}" id="err-name">
-						<p th:each="err : ${#fields.errors('name')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{name}">Input is incorrect</p>
 					</div>
 				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('email')}? 'has-error form-group' : form-group">
+				<div class="form-group" th:classAppend="${#fields.hasErrors('email')}? 'has-error'">
 					<label for="email">
 						Email
 					</label>
@@ -47,43 +47,43 @@
 						<option th:each="e : ${currentUser.emails}" th:value="${e}" th:text="${e}"></option>
 					</select>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('email')}" id="err-email">
-						<p th:each="err : ${#fields.errors('email')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{email}">Input is incorrect</p>
 					</div>
 				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('mailingAddress')}? 'has-error form-group' : form-group">
+				<div class="form-group" th:classAppend="${#fields.hasErrors('mailingAddress')}? 'has-error'">
 					<label for="mailingAddress">
 						Mailing Address
 					</label>
 					<input class="form-control" type="text" th:field="*{mailingAddress}"/>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('mailingAddress')}" id="err-mailingAddress">
-						<p th:each="err : ${#fields.errors('mailingAddress')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{mailingAddress}">Input is incorrect</p>
 					</div>
 				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('country')}? 'has-error form-group' : form-group">
+				<div class="form-group" th:classAppend="${#fields.hasErrors('country')}? 'has-error'">
 					<label for="country">
 						Country
 					</label>
 					<input class="form-control" type="text" th:field="*{country}"/>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('country')}" id="err-country">
-						<p th:each="err : ${#fields.errors('country')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{country}">Input is incorrect</p>
 					</div>
 				</div>
-				<div class="form-group" th:class="${#fields.hasErrors('telephone')}? 'has-error form-group' : form-group">
+				<div class="form-group" th:classAppend="${#fields.hasErrors('telephone')}? 'has-error'">
 					<label for="telephone">
 						Telephone
 					</label>
 					<input class="form-control" type="text" th:field="*{telephone}"/>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('telephone')}" id="err-telephone">
-						<p th:each="err : ${#fields.errors('telephone')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{telephone}">Input is incorrect</p>
 					</div>
 				</div>
 				<hr/>
-				<div class="checkbox" th:class="${#fields.hasErrors('confirm')}? 'has-error checkbox' : checkbox">
-					<label for="confirm">
+				<div class="checkbox" th:classAppend="${#fields.hasErrors('confirm')}? 'has-error'">
+					<label>
 						<input type="checkbox" id="confirm" th:field="*{confirm}"/> I have read and agree to the terms and conditions of the above Contributor License Agreement.
 					</label>
 					<div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('confirm')}" id="err-confirm">
-						<p th:each="err : ${#fields.errors('confirm')}" th:text="${err}">Input is incorrect</p>
+						<p th:errors="*{confirm}">Input is incorrect</p>
 					</div>
 				</div>
 				<hr/>
