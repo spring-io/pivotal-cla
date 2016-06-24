@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.eclipse.egit.github.core.Comment;
@@ -42,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -56,6 +59,7 @@ import io.pivotal.cla.egit.github.core.Email;
 import io.pivotal.cla.egit.github.core.EventsRepositoryHook;
 import io.pivotal.cla.egit.github.core.service.ContextCommitService;
 import io.pivotal.cla.egit.github.core.service.EmailService;
+import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.service.MigratePullRequestStatusRequest;
 import lombok.Data;
 import lombok.SneakyThrows;
@@ -65,6 +69,7 @@ public class MylynGitHubApi implements GitHubApi {
 	private static final String AUTHORIZE_URI = "login/oauth/access_token";
 	public final static String CONTRIBUTING_FILE = "CONTRIBUTING";
 	public final static String ADMIN_MAIL_SUFFIX = "@pivotal.io";
+	public final static Pattern PULL_REQUEST_CALLBACK_PATTERN = Pattern.compile(".*" + UrlBuilder.pullRequestHookCallbackPath("") + "([a-zA-Z0-9\\-\\s\\%\\+]*)(\\?.*)?");
 
 	ClaOAuthConfig oauthConfig;
 
@@ -398,6 +403,35 @@ public class MylynGitHubApi implements GitHubApi {
 	public String markdownToHtml(String accessToken, String markdown) {
 		MarkdownService markdownService = new MarkdownService(createClient(accessToken));
 		return markdownService.getHtml(markdown, "gfm");
+	}
+
+	@Override
+	@SneakyThrows
+	public Set<String> findAssociatedClaNames(String repoId, String accessToken) {
+
+		GitHubClient client = createClient(accessToken);
+		RepositoryService service = new RepositoryService(client);
+
+		RepositoryId repositoryId = RepositoryId.createFromId(repoId);
+
+		List<RepositoryHook> hooks = service.getHooks(repositoryId);
+		Set<String> claNames = hooks.stream() //
+				.filter(h -> StringUtils.hasText(h.getConfig().get("url"))) //
+				.filter(RepositoryHook::isActive) //
+				.map(h -> h.getConfig().get("url")) //
+				.filter(PULL_REQUEST_CALLBACK_PATTERN.asPredicate()) //
+				.map(url -> getClaName(url, PULL_REQUEST_CALLBACK_PATTERN)) //
+				.collect(Collectors.toSet());
+
+		return claNames;
+	}
+
+	private String getClaName(String url, Pattern pattern) {
+
+		Matcher matcher = pattern.matcher(url);
+		matcher.find();
+
+		return matcher.group(1);
 	}
 
 	private Map<String,String> createEditLinks(Collection<String> repoIds, String fileName) {

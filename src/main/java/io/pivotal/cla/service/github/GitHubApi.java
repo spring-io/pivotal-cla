@@ -50,4 +50,13 @@ public interface GitHubApi {
 	ContributingUrlsResponse getContributingUrls(List<String> repositoryIds);
 
 	String markdownToHtml(String accessToken, String markdown);
+
+	/**
+	 * Returns a set of CLA names associated with the repository.
+	 *
+	 * @param repoId
+	 * @param accessToken
+	 * @return
+	 */
+	Set<String> findAssociatedClaNames(String repoId, String accessToken);
 }

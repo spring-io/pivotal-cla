@@ -76,7 +76,7 @@ public class AdminLinkClaController extends AdminClaController {
 
 		String urlEncodedClaName = URLEncoder.encode(linkClaForm.getClaName(), "UTF-8");
 		String pullRequestHookUrl = pullRequestUrlBldr
-				.path("/github/hooks/pull_request/" + urlEncodedClaName)
+				.path(UrlBuilder.pullRequestHookCallbackPath(linkClaForm.getClaName()))
 				.build();
 		String signClaUrl = signClaUrlBldr.path("/sign/" + urlEncodedClaName).build();
 
