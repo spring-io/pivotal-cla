@@ -112,15 +112,15 @@ public class MylynGitHubApi implements GitHubApi {
 		String thankYou = "Thank you for signing the";
 		String pleaseSign = "Please sign the";
 
-		boolean success = commitStatus.isSuccess();
+		boolean hasSignedCla = commitStatus.isSuccess();
 		RepositoryId id = RepositoryId.createFromId(repoId);
 		GitHubClient client = createClient(accessToken);
 		ContextCommitService commitService = new ContextCommitService(client);
 		ContextCommitStatus status = new ContextCommitStatus();
-		status.setDescription(success ? String.format("%s %s!", thankYou, claName)
+		status.setDescription(hasSignedCla ? String.format("%s %s!", thankYou, claName)
 				:  String.format("%s %s!", pleaseSign, claName));
 
-		status.setState(success ? CommitStatus.STATE_SUCCESS : CommitStatus.STATE_FAILURE);
+		status.setState(hasSignedCla ? CommitStatus.STATE_SUCCESS : CommitStatus.STATE_FAILURE);
 		status.setContext("ci/pivotal-cla");
 		status.setUrl(commitStatus.getUrl());
 		status.setTargetUrl(status.getUrl());
@@ -134,36 +134,41 @@ public class MylynGitHubApi implements GitHubApi {
 		String claLinkMarkdown = String.format("[%s](%s)", claName, status.getUrl());
 		String userMentionMarkdown = String.format("@%s", commitStatus.getGitHubUsername());
 
-		GitHubClient commentClient = createClient(oauthConfig.getPivotalClaAccessToken());
-		IssueService issues = new IssueService(commentClient);
-		List<Comment> claUserComments = getCommentsByClaUser(issues, id, commitStatus);
+		if(commitStatus.shouldInteractWithComments()) {
 
-		if(success) {
+			GitHubClient commentClient = createClient(oauthConfig.getPivotalClaAccessToken());
+			IssueService issues = new IssueService(commentClient);
+			List<Comment> claUserComments = getCommentsByClaUser(issues, id, commitStatus);
 
-			String body = String.format("%s %s %s!", userMentionMarkdown, thankYou, claLinkMarkdown);
-			if(!claUserComments.stream().anyMatch( c-> c.getBody().contains(pleaseSign))) {
-				return;
-			}
-			if(claUserComments.stream().anyMatch( c-> c.getBody().contains(thankYou))) {
-				return;
-			}
-			issues.createComment(id, commitStatus.getPullRequestId(), body);
-		} else {
-			String sync = String.format("\n\n[Click here](%s) to manually synchronize the status of this Pull Request.", commitStatus.getSyncUrl());
-			String faq = String.format("\n\nSee the [FAQ](%s) for frequently asked questions.", commitStatus.getFaqUrl());
-			String oldBody = String.format("%s %s %s!", userMentionMarkdown, pleaseSign, claLinkMarkdown);
-			String body = String.format("%s%s%s", oldBody, sync, faq);
-			if(claUserComments.stream().anyMatch( c-> c.getBody().equals(body))) {
-				return;
-			}
+			if (hasSignedCla) {
 
-			Optional<Comment> oldComment = claUserComments.stream().filter( c-> c.getBody().trim().contains(oldBody)).findFirst();
-			if(oldComment.isPresent()) {
-				Comment toEdit = oldComment.get();
-				toEdit.setBody(body);
-				issues.editComment(id, toEdit);
+				String body = String.format("%s %s %s!", userMentionMarkdown, thankYou, claLinkMarkdown);
+
+				if (claUserComments.stream().anyMatch(c -> c.getBody().contains(pleaseSign))) {
+
+					if (claUserComments.stream().anyMatch(c -> c.getBody().contains(thankYou))) {
+						return;
+					}
+
+					issues.createComment(id, commitStatus.getPullRequestId(), body);
+				}
 			} else {
-				issues.createComment(id, commitStatus.getPullRequestId(), body);
+				String sync = String.format("\n\n[Click here](%s) to manually synchronize the status of this Pull Request.", commitStatus.getSyncUrl());
+				String faq = String.format("\n\nSee the [FAQ](%s) for frequently asked questions.", commitStatus.getFaqUrl());
+				String oldBody = String.format("%s %s %s!", userMentionMarkdown, pleaseSign, claLinkMarkdown);
+				String body = String.format("%s%s%s", oldBody, sync, faq);
+				if (claUserComments.stream().anyMatch(c -> c.getBody().equals(body))) {
+					return;
+				}
+
+				Optional<Comment> oldComment = claUserComments.stream().filter(c -> c.getBody().trim().contains(oldBody)).findFirst();
+				if (oldComment.isPresent()) {
+					Comment toEdit = oldComment.get();
+					toEdit.setBody(body);
+					issues.editComment(id, toEdit);
+				} else {
+					issues.createComment(id, commitStatus.getPullRequestId(), body);
+				}
 			}
 		}
 	}
@@ -223,6 +228,7 @@ public class MylynGitHubApi implements GitHubApi {
 				status.setAccessToken(accessToken);
 				status.setFaqUrl(request.getFaqUrl());
 				status.setSyncUrl(syncUrl);
+				status.setPullRequestState(pullRequest.getState());
 
 				results.add(status);
 			}

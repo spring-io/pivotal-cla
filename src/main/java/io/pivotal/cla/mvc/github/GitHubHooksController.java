@@ -79,6 +79,7 @@ public class GitHubHooksController {
 			.pullRequestId(status.getPullRequestId())
 			.build();
 		status.setUrl(signUrl);
+		status.setPullRequestState(pullRequest.getState());
 
 		ClaPullRequestStatusRequest pullRequestStatusRequest = new ClaPullRequestStatusRequest();
 		pullRequestStatusRequest.setClaName(cla);
