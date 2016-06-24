@@ -110,4 +110,10 @@ public class UrlBuilder {
 	public static UrlBuilder fromRequest(HttpServletRequest request) {
 		return new UrlBuilder(request);
 	}
+
+	@SneakyThrows
+	public static String pullRequestHookCallbackPath(String claName) {
+		String urlEncodedClaName = URLEncoder.encode(claName, "UTF-8");
+		return String.format("%s/%s", "/github/hooks/pull_request", urlEncodedClaName);
+	}
 }

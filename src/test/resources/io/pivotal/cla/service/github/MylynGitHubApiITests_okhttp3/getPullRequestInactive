@@ -15,7 +15,7 @@ X-RateLimit-Remaining: 4999
   ],
   "active": false,
   "config": {
-    "url": "https://example.com/github/hook",
+    "url": "https://example.com/github/hooks/pull_request/my-cla",
     "content_type": "json"
   },
   "updated_at": "2011-09-06T20:39:23Z",

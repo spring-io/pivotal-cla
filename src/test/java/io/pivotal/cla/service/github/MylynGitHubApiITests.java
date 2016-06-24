@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -347,7 +348,7 @@ public class MylynGitHubApiITests {
 	public void enableInactivePullRequestHookAndSetSecret() throws Exception {
 		CreatePullRequestHookRequest hookRequest = new CreatePullRequestHookRequest();
 		hookRequest.setAccessToken("access-token-123");
-		hookRequest.setGitHubEventUrl("https://example.com/github/hook");
+		hookRequest.setGitHubEventUrl("https://example.com/github/hooks/pull_request/my-cla");
 		hookRequest.setRepositoryIds(Arrays.asList("spring-projects/spring-security"));
 		hookRequest.setSecret("do not guess me");
 
@@ -364,7 +365,7 @@ public class MylynGitHubApiITests {
 		assertThat(request.getPath()).isEqualTo("/api/v3/repos/spring-projects/spring-security/hooks/123");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + hookRequest.getAccessToken());
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"events\":[\"pull_request\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":123,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"secret\":\"do not guess me\",\"url\":\"https://example.com/github/hook\"}}");
+				"{\"events\":[\"pull_request\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":123,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"secret\":\"do not guess me\",\"url\":\"https://example.com/github/hooks/pull_request/my-cla\"}}");
 	}
 
 	@Test
@@ -982,6 +983,26 @@ public class MylynGitHubApiITests {
 		String html = service.markdownToHtml(accessToken, markdown);
 
 		assertThat(html).isEqualTo("<p>Hello world <a href=\"http://github.com/github/linguist/issues/1\" class=\"issue-link\" title=\"This is a simple issue\">github/linguist#1</a> <strong>cool</strong>, and <a href=\"http://github.com/github/gollum/issues/1\" class=\"issue-link\" title=\"This is another issue\">#1</a>!</p>");
+	}
+
+	@Test
+	@EnqueueRequests("getPullRequestActive")
+	public void findAssociatedClaNames() {
+		String accessToken = "access-token-123";
+
+		Set<String> associatedClaNames = service.findAssociatedClaNames("spring-projects/spring-security", accessToken);
+
+		assertThat(associatedClaNames).contains("my-cla-with-query-parameter", "my-cla", "my%AAcla%20with+special chars");
+	}
+
+	@Test
+	@EnqueueRequests("getPullRequestInactive")
+	public void findAssociatedClaNamesShouldSkipInactiveHooks() {
+		String accessToken = "access-token-123";
+
+		Set<String> associatedClaNames = service.findAssociatedClaNames("spring-projects/spring-security", accessToken);
+
+		assertThat(associatedClaNames).isEmpty();
 	}
 
 	@Test

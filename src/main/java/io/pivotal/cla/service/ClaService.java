@@ -1,7 +1,9 @@
 package io.pivotal.cla.service;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,8 @@ import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.data.repository.UserRepository;
-import io.pivotal.cla.service.github.PullRequestStatus;
 import io.pivotal.cla.service.github.GitHubApi;
+import io.pivotal.cla.service.github.PullRequestStatus;
 import lombok.SneakyThrows;
 
 @Component
@@ -127,5 +129,15 @@ public class ClaService {
 		CorporateSignatureInfo corporateSignatureInfo = findCorporateSignatureInfoFor(claName, user);
 		CorporateSignature corporateSignature = corporateSignatureInfo.getCorporateSignature();
 		return corporateSignature != null;
+	}
+
+	public Set<String> findAssociatedClaNames(String repoId) {
+		AccessToken accessToken = accessTokenRepository.findOne(repoId);
+
+		if (accessToken == null) {
+			return Collections.emptySet();
+		}
+
+		return gitHub.findAssociatedClaNames(repoId, accessToken.getToken());
 	}
 }
