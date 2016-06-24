@@ -29,7 +29,6 @@ import lombok.SneakyThrows;
 
 /**
  * @author Rob Winch
- *
  */
 public class UrlBuilder {
 
@@ -58,25 +57,46 @@ public class UrlBuilder {
 		return this;
 	}
 
-	@Builder(builderMethodName="signUrl")
+	@Builder(builderMethodName = "signUrl")
 	@SneakyThrows
-	private static String create(HttpServletRequest request, String claName, String repositoryId, int pullRequestId) {
+	private static String createSignUrl(HttpServletRequest request, String claName, String repositoryId,
+			int pullRequestId) {
 		String urlEncodedClaName = URLEncoder.encode(claName, "UTF-8");
-		UrlBuilder url = UrlBuilder
-				.fromRequest(request)
-				.path("/sign/"+urlEncodedClaName)
-				.param("repositoryId", repositoryId)
+		UrlBuilder url = UrlBuilder //
+				.fromRequest(request) //
+				.path("/sign/" + urlEncodedClaName) //
+				.param("repositoryId", repositoryId) //
 				.param("pullRequestId", String.valueOf(pullRequestId));
 		return url.build();
 	}
 
+	@SneakyThrows
+	public static String createSyncUrl(HttpServletRequest request, String claName, String repositoryId,
+			int pullRequestId) {
+		String urlEncodedClaName = URLEncoder.encode(claName, "UTF-8");
+		UrlBuilder url = UrlBuilder //
+				.fromRequest(request) //
+				.path("/sync/" + urlEncodedClaName) //
+				.param("repositoryId", repositoryId) //
+				.param("pullRequestId", String.valueOf(pullRequestId));
+		return url.build();
+	}
+
+	@SneakyThrows
+	public static String createFaqUrl(HttpServletRequest request) {
+		UrlBuilder url = UrlBuilder //
+				.fromRequest(request)//
+				.path("/faq");//
+		return url.build();
+	}
+
 	public String build() {
-		String url = UriComponentsBuilder
-				.fromHttpRequest(new ServletServerHttpRequest(request))
-				.replacePath(path)
-				.replaceQueryParams(params)
-				.build()
-				.toUriString();
+		String url = UriComponentsBuilder //
+				.fromHttpRequest(new ServletServerHttpRequest(request))//
+				.replacePath(path) //
+				.replaceQueryParams(params) //
+				.build() //
+				.toUriString(); //
 
 		this.path = null;
 		this.params.clear();
