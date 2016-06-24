@@ -71,23 +71,13 @@ public class ClaRequest {
 	private String syncUrl() throws Exception {
 		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 		HttpServletRequest request = requestAttributes.getRequest();
-
-		String urlEncodedClaName = URLEncoder.encode(claName, "UTF-8");
-		UrlBuilder url = UrlBuilder
-				.fromRequest(request)
-				.path("/sync/"+urlEncodedClaName)
-				.param("repositoryId", repositoryId)
-				.param("pullRequestId", String.valueOf(pullRequestId));
-		return url.build();
+		return UrlBuilder.createSyncUrl(request, claName, repositoryId, pullRequestId);
 	}
 
 	private String faqUrl() throws Exception {
 		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 		HttpServletRequest request = requestAttributes.getRequest();
 
-		UrlBuilder url = UrlBuilder
-				.fromRequest(request)
-				.path("/faq");
-		return url.build();
+		return UrlBuilder.createFaqUrl(request);
 	}
 }

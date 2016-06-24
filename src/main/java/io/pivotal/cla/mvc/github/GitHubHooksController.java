@@ -80,6 +80,12 @@ public class GitHubHooksController {
 			.build();
 		status.setUrl(signUrl);
 
+		String syncUrl = UrlBuilder.createSyncUrl(request, cla, status.getRepoId(), status.getPullRequestId());
+		status.setSyncUrl(syncUrl);
+
+		String faqUrl = UrlBuilder.createFaqUrl(request);
+		status.setFaqUrl(faqUrl);
+
 		ClaPullRequestStatusRequest pullRequestStatusRequest = new ClaPullRequestStatusRequest();
 		pullRequestStatusRequest.setClaName(cla);
 		pullRequestStatusRequest.setCommitStatus(status);
