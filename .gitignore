@@ -19,6 +19,8 @@ build/
 *.iws
 .gradle/
 atlassian-ide-plugin.xml
-src/main/resources/application-local.properties
+application-local.properties
+application-local-mysql.properties
 .factorypath
 gradle.properties
+classes/

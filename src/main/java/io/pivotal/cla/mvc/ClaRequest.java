@@ -33,6 +33,7 @@ import lombok.Data;
  */
 @Data
 public class ClaRequest {
+
 	String claName;
 	String repositoryId;
 	Integer pullRequestId;
@@ -48,6 +49,7 @@ public class ClaRequest {
 		commitStatus.setSyncUrl(syncUrl());
 		commitStatus.setFaqUrl(faqUrl());
 		commitStatus.setGitHubUsername(currentUserGitHubLogin);
+		commitStatus.setPullRequestState(PullRequestStatus.UNKNOWN_PULL_REQUEST_STATE);
 
 		ClaPullRequestStatusRequest request = new ClaPullRequestStatusRequest();
 		request.setClaName(claName);

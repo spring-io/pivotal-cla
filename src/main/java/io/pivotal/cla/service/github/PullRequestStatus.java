@@ -20,6 +20,10 @@ import lombok.Data;
 
 @Data
 public class PullRequestStatus {
+
+	public static final String UNKNOWN_PULL_REQUEST_STATE = "unknown";
+	public static final String OPEN_PULL_REQUEST_STATE = "open";
+
 	int pullRequestId;
 	String repoId;
 	String sha;
@@ -43,9 +47,14 @@ public class PullRequestStatus {
 	 */
 	String accessToken;
 
+	String pullRequestState;
 
 	public boolean isSuccess() {
 		return Boolean.TRUE.equals(success);
+	}
+
+	public boolean shouldInteractWithComments() {
+		return UNKNOWN_PULL_REQUEST_STATE.equals(pullRequestState) || OPEN_PULL_REQUEST_STATE.equalsIgnoreCase(pullRequestState);
 	}
 
 	/**

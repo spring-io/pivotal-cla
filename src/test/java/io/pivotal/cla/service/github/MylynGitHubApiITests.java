@@ -385,6 +385,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(true);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
 
 		service.save(commitStatus);
 
@@ -435,6 +436,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(true);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
 
 		service.save(commitStatus);
 
@@ -486,6 +488,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(true);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
 
 		service.save(commitStatus);
 
@@ -543,6 +546,50 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(true);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
+
+		service.save(commitStatus);
+
+		assertThat(server.getServer().getRequestCount()).isEqualTo(3);
+
+		RecordedRequest request = server.getServer().takeRequest();
+
+		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f?per_page=100&page=1");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+
+		request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/user");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
+
+		request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments?per_page=100&page=1");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
+	}
+
+	@Test
+	@EnqueueRequests({
+		"getStatusSuccess",
+		"getUserPivotalIssueMaster",
+		"getIssueCommentsNoComments",
+	})
+	public void saveSuccessDoNotAddCommentIfNoPleaseSign() throws Exception {
+		String accessToken = "access-token-123";
+
+		PullRequestStatus commitStatus = new PullRequestStatus();
+		commitStatus.setGitHubUsername("rwinch");
+		commitStatus.setPullRequestId(1);
+		commitStatus.setRepoId("spring-projects/spring-security");
+		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		commitStatus.setSuccess(true);
+		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
 
 		service.save(commitStatus);
 
@@ -586,6 +633,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(true);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
 
 		service.save(commitStatus);
 
@@ -639,6 +687,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
 		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
 		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
 
 		service.save(commitStatus);
 
@@ -692,6 +741,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
 		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
 		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
 
 		service.save(commitStatus);
 
@@ -746,6 +796,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
 		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
 		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
 
 		service.save(commitStatus);
 
@@ -787,6 +838,45 @@ public class MylynGitHubApiITests {
 				"{\"body\":\"@rwinch Please sign the [Contributor License Agreement](https://status.example.com/uri)!\\n\\n[Click here](https://cla.pivotal.io/sync/pivotal) to manually synchronize the status of this Pull Request.\\n\\nSee the [FAQ](https://cla.pivotal.io/faq) for frequently asked questions.\"}");
 	}
 
+	@Test
+	@EnqueueRequests({
+		"getStatusNone",
+		"saveStatus"
+	})
+	public void saveFailureNoCommentsPullRequestClosed() throws Exception {
+		String accessToken = "access-token-123";
+
+		PullRequestStatus commitStatus = new PullRequestStatus();
+		commitStatus.setGitHubUsername("rwinch");
+		commitStatus.setPullRequestId(1);
+		commitStatus.setRepoId("spring-projects/spring-security");
+		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		commitStatus.setSuccess(false);
+		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("closed");
+
+		service.save(commitStatus);
+
+		assertThat(server.getServer().getRequestCount()).isEqualTo(2);
+
+		RecordedRequest request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f?per_page=100&page=1");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+
+		request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("POST");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+		assertThat(request.getBody().readUtf8()).isEqualTo(
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Please sign the Contributor License Agreement!\",\"state\":\"failure\",\"target_url\":\"https://status.example.com/uri\"}");
+
+	}
 
 	@Test
 	@EnqueueRequests({
@@ -809,6 +899,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
 		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
 		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
 
 		service.save(commitStatus);
 
