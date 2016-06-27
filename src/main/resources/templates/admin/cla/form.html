@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html layout:decorator="layouts/main" th:with="isEditCla=${claForm.id != null}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorator="layouts/main" th:with="isEditCla=${claForm.id != null}">
 	<head>
 		<title th:text="${isEditCla ? 'Edit CLA' : 'Create CLA'}">Create CLA</title>
 	</head>
