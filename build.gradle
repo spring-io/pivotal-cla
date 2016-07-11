@@ -62,7 +62,7 @@ dependencies {
 	testCompile('org.springframework.security:spring-security-test')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.seleniumhq.selenium:selenium-htmlunit-driver:2.48.2')
-	testCompile('org.seleniumhq.selenium:selenium-firefox-driver:2.53.0')
+	testCompile('org.seleniumhq.selenium:selenium-firefox-driver:2.53.1')
 	testCompile('org.assertj:assertj-core:3.3.0')
 	testCompile('com.squareup.okhttp3:mockwebserver:3.1.2')
 
