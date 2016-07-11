@@ -47,7 +47,11 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 				<h3>Update Existing Pull Requests</h3>
 				<p>
 					You can also (optionally) update the existing Pull Requests with a status.
-					Depending on the number of open pull requests, this can take some time.
+					For each pull request we migrate we must sleep for one second to ensure we follow
+					<a href="https://developer.github.com/guides/best-practices-for-integrators/#dealing-with-abuse-rate-limits">GitHub's best practices</a>.
+					This means that depending on the number of open pull requests, this can take some time.
+				</p>
+				<p>
 					To perform the migration click the button below:
 				</p>
 				<form th:action="@{/admin/cla/link/migrate}" th:object="${updatePullRequestStatusesForm}" method="post">
