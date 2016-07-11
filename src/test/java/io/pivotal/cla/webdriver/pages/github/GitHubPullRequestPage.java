@@ -2,8 +2,6 @@ package io.pivotal.cla.webdriver.pages.github;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -31,35 +29,31 @@ public class GitHubPullRequestPage {
 	}
 
 	public void assertCommentPleaseSignFor(String gitHubUsername) {
-		List<WebElement> comments = driver.findElements(By.cssSelector(".comment-content"));
 		String text = "@" + gitHubUsername + " Please sign the Contributor License Agreement! Click here to manually synchronize the status of this Pull Request. See the FAQ for frequently asked questions.";
 
 		waitForText(text);
-		assertThat(comments).extracting(e-> e.getText().replaceAll("\n", " ")).contains(text);
+		assertThat(getBodyText(driver)).contains(text);
 	}
 
 	public void assertCommentThankYouFor(String gitHubUsername) {
-		List<WebElement> comments = driver.findElements(By.cssSelector(".comment-content"));
 		String text = "@" + gitHubUsername + " Thank you for signing the Contributor License Agreement!";
 
 		waitForText(text);
-		assertThat(comments).extracting(WebElement::getText).contains(text);
+		assertThat(getBodyText(driver)).contains(text);
 	}
 
 	public void assertBuildStatusSign() {
-		List<WebElement> buildStatuses = driver.findElements(By.cssSelector(".build-status-item"));
 		String text = "Details ci/pivotal-cla — Please sign the Contributor License Agreement!";
 
 		waitForText(text);
-		assertThat(buildStatuses).extracting(e-> e.getText().replaceAll("\n", " ")).contains(text);
+		assertThat(getBodyText(driver)).contains(text);
 	}
 
 	public void assertBuildStatusSuccess() {
-		List<WebElement> buildStatuses = driver.findElements(By.cssSelector(".build-status-item"));
 		String text = "Details ci/pivotal-cla — Thank you for signing the Contributor License Agreement!";
 
 		waitForText(text);
-		assertThat(buildStatuses).extracting(e-> e.getText().replaceAll("\n", " ")).contains(text);
+		assertThat(getBodyText(driver)).contains(text);
 	}
 
 	public SignClaPage details() {
@@ -75,9 +69,15 @@ public class GitHubPullRequestPage {
 		new WebDriverWait(driver, 60).until(new Predicate<WebDriver>() {
 			@Override
 			public boolean apply(WebDriver input) {
-				return input.getPageSource().replaceAll("\n", " ").contains(text);
+				String body = getBodyText(input);
+				return body.contains(text);
 			}
 		});
+	}
+
+	private String getBodyText(WebDriver driver) {
+		WebElement body = driver.findElement(By.tagName("body"));
+		return body.getText().replaceAll("\n", " ");
 	}
 
 }
