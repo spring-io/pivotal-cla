@@ -17,19 +17,11 @@ package io.pivotal.cla.mvc;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
-import io.pivotal.cla.data.repository.IndividualSignatureRepository;
-
 @Controller
 public class HomeController {
-	@Autowired
-	IndividualSignatureRepository individual;
-	@Autowired
-	ContributorLicenseAgreementRepository clas;
 
 	@RequestMapping("/")
 	public String home(Map<String,Object> model) throws Exception {

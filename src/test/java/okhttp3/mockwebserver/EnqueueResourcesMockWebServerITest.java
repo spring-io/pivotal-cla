@@ -92,7 +92,7 @@ public class EnqueueResourcesMockWebServerITest {
 	}
 
 	@Test
-	@EnqueueRequests("/okhttp3/mockwebserver/EnqueueResourcesMockWebServerITest/body-absolute")
+	@EnqueueRequests("/okhttp3/mockwebserver/EnqueueResourcesMockWebServerITest_resource/body-absolute")
 	public void enqueueRequestsAbsolute() throws Exception {
 		OkHttpClient client = new OkHttpClient.Builder().build();
 		HttpUrl url = server.getServer().url("/");

@@ -15,8 +15,6 @@
  */
 package io.pivotal.cla.mvc;
 
-import java.net.URLEncoder;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.context.request.RequestContextHolder;

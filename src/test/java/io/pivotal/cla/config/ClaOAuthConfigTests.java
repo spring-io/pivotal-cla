@@ -17,7 +17,6 @@ package io.pivotal.cla.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import org.junit.Before;
