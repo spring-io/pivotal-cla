@@ -47,7 +47,10 @@ var adminClaLink = (function () {
 		$('#repositories').prop('disabled', true);
 		$.getJSON('./link/repositories.json')
 			.done(function (data) {
-				$("#repositories").select2({data: data});
+				$("#repositories").select2({
+					data: data,
+					tokenSeparators: [',']
+				});
 				sessionStorage.setItem("repositories", JSON.stringify(data));
 				$('#repositories').removeProp('disabled');
 			});
