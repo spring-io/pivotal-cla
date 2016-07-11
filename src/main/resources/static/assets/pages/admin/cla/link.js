@@ -29,6 +29,16 @@ var adminClaLink = (function () {
 			reloadRepositoryList();
 		}
 
+		$(document).on('keyup', ".select2-search__field", function(e) {
+			if (e.keyCode == 65 && (e.ctrlKey || e.metaKey)) {
+				$.each($(".select2-results__options").find('li'), function(i, item) {
+					$("#repositories > option:contains('"+$(item).text()+"')").prop("selected","selected");
+				});
+				$(this).val("").click();
+				$("#repositories").trigger("change");
+			}
+		});
+
 		$('#reload-repo-list').click(reloadRepositoryList);
 		$('#open-hook-urls').click(openDataUrls);
 		$('#contributing-md-urls').click(openDataUrls);
