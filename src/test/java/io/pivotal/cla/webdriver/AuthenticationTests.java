@@ -167,7 +167,7 @@ public class AuthenticationTests extends BaseWebDriverTests {
 		signClaPage.assertAt();
 
 		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
-		when(mockGitHub.findRepositoryNames(anyString())).thenReturn(Arrays.asList("test/this"));
+		when(mockGitHub.findRepositoryNamesWithAdminPermission(anyString())).thenReturn(Arrays.asList("test/this"));
 
 		AdminLinkClaPage admin = AdminLinkClaPage.to(driver);
 		admin.assertAt();

@@ -50,7 +50,7 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 	@Before
 	public void claFormData() throws Exception {
 		when(mockClaRepository.findByPrimaryTrue()).thenReturn(Arrays.asList(cla,cla));
-		when(mockGitHub.findRepositoryNames(anyString())).thenReturn(Arrays.asList("test/this"));
+		when(mockGitHub.findRepositoryNamesWithAdminPermission(anyString())).thenReturn(Arrays.asList("test/this"));
 	}
 
 	@Test

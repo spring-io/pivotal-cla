@@ -57,7 +57,7 @@ public class AdminLinkClaController extends AdminClaController {
 	@ResponseBody
 	@RequestMapping("/admin/cla/link/repositories.json")
 	public List<String> repositories(@AuthenticationPrincipal User user) throws Exception {
-		return gitHub.findRepositoryNames(user.getAccessToken());
+		return gitHub.findRepositoryNamesWithAdminPermission(user.getAccessToken());
 	}
 
 	@RequestMapping(value = "/admin/cla/link", method = RequestMethod.POST)

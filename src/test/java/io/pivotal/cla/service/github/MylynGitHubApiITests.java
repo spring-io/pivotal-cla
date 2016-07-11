@@ -74,7 +74,7 @@ public class MylynGitHubApiITests {
 	public void findRepositoryNames() throws Exception {
 		String accessToken = "accessToken";
 
-		List<String> respositoryNames = service.findRepositoryNames(accessToken);
+		List<String> respositoryNames = service.findRepositoryNamesWithAdminPermission(accessToken);
 
 		assertThat(respositoryNames).containsOnly("spring-projects/spring-security",
 				"spring-projects/spring-framework");

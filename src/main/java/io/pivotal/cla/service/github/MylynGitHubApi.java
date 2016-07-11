@@ -57,8 +57,10 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.egit.github.core.ContextCommitStatus;
 import io.pivotal.cla.egit.github.core.Email;
 import io.pivotal.cla.egit.github.core.EventsRepositoryHook;
+import io.pivotal.cla.egit.github.core.WithPermissionsRepository;
 import io.pivotal.cla.egit.github.core.service.ContextCommitService;
 import io.pivotal.cla.egit.github.core.service.EmailService;
+import io.pivotal.cla.egit.github.core.service.WithPermissionsRepositoryService;
 import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.service.MigratePullRequestStatusRequest;
 import lombok.Data;
@@ -86,13 +88,16 @@ public class MylynGitHubApi implements GitHubApi {
 
 	@Override
 	@SneakyThrows
-	public List<String> findRepositoryNames(String accessToken) {
+	public List<String> findRepositoryNamesWithAdminPermission(String accessToken) {
 		GitHubClient client = createClient(accessToken);
 
-		RepositoryService service = new RepositoryService(client);
-		List<Repository> repositories = service.getRepositories();
+		WithPermissionsRepositoryService service = new WithPermissionsRepositoryService(client);
+		List<WithPermissionsRepository> repositories = service.getPermissionRepositories();
 		List<String> repoSlugs = new ArrayList<>();
-		for (Repository r : repositories) {
+		for (WithPermissionsRepository r : repositories) {
+			if(!r.getPermissions().isAdmin()) {
+				continue;
+			}
 			org.eclipse.egit.github.core.User owner = r.getOwner();
 			repoSlugs.add(owner.getLogin() + "/" + r.getName());
 		}

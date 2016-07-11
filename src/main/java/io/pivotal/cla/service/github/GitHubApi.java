@@ -37,7 +37,7 @@ public interface GitHubApi {
 
 	void save(PullRequestStatus status);
 
-	List<String> findRepositoryNames(String accessToken);
+	List<String> findRepositoryNamesWithAdminPermission(String accessToken);
 
 	List<String> createPullRequestHooks(CreatePullRequestHookRequest request);
 
