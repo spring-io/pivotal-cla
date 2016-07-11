@@ -21,7 +21,8 @@ var adminClaLink = (function () {
 
 		if (sessionStorage.getItem("repositories")) {
 			$("#repositories").select2({
-				data: JSON.parse(sessionStorage.getItem("repositories"))
+				data: JSON.parse(sessionStorage.getItem("repositories")),
+				tokenSeparators: [',']
 			});
 		}
 		else {
