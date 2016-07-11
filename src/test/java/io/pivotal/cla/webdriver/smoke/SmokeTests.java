@@ -86,7 +86,7 @@ public class SmokeTests {
 		repository.forkRepository(RepositoryId.createFromId(toFork));
 	}
 
-	private static void createTestRepository(User user) throws IOException {
+	private static void createTestRepository(User user) throws Exception {
 		GitHubClient client = createClient(user.getGitHubAccessToken());
 		RepositoryService repository = new RepositoryService(client);
 
@@ -101,6 +101,8 @@ public class SmokeTests {
 		}
 
 		repository.createRepository(toCreate);
+
+		Thread.sleep(TimeUnit.SECONDS.toMillis(1L));
 
 		// we need content to allow forking
 		Map<String,String> content = new HashMap<>();
