@@ -16,6 +16,7 @@
 package io.pivotal.cla.egit.github.core.event;
 
 import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.event.PullRequestPayload;
 
 import lombok.Data;
@@ -23,8 +24,9 @@ import lombok.EqualsAndHashCode;
 
 @SuppressWarnings("serial")
 @Data
-@EqualsAndHashCode(callSuper=false)
-public class RepositoryPullRequestPayload extends PullRequestPayload {
-	Repository repository;
+@EqualsAndHashCode(callSuper = false)
+public class RepositoryPullRequestPayload extends PullRequestPayload implements RepositoryAware, SenderAware {
 
+	Repository repository;
+	User sender;
 }

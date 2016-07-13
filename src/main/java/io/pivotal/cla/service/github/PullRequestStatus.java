@@ -49,11 +49,13 @@ public class PullRequestStatus {
 
 	String pullRequestState;
 
+	String pullRequestBody;
+
 	public boolean isSuccess() {
 		return Boolean.TRUE.equals(success);
 	}
 
-	public boolean shouldInteractWithComments() {
+	public boolean shouldUpdatePullRequest() {
 		return OPEN_PULL_REQUEST_STATE.equalsIgnoreCase(pullRequestState);
 	}
 

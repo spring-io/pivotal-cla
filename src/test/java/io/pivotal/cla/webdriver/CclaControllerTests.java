@@ -442,7 +442,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
-		when(mockGitHub.getShaForPullRequest(any())).thenReturn("abc123");
+		when(mockGitHub.getShaForPullRequest(any(PullRequestStatus.class))).thenReturn("abc123");
 		when(mockCorporateSignatureRepository.findSignature(anyString(), anyCollectionOf(String.class), anyCollectionOf(String.class))).thenReturn(null,corporateSignature);
 		when(mockTokenRepo.findOne(repositoryId)).thenReturn(new AccessToken(repositoryId, "access-token-123"));
 

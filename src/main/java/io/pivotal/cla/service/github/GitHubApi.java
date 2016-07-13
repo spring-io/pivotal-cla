@@ -20,7 +20,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import io.pivotal.cla.data.User;
+import io.pivotal.cla.egit.github.core.PullRequestId;
 import io.pivotal.cla.service.MigratePullRequestStatusRequest;
+import org.eclipse.egit.github.core.PullRequest;
 
 import org.eclipse.egit.github.core.PullRequest;
 
@@ -37,6 +39,8 @@ public interface GitHubApi {
 	 * @return
 	 */
 	String getShaForPullRequest(PullRequestStatus commitStatus);
+
+	String getShaForPullRequest(PullRequestId pullRequestId);
 
 	void save(PullRequestStatus status);
 
@@ -62,6 +66,8 @@ public interface GitHubApi {
 	 * @return
 	 */
 	Set<String> findAssociatedClaNames(String repoId, String accessToken);
+
+	String getGitHubClaUserLogin();
 
 	/**
 	 * Try to find the Pull-request in the given repository.

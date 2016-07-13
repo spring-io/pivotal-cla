@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cla.egit.github.core;
 
-import org.eclipse.egit.github.core.CommitStatus;
+package io.pivotal.cla.egit.github.core.event;
+
+import org.eclipse.egit.github.core.PullRequest;
+import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.event.PullRequestReviewCommentPayload;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * @author Mark Paluch
+ */
+@SuppressWarnings("serial")
 @Data
-@EqualsAndHashCode(callSuper=false)
-public class ContextCommitStatus extends CommitStatus {
+@EqualsAndHashCode(callSuper = false)
+public class RepositoryPullRequestReviewCommentPayload extends PullRequestReviewCommentPayload
+		implements RepositoryAware, SenderAware {
 
-	private static final long serialVersionUID = -1578730338049714284L;
-
-	String context;
+	Repository repository;
+	PullRequest pullRequest;
+	User sender;
 }

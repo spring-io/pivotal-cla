@@ -8,7 +8,7 @@ X-RateLimit-Remaining: 4999
     "updated_at": "2012-07-20T01:19:13Z",
     "state": "success",
     "target_url": "https://ci.example.com/1000/output",
-    "description": "Thank you for signing the Contributor License Agreement!",
+    "description": "This Pull Request contains an obvious fix. Signing the Contributor License Agreement not necessary.",
     "id": 1,
     "url": "https://api.github.com/repos/octocat/Hello-World/statuses/1",
     "context": "ci/pivotal-cla",
