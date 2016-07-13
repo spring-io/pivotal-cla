@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.eclipse.egit.github.core.Comment;
+import org.eclipse.egit.github.core.CommitComment;
 import org.eclipse.egit.github.core.CommitStatus;
 import org.eclipse.egit.github.core.PullRequest;
 import org.eclipse.egit.github.core.RepositoryHook;
@@ -58,7 +59,9 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.egit.github.core.ContextCommitStatus;
 import io.pivotal.cla.egit.github.core.Email;
 import io.pivotal.cla.egit.github.core.EventsRepositoryHook;
+import io.pivotal.cla.egit.github.core.PullRequestId;
 import io.pivotal.cla.egit.github.core.WithPermissionsRepository;
+import io.pivotal.cla.egit.github.core.event.GithubEvents;
 import io.pivotal.cla.egit.github.core.service.ContextCommitService;
 import io.pivotal.cla.egit.github.core.service.EmailService;
 import io.pivotal.cla.egit.github.core.service.WithPermissionsRepositoryService;
@@ -67,18 +70,31 @@ import io.pivotal.cla.service.MigratePullRequestStatusRequest;
 import lombok.Data;
 import lombok.SneakyThrows;
 
+/**
+ * @author Rob Winch
+ * @author Mark Paluch
+ */
 @Component
 public class MylynGitHubApi implements GitHubApi {
+
 	private static final String AUTHORIZE_URI = "login/oauth/access_token";
 	public final static String CONTRIBUTING_FILE = "CONTRIBUTING";
 	public final static String ADMIN_MAIL_SUFFIX = "@pivotal.io";
 	public final static Pattern PULL_REQUEST_CALLBACK_PATTERN = Pattern.compile(".*" + UrlBuilder.pullRequestHookCallbackPath("") + "([a-zA-Z0-9\\-\\s\\%\\+]*)(\\?.*)?");
 
-	ClaOAuthConfig oauthConfig;
+	public final static String CONTRIBUTOR_LICENSE_AGREEMENT = "Contributor License Agreement";
+	public final static String THIS_PR_CONTAINS_AN_OBVIOUS_FIX = "This Pull Request contains an obvious fix";
+	public final static String OBVIOUS_FIX_CLA_NOT_REQUIRED = String.format(
+			"%s. Signing the %s not necessary.", THIS_PR_CONTAINS_AN_OBVIOUS_FIX, CONTRIBUTOR_LICENSE_AGREEMENT);
+	public final static String THANK_YOU = "Thank you for signing the";
+	public final static String PLEASE_SIGN = "Please sign the";
+	public final static String OBVIOUS_FIX = "obvious fix";
+	public final static String TO_MANUALLY_SYNCHRONIZE_THE_STATUS = "to manually synchronize the status of this Pull Request";
+	public final static String FREQUENTLY_ASKED_QUESTIONS = "frequently asked questions";
 
-	String authorizeUrl;
-
-	RestTemplate rest = new RestTemplate();
+	final ClaOAuthConfig oauthConfig;
+	final String authorizeUrl;
+	final RestTemplate rest = new RestTemplate();
 
 	@Autowired
 	public MylynGitHubApi(ClaOAuthConfig oauthConfig) {
@@ -113,78 +129,175 @@ public class MylynGitHubApi implements GitHubApi {
 
 	@SneakyThrows
 	public void save(PullRequestStatus commitStatus) {
+
 		String repoId = commitStatus.getRepoId();
 		String accessToken = commitStatus.getAccessToken();
 		if (accessToken == null) {
 			return;
 		}
 
-		String claName ="Contributor License Agreement";
-		String thankYou = "Thank you for signing the";
-		String pleaseSign = "Please sign the";
-		String frequentlyAskedQuestions = "frequently asked questions";
-		String toManuallySynchronizeTheStatus = "to manually synchronize the status of this Pull Request";
+		if(commitStatus.shouldUpdatePullRequest()) {
+			PullRequestId pullRequestId = PullRequestId.of(RepositoryId.createFromId(repoId), commitStatus.getPullRequestId());
 
-		boolean hasSignedCla = commitStatus.isSuccess();
-		RepositoryId id = RepositoryId.createFromId(repoId);
-		GitHubClient client = createClient(accessToken);
+			boolean hasSignedCla = commitStatus.isSuccess();
+			GitHubClient client = createClient(accessToken);
+
+			String claUserLogin = getGitHubClaUserLogin();
+			List<Comment> comments = getComments(pullRequestId, getIssueService());
+
+			boolean obviousFix = isObviousFix(pullRequestId, comments, claUserLogin, commitStatus.getPullRequestBody());
+
+			ContextCommitStatus status = createCommitStatusIfNecessary(pullRequestId, commitStatus, hasSignedCla, obviousFix, client);
+			createOrUpdatePullRequestComment(pullRequestId, commitStatus, hasSignedCla, obviousFix, status, comments, claUserLogin);
+		}
+	}
+
+	/**
+	 * Returns whether the pull-request is marked as obvious fix by having an issue/review comment stating it's an obvious fix.
+	 * @param pullRequestId
+	 * @param comments
+	 * @param claUserLogin  @return
+	 * @param pullRequestBody
+	 */
+	private boolean isObviousFix(PullRequestId pullRequestId, List<Comment> comments, String claUserLogin, String pullRequestBody) {
+
+		if (hasObviousFixBody(pullRequestBody)) {
+			return true;
+		}
+
+		if (hasObviousFixComment(comments, claUserLogin)) {
+			return true;
+		}
+
+		if (hasObviousFixComment(getComments(pullRequestId, getPullRequestService()), claUserLogin)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean hasObviousFixBody(String pullRequestBody) {
+		return pullRequestBody != null && pullRequestBody.contains(OBVIOUS_FIX);
+	}
+
+	private boolean hasObviousFixComment(Collection<? extends Comment> comments, String claUserLogin) {
+
+		Optional<? extends Comment> obviousFixComment = comments.stream() //
+				.filter(comment -> comment.getUser() != null && !claUserLogin.equals(comment.getUser().getLogin())) //
+				.filter(comment -> comment.getBody().contains(OBVIOUS_FIX)) //
+				.findFirst();
+
+		return obviousFixComment.isPresent();
+	}
+
+	private ContextCommitStatus createCommitStatusIfNecessary(PullRequestId pullRequestId, PullRequestStatus commitStatus,
+			boolean hasSignedCla, boolean obviousFix, GitHubClient client) {
+
 		ContextCommitService commitService = new ContextCommitService(client);
 		ContextCommitStatus status = new ContextCommitStatus();
-		status.setDescription(hasSignedCla ? String.format("%s %s!", thankYou, claName)
-				:  String.format("%s %s!", pleaseSign, claName));
 
-		status.setState(hasSignedCla ? CommitStatus.STATE_SUCCESS : CommitStatus.STATE_FAILURE);
+		String description;
+
+		if (obviousFix) {
+			description = OBVIOUS_FIX_CLA_NOT_REQUIRED;
+		} else if (hasSignedCla) {
+			description = String.format("%s %s!", THANK_YOU, CONTRIBUTOR_LICENSE_AGREEMENT);
+		} else {
+			description = String.format("%s %s!", PLEASE_SIGN, CONTRIBUTOR_LICENSE_AGREEMENT);
+		}
+
+		status.setDescription(description);
+
+		status.setState((hasSignedCla || obviousFix) ? CommitStatus.STATE_SUCCESS : CommitStatus.STATE_FAILURE);
 		status.setContext("ci/pivotal-cla");
 		status.setUrl(commitStatus.getUrl());
 		status.setTargetUrl(status.getUrl());
 
-		List<ContextCommitStatus> statuses = commitService.getContextStatuses(id, commitStatus.getSha());
-		if(!statuses.stream()
-				.anyMatch(s -> s.getContext().equals(status.getContext()) && s.getState().equals(status.getState()))) {
-			commitService.createStatus(id, commitStatus.getSha(), status);
+		List<ContextCommitStatus> statuses = commitService.getContextStatuses(pullRequestId.getRepositoryId(),
+				commitStatus.getSha());
+		if (!statuses.stream().anyMatch(s -> matches(status, s))) {
+			commitService.createStatus(pullRequestId.getRepositoryId(), commitStatus.getSha(), status);
 		}
+		return status;
+	}
 
-		String claLinkMarkdown = String.format("[%s](%s)", claName, status.getUrl());
+	private void createOrUpdatePullRequestComment(PullRequestId pullRequestId, PullRequestStatus commitStatus,
+			boolean hasSignedCla, boolean obviousFix, ContextCommitStatus status, List<Comment> comments, String claUserLogin)
+			throws IOException {
+
+		String claLinkMarkdown = String.format("[%s](%s)", CONTRIBUTOR_LICENSE_AGREEMENT, status.getUrl());
 		String userMentionMarkdown = String.format("@%s", commitStatus.getGitHubUsername());
 
-		if(commitStatus.shouldInteractWithComments()) {
+		IssueService issues = getIssueService();
+		List<Comment> claUserComments = comments.stream() //
+				.filter(comment -> comment.getUser().getLogin().equals(claUserLogin)) //
+				.collect(Collectors.toList());
 
-			GitHubClient commentClient = createClient(oauthConfig.getPivotalClaAccessToken());
-			IssueService issues = new IssueService(commentClient);
-			List<Comment> claUserComments = getCommentsByClaUser(issues, id, commitStatus);
+		if (hasSignedCla) {
 
-			if (hasSignedCla) {
+			String body = String.format("%s %s %s!", userMentionMarkdown, THANK_YOU, claLinkMarkdown);
+			if (claUserComments.stream().anyMatch(c -> c.getBody().contains(PLEASE_SIGN))) {
 
-				String body = String.format("%s %s %s!", userMentionMarkdown, thankYou, claLinkMarkdown);
-
-				if (claUserComments.stream().anyMatch(c -> c.getBody().contains(pleaseSign))) {
-
-					if (claUserComments.stream().anyMatch(c -> c.getBody().contains(thankYou))) {
-						return;
-					}
-
-					issues.createComment(id, commitStatus.getPullRequestId(), body);
-				}
-			} else {
-				String sync = String.format("\n\n[Click here](%s) %s.", commitStatus.getSyncUrl(), toManuallySynchronizeTheStatus);
-				String faq = String.format("\n\nSee the [FAQ](%s) for %s.", commitStatus.getFaqUrl(), frequentlyAskedQuestions);
-				String oldBody = String.format("%s %s %s!", userMentionMarkdown, pleaseSign, claLinkMarkdown);
-				String body = String.format("%s%s%s", oldBody, sync, faq);
-
-				if (claUserComments.stream().anyMatch(c -> c.getBody().contains(frequentlyAskedQuestions)
-						&& c.getBody().contains(toManuallySynchronizeTheStatus))) {
+				if (claUserComments.stream().anyMatch(c -> c.getBody().contains(THANK_YOU))) {
 					return;
 				}
 
-				Optional<Comment> oldComment = claUserComments.stream().filter(c -> c.getBody().trim().contains(pleaseSign)).findFirst();
-				if (oldComment.isPresent()) {
-					Comment toEdit = oldComment.get();
-					toEdit.setBody(body);
-					issues.editComment(id, toEdit);
-				} else {
-					issues.createComment(id, commitStatus.getPullRequestId(), body);
-				}
+				issues.createComment(pullRequestId.getRepositoryId(), commitStatus.getPullRequestId(), body);
 			}
+		} else {
+
+			String sync = String.format("\n\n[Click here](%s) %s.", commitStatus.getSyncUrl(),
+					TO_MANUALLY_SYNCHRONIZE_THE_STATUS);
+			String faq = String.format("\n\nSee the [FAQ](%s) for %s.", commitStatus.getFaqUrl(), FREQUENTLY_ASKED_QUESTIONS);
+			String oldBody = String.format("%s %s %s!", userMentionMarkdown, PLEASE_SIGN, claLinkMarkdown);
+			String body = String.format("%s%s%s", oldBody, sync, faq);
+
+			if (obviousFix) {
+				if(claUserComments.stream().anyMatch(c -> c.getBody().contains(PLEASE_SIGN)) &&
+						claUserComments .stream().noneMatch(comment -> comment.getBody().contains(THIS_PR_CONTAINS_AN_OBVIOUS_FIX))) {
+					createObviousFixCommentIfNecessary(pullRequestId, userMentionMarkdown, issues, claUserComments);
+				}
+				return;
+			}
+
+			if (claUserComments.stream().anyMatch(c -> c.getBody().contains(FREQUENTLY_ASKED_QUESTIONS)
+					&& c.getBody().contains(TO_MANUALLY_SYNCHRONIZE_THE_STATUS))) {
+				return;
+			}
+
+			Optional<Comment> oldComment = claUserComments.stream().filter(c -> c.getBody().trim().contains(PLEASE_SIGN))
+					.findFirst();
+			if (oldComment.isPresent()) {
+				Comment toEdit = oldComment.get();
+				toEdit.setBody(body);
+				issues.editComment(pullRequestId.getRepositoryId(), toEdit);
+			} else {
+				issues.createComment(pullRequestId.getRepositoryId(), pullRequestId.getId(), body);
+			}
+		}
+	}
+
+	/**
+	 * Add a "disarming" comment.
+	 * @param pullRequestId
+	 * @param userMentionMarkdown
+	 * @param issues
+	 * @param claUserComments
+	 * @throws IOException
+	 */
+	private void createObviousFixCommentIfNecessary(PullRequestId pullRequestId, String userMentionMarkdown,
+			IssueService issues, List<Comment> claUserComments) throws IOException {
+
+		// only if not already present and if a comment says "please sign the CLA"
+		if (claUserComments.stream().anyMatch(c -> c.getBody().contains(PLEASE_SIGN))
+				&& !claUserComments.stream().anyMatch(c -> c.getBody().contains(OBVIOUS_FIX_CLA_NOT_REQUIRED))) {
+
+			if (claUserComments.stream().anyMatch(c -> c.getBody().contains(THANK_YOU))) {
+				return;
+			}
+
+			String claNotRequiredBody = String.format("%s %s", userMentionMarkdown, OBVIOUS_FIX_CLA_NOT_REQUIRED);
+			issues.createComment(pullRequestId.getRepositoryId(), pullRequestId.getId(), claNotRequiredBody);
 		}
 	}
 
@@ -208,6 +321,22 @@ public class MylynGitHubApi implements GitHubApi {
 			commitStatus.setGitHubUsername(githubLoginForContributor);
 		}else if (!githubLoginForContributor.equals(currentUserGitHubLogin)) {
 			return null;
+		}
+
+		return pullRequest.getHead().getSha();
+	}
+
+	@SneakyThrows
+	public String getShaForPullRequest(PullRequestId pullRequestId) {
+
+		PullRequestService service = getPullRequestService();
+		PullRequest pullRequest = service.getPullRequest(pullRequestId.getRepositoryId(),
+				pullRequestId.getId());
+
+		if (pullRequest == null) {
+			throw new IllegalArgumentException(
+					String.format("Cannot find Pull-request %s#%s",
+							pullRequestId.getRepositoryId(), pullRequestId.getId()));
 		}
 
 		return pullRequest.getHead().getSha();
@@ -252,12 +381,13 @@ public class MylynGitHubApi implements GitHubApi {
 	}
 
 	@SneakyThrows
-	private List<Comment> getCommentsByClaUser(IssueService issues, RepositoryId id, PullRequestStatus commitStatus) {
-		String username = getCurrentGitHubUser(oauthConfig.getPivotalClaAccessToken()).getLogin();
-		List<Comment> comments = issues.getComments(id, commitStatus.getPullRequestId());
-		return comments.stream()
-				.filter( c -> username.equals(c.getUser().getLogin()))
-				.collect(Collectors.toList());
+	private List<Comment> getComments(PullRequestId pullRequestId, IssueService service) {
+		return service.getComments(pullRequestId.getRepositoryId(), pullRequestId.getId());
+	}
+
+	@SneakyThrows
+	private List<CommitComment> getComments(PullRequestId pullRequestId, PullRequestService service) {
+		return service.getComments(pullRequestId.getRepositoryId(), pullRequestId.getId());
 	}
 
 	public User getCurrentUser(CurrentUserRequest request) {
@@ -307,16 +437,6 @@ public class MylynGitHubApi implements GitHubApi {
 		return token.getBody().getAccessToken();
 	}
 
-	@Data
-	static class AccessTokenResponse {
-		@JsonProperty("access_token")
-		String accessToken;
-		@JsonProperty("token_type")
-		String tokenType;
-		String scope;
-
-	}
-
 	@SneakyThrows
 	private org.eclipse.egit.github.core.User getCurrentGitHubUser(String accessToken) {
 		GitHubClient client = createClient(accessToken);
@@ -330,7 +450,7 @@ public class MylynGitHubApi implements GitHubApi {
 	public List<String> getOrganizations(String username) {
 		OrganizationService orgs = new OrganizationService(createClient(oauthConfig.getPivotalClaAccessToken()));
 		List<org.eclipse.egit.github.core.User> organizations = orgs.getOrganizations(username);
-		return organizations.stream().map( o -> o.getLogin()).sorted(String.CASE_INSENSITIVE_ORDER).collect(Collectors.toList());
+		return organizations.stream().map(o -> o.getLogin()).sorted(String.CASE_INSENSITIVE_ORDER).collect(Collectors.toList());
 	}
 
 	private boolean hasAdminEmail(User user) {
@@ -442,6 +562,25 @@ public class MylynGitHubApi implements GitHubApi {
 		return claNames;
 	}
 
+	public String getGitHubClaUserLogin() {
+		return getCurrentGitHubUser(oauthConfig.getPivotalClaAccessToken()).getLogin();
+	}
+
+	private IssueService getIssueService() {
+		GitHubClient commentClient = createClient(oauthConfig.getPivotalClaAccessToken());
+		return new IssueService(commentClient);
+	}
+
+	private PullRequestService getPullRequestService() {
+		GitHubClient commentClient = createClient(oauthConfig.getPivotalClaAccessToken());
+		return new PullRequestService(commentClient);
+	}
+
+	private boolean matches(ContextCommitStatus expected, ContextCommitStatus actual) {
+		return expected.getContext().equals(actual.getContext()) && expected.getState().equals(actual.getState())
+				&& expected.getDescription().equals(actual.getDescription());
+	}
+
 	@Override
 	@SneakyThrows
 	public Optional<PullRequest> findPullRequest(String repoId, int pullRequestId, String accessToken) {
@@ -506,9 +645,21 @@ public class MylynGitHubApi implements GitHubApi {
 		config.put("secret", secret);
 		EventsRepositoryHook hook = new EventsRepositoryHook();
 		hook.setActive(true);
-		hook.addEvent("pull_request");
+		hook.addEvent(GithubEvents.ISSUE_COMMENT);
+		hook.addEvent(GithubEvents.PULL_REQUEST);
+		hook.addEvent(GithubEvents.PULL_REQUEST_REVIEW_COMMENT);
 		hook.setName("web");
 		hook.setConfig(config);
 		return hook;
+	}
+
+	@Data
+	private  static class AccessTokenResponse {
+		@JsonProperty("access_token")
+		String accessToken;
+		@JsonProperty("token_type")
+		String tokenType;
+		String scope;
+
 	}
 }

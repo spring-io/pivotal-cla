@@ -15,7 +15,7 @@
  */
 package io.pivotal.cla.service.github;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -32,15 +32,13 @@ import org.springframework.core.serializer.support.SerializingConverter;
 import io.pivotal.cla.config.ClaOAuthConfig;
 import io.pivotal.cla.config.OAuthClientCredentials;
 import io.pivotal.cla.data.User;
-import io.pivotal.cla.service.github.PullRequestStatus;
-import io.pivotal.cla.service.github.MylynGitHubApi;
 import okhttp3.mockwebserver.EnqueueRequests;
 import okhttp3.mockwebserver.EnqueueResourcesMockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
 /**
  * @author Rob Winch
- *
+ * @author Mark Paluch
  */
 @RunWith(MockitoJUnitRunner.class)
 public class MylynGitHubApiITests {
@@ -298,7 +296,7 @@ public class MylynGitHubApiITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/hooks");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + hookRequest.getAccessToken());
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"events\":[\"pull_request\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":0,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"secret\":\"do not guess me\",\"url\":\"https://example.com/github/hook\"}}");
+				"{\"events\":[\"issue_comment\",\"pull_request\",\"pull_request_review_comment\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":0,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"secret\":\"do not guess me\",\"url\":\"https://example.com/github/hook\"}}");
 
 		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("GET");
@@ -311,7 +309,7 @@ public class MylynGitHubApiITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-session/hooks");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + hookRequest.getAccessToken());
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"events\":[\"pull_request\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":0,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"secret\":\"do not guess me\",\"url\":\"https://example.com/github/hook\"}}");
+				"{\"events\":[\"issue_comment\",\"pull_request\",\"pull_request_review_comment\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":0,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"secret\":\"do not guess me\",\"url\":\"https://example.com/github/hook\"}}");
 	}
 
 	@Test
@@ -339,7 +337,7 @@ public class MylynGitHubApiITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/hooks");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + hookRequest.getAccessToken());
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"events\":[\"pull_request\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":0,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"secret\":\"do not guess me\",\"url\":\"https://example.com/github/hook\"}}");
+				"{\"events\":[\"issue_comment\",\"pull_request\",\"pull_request_review_comment\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":0,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"secret\":\"do not guess me\",\"url\":\"https://example.com/github/hook\"}}");
 	}
 
 	@Test
@@ -365,120 +363,18 @@ public class MylynGitHubApiITests {
 		assertThat(request.getPath()).isEqualTo("/api/v3/repos/spring-projects/spring-security/hooks/123");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + hookRequest.getAccessToken());
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"events\":[\"pull_request\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":123,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"secret\":\"do not guess me\",\"url\":\"https://example.com/github/hooks/pull_request/my-cla\"}}");
+				"{\"events\":[\"issue_comment\",\"pull_request\",\"pull_request_review_comment\"],\"active\":true,\"created_at\":null,\"updated_at\":null,\"id\":123,\"last_response\":null,\"name\":\"web\",\"url\":null,\"config\":{\"content_type\":\"json\",\"secret\":\"do not guess me\",\"url\":\"https://example.com/github/hooks/pull_request/my-cla\"}}");
 	}
 
 	@Test
 	@EnqueueRequests({
-		"getStatusNone",
-		"saveStatus",
 		"getUserPivotalIssueMaster",
-		"getIssueCommentsSignedByPivotalIssueMsaer"
+		"getIssueCommentsSignedByPivotalIssueMsaer",
+		"getPullRequestReviewCommentsNoComments",
+		"getStatusNone",
+		"saveStatus"
 	})
 	public void saveSuccessAlreadyCommented() throws Exception {
-		String accessToken = "access-token-123";
-
-		PullRequestStatus commitStatus = new PullRequestStatus();
-		commitStatus.setGitHubUsername("rwinch");
-		commitStatus.setPullRequestId(1);
-		commitStatus.setRepoId("spring-projects/spring-security");
-		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
-		commitStatus.setSuccess(true);
-		commitStatus.setUrl("https://status.example.com/uri");
-		commitStatus.setAccessToken(accessToken);
-		commitStatus.setPullRequestState("open");
-
-		service.save(commitStatus);
-
-		assertThat(server.getServer().getRequestCount()).isEqualTo(4);
-
-		RecordedRequest request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("POST");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
-		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Thank you for signing the Contributor License Agreement!\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/user");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
-	}
-
-	@Test
-	@EnqueueRequests({
-		"getStatusNone",
-		"saveStatus",
-		"getUserPivotalIssueMaster",
-		"getIssueCommentsNone",
-		"createComment"})
-	public void saveSuccessNoComments() throws Exception {
-		String accessToken = "access-token-123";
-
-		PullRequestStatus commitStatus = new PullRequestStatus();
-		commitStatus.setGitHubUsername("rwinch");
-		commitStatus.setPullRequestId(1);
-		commitStatus.setRepoId("spring-projects/spring-security");
-		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
-		commitStatus.setSuccess(true);
-		commitStatus.setUrl("https://status.example.com/uri");
-		commitStatus.setAccessToken(accessToken);
-		commitStatus.setPullRequestState("open");
-
-		service.save(commitStatus);
-
-		assertThat(server.getServer().getRequestCount()).isEqualTo(4);
-
-		RecordedRequest request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("POST");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
-		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Thank you for signing the Contributor License Agreement!\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/user");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
-
-	}
-
-	@Test
-	@EnqueueRequests({
-		"getStatusNone",
-		"saveStatus",
-		"getUserPivotalIssueMaster",
-		"getIssueCommentsFailureComment",
-		"createComment"})
-	public void saveSuccessHasPleaseSign() throws Exception {
 		String accessToken = "access-token-123";
 
 		PullRequestStatus commitStatus = new PullRequestStatus();
@@ -496,10 +392,11 @@ public class MylynGitHubApiITests {
 		assertThat(server.getServer().getRequestCount()).isEqualTo(5);
 
 		RecordedRequest request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+
+		assertGetUserRequest(request);
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+		assertPullRequestCommentsRequest(server.getServer().takeRequest());
+		assertGetStatus(accessToken, server.getServer().takeRequest());
 
 		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("POST");
@@ -509,17 +406,90 @@ public class MylynGitHubApiITests {
 		assertThat(request.getBody().readUtf8()).isEqualTo(
 				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Thank you for signing the Contributor License Agreement!\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
 
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/user");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
+	}
+
+	@Test
+	@EnqueueRequests({
+		"getUserPivotalIssueMaster",
+		"getIssueCommentsNone",
+		"getPullRequestReviewCommentsNoComments",
+		"getStatusNone",
+		"saveStatus",
+		"createComment"})
+	public void saveSuccessNoComments() throws Exception {
+		String accessToken = "access-token-123";
+
+		PullRequestStatus commitStatus = new PullRequestStatus();
+		commitStatus.setGitHubUsername("rwinch");
+		commitStatus.setPullRequestId(1);
+		commitStatus.setRepoId("spring-projects/spring-security");
+		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		commitStatus.setSuccess(true);
+		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
+
+		service.save(commitStatus);
+
+		assertThat(server.getServer().getRequestCount()).isEqualTo(5);
+
+		RecordedRequest request = server.getServer().takeRequest();
+		assertGetUserRequest(request);
+
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+		assertPullRequestCommentsRequest(server.getServer().takeRequest());
+		assertGetStatus(accessToken, server.getServer().takeRequest());
 
 		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getMethod()).isEqualTo("POST");
 		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+		assertThat(request.getBody().readUtf8()).isEqualTo(
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Thank you for signing the Contributor License Agreement!\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
+
+	}
+
+	@Test
+	@EnqueueRequests({
+		"getUserPivotalIssueMaster",
+		"getIssueCommentsFailureComment",
+		"getPullRequestReviewCommentsNoComments",
+		"getStatusNone",
+		"saveStatus",
+		"createComment"})
+	public void saveSuccessHasPleaseSign() throws Exception {
+		String accessToken = "access-token-123";
+
+		PullRequestStatus commitStatus = new PullRequestStatus();
+		commitStatus.setGitHubUsername("rwinch");
+		commitStatus.setPullRequestId(1);
+		commitStatus.setRepoId("spring-projects/spring-security");
+		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		commitStatus.setSuccess(true);
+		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
+
+		service.save(commitStatus);
+
+		assertThat(server.getServer().getRequestCount()).isEqualTo(6);
+
+		RecordedRequest request = server.getServer().takeRequest();
+
+		assertGetUserRequest(request);
+
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+		assertPullRequestCommentsRequest(server.getServer().takeRequest());
+		assertGetStatus(accessToken, server.getServer().takeRequest());
+
+		request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("POST");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+		assertThat(request.getBody().readUtf8()).isEqualTo(
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Thank you for signing the Contributor License Agreement!\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
 
 		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("POST");
@@ -532,11 +502,12 @@ public class MylynGitHubApiITests {
 
 	@Test
 	@EnqueueRequests({
-		"getStatusSuccess",
 		"getUserPivotalIssueMaster",
-		"getIssueCommentsSignedByPivotalIssueMsaer",
-	})
-	public void saveSuccessNoChangeStatusNoAddComment() throws Exception {
+		"getIssueCommentsPleaseSignAndObviousFix",
+		"getStatusNone",
+		"saveStatus",
+		"createComment"})
+	public void saveObviousFixAfterPleaseSign() throws Exception {
 		String accessToken = "access-token-123";
 
 		PullRequestStatus commitStatus = new PullRequestStatus();
@@ -544,42 +515,236 @@ public class MylynGitHubApiITests {
 		commitStatus.setPullRequestId(1);
 		commitStatus.setRepoId("spring-projects/spring-security");
 		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
-		commitStatus.setSuccess(true);
+		commitStatus.setSuccess(false);
 		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
 		commitStatus.setAccessToken(accessToken);
 		commitStatus.setPullRequestState("open");
 
 		service.save(commitStatus);
 
-		assertThat(server.getServer().getRequestCount()).isEqualTo(3);
+		assertThat(server.getServer().getRequestCount()).isEqualTo(5);
 
 		RecordedRequest request = server.getServer().takeRequest();
 
+		assertGetUserRequest(request);
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+		assertGetStatus(accessToken, server.getServer().takeRequest());
+
+		request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("POST");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+		assertThat(request.getBody().readUtf8()).isEqualTo(
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"This Pull Request contains an obvious fix. Signing the Contributor License Agreement not necessary.\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
+
+
+		request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("POST");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
+		assertThat(request.getBody().readUtf8()).isEqualTo(
+				"{\"body\":\"@rwinch This Pull Request contains an obvious fix. Signing the Contributor License Agreement not necessary.\"}");
+	}
+
+	@Test
+	@EnqueueRequests({
+		"getUserPivotalIssueMaster",
+		"getIssueCommentsPleaseSignObviousFixAndObviousFixByIssueMaster",
+		"getStatusNone",
+		"saveStatus"})
+	public void saveObviousFixAfterPleaseSignAndClaNotRequiredComment() throws Exception {
+		String accessToken = "access-token-123";
+
+		PullRequestStatus commitStatus = new PullRequestStatus();
+		commitStatus.setGitHubUsername("rwinch");
+		commitStatus.setPullRequestId(1);
+		commitStatus.setRepoId("spring-projects/spring-security");
+		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		commitStatus.setSuccess(false);
+		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
+
+		service.save(commitStatus);
+
+		assertThat(server.getServer().getRequestCount()).isEqualTo(4);
+
+		RecordedRequest request = server.getServer().takeRequest();
+
+		assertGetUserRequest(request);
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+
+		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("GET");
 		assertThat(request.getPath())
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f?per_page=100&page=1");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
 
 		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getMethod()).isEqualTo("POST");
 		assertThat(request.getPath())
-				.isEqualTo("/api/v3/user");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+		assertThat(request.getBody().readUtf8()).isEqualTo(
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"This Pull Request contains an obvious fix. Signing the Contributor License Agreement not necessary.\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
 
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
 	}
 
 	@Test
 	@EnqueueRequests({
-		"getStatusSuccess",
 		"getUserPivotalIssueMaster",
 		"getIssueCommentsNoComments",
-	})
-	public void saveSuccessDoNotAddCommentIfNoPleaseSign() throws Exception {
+		"getStatusNone",
+		"saveStatus",
+		"createComment"})
+	public void saveObviousFixInBodyWithoutComments() throws Exception {
+		String accessToken = "access-token-123";
+
+		PullRequestStatus commitStatus = new PullRequestStatus();
+		commitStatus.setGitHubUsername("rwinch");
+		commitStatus.setPullRequestId(1);
+		commitStatus.setRepoId("spring-projects/spring-security");
+		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		commitStatus.setSuccess(false);
+		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
+		commitStatus.setPullRequestBody("That's an obvious fix");
+
+		service.save(commitStatus);
+
+		assertThat(server.getServer().getRequestCount()).isEqualTo(4);
+
+		RecordedRequest request = server.getServer().takeRequest();
+
+		assertGetUserRequest(request);
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+		assertGetStatus(accessToken, server.getServer().takeRequest());
+
+		request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("POST");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+		assertThat(request.getBody().readUtf8()).isEqualTo(
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"This Pull Request contains an obvious fix. Signing the Contributor License Agreement not necessary.\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
+
+	}
+
+	@Test
+	@EnqueueRequests({
+		"getUserPivotalIssueMaster",
+		"getIssueCommentsNoComments",
+		"getPullRequestReviewCommentsObviousFixComment",
+		"getStatusNone",
+		"saveStatus"})
+	public void saveObviousFixWithoutPleaseSignComment() throws Exception {
+		String accessToken = "access-token-123";
+
+		PullRequestStatus commitStatus = new PullRequestStatus();
+		commitStatus.setGitHubUsername("rwinch");
+		commitStatus.setPullRequestId(1);
+		commitStatus.setRepoId("spring-projects/spring-security");
+		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		commitStatus.setSuccess(false);
+		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
+
+		service.save(commitStatus);
+
+		assertThat(server.getServer().getRequestCount()).isEqualTo(5);
+
+		RecordedRequest request = server.getServer().takeRequest();
+
+		assertGetUserRequest(request);
+
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+		assertPullRequestCommentsRequest(server.getServer().takeRequest());
+		assertGetStatus(accessToken, server.getServer().takeRequest());
+
+		request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("POST");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+		assertThat(request.getBody().readUtf8()).isEqualTo(
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"This Pull Request contains an obvious fix. Signing the Contributor License Agreement not necessary.\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
+
+	}
+
+	@Test
+	@EnqueueRequests({
+		"getUserPivotalIssueMaster",
+		"getIssueCommentsNoComments",
+		"getPullRequestReviewCommentsNoComments",
+		"getStatusObvious",
+		"saveStatus",
+		"createComment"})
+	public void saveNoLongerObvious() throws Exception {
+		String accessToken = "access-token-123";
+
+		PullRequestStatus commitStatus = new PullRequestStatus();
+		commitStatus.setGitHubUsername("rwinch");
+		commitStatus.setPullRequestId(1);
+		commitStatus.setRepoId("spring-projects/spring-security");
+		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		commitStatus.setSuccess(false);
+		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
+
+		service.save(commitStatus);
+
+		assertThat(server.getServer().getRequestCount()).isEqualTo(6);
+
+		RecordedRequest request = server.getServer().takeRequest();
+
+		assertGetUserRequest(request);
+
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+		assertPullRequestCommentsRequest(server.getServer().takeRequest());
+		assertGetStatus(accessToken, server.getServer().takeRequest());
+
+		request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("POST");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+		assertThat(request.getBody().readUtf8()).isEqualTo(
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Please sign the Contributor License Agreement!\",\"state\":\"failure\",\"target_url\":\"https://status.example.com/uri\"}");
+
+		request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("POST");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
+		assertThat(request.getBody().readUtf8()).contains(
+				"\"body\":\"@rwinch Please sign the [Contributor License Agreement](https://status.example.com/uri)!\\n\\n[Click here](https://cla.pivotal.io/sync/pivotal) to manually synchronize the status of this Pull Request.\\n\\nSee the [FAQ](https://cla.pivotal.io/faq) for frequently asked questions.\"");
+
+	}
+
+	@Test
+	@EnqueueRequests({
+		"getUserPivotalIssueMaster",
+		"getIssueCommentsPleaseSignAndObviousFix",
+		"getStatusNone",
+		"saveStatus",
+		"editComment",
+		"createComment"})
+	public void saveObviousFixAfterPleaseSignWithSignedCla() throws Exception {
 		String accessToken = "access-token-123";
 
 		PullRequestStatus commitStatus = new PullRequestStatus();
@@ -589,41 +754,47 @@ public class MylynGitHubApiITests {
 		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
 		commitStatus.setSuccess(true);
 		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
 		commitStatus.setAccessToken(accessToken);
 		commitStatus.setPullRequestState("open");
 
 		service.save(commitStatus);
 
-		assertThat(server.getServer().getRequestCount()).isEqualTo(3);
+		assertThat(server.getServer().getRequestCount()).isEqualTo(5);
 
 		RecordedRequest request = server.getServer().takeRequest();
 
-		assertThat(request.getMethod()).isEqualTo("GET");
+		assertGetUserRequest(request);
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+		assertGetStatus(accessToken, server.getServer().takeRequest());
+
+		request = server.getServer().takeRequest();
+		assertThat(request.getMethod()).isEqualTo("POST");
 		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f?per_page=100&page=1");
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+		assertThat(request.getBody().readUtf8()).isEqualTo(
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"This Pull Request contains an obvious fix. Signing the Contributor License Agreement not necessary.\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
+
 
 		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getMethod()).isEqualTo("POST");
 		assertThat(request.getPath())
-				.isEqualTo("/api/v3/user");
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
+		assertThat(request.getBody().readUtf8()).isEqualTo(
+				"{\"body\":\"@rwinch Thank you for signing the [Contributor License Agreement](https://status.example.com/uri)!\"}");
 	}
 
 	@Test
 	@EnqueueRequests({
-		"getStatusFailure",
-		"saveStatus",
 		"getUserPivotalIssueMaster",
 		"getIssueCommentsSignedByPivotalIssueMsaer",
+		"getPullRequestReviewCommentsNoComments",
+		"getStatusSuccess",
 	})
-	public void saveSuccessChangeStatusNoAddComment() throws Exception {
+	public void saveSuccessNoChangeStatusNoAddComment() throws Exception {
 		String accessToken = "access-token-123";
 
 		PullRequestStatus commitStatus = new PullRequestStatus();
@@ -642,10 +813,77 @@ public class MylynGitHubApiITests {
 
 		RecordedRequest request = server.getServer().takeRequest();
 
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+		assertGetUserRequest(request);
+
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+		assertPullRequestCommentsRequest(server.getServer().takeRequest());
+		assertGetStatus(accessToken, server.getServer().takeRequest());
+	}
+
+	@Test
+	@EnqueueRequests({
+		"getUserPivotalIssueMaster",
+		"getIssueCommentsNoComments",
+		"getPullRequestReviewCommentsNoComments",
+		"getStatusSuccess",
+	})
+	public void saveSuccessDoNotAddCommentIfNoPleaseSign() throws Exception {
+		String accessToken = "access-token-123";
+
+		PullRequestStatus commitStatus = new PullRequestStatus();
+		commitStatus.setGitHubUsername("rwinch");
+		commitStatus.setPullRequestId(1);
+		commitStatus.setRepoId("spring-projects/spring-security");
+		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		commitStatus.setSuccess(true);
+		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
+
+		service.save(commitStatus);
+
+		assertThat(server.getServer().getRequestCount()).isEqualTo(4);
+
+		RecordedRequest request = server.getServer().takeRequest();
+
+		assertGetUserRequest(request);
+
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+		assertPullRequestCommentsRequest(server.getServer().takeRequest());
+		assertGetStatus(accessToken, server.getServer().takeRequest());
+	}
+
+	@Test
+	@EnqueueRequests({
+		"getUserPivotalIssueMaster",
+		"getIssueCommentsSignedByPivotalIssueMsaer",
+		"getPullRequestReviewCommentsNoComments",
+		"getStatusFailure",
+		"saveStatus",
+	})
+	public void saveSuccessChangeStatusNoAddComment() throws Exception {
+		String accessToken = "access-token-123";
+
+		PullRequestStatus commitStatus = new PullRequestStatus();
+		commitStatus.setGitHubUsername("rwinch");
+		commitStatus.setPullRequestId(1);
+		commitStatus.setRepoId("spring-projects/spring-security");
+		commitStatus.setSha("14f7eed929c0086d5d7b87d28bc4722f618a361f");
+		commitStatus.setSuccess(true);
+		commitStatus.setUrl("https://status.example.com/uri");
+		commitStatus.setAccessToken(accessToken);
+		commitStatus.setPullRequestState("open");
+
+		service.save(commitStatus);
+
+		assertThat(server.getServer().getRequestCount()).isEqualTo(5);
+
+		RecordedRequest request = server.getServer().takeRequest();
+
+		assertGetUserRequest(request);
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+		assertPullRequestCommentsRequest(server.getServer().takeRequest());
+		assertGetStatus(accessToken, server.getServer().takeRequest());
 
 		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("POST");
@@ -655,25 +893,15 @@ public class MylynGitHubApiITests {
 		assertThat(request.getBody().readUtf8()).isEqualTo(
 				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Thank you for signing the Contributor License Agreement!\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
 
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/user");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
 	}
 
 	@Test
 	@EnqueueRequests({
-		"getStatusSuccess",
-		"saveStatus",
 		"getUserPivotalIssueMaster",
 		"getIssueCommentsFailureComment",
+		"getPullRequestReviewCommentsNoComments",
+		"getStatusSuccess",
+		"saveStatus",
 	})
 	public void saveFailureChangeStatusNoAddComment() throws Exception {
 		String accessToken = "access-token-123";
@@ -692,14 +920,14 @@ public class MylynGitHubApiITests {
 
 		service.save(commitStatus);
 
-		assertThat(server.getServer().getRequestCount()).isEqualTo(4);
+		assertThat(server.getServer().getRequestCount()).isEqualTo(5);
 
 		RecordedRequest request = server.getServer().takeRequest();
+		assertGetUserRequest(request);
 
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+		assertPullRequestCommentsRequest(server.getServer().takeRequest());
+		assertGetStatus(accessToken, server.getServer().takeRequest());
 
 		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("POST");
@@ -708,26 +936,15 @@ public class MylynGitHubApiITests {
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
 		assertThat(request.getBody().readUtf8()).isEqualTo(
 				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Please sign the Contributor License Agreement!\",\"state\":\"failure\",\"target_url\":\"https://status.example.com/uri\"}");
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/user");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
 	}
 
 	@Test
 	@EnqueueRequests({
-		"getStatusNone",
-		"saveStatus",
 		"getUserPivotalIssueMaster",
 		"getIssueCommentsFailureComment",
+		"getPullRequestReviewCommentsNoComments",
+		"getStatusNone",
+		"saveStatus",
 	})
 	public void saveFailureAlreadyCommented() throws Exception {
 		String accessToken = "access-token-123";
@@ -746,14 +963,15 @@ public class MylynGitHubApiITests {
 
 		service.save(commitStatus);
 
-		assertThat(server.getServer().getRequestCount()).isEqualTo(4);
+		assertThat(server.getServer().getRequestCount()).isEqualTo(5);
 
 		RecordedRequest request = server.getServer().takeRequest();
 
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+		assertGetUserRequest(request);
+
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+		assertPullRequestCommentsRequest(server.getServer().takeRequest());
+		assertGetStatus(accessToken, server.getServer().takeRequest());
 
 		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("POST");
@@ -763,25 +981,16 @@ public class MylynGitHubApiITests {
 		assertThat(request.getBody().readUtf8()).isEqualTo(
 				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Please sign the Contributor License Agreement!\",\"state\":\"failure\",\"target_url\":\"https://status.example.com/uri\"}");
 
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/user");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
 
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
 	}
 
 	@Test
 	@EnqueueRequests({
-		"getStatusNone",
-		"saveStatus",
 		"getUserPivotalIssueMaster",
 		"getIssueCommentsNone",
+		"getPullRequestReviewCommentsNoComments",
+		"getStatusNone",
+		"saveStatus",
 		"createComment"
 	})
 	public void saveFailureNoComments() throws Exception {
@@ -801,14 +1010,15 @@ public class MylynGitHubApiITests {
 
 		service.save(commitStatus);
 
-		assertThat(server.getServer().getRequestCount()).isEqualTo(5);
+		assertThat(server.getServer().getRequestCount()).isEqualTo(6);
 
 
 		RecordedRequest request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+		assertGetUserRequest(request);
+
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+		assertPullRequestCommentsRequest(server.getServer().takeRequest());
+		assertGetStatus(accessToken, server.getServer().takeRequest());
 
 		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("POST");
@@ -817,18 +1027,6 @@ public class MylynGitHubApiITests {
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
 		assertThat(request.getBody().readUtf8()).isEqualTo(
 				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Please sign the Contributor License Agreement!\",\"state\":\"failure\",\"target_url\":\"https://status.example.com/uri\"}");
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/user");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
 
 		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("POST");
@@ -861,22 +1059,7 @@ public class MylynGitHubApiITests {
 
 		service.save(commitStatus);
 
-		assertThat(server.getServer().getRequestCount()).isEqualTo(2);
-
-		RecordedRequest request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("POST");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
-		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Please sign the Contributor License Agreement!\",\"state\":\"failure\",\"target_url\":\"https://status.example.com/uri\"}");
-
+		assertThat(server.getServer().getRequestCount()).isEqualTo(0);
 	}
 
 	@Test
@@ -901,30 +1084,16 @@ public class MylynGitHubApiITests {
 
 		service.save(commitStatus);
 
-		assertThat(server.getServer().getRequestCount()).isEqualTo(2);
-
-		RecordedRequest request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("POST");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
-		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Please sign the Contributor License Agreement!\",\"state\":\"failure\",\"target_url\":\"https://status.example.com/uri\"}");
-
+		assertThat(server.getServer().getRequestCount()).isEqualTo(0);
 	}
 
 	@Test
 	@EnqueueRequests({
-		"getStatusNone",
-		"saveStatus",
 		"getUserPivotalIssueMaster",
 		"getIssueCommentsOldFailureComment",
+		"getPullRequestReviewCommentsNoComments",
+		"getStatusNone",
+		"saveStatus",
 		"editComment"
 	})
 	public void saveFailureEditComment() throws Exception {
@@ -944,14 +1113,16 @@ public class MylynGitHubApiITests {
 
 		service.save(commitStatus);
 
-		assertThat(server.getServer().getRequestCount()).isEqualTo(5);
+		assertThat(server.getServer().getRequestCount()).isEqualTo(6);
 
 
 		RecordedRequest request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
+
+		assertGetUserRequest(request);
+
+		assertIssueCommentsRequest(server.getServer().takeRequest());
+		assertPullRequestCommentsRequest(server.getServer().takeRequest());
+		assertGetStatus(accessToken, server.getServer().takeRequest());
 
 		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("POST");
@@ -960,18 +1131,6 @@ public class MylynGitHubApiITests {
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
 		assertThat(request.getBody().readUtf8()).isEqualTo(
 				"{\"context\":\"ci/pivotal-cla\",\"description\":\"Please sign the Contributor License Agreement!\",\"state\":\"failure\",\"target_url\":\"https://status.example.com/uri\"}");
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/user");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
-
-		request = server.getServer().takeRequest();
-		assertThat(request.getMethod()).isEqualTo("GET");
-		assertThat(request.getPath())
-				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments?per_page=100&page=1");
-		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
 
 		request = server.getServer().takeRequest();
 		assertThat(request.getMethod()).isEqualTo("POST");
@@ -1058,5 +1217,32 @@ public class MylynGitHubApiITests {
 				.isEqualTo("/api/v3/user/emails?per_page=100&page=1");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token access-token-123");
 
+	}
+
+	private void assertPullRequestCommentsRequest(RecordedRequest request) {
+		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/pulls/1/comments?per_page=100&page=1");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
+	}
+
+	private void assertIssueCommentsRequest(RecordedRequest request) {
+		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments?per_page=100&page=1");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
+	}
+
+	private void assertGetUserRequest(RecordedRequest request) {
+		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getPath()).isEqualTo("/api/v3/user");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
+	}
+
+	private void assertGetStatus(String accessToken, RecordedRequest request) {
+		assertThat(request.getMethod()).isEqualTo("GET");
+		assertThat(request.getPath())
+				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f?per_page=100&page=1");
+		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
 	}
 }

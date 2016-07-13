@@ -359,7 +359,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 		when(mockIndividualSignatureRepository.findSignaturesFor(any(), eq(WithSigningUserFactory.create()),eq(cla.getName()))).thenReturn(Collections.<IndividualSignature>emptyList(), Arrays.asList(individualSignature));
 		when(mockTokenRepo.findOne(repositoryId)).thenReturn(new AccessToken(repositoryId, "access-token-123"));
-		when(mockGitHub.getShaForPullRequest(any())).thenReturn("abc123");
+		when(mockGitHub.getShaForPullRequest(any(PullRequestStatus.class))).thenReturn("abc123");
 
 		int pullRequestId = 2;
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName(), repositoryId, pullRequestId);

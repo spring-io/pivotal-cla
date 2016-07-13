@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.pivotal.cla.egit.github.core;
 
-import org.eclipse.egit.github.core.CommitStatus;
+package io.pivotal.cla.egit.github.core.event;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+/**
+ * @author Mark Paluch
+ */
+public class GithubEvents {
 
-@Data
-@EqualsAndHashCode(callSuper=false)
-public class ContextCommitStatus extends CommitStatus {
-
-	private static final long serialVersionUID = -1578730338049714284L;
-
-	String context;
+	public static final String ISSUE_COMMENT = "issue_comment";
+	public static final String PULL_REQUEST_REVIEW_COMMENT = "pull_request_review_comment";
+	public static final String PULL_REQUEST = "pull_request";
 }

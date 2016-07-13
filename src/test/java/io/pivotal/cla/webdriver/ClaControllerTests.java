@@ -57,7 +57,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 		String repositoryId = "spring-projects/spring-security";
 		User signingUser = WithSigningUserFactory.create();
 		when(mockGitHub.getCurrentUser(any())).thenReturn(signingUser);
-		when(mockGitHub.getShaForPullRequest(any())).thenReturn("abc123");
+		when(mockGitHub.getShaForPullRequest(any(PullRequestStatus.class))).thenReturn("abc123");
 		when(mockIndividualSignatureRepository.findSignaturesFor(any(), eq(signingUser),eq(cla.getName()))).thenReturn(Arrays.asList(individualSignature));
 		when(mockIndividualSignatureRepository.findSignaturesFor(any(),eq(signingUser))).thenReturn(Arrays.asList(individualSignature));
 		when(mockTokenRepo.findOne(repositoryId)).thenReturn(new AccessToken(repositoryId, "access-token-123"));
