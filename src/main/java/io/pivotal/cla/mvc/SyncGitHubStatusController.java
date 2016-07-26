@@ -58,7 +58,7 @@ public class SyncGitHubStatusController {
 
 		PullRequest pullRequest = optionalPullRequest
 				.orElseThrow(() -> new IllegalArgumentException(String.format(
-						"Pull-request %s/%s does not exist",
+						"Pull-request %s#%s does not exist",
 						claRequest.getRepositoryId(), claRequest.getPullRequestId())));
 
 		ClaPullRequestStatusRequest updatePullRequest = claRequest
