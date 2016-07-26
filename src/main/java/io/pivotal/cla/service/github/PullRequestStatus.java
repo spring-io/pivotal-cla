@@ -54,7 +54,7 @@ public class PullRequestStatus {
 	}
 
 	public boolean shouldInteractWithComments() {
-		return UNKNOWN_PULL_REQUEST_STATE.equals(pullRequestState) || OPEN_PULL_REQUEST_STATE.equalsIgnoreCase(pullRequestState);
+		return OPEN_PULL_REQUEST_STATE.equalsIgnoreCase(pullRequestState);
 	}
 
 	/**
