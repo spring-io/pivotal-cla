@@ -16,10 +16,13 @@
 package io.pivotal.cla.service.github;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.service.MigratePullRequestStatusRequest;
+
+import org.eclipse.egit.github.core.PullRequest;
 
 public interface GitHubApi {
 
@@ -59,4 +62,14 @@ public interface GitHubApi {
 	 * @return
 	 */
 	Set<String> findAssociatedClaNames(String repoId, String accessToken);
+
+	/**
+	 * Try to find the Pull-request in the given repository.
+	 *
+	 * @param repoId repo slug in the format {@code owner/repository}
+	 * @param pullRequestId the pull request number
+	 * @param accessToken the access token
+	 * @return {@link Optional} of {@link PullRequest}
+	 */
+	Optional<PullRequest> findPullRequest(String repoId, int pullRequestId, String accessToken);
 }

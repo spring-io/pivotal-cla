@@ -1,5 +1,6 @@
 package io.pivotal.cla.mvc;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import io.pivotal.cla.data.repository.UserRepository;
 import io.pivotal.cla.service.ClaPullRequestStatusRequest;
 import io.pivotal.cla.service.ClaService;
 import io.pivotal.cla.service.github.GitHubApi;
+import org.eclipse.egit.github.core.PullRequest;
 
 @Controller
 public class SyncGitHubStatusController {
@@ -51,8 +53,17 @@ public class SyncGitHubStatusController {
 			users.save(currentUser);
 		}
 
+		Optional<PullRequest> optionalPullRequest = claService.findPullRequest(claRequest.getRepositoryId(),
+				claRequest.getPullRequestId());
+
+		PullRequest pullRequest = optionalPullRequest
+				.orElseThrow(() -> new IllegalArgumentException(String.format(
+						"Pull-request %s/%s does not exist",
+						claRequest.getRepositoryId(), claRequest.getPullRequestId())));
+
 		ClaPullRequestStatusRequest updatePullRequest = claRequest
-				.createUpdatePullRequestStatus(currentUser.getGitHubLogin());
+				.createUpdatePullRequestStatus(pullRequest.getUser().getLogin());
+		updatePullRequest.getCommitStatus().setPullRequestState(pullRequest.getState());
 
 		Set<String> associatedClaNames = claService.findAssociatedClaNames(claRequest.getRepositoryId());
 

@@ -15,6 +15,7 @@
  */
 package io.pivotal.cla.service.github;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import org.eclipse.egit.github.core.PullRequest;
 import org.eclipse.egit.github.core.RepositoryHook;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.client.GitHubClient;
+import org.eclipse.egit.github.core.client.RequestException;
 import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.MarkdownService;
 import org.eclipse.egit.github.core.service.OrganizationService;
@@ -438,6 +440,26 @@ public class MylynGitHubApi implements GitHubApi {
 				.collect(Collectors.toSet());
 
 		return claNames;
+	}
+
+	@Override
+	@SneakyThrows
+	public Optional<PullRequest> findPullRequest(String repoId, int pullRequestId, String accessToken) {
+
+		GitHubClient client = createClient(accessToken);
+		PullRequestService service = new PullRequestService(client);
+
+		try {
+			return Optional.ofNullable(service.getPullRequest(RepositoryId.createFromId(repoId), pullRequestId));
+		}
+		catch (RequestException e) {
+
+			if(e.getStatus() == HttpStatus.NOT_FOUND.value()){
+				return Optional.empty();
+			}
+
+			throw e;
+		}
 	}
 
 	private String getClaName(String url, Pattern pattern) {

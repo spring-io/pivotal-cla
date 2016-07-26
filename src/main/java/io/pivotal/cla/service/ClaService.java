@@ -3,9 +3,11 @@ package io.pivotal.cla.service;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.egit.github.core.PullRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
@@ -139,5 +141,23 @@ public class ClaService {
 		}
 
 		return gitHub.findAssociatedClaNames(repoId, accessToken.getToken());
+	}
+
+	/**
+	 * Try to find the Pull-request in the given repository.
+	 *
+	 * @param repoId repo slug in the format {@code owner/repository}
+	 * @param pullRequestId the pull request number
+	 * @return {@link Optional} of {@link PullRequest}
+	 */
+	public Optional<PullRequest> findPullRequest(String repoId, int pullRequestId) {
+
+		AccessToken accessToken = accessTokenRepository.findOne(repoId);
+
+		if (accessToken == null) {
+			return Optional.empty();
+		}
+
+		return gitHub.findPullRequest(repoId, pullRequestId, accessToken.getToken());
 	}
 }
