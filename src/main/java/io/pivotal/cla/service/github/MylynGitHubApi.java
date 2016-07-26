@@ -120,6 +120,8 @@ public class MylynGitHubApi implements GitHubApi {
 		String claName ="Contributor License Agreement";
 		String thankYou = "Thank you for signing the";
 		String pleaseSign = "Please sign the";
+		String frequentlyAskedQuestions = "frequently asked questions";
+		String toManuallySynchronizeTheStatus = "to manually synchronize the status of this Pull Request";
 
 		boolean hasSignedCla = commitStatus.isSuccess();
 		RepositoryId id = RepositoryId.createFromId(repoId);
@@ -162,15 +164,17 @@ public class MylynGitHubApi implements GitHubApi {
 					issues.createComment(id, commitStatus.getPullRequestId(), body);
 				}
 			} else {
-				String sync = String.format("\n\n[Click here](%s) to manually synchronize the status of this Pull Request.", commitStatus.getSyncUrl());
-				String faq = String.format("\n\nSee the [FAQ](%s) for frequently asked questions.", commitStatus.getFaqUrl());
+				String sync = String.format("\n\n[Click here](%s) %s.", commitStatus.getSyncUrl(), toManuallySynchronizeTheStatus);
+				String faq = String.format("\n\nSee the [FAQ](%s) for %s.", commitStatus.getFaqUrl(), frequentlyAskedQuestions);
 				String oldBody = String.format("%s %s %s!", userMentionMarkdown, pleaseSign, claLinkMarkdown);
 				String body = String.format("%s%s%s", oldBody, sync, faq);
-				if (claUserComments.stream().anyMatch(c -> c.getBody().equals(body))) {
+
+				if (claUserComments.stream().anyMatch(c -> c.getBody().contains(frequentlyAskedQuestions)
+						&& c.getBody().contains(toManuallySynchronizeTheStatus))) {
 					return;
 				}
 
-				Optional<Comment> oldComment = claUserComments.stream().filter(c -> c.getBody().trim().contains(oldBody)).findFirst();
+				Optional<Comment> oldComment = claUserComments.stream().filter(c -> c.getBody().trim().contains(pleaseSign)).findFirst();
 				if (oldComment.isPresent()) {
 					Comment toEdit = oldComment.get();
 					toEdit.setBody(body);
