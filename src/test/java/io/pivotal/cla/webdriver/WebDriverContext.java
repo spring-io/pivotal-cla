@@ -22,18 +22,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.web.WebAppConfiguration;
-
-import io.pivotal.cla.PivotalClaApplication;
 
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@SpringApplicationConfiguration(classes = PivotalClaApplication.class)
-@WebAppConfiguration
 @ActiveProfiles("test")
+@SpringBootTest(webEnvironment = WebEnvironment.MOCK)
 public @interface WebDriverContext {
 }
