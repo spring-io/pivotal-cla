@@ -32,6 +32,10 @@ footer {
 	padding: 20px 0;
 }
 
+.alert a {
+	text-decoration: underline;
+}
+
 footer a {
 	text-decoration: underline;
 }
