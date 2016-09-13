@@ -21,7 +21,6 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 
 
 @SpringBootApplication
-@EnableRedisHttpSession
 public class PivotalClaApplication {
 
 	public static void main(String[] args) {

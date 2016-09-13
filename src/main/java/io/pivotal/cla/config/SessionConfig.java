@@ -16,12 +16,10 @@
 
 package io.pivotal.cla.config;
 
-import org.springframework.boot.autoconfigure.session.SessionAutoConfiguration;
 import org.springframework.cloud.Cloud;
 import org.springframework.cloud.CloudFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
@@ -29,7 +27,6 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
  * @author Mark Paluch
  */
 @Configuration
-@Import(SessionAutoConfiguration.class)
 public class SessionConfig {
 
 	@Profile(GitHubClaProfiles.CLOUDFOUNDRY)
