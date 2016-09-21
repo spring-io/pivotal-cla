@@ -15,9 +15,6 @@
  */
 package io.pivotal.cla.webdriver;
 
-import static org.mockito.Mockito.reset;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
@@ -25,12 +22,11 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.htmlunit.webdriver.MockMvcHtmlUnitDriverBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.filter.HiddenHttpMethodFilter;
 
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.CorporateSignature;
@@ -46,19 +42,22 @@ import io.pivotal.cla.service.github.GitHubApi;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebDriverContext
 public abstract class BaseWebDriverTests {
-
 	@Autowired
 	protected WebApplicationContext wac;
-	@Autowired
-	HiddenHttpMethodFilter hiddenInputFilter;
+
+	@MockBean
 	protected GitHubApi mockGitHub;
+	@MockBean
 	protected ContributorLicenseAgreementRepository mockClaRepository;
+	@MockBean
 	protected IndividualSignatureRepository mockIndividualSignatureRepository;
+	@MockBean
 	protected CorporateSignatureRepository mockCorporateSignatureRepository;
+	@MockBean
 	protected AccessTokenRepository mockTokenRepo;
+	@MockBean
 	protected UserRepository mockUserRepo;
 
-	@Autowired
 	protected WebDriver driver;
 
 	@Autowired
@@ -70,13 +69,6 @@ public abstract class BaseWebDriverTests {
 
 	@Before
 	public void setup() {
-		mockMvc = MockMvcBuilders
-				.webAppContextSetup(wac)
-				.addFilter(hiddenInputFilter)
-				.apply(springSecurity())
-//				.alwaysDo(print())
-				.build();
-
 		driver = MockMvcHtmlUnitDriverBuilder
 				.mockMvcSetup(mockMvc)
 				.useMockMvcForHosts("github.com")
@@ -111,44 +103,6 @@ public abstract class BaseWebDriverTests {
 		corporateSignature.setMailingAddress("123 Seasame Street");
 		corporateSignature.setTelephone("123.456.7890");
 		corporateSignature.setGitHubOrganization("organization");
-	}
-
-
-
-	@Autowired
-	public void setMockUserRepository(UserRepository mockUserRepo) {
-		reset(mockUserRepo);
-		this.mockUserRepo = mockUserRepo;
-	}
-
-	@Autowired
-	public void setMockGitHub(GitHubApi mockGitHub) {
-		reset(mockGitHub);
-		this.mockGitHub = mockGitHub;
-	}
-
-	@Autowired
-	public void setMockClaRepository(ContributorLicenseAgreementRepository mockClaRepository) {
-		reset(mockClaRepository);
-		this.mockClaRepository = mockClaRepository;
-	}
-
-	@Autowired
-	public void setMockTokenRepo(AccessTokenRepository mockTokenRepo) {
-		reset(mockTokenRepo);
-		this.mockTokenRepo = mockTokenRepo;
-	}
-
-	@Autowired
-	public void setMockIndividualSignatureRepository(IndividualSignatureRepository mockIndividualSignatureRepository) {
-		reset(mockIndividualSignatureRepository);
-		this.mockIndividualSignatureRepository = mockIndividualSignatureRepository;
-	}
-
-	@Autowired
-	public void setMockCorporateSignatureRepository(CorporateSignatureRepository mockCorporateSignatureRepository) {
-		reset(mockCorporateSignatureRepository);
-		this.mockCorporateSignatureRepository = mockCorporateSignatureRepository;
 	}
 
 	protected WebDriver getDriver() {
