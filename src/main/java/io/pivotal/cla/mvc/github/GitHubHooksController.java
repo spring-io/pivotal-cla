@@ -15,7 +15,9 @@
  */
 package io.pivotal.cla.mvc.github;
 
-import static io.pivotal.cla.egit.github.core.event.GithubEvents.*;
+import static io.pivotal.cla.egit.github.core.event.GithubEvents.ISSUE_COMMENT;
+import static io.pivotal.cla.egit.github.core.event.GithubEvents.PULL_REQUEST;
+import static io.pivotal.cla.egit.github.core.event.GithubEvents.PULL_REQUEST_REVIEW_COMMENT;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,9 +27,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import io.pivotal.cla.egit.github.core.PullRequestId;
-import io.pivotal.cla.egit.github.core.event.SenderAware;
-import io.pivotal.cla.service.github.GitHubApi;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.PullRequest;
 import org.eclipse.egit.github.core.Repository;
@@ -45,19 +44,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 
+import io.pivotal.cla.egit.github.core.PullRequestId;
 import io.pivotal.cla.egit.github.core.event.RepositoryAware;
 import io.pivotal.cla.egit.github.core.event.RepositoryIssueCommentPayload;
 import io.pivotal.cla.egit.github.core.event.RepositoryPullRequestPayload;
 import io.pivotal.cla.egit.github.core.event.RepositoryPullRequestReviewCommentPayload;
+import io.pivotal.cla.egit.github.core.event.SenderAware;
 import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.service.ClaPullRequestStatusRequest;
 import io.pivotal.cla.service.ClaService;
+import io.pivotal.cla.service.github.GitHubApi;
 import io.pivotal.cla.service.github.PullRequestStatus;
-import lombok.extern.apachecommons.CommonsLog;
 
 @RestController
 @PreAuthorize("@gitHubSignature.check(#request.getHeader('X-Hub-Signature'), #body)")
-@CommonsLog
 public class GitHubHooksController {
 
 	private static final Set<String> ACCEPTED_EVENTS = new HashSet<>(

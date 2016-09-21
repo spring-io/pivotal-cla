@@ -24,8 +24,6 @@ import io.pivotal.cla.egit.github.core.PullRequestId;
 import io.pivotal.cla.service.MigratePullRequestStatusRequest;
 import org.eclipse.egit.github.core.PullRequest;
 
-import org.eclipse.egit.github.core.PullRequest;
-
 public interface GitHubApi {
 
 	List<PullRequestStatus> createUpdatePullRequestStatuses(MigratePullRequestStatusRequest request);
