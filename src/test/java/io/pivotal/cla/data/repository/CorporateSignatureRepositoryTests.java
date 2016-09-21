@@ -27,12 +27,11 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import io.pivotal.cla.PivotalClaApplication;
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.DataUtils;
@@ -45,7 +44,7 @@ import io.pivotal.cla.test.context.SystemDataActiveProfiles;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(PivotalClaApplication.class)
+@SpringBootTest
 @TestPropertySource(locations="/application-test.properties")
 @Transactional
 @SystemDataActiveProfiles
