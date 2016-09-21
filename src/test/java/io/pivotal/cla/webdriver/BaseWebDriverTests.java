@@ -58,8 +58,10 @@ public abstract class BaseWebDriverTests {
 	protected AccessTokenRepository mockTokenRepo;
 	protected UserRepository mockUserRepo;
 
+	@Autowired
 	protected WebDriver driver;
 
+	@Autowired
 	protected MockMvc mockMvc;
 
 	protected ContributorLicenseAgreement cla;
