@@ -538,7 +538,7 @@ public class MylynGitHubApiITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"context\":\"ci/pivotal-cla\",\"description\":\"This Pull Request contains an obvious fix. Signing the Contributor License Agreement not necessary.\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"This Pull Request contains an obvious fix. Signing the Contributor License Agreement is not necessary.\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
 
 
 		request = server.getServer().takeRequest();
@@ -547,7 +547,7 @@ public class MylynGitHubApiITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"body\":\"@rwinch This Pull Request contains an obvious fix. Signing the Contributor License Agreement not necessary.\"}");
+				"{\"body\":\"@rwinch This Pull Request contains an obvious fix. Signing the Contributor License Agreement is not necessary.\"}");
 	}
 
 	@Test
@@ -592,7 +592,7 @@ public class MylynGitHubApiITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"context\":\"ci/pivotal-cla\",\"description\":\"This Pull Request contains an obvious fix. Signing the Contributor License Agreement not necessary.\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"This Pull Request contains an obvious fix. Signing the Contributor License Agreement is not necessary.\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
 
 	}
 
@@ -635,7 +635,7 @@ public class MylynGitHubApiITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"context\":\"ci/pivotal-cla\",\"description\":\"This Pull Request contains an obvious fix. Signing the Contributor License Agreement not necessary.\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"This Pull Request contains an obvious fix. Signing the Contributor License Agreement is not necessary.\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
 
 	}
 
@@ -679,7 +679,7 @@ public class MylynGitHubApiITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"context\":\"ci/pivotal-cla\",\"description\":\"This Pull Request contains an obvious fix. Signing the Contributor License Agreement not necessary.\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"This Pull Request contains an obvious fix. Signing the Contributor License Agreement is not necessary.\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
 
 	}
 
@@ -775,7 +775,7 @@ public class MylynGitHubApiITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/statuses/14f7eed929c0086d5d7b87d28bc4722f618a361f");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token " + accessToken);
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"context\":\"ci/pivotal-cla\",\"description\":\"This Pull Request contains an obvious fix. Signing the Contributor License Agreement not necessary.\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
+				"{\"context\":\"ci/pivotal-cla\",\"description\":\"This Pull Request contains an obvious fix. Signing the Contributor License Agreement is not necessary.\",\"state\":\"success\",\"target_url\":\"https://status.example.com/uri\"}");
 
 
 		request = server.getServer().takeRequest();

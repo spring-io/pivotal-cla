@@ -85,7 +85,7 @@ public class MylynGitHubApi implements GitHubApi {
 	public final static String CONTRIBUTOR_LICENSE_AGREEMENT = "Contributor License Agreement";
 	public final static String THIS_PR_CONTAINS_AN_OBVIOUS_FIX = "This Pull Request contains an obvious fix";
 	public final static String OBVIOUS_FIX_CLA_NOT_REQUIRED = String.format(
-			"%s. Signing the %s not necessary.", THIS_PR_CONTAINS_AN_OBVIOUS_FIX, CONTRIBUTOR_LICENSE_AGREEMENT);
+			"%s. Signing the %s is not necessary.", THIS_PR_CONTAINS_AN_OBVIOUS_FIX, CONTRIBUTOR_LICENSE_AGREEMENT);
 	public final static String THANK_YOU = "Thank you for signing the";
 	public final static String PLEASE_SIGN = "Please sign the";
 	public final static String OBVIOUS_FIX = "obvious fix";
