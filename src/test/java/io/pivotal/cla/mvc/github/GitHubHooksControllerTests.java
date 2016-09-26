@@ -64,7 +64,6 @@ public class GitHubHooksControllerTests extends BaseWebDriverTests {
 	public void setupAccessToken() {
 		accessToken = new AccessToken(AccessToken.CLA_ACCESS_TOKEN_ID, "GitHubHooksControllerTests_access_token");
 		when(mockTokenRepo.findOne(AccessToken.CLA_ACCESS_TOKEN_ID)).thenReturn(accessToken);
-
 	}
 
 	@Test
@@ -160,6 +159,20 @@ public class GitHubHooksControllerTests extends BaseWebDriverTests {
 
 		verify(gitHubApiMock).getGitHubClaUserLogin();
 		verifyNoMoreInteractions(gitHubApiMock);
+	}
+
+	@Test
+	public void skipRequestsWithoutPullRequest() throws Exception {
+		User user = WithSigningUserFactory.create();
+		when(mockUserRepo.findOne(anyString())).thenReturn(user);
+		when(mockTokenRepo.findOne("rwinch/176_test"))
+			.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
+		when(mockIndividualSignatureRepository.findSignaturesFor(any(), any(), anyString())).thenReturn(Arrays.asList(individualSignature));
+
+		mockMvc.perform(hookRequest().header("X-GitHub-Event", GithubEvents.PULL_REQUEST).content(getPayload("issue.json")))
+			.andExpect(status().isBadRequest());
+
+		verifyZeroInteractions(mockGitHub);
 	}
 
 	@Test
@@ -305,6 +318,4 @@ public class GitHubHooksControllerTests extends BaseWebDriverTests {
 
 		return post;
 	}
-
-
 }

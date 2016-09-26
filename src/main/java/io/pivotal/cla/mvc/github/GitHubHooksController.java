@@ -15,9 +15,7 @@
  */
 package io.pivotal.cla.mvc.github;
 
-import static io.pivotal.cla.egit.github.core.event.GithubEvents.ISSUE_COMMENT;
-import static io.pivotal.cla.egit.github.core.event.GithubEvents.PULL_REQUEST;
-import static io.pivotal.cla.egit.github.core.event.GithubEvents.PULL_REQUEST_REVIEW_COMMENT;
+import static io.pivotal.cla.egit.github.core.event.GithubEvents.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -66,16 +64,19 @@ public class GitHubHooksController {
 
 	static {
 		PAYLOAD_TYPES.put(ISSUE_COMMENT, RepositoryIssueCommentPayload.class);
-		PAYLOAD_TYPES.put(PULL_REQUEST_REVIEW_COMMENT, RepositoryPullRequestReviewCommentPayload.class);
+		PAYLOAD_TYPES.put(PULL_REQUEST_REVIEW_COMMENT,
+				RepositoryPullRequestReviewCommentPayload.class);
 		PAYLOAD_TYPES.put(PULL_REQUEST, RepositoryPullRequestPayload.class);
 	}
 
-	@Autowired ClaService claService;
-	@Autowired GitHubApi gitHubApi;
+	@Autowired
+	ClaService claService;
+	@Autowired
+	GitHubApi gitHubApi;
 
 	@RequestMapping(value = "/github/hooks/pull_request/{cla}", headers = "X-GitHub-Event=ping")
-	public String pullRequestPing(HttpServletRequest request, @RequestBody String body, @PathVariable String cla)
-			throws Exception {
+	public String pullRequestPing(HttpServletRequest request, @RequestBody String body,
+			@PathVariable String cla) throws Exception {
 		return "SUCCESS";
 	}
 
@@ -88,11 +89,13 @@ public class GitHubHooksController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/github/hooks/pull_request/{cla}")
-	public ResponseEntity<String> pullRequest(HttpServletRequest request, @RequestBody String body, @PathVariable String cla,
-											  @RequestHeader("X-GitHub-Event") String githubEvent) throws Exception {
+	public ResponseEntity<String> pullRequest(HttpServletRequest request,
+			@RequestBody String body, @PathVariable String cla,
+			@RequestHeader("X-GitHub-Event") String githubEvent) throws Exception {
 
-		if(!ACCEPTED_EVENTS.contains(githubEvent)){
-			return ResponseEntity.badRequest().body(String.format("X-Github-Event: %s not acceptable", githubEvent));
+		if (!ACCEPTED_EVENTS.contains(githubEvent)) {
+			return ResponseEntity.badRequest().body(
+					String.format("X-Github-Event: %s not acceptable", githubEvent));
 		}
 
 		Gson gson = GsonUtils.createGson();
@@ -100,20 +103,21 @@ public class GitHubHooksController {
 
 		PullRequest pullRequest = getPullRequest(payload);
 
-		if(pullRequest == null) {
+		if (pullRequest == null) {
 			return ResponseEntity.badRequest().body("Not related to a Pull request");
 		}
 
 		User senderUser = getSender(payload);
 
-		if(senderUser.getLogin().equals(gitHubApi.getGitHubClaUserLogin())){
+		if (senderUser.getLogin().equals(gitHubApi.getGitHubClaUserLogin())) {
 			return ResponseEntity.ok("Skipping self-events");
 		}
 
 		User user = getPullRequestUser(payload);
 
 		Repository repository = payload.getRepository();
-		RepositoryId repoId = RepositoryId.createFromId(repository.getOwner().getLogin() + "/" + repository.getName());
+		RepositoryId repoId = RepositoryId.createFromId(
+				repository.getOwner().getLogin() + "/" + repository.getName());
 		String sha = getPullRequestSha(repoId, pullRequest);
 		String gitHubLogin = user.getLogin();
 
@@ -123,12 +127,14 @@ public class GitHubHooksController {
 		status.setPullRequestBody(pullRequest.getBody());
 		status.setRepoId(repoId.generateId());
 		status.setSha(sha);
-		String signUrl = UrlBuilder.signUrl().request(request).claName(cla).repositoryId(status.getRepoId())
-				.pullRequestId(status.getPullRequestId()).build();
+		String signUrl = UrlBuilder.signUrl().request(request).claName(cla)
+				.repositoryId(status.getRepoId()).pullRequestId(status.getPullRequestId())
+				.build();
 		status.setUrl(signUrl);
 		status.setPullRequestState(pullRequest.getState());
 
-		String syncUrl = UrlBuilder.createSyncUrl(request, cla, status.getRepoId(), status.getPullRequestId());
+		String syncUrl = UrlBuilder.createSyncUrl(request, cla, status.getRepoId(),
+				status.getPullRequestId());
 		status.setSyncUrl(syncUrl);
 
 		String faqUrl = UrlBuilder.createFaqUrl(request);
@@ -144,11 +150,12 @@ public class GitHubHooksController {
 
 	private String getPullRequestSha(RepositoryId repoId, PullRequest pullRequest) {
 
-		if(pullRequest.getHead() != null) {
+		if (pullRequest.getHead() != null) {
 			return pullRequest.getHead().getSha();
 		}
 
-		return gitHubApi.getShaForPullRequest(PullRequestId.of(repoId, pullRequest.getNumber()));
+		return gitHubApi
+				.getShaForPullRequest(PullRequestId.of(repoId, pullRequest.getNumber()));
 	}
 
 	private User getPullRequestUser(RepositoryAware payload) {
@@ -180,18 +187,19 @@ public class GitHubHooksController {
 	private PullRequest getPullRequest(RepositoryAware payload) {
 
 		PullRequest pullRequest = null;
-		if(payload instanceof RepositoryPullRequestPayload){
+		if (payload instanceof RepositoryPullRequestPayload) {
 			pullRequest = ((RepositoryPullRequestPayload) payload).getPullRequest();
 		}
 
-		if(payload instanceof RepositoryPullRequestReviewCommentPayload){
-			pullRequest = ((RepositoryPullRequestReviewCommentPayload) payload).getPullRequest();
+		if (payload instanceof RepositoryPullRequestReviewCommentPayload) {
+			pullRequest = ((RepositoryPullRequestReviewCommentPayload) payload)
+					.getPullRequest();
 		}
 
-		if(payload instanceof RepositoryIssueCommentPayload){
+		if (payload instanceof RepositoryIssueCommentPayload) {
 			Issue issue = ((RepositoryIssueCommentPayload) payload).getIssue();
 
-			if(issue != null){
+			if (issue != null && issue.getPullRequest() != null) {
 				pullRequest = issue.getPullRequest();
 
 				pullRequest.setAssignee(issue.getAssignee());
