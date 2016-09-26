@@ -30,12 +30,12 @@ public class SyncGitHubStatusController {
 	UserRepository users;
 
 	@RequestMapping(value = "/sync/{claName}", method = RequestMethod.GET)
-	public String synchForm(@ModelAttribute ClaRequest claRequest) throws Exception {
+	public String syncForm(@ModelAttribute ClaRequest claRequest) throws Exception {
 		return "sync/form";
 	}
 
 	@RequestMapping(value = "/sync/{claName}", method = RequestMethod.POST)
-	public String synch(@AuthenticationPrincipal User currentUser, @ModelAttribute ClaRequest claRequest, RedirectAttributes redirect) throws Exception {
+	public String sync(@AuthenticationPrincipal User currentUser, @ModelAttribute ClaRequest claRequest, RedirectAttributes redirect) throws Exception {
 
 		Assert.hasText(claRequest.getRepositoryId(), "RepositoryId must not be empty");
 		Assert.isTrue(claRequest.getPullRequestId() != null && claRequest.getPullRequestId() > 0,
