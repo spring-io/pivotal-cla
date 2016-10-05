@@ -16,24 +16,48 @@
 
 package io.pivotal.cla.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.Cloud;
 import org.springframework.cloud.CloudFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 
 /**
  * @author Mark Paluch
  */
 @Configuration
+@EnableConfigurationProperties(RedisProperties.class)
 public class SessionConfig {
 
 	@Profile(GitHubClaProfiles.CLOUDFOUNDRY)
 	@Bean
-	public RedisConnectionFactory redisConnectionFactory() {
+	public RedisConnectionFactory cloudRedisConnectionFactory() {
 		CloudFactory cloudFactory = new CloudFactory();
 		Cloud cloud = cloudFactory.getCloud();
-		return cloud.getSingletonServiceConnector(RedisConnectionFactory.class, null);
+		RedisConnectionFactory connectionFactory = cloud.getSingletonServiceConnector(RedisConnectionFactory.class, null);
+
+		if(connectionFactory instanceof LettuceConnectionFactory){
+			((LettuceConnectionFactory) connectionFactory).setShutdownTimeout(0);
+		}
+
+		return connectionFactory;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(RedisConnectionFactory.class)
+	public RedisConnectionFactory redisConnectionFactory(RedisProperties redisProperties) {
+
+		LettuceConnectionFactory connectionFactory = new LettuceConnectionFactory();
+		connectionFactory.setPort(redisProperties.getPort());
+		connectionFactory.setHostName(redisProperties.getHost());
+		connectionFactory.setPassword(redisProperties.getPassword());
+		connectionFactory.setShutdownTimeout(0);
+
+		return connectionFactory;
 	}
 }
