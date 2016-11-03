@@ -55,38 +55,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		AuthenticationEntryPoint entryPoint = entryPoint();
+		AdminRequestedAccessDeniedHandler accessDeniedHandler = new AdminRequestedAccessDeniedHandler(entryPoint);
 		http
 			.requiresChannel()
 				.requestMatchers(request -> request.getHeader("x-forwarded-port") != null).requiresSecure()
 				.and()
 			.exceptionHandling()
 				.authenticationEntryPoint(entryPoint)
-				.accessDeniedHandler( new AccessDeniedHandler() {
-
-					@Override
-					public void handle(HttpServletRequest request, HttpServletResponse response,
-							AccessDeniedException accessDeniedException) throws IOException, ServletException {
-						User currentUser = getUser(SecurityContextHolder.getContext().getAuthentication());
-
-						if (currentUser == null || currentUser.isAdminAccessRequested()) {
-							new AccessDeniedHandlerImpl().handle(request, response, accessDeniedException);
-							return;
-						}
-
-						new HttpSessionRequestCache().saveRequest(request, response);
-						entryPoint.commence(request, response,
-								new InsufficientAuthenticationException("Additional OAuth Scopes required", accessDeniedException));
-					}
-
-					private User getUser(Authentication authentication) {
-
-						if (authentication != null && authentication.getPrincipal() instanceof User) {
-							return (User) authentication.getPrincipal();
-						}
-
-						return null;
-					}
-				})
+				.accessDeniedHandler(accessDeniedHandler)
 				.and()
 			.csrf()
 				.ignoringAntMatchers("/github/hooks/**").and()
@@ -102,6 +78,44 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.logout()
 				.logoutSuccessUrl("/?logout");
 	}
+
+	static class AdminRequestedAccessDeniedHandler implements AccessDeniedHandler {
+		private AuthenticationEntryPoint entryPoint;
+
+		private AccessDeniedHandler deniedHandler;
+
+		private AdminRequestedAccessDeniedHandler(AuthenticationEntryPoint entryPoint) {
+			AccessDeniedHandlerImpl deniedHandler = new AccessDeniedHandlerImpl();
+			deniedHandler.setErrorPage("/error/403");
+			this.deniedHandler = deniedHandler;
+			this.entryPoint = entryPoint;
+		}
+
+		@Override
+		public void handle(HttpServletRequest request, HttpServletResponse response,
+				AccessDeniedException accessDeniedException) throws IOException, ServletException {
+			User currentUser = getUser(SecurityContextHolder.getContext().getAuthentication());
+
+			if (currentUser == null || currentUser.isAdminAccessRequested()) {
+				deniedHandler.handle(request, response, accessDeniedException);
+				return;
+			}
+
+			new HttpSessionRequestCache().saveRequest(request, response);
+			entryPoint.commence(request, response,
+					new InsufficientAuthenticationException("Additional OAuth Scopes required", accessDeniedException));
+		}
+
+		private User getUser(Authentication authentication) {
+
+			if (authentication != null && authentication.getPrincipal() instanceof User) {
+				return (User) authentication.getPrincipal();
+			}
+
+			return null;
+		}
+	}
+
 
 	private AuthenticationEntryPoint entryPoint() {
 		LinkedHashMap<RequestMatcher, AuthenticationEntryPoint> entryPoints = new LinkedHashMap<>();

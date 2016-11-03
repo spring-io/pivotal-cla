@@ -1,0 +1,25 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layouts/main">
+<head>
+<title>Access Denied</title>
+</head>
+<body>
+	<div layout:fragment="content">
+		<h1 id="error">Access Denied</h1>
+		<div>
+			If you should have access to this, ensure you have associated your <i>@pivotal.io</i> email address to the GitHub account.
+			You can find directions below:
+		</div>
+		<h2>How to associate an email address to GitHub</h2>
+		<ol>
+			<li><a href="https://help.github.com/articles/adding-an-email-address-to-your-github-account/">Associate the email address used to sign the agreement to your GitHub account</a></li>
+			<li><a href="https://help.github.com/articles/verifying-your-email-address/">Verify your email address</a></li>
+			<li>
+				<a href="https://cla.pivotal.io/">Sign into the new CLA tool</a>.
+				You must sign into the tool after you have linked your email address.
+				This is necessary because, for privacy reasons, GitHub will not allow the tooling to view your email addresses without your consent.
+			</li>
+			<li>You may need to log out of the CLA tool and then log back in to update your email address.</li>
+		</ol>
+	</div>
+</body>
+</html>

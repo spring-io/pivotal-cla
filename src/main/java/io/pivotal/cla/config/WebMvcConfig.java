@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import io.pivotal.cla.mvc.support.ImportedSignaturesSessionAttrResolver;
@@ -36,5 +37,10 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
 		resolvers.add(new ImportedSignaturesSessionAttrResolver());
+	}
+
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+		registry.addViewController("/error/403").setViewName("error/403");
 	}
 }
