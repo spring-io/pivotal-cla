@@ -24,6 +24,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 
+import io.pivotal.cla.mvc.SignClaForm;
 import io.pivotal.cla.webdriver.pages.github.GitHubPullRequestPage;
 
 public class SignIclaPage extends BasePage {
@@ -79,6 +80,10 @@ public class SignIclaPage extends BasePage {
 		return form;
 	}
 
+	public Form form(SignClaForm form) {
+		return form().form(form);
+	}
+
 	public void assertAt() {
 		assertThat(getDriver().getTitle()).endsWith("- Sign ICLA");
 	}
@@ -118,11 +123,23 @@ public class SignIclaPage extends BasePage {
 			return PageFactory.initElements(getDriver(), page);
 		}
 
+		private Form form(SignClaForm form) {
+			return this.name(form.getName())
+				.email(form.getEmail())
+				.mailingAddress(form.getMailingAddress())
+				.country(form.getCountry())
+				.telephone(form.getTelephone());
+		}
+
 		public InputAssert assertName() {
 			return assertInput(name);
 		}
 
 		public Form name(String name) {
+			if(name == null) {
+				this.name.clear();
+				return this;
+			}
 			this.name.sendKeys(name);
 			return this;
 		}
@@ -132,7 +149,12 @@ public class SignIclaPage extends BasePage {
 		}
 
 		public Form email(String email) {
-			new Select(this.email).selectByValue(email);
+			Select select = new Select(this.email);
+			if(email == null) {
+				select.deselectAll();
+				return this;
+			}
+			select.selectByValue(email);
 			return this;
 		}
 
@@ -146,6 +168,10 @@ public class SignIclaPage extends BasePage {
 		}
 
 		public Form mailingAddress(String address) {
+			if(address == null) {
+				this.mailingAddress.clear();
+				return this;
+			}
 			this.mailingAddress.sendKeys(address);
 			return this;
 		}
@@ -155,6 +181,10 @@ public class SignIclaPage extends BasePage {
 		}
 
 		public Form country(String country) {
+			if(country == null) {
+				this.country.clear();
+				return this;
+			}
 			this.country.sendKeys(country);
 			return this;
 		}

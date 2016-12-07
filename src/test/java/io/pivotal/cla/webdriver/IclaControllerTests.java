@@ -36,6 +36,7 @@ import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.data.IndividualSignature;
+import io.pivotal.cla.mvc.SignClaForm;
 import io.pivotal.cla.security.WithSigningUser;
 import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.service.github.PullRequestStatus;
@@ -86,18 +87,15 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
-		Form form = signPage.form();
+		SignClaForm claForm = defaultClaForm();
+		claForm.setName("");
 
-		signPage = form
-			.email("rob@gmail.com")
-			.mailingAddress("123 Seasame St")
-			.country("USA")
-			.telephone("123.456.7890")
+		signPage = signPage.form(claForm)
 			.confirm()
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
-		form = signPage.form();
+		Form form = signPage.form();
 		form.assertName().hasRequiredError();
 		form.assertEmail().hasNoErrors();
 		form.assertMailingAddress().hasNoErrors();
@@ -113,18 +111,15 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
-		Form form = signPage.form();
+		SignClaForm claForm = defaultClaForm();
 
-		signPage = form
-			.name("Rob Winch")
-			.mailingAddress("123 Seasame St")
-			.country("USA")
-			.telephone("123.456.7890")
+		signPage = signPage.form(claForm)
+			.email("")
 			.confirm()
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
-		form = signPage.form();
+		Form form = signPage.form();
 		form.assertName().hasNoErrors();
 		form.assertEmail().hasRequiredError();
 		form.assertMailingAddress().hasNoErrors();
@@ -134,84 +129,57 @@ public class IclaControllerTests extends BaseWebDriverTests {
 	}
 
 	@Test
-	public void signMailingAddressRequired() {
+	public void signMailingAddressNotRequired() {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
-		Form form = signPage.form();
+		SignClaForm form = defaultClaForm();
+		form.setMailingAddress("");
 
-		signPage = form
-			.name("Rob Winch")
-			.email("rob@gmail.com")
-			.country("USA")
-			.telephone("123.456.7890")
+		signPage = signPage.form(form)
 			.confirm()
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
-		form = signPage.form();
-		form.assertName().hasNoErrors();
-		form.assertEmail().hasNoErrors();
-		form.assertMailingAddress().hasRequiredError();
-		form.assertCountry().hasNoErrors();
-		form.assertTelephone().hasNoErrors();
-		form.assertConfirm().hasNoErrors();
+		assertThatClaIsSigned(form);
 	}
 
 	@Test
-	public void signCountryRequired() {
+	public void signCountryNotRequired() {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
-		Form form = signPage.form();
+		SignClaForm form = defaultClaForm();
+		form.setCountry("");
 
-		signPage = form
-			.name("Rob Winch")
-			.email("rob@gmail.com")
-			.mailingAddress("123 Seasame St")
-			.telephone("123.456.7890")
+		signPage = signPage.form(form)
 			.confirm()
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
-		form = signPage.form();
-		form.assertName().hasNoErrors();
-		form.assertEmail().hasNoErrors();
-		form.assertMailingAddress().hasNoErrors();
-		form.assertCountry().hasRequiredError();
-		form.assertTelephone().hasNoErrors();
-		form.assertConfirm().hasNoErrors();
+		assertThatClaIsSigned(form);
 	}
 
 	@Test
-	public void signTelephoneRequired() {
+	public void signTelephoneNotRequired() {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
-		Form form = signPage.form();
+		SignClaForm form = defaultClaForm();
+		form.setTelephone("");
 
-		signPage = form
-			.name("Rob Winch")
-			.email("rob@gmail.com")
-			.mailingAddress("123 Seasame St")
-			.country("USA")
+		signPage = signPage.form(form)
 			.confirm()
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
-		form = signPage.form();
-		form.assertName().hasNoErrors();
-		form.assertEmail().hasNoErrors();
-		form.assertMailingAddress().hasNoErrors();
-		form.assertCountry().hasNoErrors();
-		form.assertTelephone().hasRequiredError();
-		form.assertConfirm().hasNoErrors();
+		assertThatClaIsSigned(form);
 	}
 
 	@Test
@@ -221,18 +189,13 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
-		Form form = signPage.form();
+		SignClaForm claForm = defaultClaForm();
 
-		signPage = form
-			.name("Rob Winch")
-			.email("rob@gmail.com")
-			.mailingAddress("123 Seasame St")
-			.country("USA")
-			.telephone("123.456.7890")
+		signPage = signPage.form(claForm)
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
-		form = signPage.form();
+		Form form = signPage.form();
 		form.assertName().hasNoErrors();
 		form.assertEmail().hasNoErrors();
 		form.assertMailingAddress().hasNoErrors();
@@ -264,22 +227,18 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
-		signPage = signPage.form()
-			.name("Rob Winch")
-			.email("rob@gmail.com")
-			.mailingAddress("123 Seasame St")
-			.country("USA")
-			.telephone("123.456.7890")
+		SignClaForm signForm = defaultClaForm();
+		signPage = signPage.form(signForm)
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
 
 		Form form = signPage.form();
-		form.assertName().hasValue("Rob Winch");
-		form.assertEmail().hasValue("rob@gmail.com");
-		form.assertMailingAddress().hasValue("123 Seasame St");
-		form.assertCountry().hasValue("USA");
-		form.assertTelephone().hasValue("123.456.7890");
+		form.assertName().hasValue(signForm.getName());
+		form.assertEmail().hasValue(signForm.getEmail());
+		form.assertMailingAddress().hasValue(signForm.getMailingAddress());
+		form.assertCountry().hasValue(signForm.getCountry());
+		form.assertTelephone().hasValue(signForm.getTelephone());
 
 		signPage = SignIclaPage.go(getDriver(), cla.getName());
 
@@ -298,12 +257,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
-		signPage = signPage.form()
-			.name("Rob Winch")
-			.email("rob@gmail.com")
-			.mailingAddress("123 Seasame St")
-			.country("USA")
-			.telephone("123.456.7890")
+		signPage = signPage.form(defaultClaForm())
 			.confirm()
 			.sign(SignIclaPage.class);
 
@@ -318,33 +272,29 @@ public class IclaControllerTests extends BaseWebDriverTests {
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
 
-		String country = "USA";
-		String name = "Rob Winch";
-		String email = "rob@gmail.com";
-		String address = "123 Seasame St";
-		String telephone = "123.456.7890";
-		signPage = signPage.form()
-			.name(name)
-			.email(email)
-			.mailingAddress(address)
-			.country(country)
-			.telephone(telephone)
+		SignClaForm form = defaultClaForm();
+
+		signPage = signPage.form(form)
 			.confirm()
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
+		assertThatClaIsSigned(form);
+	}
 
+	private void assertThatClaIsSigned(SignClaForm form) {
 		ArgumentCaptor<IndividualSignature> signatureCaptor = ArgumentCaptor.forClass(IndividualSignature.class);
 		verify(mockIndividualSignatureRepository).save(signatureCaptor.capture());
 
 		IndividualSignature signature = signatureCaptor.getValue();
 
 		assertThat(signature.getCla()).isEqualTo(cla);
+		String country = form.getCountry();
 		assertThat(signature.getCountry()).isEqualTo(country);
-		assertThat(signature.getName()).isEqualTo(name);
-		assertThat(signature.getEmail()).isEqualTo(email);
-		assertThat(signature.getMailingAddress()).isEqualTo(address);
-		assertThat(signature.getTelephone()).isEqualTo(telephone);
+		assertThat(signature.getName()).isEqualTo(form.getName());
+		assertThat(signature.getEmail()).isEqualTo(form.getEmail());
+		assertThat(signature.getMailingAddress()).isEqualTo(form.getMailingAddress());
+		assertThat(signature.getTelephone()).isEqualTo(form.getTelephone());
 		assertThat(signature.getDateOfSignature()).isCloseTo(new Date(), TimeUnit.SECONDS.toMillis(5));
 
 		verifyZeroInteractions(mockGitHub);
@@ -392,5 +342,15 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		mockMvc
 			.perform(get(url))
 				.andExpect(status().isNotFound());
+	}
+
+	private static SignClaForm defaultClaForm() {
+		SignClaForm form = new SignClaForm();
+		form.setCountry("USA");
+		form.setName("Rob Winch");
+		form.setEmail("rob@gmail.com");
+		form.setMailingAddress("123 Seasame St");
+		form.setTelephone("123.456.7890");
+		return form;
 	}
 }

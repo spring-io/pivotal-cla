@@ -38,13 +38,10 @@ public class SignClaForm extends ClaRequest {
 	@NotEmpty(message = "This is required")
 	String email;
 
-	@NotEmpty(message = "This is required")
 	String mailingAddress;
 
-	@NotEmpty(message = "This is required")
 	String country;
 
-	@NotEmpty(message = "This is required")
 	String telephone;
 
 	@AssertTrue(message = "This is required")
