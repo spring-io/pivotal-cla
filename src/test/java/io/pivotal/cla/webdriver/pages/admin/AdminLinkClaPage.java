@@ -33,6 +33,7 @@ import io.pivotal.cla.webdriver.pages.BasePage;
 public class AdminLinkClaPage extends BasePage {
 	WebElement submit;
 
+	@FindBy(className = "select2-search__field")
 	WebElement repositories;
 
 	WebElement claName;
@@ -84,7 +85,7 @@ public class AdminLinkClaPage extends BasePage {
 
 		waitForRepositories();
 		if(StringUtils.hasText(repositoryName)) {
-			new Select(repositories).selectByValue(repositoryName);
+			repositories.sendKeys(repositoryName);
 		}
 		if(StringUtils.hasText(licenseName)) {
 			cla.selectByVisibleText(licenseName);
