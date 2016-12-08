@@ -244,6 +244,9 @@ public class SmokeTests {
 	int screenShotCount = 0;
 
 	private void takeScreenShot(WebDriver driver, String name) throws IOException {
+		if(!(driver instanceof TakesScreenshot)) {
+			return;
+		}
 		TakesScreenshot shot = (TakesScreenshot) driver;
 		byte[] screenshotAs = shot.getScreenshotAs(OutputType.BYTES);
 		String prefix = String.format("%03d", screenShotCount++) + "_";
