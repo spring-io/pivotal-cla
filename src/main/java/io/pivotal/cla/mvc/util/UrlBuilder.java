@@ -83,10 +83,10 @@ public class UrlBuilder {
 	}
 
 	@SneakyThrows
-	public static String createFaqUrl(HttpServletRequest request) {
+	public static String createAboutUrl(HttpServletRequest request) {
 		UrlBuilder url = UrlBuilder //
 				.fromRequest(request)//
-				.path("/faq");//
+				.path("/about");//
 		return url.build();
 	}
 

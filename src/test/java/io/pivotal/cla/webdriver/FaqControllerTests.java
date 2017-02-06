@@ -18,15 +18,12 @@ package io.pivotal.cla.webdriver;
 import org.junit.Test;
 
 import io.pivotal.cla.webdriver.pages.FaqPage;
-import io.pivotal.cla.webdriver.pages.HomePage;
-import io.pivotal.cla.webdriver.pages.SignClaPage;
 
 public class FaqControllerTests extends BaseWebDriverTests {
 
 	@Test
-	public void navigation() throws Exception {
-		SignClaPage home = HomePage.go(driver);
-		FaqPage faq = home.faq();
+	public void faqUlrStillWorksForPassivity() throws Exception {
+		FaqPage faq = FaqPage.to(driver);
 		faq.assertAt();
 	}
 }

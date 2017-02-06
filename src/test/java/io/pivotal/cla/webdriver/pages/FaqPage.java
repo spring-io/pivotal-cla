@@ -18,6 +18,7 @@ package io.pivotal.cla.webdriver.pages;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
 
 public class FaqPage extends BasePage {
 
@@ -26,7 +27,11 @@ public class FaqPage extends BasePage {
 	}
 
 	public void assertAt() {
-		assertThat(getDriver().getTitle()).endsWith("- FAQ");
+		assertThat(getDriver().getTitle()).endsWith("- About");
 	}
 
+	public static FaqPage to(WebDriver driver) {
+		get(driver, "/faq");
+		return PageFactory.initElements(driver, FaqPage.class);
+	}
 }

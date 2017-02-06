@@ -78,6 +78,6 @@ public class ClaRequest {
 		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 		HttpServletRequest request = requestAttributes.getRequest();
 
-		return UrlBuilder.createFaqUrl(request);
+		return UrlBuilder.createAboutUrl(request);
 	}
 }

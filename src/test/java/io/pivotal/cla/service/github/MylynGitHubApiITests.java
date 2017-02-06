@@ -518,7 +518,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(false);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
-		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/about");
 		commitStatus.setAccessToken(accessToken);
 		commitStatus.setPullRequestState("open");
 
@@ -567,7 +567,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(false);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
-		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/about");
 		commitStatus.setAccessToken(accessToken);
 		commitStatus.setPullRequestState("open");
 
@@ -614,7 +614,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(false);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
-		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/about");
 		commitStatus.setAccessToken(accessToken);
 		commitStatus.setPullRequestState("open");
 		commitStatus.setPullRequestBody("That's an obvious fix");
@@ -657,7 +657,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(false);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
-		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/about");
 		commitStatus.setAccessToken(accessToken);
 		commitStatus.setPullRequestState("open");
 
@@ -702,7 +702,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(false);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
-		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/about");
 		commitStatus.setAccessToken(accessToken);
 		commitStatus.setPullRequestState("open");
 
@@ -732,7 +732,7 @@ public class MylynGitHubApiITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
 		assertThat(request.getBody().readUtf8()).contains(
-				"\"body\":\"@rwinch Please sign the [Contributor License Agreement](https://status.example.com/uri)!\\n\\n[Click here](https://cla.pivotal.io/sync/pivotal) to manually synchronize the status of this Pull Request.\\n\\nSee the [FAQ](https://cla.pivotal.io/faq) for frequently asked questions.\"");
+				"\"body\":\"@rwinch Please sign the [Contributor License Agreement](https://status.example.com/uri)!\\n\\n[Click here](https://cla.pivotal.io/sync/pivotal) to manually synchronize the status of this Pull Request.\\n\\nSee the [FAQ](https://cla.pivotal.io/about) for frequently asked questions.\"");
 
 	}
 
@@ -755,7 +755,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(true);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
-		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/about");
 		commitStatus.setAccessToken(accessToken);
 		commitStatus.setPullRequestState("open");
 
@@ -914,7 +914,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(false);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
-		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/about");
 		commitStatus.setAccessToken(accessToken);
 		commitStatus.setPullRequestState("open");
 
@@ -957,7 +957,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(false);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
-		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/about");
 		commitStatus.setAccessToken(accessToken);
 		commitStatus.setPullRequestState("open");
 
@@ -1004,7 +1004,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(false);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
-		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/about");
 		commitStatus.setAccessToken(accessToken);
 		commitStatus.setPullRequestState("open");
 
@@ -1034,7 +1034,7 @@ public class MylynGitHubApiITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/1/comments");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
 		assertThat(request.getBody().readUtf8()).isEqualTo(
-				"{\"body\":\"@rwinch Please sign the [Contributor License Agreement](https://status.example.com/uri)!\\n\\n[Click here](https://cla.pivotal.io/sync/pivotal) to manually synchronize the status of this Pull Request.\\n\\nSee the [FAQ](https://cla.pivotal.io/faq) for frequently asked questions.\"}");
+				"{\"body\":\"@rwinch Please sign the [Contributor License Agreement](https://status.example.com/uri)!\\n\\n[Click here](https://cla.pivotal.io/sync/pivotal) to manually synchronize the status of this Pull Request.\\n\\nSee the [FAQ](https://cla.pivotal.io/about) for frequently asked questions.\"}");
 	}
 
 	@Test
@@ -1053,7 +1053,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(false);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
-		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/about");
 		commitStatus.setAccessToken(accessToken);
 		commitStatus.setPullRequestState("closed");
 
@@ -1078,7 +1078,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(false);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
-		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/about");
 		commitStatus.setAccessToken(accessToken);
 		commitStatus.setPullRequestState("unknown");
 
@@ -1107,7 +1107,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setSuccess(false);
 		commitStatus.setUrl("https://status.example.com/uri");
 		commitStatus.setSyncUrl("https://cla.pivotal.io/sync/pivotal");
-		commitStatus.setFaqUrl("https://cla.pivotal.io/faq");
+		commitStatus.setFaqUrl("https://cla.pivotal.io/about");
 		commitStatus.setAccessToken(accessToken);
 		commitStatus.setPullRequestState("open");
 
@@ -1138,7 +1138,7 @@ public class MylynGitHubApiITests {
 				.isEqualTo("/api/v3/repos/spring-projects/spring-security/issues/comments/1");
 		assertThat(request.getHeader("Authorization")).isEqualTo("token pivotal-cla-accessToken");
 		assertThat(request.getBody().readUtf8()).contains(
-				"\"body\":\"@rwinch Please sign the [Contributor License Agreement](https://status.example.com/uri)!\\n\\n[Click here](https://cla.pivotal.io/sync/pivotal) to manually synchronize the status of this Pull Request.\\n\\nSee the [FAQ](https://cla.pivotal.io/faq) for frequently asked questions.\"");
+				"\"body\":\"@rwinch Please sign the [Contributor License Agreement](https://status.example.com/uri)!\\n\\n[Click here](https://cla.pivotal.io/sync/pivotal) to manually synchronize the status of this Pull Request.\\n\\nSee the [FAQ](https://cla.pivotal.io/about) for frequently asked questions.\"");
 	}
 
 	@Test

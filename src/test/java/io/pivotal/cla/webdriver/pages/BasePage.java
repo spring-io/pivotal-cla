@@ -39,8 +39,6 @@ public abstract class BasePage {
 
 	WebElement manage;
 
-	WebElement faq;
-
 	@FindBy(id = "admin-help")
 	WebElement adminHelp;
 
@@ -156,11 +154,6 @@ public abstract class BasePage {
 
 	public void assertManageLink(boolean displayed) {
 		assertThat(getDriver().findElements( By.id("manage") ).isEmpty()).isEqualTo(!displayed);
-	}
-
-	public FaqPage faq() {
-		faq.click();
-		return PageFactory.initElements(driver, FaqPage.class);
 	}
 
 	public AdminListClasPage manage() {

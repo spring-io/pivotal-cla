@@ -137,7 +137,7 @@ public class GitHubHooksController {
 				status.getPullRequestId());
 		status.setSyncUrl(syncUrl);
 
-		String faqUrl = UrlBuilder.createFaqUrl(request);
+		String faqUrl = UrlBuilder.createAboutUrl(request);
 		status.setFaqUrl(faqUrl);
 
 		ClaPullRequestStatusRequest pullRequestStatusRequest = new ClaPullRequestStatusRequest();

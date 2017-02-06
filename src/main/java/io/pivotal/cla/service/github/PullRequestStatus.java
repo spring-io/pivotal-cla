@@ -36,7 +36,7 @@ public class PullRequestStatus {
 	String syncUrl;
 	/**
 	 * The URL to the FAQ. For example,
-	 * https://cla.pivotal.io/faq
+	 * https://cla.pivotal.io/about
 	 */
 	String faqUrl;
 	String gitHubUsername;

@@ -120,8 +120,8 @@ public class AdminLinkClaController extends AdminClaController {
 		UrlBuilder signClaUrlBldr = UrlBuilder.fromRequest(request);
 		String signClaUrl = signClaUrlBldr.path("/sign/" + urlEncodedClaName).build();
 
-		UrlBuilder faqUrlBldr = UrlBuilder.fromRequest(request);
-		String faqUrl = faqUrlBldr.path("/faq").build();
+		UrlBuilder aboutUrlBldr = UrlBuilder.fromRequest(request);
+		String aboutUrl = aboutUrlBldr.path("/about").build();
 
 		UrlBuilder baseSyncUrlBldr = UrlBuilder.fromRequest(request);
 		String baseSyncUrl = baseSyncUrlBldr.path("/sync/" + urlEncodedClaName).build();
@@ -130,7 +130,7 @@ public class AdminLinkClaController extends AdminClaController {
 							.accessToken(user.getAccessToken())
 							.commitStatusUrl(signClaUrl)
 							.repositoryIds(updatePullRequestStatusesForm.getRepositories())
-							.faqUrl(faqUrl)
+							.faqUrl(aboutUrl)
 							.baseSyncUrl(baseSyncUrl)
 							.build();
 

@@ -26,6 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class FaqController {
 	@RequestMapping("/faq")
 	public String faq() {
-		return "faq";
+		return "about";
 	}
 }

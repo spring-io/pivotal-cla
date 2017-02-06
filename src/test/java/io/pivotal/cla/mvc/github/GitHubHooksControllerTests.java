@@ -97,7 +97,7 @@ public class GitHubHooksControllerTests extends BaseWebDriverTests {
 		assertThat(status.getPullRequestId()).isEqualTo(2);
 		assertThat(status.getSha()).isEqualTo("a6befb598a35c1c206e1bf7bbb3018f4403b9610");
 		assertThat(status.getUrl()).isEqualTo("http://localhost/sign/pivotal?repositoryId=rwinch/176_test&pullRequestId=2");
-		assertThat(status.getFaqUrl()).endsWith("/faq");
+		assertThat(status.getFaqUrl()).endsWith("/about");
 		assertThat(status.getSyncUrl()).contains("/sync/pivotal?repositoryId=rwinch/176_test&pullRequestId=2");
 		assertThat(status.isSuccess()).isFalse();
 	}

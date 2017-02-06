@@ -4,31 +4,36 @@
 </head>
 <body>
 	<div layout:fragment="content">
-		<h1>Our Contributor License Agreements</h1>
+		<h1 id="contributing">Contributing to Pivotal Open Source Projects</h1>
 		<p>
-			Pivotal uses various licenses to distribute software and documentation.
-			To accept contributions, we generally require individuals or the organizations they are working for complete and sign Contributor License Agreements (“CLA”) based on the Apache Software License 2.0 CLAs.
-			In all cases, contributors retain full rights to their contributions outside of Pivotal, while at the same time providing Pivotal the right to distribute and build upon such contributions in the Pivotal projects.
-			Our CLAs establish a few things:
+			We manage several open source projects at Pivotal, including Spring, Concourse and Greenplum Database.
+			For anything other than <a href="#obvious-fixes">obvious fixes</a>, we ask contributors to sign a Contributor License Agreement (CLA).
+			This page describes why we have a CLA, provides responses to some commonly asked questions about CLAs, and provides some instructions about how to complete the CLA process.
 		</p>
-		<ul>
-			<li>Individuals (or their organizations) grant a copyright license for their contributions to Pivotal</li>
-			<li>Individuals (or their organizations) grant a patent license for their contributions to Pivotal</li>
-			<li>The contribution is the individual’s or organization’s original creation, and the contributors remain free to do whatever they want with their contributions outside of Pivotal</li>
-			<li>Individuals (or their organizations) are not expected to provide support for their contributions.</li>
-		</ul>
+		<h2 id="why-does-pivotal-require-cla">Why Does Pivotal Require a CLA?</h2>
 		<p>
-			With CLAs, we can encourage broad participation from the community while minimizing risks to Pivotal and our end-users resulting from insufficiently-licensed contributions coming into Pivotal’s open source projects.
+			A CLA is a legal document between a contributor and an open source project steward.
+			Our CLA is based on the Apache Software Foundation’s CLA and in it, contributors state that the contributions are their original work and grant Pivotal a copyright and patent license to include their contributions in the project.
+			In return, Pivotal and the open source communities we serve are able to distribute and build upon such contributions.
+			This means that if any legal issues arise in the future about our rights to distribute the code, we can show them these forms.
+			It also ensures that the contributors cannot withdraw permission to the contributions at some point in the future. 
 		</p>
-		<h1 id="obvious-fixes">Obvious Fixes</h1>
 		<p>
+			Both individuals and large enterprises use code from our open source projects, and in our experience, they need to be sure about the origins and rights to use the code.
+			CLAs therefore encourage broad participation from the community while minimizing risks to Pivotal and our end-users resulting from insufficiently-licensed contributions coming into Pivotal’s open source projects.
+		</p>
+		<h2 id="what-rights-do-i-keep">What Rights Do I Keep In My Contributions?</h2>
+		<p>
+			In all cases, contributors retain full ownership rights to their contributions and can use them however they want.
+		</p>
+		<h2 id="obvious-fixes">Do I Always Need to Sign a CLA?</h2>
+		<p>
+			No.
 			In certain cases described below, Pivotal may accept very minor contributions without requiring a CLA.
 			This is designed for contributions that are minor enough (e.g. spelling errors, grammar mistakes, typos, formatting mistakes, etc.) to not be considered by you to be intellectual property that is independently protectable (an “Obvious Fix”).
 			The purpose of this exception is to lower the barrier for new contributors to make helpful and necessary contributions to Pivotal projects while retaining the integrity of the project and our community.
 		</p>
-		<h2>What qualifies as an Obvious Fix</h2>
 		<p>
-			An obvious fix is a pull request that does not contain creative expression.
 			We rely on your judgment to determine what is “obvious”; if you’re not sure, please ask the project owners or email <a href="mailto:cla@pivotal.io">cla@pivotal.io</a>
 			We generally consider Obvious Fixes to be changes that do not introduce any new functionality or creativity, for example:
 		</p>
@@ -55,9 +60,107 @@
 			<li>A translation, or a refactor that changes functionality</li>
 			<li>Extensive or creative comments, README/docs changes, etc.</li>
 		</ul>
-		<h2>How to submit an Obvious Fix</h2>
+		<h2 id="submit-obvious-fix">How Do I Submit an Obvious Fix?</h2>
 		<p>
-			If your contribution is an Obvious Fix, please add “Obvious Fix” to the pull request description.
+			If your contribution is an <a href="#obvious-fix">Obvious Fix</a>, please add “Obvious Fix” to the pull request description.
+		</p>
+		<h2 id="government-employee">
+			I’m a Government Employee. Aren’t All My Contributions Automatically Part of the Public Domain, and If So, How Can I Sign A CLA?
+		</h2>
+		<p>
+			Government employee work (and that of its direct contractors) is born into the public domain of the United States.
+			Section 4 of our CLA provides an exception from the usual assertion of legal entitlement to grant a license when the work is by a government employee.
+		<p>
+		<p>
+			If you are a government employee, please sign the CLA and add “public domain” to the pull request description.
+		</p>
+		<h2 id="already-signed">
+			I already signed a CLA. Do I Need to Sign Again?
+		</h2>
+		<p>
+			If you already signed a Contributor License Agreement, then your data has been imported into the new tooling in order to provide automatic integration with GitHub.
+			If your signature did not include your GitHub username, then you will need to perform a few steps to link your GitHub account to your signature.
+		</p>
+		<ol>
+			<li>
+				<a href="https://help.github.com/articles/adding-an-email-address-to-your-github-account/">Associate the email address</a>
+				used to sign the agreement to your GitHub account
+			</li>
+			<li>
+				<a href="https://help.github.com/articles/verifying-your-email-address/">Verify</a>
+				your email address
+			</li>
+			<li>
+				<a href="https://cla.pivotal.io/">Sign into the new CLA tool.</a>
+				You must sign into the tool after you have linked your email address.
+				This is necessary because, for privacy reasons, GitHub will not allow the tooling to view your email addresses without your consent.
+			</li>
+			<li>
+				You may need to log out and then log back into the CLA tool to update your email address.
+			</li>
+		</ol>
+		<p>
+			Note: If you do not want to follow these steps, you can always sign the <a th:href="@{/}">Contributor License Agreement</a> again.
+		</p>
+		<h2 id="corporate-signature">
+			I should be covered under a Corporate Signature. Do I Need to Sign Again?
+		</h2>
+		<p>
+			No.
+			A corporate signature is either associated to the domain of a verified email address or a GitHub organization.
+		</p>
+		<h3 id="corporate-signature-email">
+			How Do I Link My GitHub Account to My Company’s Email Domain?
+		</h3>
+		<p>
+			If your company signed the agreement based upon an email domain, then you will need to perform a few steps to link your GitHub account to your signature.
+			This flow is only for legacy signatures.
+		</p>
+		<ol>
+			<li>
+				<a href="https://help.github.com/articles/adding-an-email-address-to-your-github-account/">Associate the email address</a>
+				with your company's domain to your GitHub account.
+				For example, if your company is Pivotal, you would want to associate myemail@pivotal.io to your GitHub account.
+			</li>
+			<li>
+				<a href="https://help.github.com/articles/verifying-your-email-address/">Verify</a>
+				your email address
+			</li>
+			<li>
+				<a href="https://cla.pivotal.io/">Sign into the new CLA tool.</a>
+				You must sign into the tool after you have linked your email address.
+				This is necessary because, for privacy reasons, GitHub will not allow the tooling to view your email addresses without your consent.
+			</li>
+			<li>
+				You may need to log out and then log back into the CLA tool to update your email address.
+			</li>
+		</ol>
+		<h3 id="corporate-signature-github-org">
+			How Do I Link My Signature to a GitHub Organization?
+		</h3>
+		<p>
+			If your company associated the signature to a GitHub organization, then you must ensure the following is true.
+		</p>
+		<ul>
+			<li>Your GitHub account is a member of the selected organization</li>
+			<li>You have made your <a href="https://help.github.com/articles/publicizing-or-hiding-organization-membership/">membership public</a></li>
+		</ul>
+		<h2 id="pull-request-status-update">
+			My Pull Request Status Did Not Update. What Do I Do?
+		</h2>
+		<p>
+			If the status of a Pull Request did not update:
+		</p>
+		<ul>
+			<li>If the GitHub status did not update, check <a href="https://status.github.com">https://status.github.com</a>. If GitHub is having issues, the event may have not been sent to the application.</li>
+			<li>If your went directly to the tooling vs using the link provided on the Pull Request, the Pull Request will not be automatically updated. This is due to limitations in the GitHub API. You can force an update of the status using the "manually synchronize" link provided on the Pull Request.</li>
+			<li>You can force an update of the status using the "manually synchronize" link provided on the Pull Request.</li>
+		</ul>
+		<h2>
+			I Want to Sign the CLA. What Now?
+		</h2>
+		<p>
+			If you’re ready to sign the CLA, please visit the <a th:href="@{/}">Contributor License Agreement</a> to see the options for individuals and companies.
 		</p>
 	</div>
 </body>
