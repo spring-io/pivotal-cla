@@ -30,25 +30,33 @@
 		<div class="alert alert-info" role="alert">
 			If you are submitting an <a th:href="@{/about#obvious-fixes}">obvious fix</a>, then you do not need to sign the CLA.
 		</div>
-		<div class="container">
-			<div class="row">
-				<div class="col-md-6">
-					<h2>Individual Contributor License Agreement</h2>
-					<p>
-						I'm an individual contributor
-					</p>
-					<p>
-						<a id="icla-link" class="btn btn-success btn-lg" th:href="${pullRequestId == null} ? @{/sign/{claName}/icla(claName=${claName})} : @{/sign/{claName}/icla(claName=${claName},repositoryId=${repositoryId},pullRequestId=${pullRequestId})}">Sign Individual CLA</a>
-					</p>
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h2 class="panel-title">
+						Individual Contributor License Agreement
+					</h2>
 				</div>
-				<div class="col-md-6">
-					<h2>Corporate Contributor License Agreement</h2>
-					<p>
-						I'm representing a company wanting its employees to contribute
-					</p>
-					<p>
-						<a id="ccla-link" class="btn btn-success btn-lg" th:href="${pullRequestId == null} ? @{/sign/{claName}/ccla(claName=${claName})} : @{/sign/{claName}/ccla(claName=${claName},repositoryId=${repositoryId},pullRequestId=${pullRequestId})}">Sign Corporate CLA</a>
-					</p>
+				<p class="panel-body">
+					I'm an individual contributor
+				</p>
+				<div class="panel-footer">
+					<a id="icla-link" class="btn btn-success btn-lg" th:href="${pullRequestId == null} ? @{/sign/{claName}/icla(claName=${claName})} : @{/sign/{claName}/icla(claName=${claName},repositoryId=${repositoryId},pullRequestId=${pullRequestId})}">Sign Individual CLA</a>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h2 class="panel-title">
+						Corporate Contributor License Agreement
+					</h2>
+				</div>
+				<p class="panel-body">
+					I'm representing a company wanting its employees to contribute
+				</p>
+				<div class="panel-footer">
+					<a id="ccla-link" class="btn btn-success btn-lg" th:href="${pullRequestId == null} ? @{/sign/{claName}/ccla(claName=${claName})} : @{/sign/{claName}/ccla(claName=${claName},repositoryId=${repositoryId},pullRequestId=${pullRequestId})}">Sign Corporate CLA</a>
 				</div>
 			</div>
 		</div>
