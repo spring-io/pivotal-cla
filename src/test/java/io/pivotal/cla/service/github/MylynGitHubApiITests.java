@@ -550,6 +550,18 @@ public class MylynGitHubApiITests {
 				"{\"body\":\"@rwinch This Pull Request contains an obvious fix. Signing the Contributor License Agreement is not necessary.\"}");
 	}
 
+
+	@Test
+	@EnqueueRequests({
+			"getUserPivotalIssueMaster",
+			"getIssueCommentsPleaseSignAndObviousFixNotLowerCase",
+			"getStatusNone",
+			"saveStatus",
+			"createComment"})
+	public void saveObviousFixNotLowerCaseAfterPleaseSign() throws Exception {
+		saveObviousFixAfterPleaseSign();
+	}
+
 	@Test
 	@EnqueueRequests({
 		"getUserPivotalIssueMaster",

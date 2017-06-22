@@ -16,15 +16,7 @@
 package io.pivotal.cla.service.github;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -161,7 +153,7 @@ public class MylynGitHubApi implements GitHubApi {
 	 */
 	private boolean isObviousFix(PullRequestId pullRequestId, List<Comment> comments, String claUserLogin, String pullRequestBody) {
 
-		if (hasObviousFixBody(pullRequestBody)) {
+		if (hasObviousFix(pullRequestBody)) {
 			return true;
 		}
 
@@ -176,15 +168,15 @@ public class MylynGitHubApi implements GitHubApi {
 		return false;
 	}
 
-	private boolean hasObviousFixBody(String pullRequestBody) {
-		return pullRequestBody != null && pullRequestBody.contains(OBVIOUS_FIX);
+	private boolean hasObviousFix(String text) {
+		return text != null && text.toLowerCase(Locale.US).contains(OBVIOUS_FIX);
 	}
 
 	private boolean hasObviousFixComment(Collection<? extends Comment> comments, String claUserLogin) {
 
 		Optional<? extends Comment> obviousFixComment = comments.stream() //
 				.filter(comment -> comment.getUser() != null && !claUserLogin.equals(comment.getUser().getLogin())) //
-				.filter(comment -> comment.getBody().contains(OBVIOUS_FIX)) //
+				.filter(comment -> hasObviousFix(comment.getBody())) //
 				.findFirst();
 
 		return obviousFixComment.isPresent();
