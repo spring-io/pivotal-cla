@@ -66,13 +66,7 @@ public class GitHubPullRequestPage {
 	}
 
 	private void waitForText(String text) {
-		new WebDriverWait(driver, 60).until(new Predicate<WebDriver>() {
-			@Override
-			public boolean apply(WebDriver input) {
-				String body = getBodyText(input);
-				return body.contains(text);
-			}
-		});
+		new WebDriverWait(driver, 60).until(input -> getBodyText(input).contains(text));
 	}
 
 	private String getBodyText(WebDriver driver) {
