@@ -39,7 +39,7 @@ public class Login {
 	static class UserAuthentication implements Authentication {
 		private static final List<GrantedAuthority> ADMIN_ROLES = AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ADMIN");
 
-		private static final List<GrantedAuthority> CLA_AUTHOR_ROLES = AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ADMIN", "ROLE_CLA_AUTHOR");
+		private static final List<GrantedAuthority> CLA_AUTHOR_ROLES = AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ADMIN", "ROLE_CLA_AUTHOR", "ACTUATOR");
 
 		private static final List<GrantedAuthority> USER_ROLES = AuthorityUtils.createAuthorityList("ROLE_USER");
 
