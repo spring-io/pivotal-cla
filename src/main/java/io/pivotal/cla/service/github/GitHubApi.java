@@ -23,6 +23,7 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.egit.github.core.PullRequestId;
 import io.pivotal.cla.service.MigratePullRequestStatusRequest;
 import org.eclipse.egit.github.core.PullRequest;
+import org.springframework.cache.annotation.Cacheable;
 
 public interface GitHubApi {
 
@@ -42,6 +43,7 @@ public interface GitHubApi {
 
 	void save(PullRequestStatus status);
 
+	@Cacheable("github-repositories")
 	List<String> findRepositoryNamesWithAdminPermission(String accessToken);
 
 	List<String> createPullRequestHooks(CreatePullRequestHookRequest request);
