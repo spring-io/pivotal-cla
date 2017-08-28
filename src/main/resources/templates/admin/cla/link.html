@@ -3,9 +3,7 @@
 	<head>
 		<title>Link to CLA</title>
 		<!-- Docs CSS -->
-		<link th:href="@{/webjars/select2/dist/css/select2.min.css}" rel="stylesheet"/>
 		<link th:href="@{/assets/css/components.css}" rel="stylesheet"/>
-		<link th:href="@{/assets/pages/admin/cla/link.css}" rel="stylesheet"/>
 	</head>
 	<body>
 		<div layout:fragment="content">
@@ -122,10 +120,10 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 				<div class="form-group" th:classAppend="${#fields.hasErrors('repositories')}? 'has-error'">
 					<div class="pull-right"><a href="#" id="reload-repo-list" title="refresh list of repositories"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></div>
 					<label for="repositories">
-						Repositories (<code>CTRL+A</code> adds all matches)
+						Repositories
 					</label>
 					<select class="form-control" multiple="multiple" th:field="*{repositories}">
-						<option th:each="repo : *{repositories}"
+						<option th:each="repo : ${repositories}"
 										th:value="${repo}"
 										th:text="${repo}">githubOrg/repoName</option>
 					</select>
@@ -150,11 +148,6 @@ submit the <div th:remove="tag" th:utext="${signClaUrl}"></div>[Contributor Lice
 				</div>
 				<button id="submit" type="submit" class="btn btn-success">Use CLA</button>
 			</form>
-		</div>
-
-		<div layout:fragment="javascript">
-			<script th:src="@{/webjars/select2/dist/js/select2.min.js}" type="text/javascript"></script>
-			<script th:src="@{/assets/pages/admin/cla/link.js}" type="text/javascript"></script>
 		</div>
 	</body>
 </html>

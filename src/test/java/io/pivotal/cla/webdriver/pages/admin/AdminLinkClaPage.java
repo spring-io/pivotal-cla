@@ -33,7 +33,7 @@ import io.pivotal.cla.webdriver.pages.BasePage;
 public class AdminLinkClaPage extends BasePage {
 	WebElement submit;
 
-	@FindBy(className = "select2-search__field")
+	@FindBy(id = "repositories")
 	WebElement repositories;
 
 	WebElement claName;
@@ -82,10 +82,10 @@ public class AdminLinkClaPage extends BasePage {
 
 	public <T extends BasePage> T link(String repositoryName, String licenseName, Class<T> page) {
 		Select cla = new Select(claName);
+		Select repositoriesSelect = new Select(repositories);
 
-		waitForRepositories();
 		if(StringUtils.hasText(repositoryName)) {
-			repositories.sendKeys(repositoryName);
+			repositoriesSelect.selectByVisibleText(repositoryName);
 		}
 		if(StringUtils.hasText(licenseName)) {
 			cla.selectByVisibleText(licenseName);
@@ -94,15 +94,6 @@ public class AdminLinkClaPage extends BasePage {
 		return PageFactory.initElements(getDriver(), page);
 	}
 
-
-	public void waitForRepositories() {
-		new WebDriverWait(getDriver(), 60).until(new Predicate<WebDriver>() {
-			@Override
-			public boolean apply(WebDriver input) {
-				return repositories.isEnabled();
-			}
-		});
-	}
 
 	public void assertAt() {
 		assertThat(getDriver().getTitle()).endsWith("Link to CLA");

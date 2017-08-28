@@ -16,6 +16,7 @@
 package io.pivotal.cla.mvc.admin;
 
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -50,14 +51,9 @@ public class AdminLinkClaController extends AdminClaController {
 	public String linkClaForm(@AuthenticationPrincipal User user, Map<String, Object> model) throws Exception {
 		model.put("linkClaForm", new LinkClaForm());
 		model.put("licenses", findPrimaryClas());
+		model.put("repositories", gitHub.findRepositoryNamesWithAdminPermission(user.getAccessToken()));
 		model.put("accessTokensUrl", ACCESS_TOKENS_URL);
 		return "admin/cla/link";
-	}
-
-	@ResponseBody
-	@RequestMapping("/admin/cla/link/repositories.json")
-	public List<String> repositories(@AuthenticationPrincipal User user) throws Exception {
-		return gitHub.findRepositoryNamesWithAdminPermission(user.getAccessToken());
 	}
 
 	@RequestMapping(value = "/admin/cla/link", method = RequestMethod.POST)
@@ -66,6 +62,7 @@ public class AdminLinkClaController extends AdminClaController {
 		if (result.hasErrors()) {
 			model.put("licenses", findPrimaryClas());
 			model.put("accessTokensUrl", ACCESS_TOKENS_URL);
+			model.put("repositories", gitHub.findRepositoryNamesWithAdminPermission(user.getAccessToken()));
 			return "admin/cla/link";
 		}
 
