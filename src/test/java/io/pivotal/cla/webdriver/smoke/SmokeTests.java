@@ -23,6 +23,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -60,8 +61,8 @@ public class SmokeTests {
 
 		createTestRepository(linkUser);
 		forkRepositoryFor(linkUser.getGitHubUsername() + "/cla-test", signUser);
-		driverForLinkUser = new FirefoxDriver();
-		driverForSignUser = new FirefoxDriver();
+		driverForLinkUser = new HtmlUnitDriver();
+		driverForSignUser = new HtmlUnitDriver();
 	}
 
 	private static String getPasswordFor(String user) {

@@ -29,7 +29,7 @@ public class GitHubPullRequestPage {
 	}
 
 	public void assertCommentPleaseSignFor(String gitHubUsername) {
-		String text = "@" + gitHubUsername + " Please sign the Contributor License Agreement! Click here to manually synchronize the status of this Pull Request. See the FAQ for frequently asked questions.";
+		String text = "@" + gitHubUsername + " Please sign the Contributor License Agreement!";
 
 		waitForText(text);
 		assertThat(getBodyText(driver)).contains(text);
@@ -43,21 +43,21 @@ public class GitHubPullRequestPage {
 	}
 
 	public void assertBuildStatusSign() {
-		String text = "Details ci/pivotal-cla — Please sign the Contributor License Agreement!";
+		String text = "ci/pivotal-cla — Please sign the Contributor License Agreement!";
 
 		waitForText(text);
 		assertThat(getBodyText(driver)).contains(text);
 	}
 
 	public void assertBuildStatusSuccess() {
-		String text = "Details ci/pivotal-cla — Thank you for signing the Contributor License Agreement!";
+		String text = "Please sign the Contributor License Agreement!";
 
 		waitForText(text);
 		assertThat(getBodyText(driver)).contains(text);
 	}
 
 	public SignClaPage details() {
-		WebElement details = driver.findElement(By.cssSelector(".build-status-item a.build-status-details"));
+		WebElement details = driver.findElement(By.cssSelector("a.status-actions"));
 		details.click();
 
 		new GitHubAuthorizePage(driver).authorizeIfNecessary();
