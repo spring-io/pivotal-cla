@@ -15,14 +15,15 @@ import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.DataService;
 import org.eclipse.egit.github.core.service.PullRequestService;
 import org.eclipse.egit.github.core.service.RepositoryService;
-import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,9 +32,19 @@ import io.pivotal.cla.webdriver.pages.SignIclaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 import io.pivotal.cla.webdriver.pages.github.GitHubLoginPage;
 import io.pivotal.cla.webdriver.pages.github.GitHubPullRequestPage;
+import org.testcontainers.containers.BrowserWebDriverContainer;
 
 @Category(io.pivotal.cla.junit.SmokeTests.class)
 public class SmokeTests {
+	@Rule
+	public BrowserWebDriverContainer forLinkUser = new BrowserWebDriverContainer("selenium/standalone-firefox-debug:3.5.0")
+			.withDesiredCapabilities(DesiredCapabilities.firefox())
+			.withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.SKIP,null);
+
+	@Rule
+	public BrowserWebDriverContainer forSignUser = new BrowserWebDriverContainer("selenium/standalone-firefox-debug:3.5.0")
+			.withDesiredCapabilities(DesiredCapabilities.firefox())
+			.withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.SKIP,null);
 	static WebDriver driverForLinkUser;
 
 	static WebDriver driverForSignUser;
@@ -60,8 +71,6 @@ public class SmokeTests {
 
 		createTestRepository(linkUser);
 		forkRepositoryFor(linkUser.getGitHubUsername() + "/cla-test", signUser);
-		driverForLinkUser = new HtmlUnitDriver();
-		driverForSignUser = new HtmlUnitDriver();
 	}
 
 	private static String getPasswordFor(String user) {
@@ -162,14 +171,10 @@ public class SmokeTests {
 		return client;
 	}
 
-	@AfterClass
-	public static void cleanup() {
-		if(driverForLinkUser != null) {
-			driverForLinkUser.close();
-		}
-		if(driverForSignUser != null) {
-			driverForSignUser.close();
-		}
+	@Before
+	public void setupBrowsers() {
+		this.driverForLinkUser = this.forLinkUser.getWebDriver();
+		this.driverForSignUser = this.forSignUser.getWebDriver();
 	}
 
 	@Test
