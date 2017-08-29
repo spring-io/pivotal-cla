@@ -5,6 +5,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import lombok.RequiredArgsConstructor;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 @RequiredArgsConstructor
 public class GitHubAuthorizePage {
@@ -12,9 +14,16 @@ public class GitHubAuthorizePage {
 
 	public void authorizeIfNecessary() {
 		if(isAt()) {
-			WebElement authorize = driver.findElement(By.cssSelector("button[name=authorize]"));
+			By authorizeButtonSelector = By.cssSelector("button[name=authorize]");
+			WebElement authorize = driver.findElement(authorizeButtonSelector);
+			waitToBeClickable(authorizeButtonSelector);
 			authorize.click();
 		}
+	}
+
+	private void waitToBeClickable(By selector) {
+		WebDriverWait wait = new WebDriverWait(driver, 60);
+		wait.until(ExpectedConditions.elementToBeClickable(selector));
 	}
 
 	private boolean isAt() {

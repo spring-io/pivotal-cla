@@ -152,6 +152,19 @@ public abstract class BasePage {
 		}
 	}
 
+	public void waitUntilAt(Runnable assertAt) {
+		new WebDriverWait(getDriver(), 6).until(input -> at(assertAt));
+	}
+
+	private boolean at(Runnable assertAt) {
+		try {
+			assertAt.run();
+			return true;
+		} catch(AssertionError notAt) {
+			return false;
+		}
+	}
+
 	public void assertManageLink(boolean displayed) {
 		assertThat(getDriver().findElements( By.id("manage") ).isEmpty()).isEqualTo(!displayed);
 	}

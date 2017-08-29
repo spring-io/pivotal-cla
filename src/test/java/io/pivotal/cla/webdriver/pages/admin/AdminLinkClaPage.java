@@ -30,6 +30,8 @@ import com.google.common.base.Predicate;
 
 import io.pivotal.cla.webdriver.pages.BasePage;
 
+import java.util.function.Function;
+
 public class AdminLinkClaPage extends BasePage {
 	WebElement submit;
 
@@ -94,6 +96,9 @@ public class AdminLinkClaPage extends BasePage {
 		return PageFactory.initElements(getDriver(), page);
 	}
 
+	public void waitUntilAt() {
+		waitUntilAt(() -> assertAt());
+	}
 
 	public void assertAt() {
 		assertThat(getDriver().getTitle()).endsWith("Link to CLA");

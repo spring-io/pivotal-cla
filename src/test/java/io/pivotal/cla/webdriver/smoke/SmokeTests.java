@@ -186,7 +186,8 @@ public class SmokeTests {
 			.username(linkUser.getGitHubUsername())
 			.password(linkUser.getGitHubPassword())
 			.submit(AdminLinkClaPage.class);
-		link.assertAt();
+		// getting caught at the redirect page
+		link.waitUntilAt();
 
 		takeScreenShot(driverForLinkUser, "cla-link");
 
@@ -212,7 +213,7 @@ public class SmokeTests {
 		takeScreenShot(driverForSignUser, "gh-pull-request-please-sign");
 
 		SignClaPage sign = pull.details();
-		sign.assertAt();
+		sign.waitUntilAt(() ->sign.assertAt());
 
 		takeScreenShot(driverForSignUser, "cla-signclapage-please-sign");
 
