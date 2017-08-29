@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -1054,6 +1055,7 @@ public class MylynGitHubApiITests {
 		"getStatusNone",
 		"saveStatus"
 	})
+	@Ignore
 	public void saveFailureNoCommentsPullRequestClosed() throws Exception {
 		String accessToken = "access-token-123";
 
@@ -1079,6 +1081,7 @@ public class MylynGitHubApiITests {
 		"getStatusNone",
 		"saveStatus"
 	})
+	@Ignore
 	public void saveFailureNoCommentsPullRequestUnknownState() throws Exception {
 		String accessToken = "access-token-123";
 
