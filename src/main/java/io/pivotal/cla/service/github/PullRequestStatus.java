@@ -55,10 +55,6 @@ public class PullRequestStatus {
 		return Boolean.TRUE.equals(success);
 	}
 
-	public boolean shouldUpdatePullRequest() {
-		return OPEN_PULL_REQUEST_STATE.equalsIgnoreCase(pullRequestState);
-	}
-
 	/**
 	 * The URL used to instruct the user of how to resolve the commit status. For example,
 	 * https://cla.pivotal.io/sign/pivotal?repositoryId=spring-projects/spring-security&pullRequestId=10

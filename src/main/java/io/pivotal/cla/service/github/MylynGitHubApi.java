@@ -128,20 +128,18 @@ public class MylynGitHubApi implements GitHubApi {
 			return;
 		}
 
-		if(commitStatus.shouldUpdatePullRequest()) {
-			PullRequestId pullRequestId = PullRequestId.of(RepositoryId.createFromId(repoId), commitStatus.getPullRequestId());
+		PullRequestId pullRequestId = PullRequestId.of(RepositoryId.createFromId(repoId), commitStatus.getPullRequestId());
 
-			boolean hasSignedCla = commitStatus.isSuccess();
-			GitHubClient client = createClient(accessToken);
+		boolean hasSignedCla = commitStatus.isSuccess();
+		GitHubClient client = createClient(accessToken);
 
-			String claUserLogin = getGitHubClaUserLogin();
-			List<Comment> comments = getComments(pullRequestId, getIssueService());
+		String claUserLogin = getGitHubClaUserLogin();
+		List<Comment> comments = getComments(pullRequestId, getIssueService());
 
-			boolean obviousFix = isObviousFix(pullRequestId, comments, claUserLogin, commitStatus.getPullRequestBody());
+		boolean obviousFix = isObviousFix(pullRequestId, comments, claUserLogin, commitStatus.getPullRequestBody());
 
-			ContextCommitStatus status = createCommitStatusIfNecessary(pullRequestId, commitStatus, hasSignedCla, obviousFix, client);
-			createOrUpdatePullRequestComment(pullRequestId, commitStatus, hasSignedCla, obviousFix, status, comments, claUserLogin);
-		}
+		ContextCommitStatus status = createCommitStatusIfNecessary(pullRequestId, commitStatus, hasSignedCla, obviousFix, client);
+		createOrUpdatePullRequestComment(pullRequestId, commitStatus, hasSignedCla, obviousFix, status, comments, claUserLogin);
 	}
 
 	/**
