@@ -45,6 +45,12 @@ public class SmokeTests {
 	public BrowserWebDriverContainer forSignUser = new BrowserWebDriverContainer("selenium/standalone-firefox-debug:3.5.0")
 			.withDesiredCapabilities(DesiredCapabilities.firefox())
 			.withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.SKIP,null);
+
+	@Rule
+	public BrowserErrors errorsForLinkUser = new BrowserErrors("link", forLinkUser);
+	@Rule
+	public BrowserErrors errorsForSignUser = new BrowserErrors("sign", forSignUser);
+
 	static WebDriver driverForLinkUser;
 
 	static WebDriver driverForSignUser;
