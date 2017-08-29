@@ -50,7 +50,7 @@ public class GitHubPullRequestPage {
 	}
 
 	public void assertBuildStatusSuccess() {
-		String text = "Please sign the Contributor License Agreement!";
+		String text = "ci/pivotal-cla — Thank you for signing the Contributor License Agreement!";
 
 		waitForText(text);
 		assertThat(getBodyText(driver)).contains(text);
