@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorator="layouts/main">
+	<head>
+		<title>Sign CCLA</title>
+	</head>
+	<body>
+		<div class="container" layout:fragment="content">
+			<div class="pull-right hidden-print">
+				<a href="#" id="print"><i class="glyphicon glyphicon-print" title="Print"></i></a>
+			</div>
+
+			<div class="form-group">
+				<div id="corporate-cla" th:utext="${cla.corporateContent.html}" class="container">
+
+				</div>
+			</div>
+		</div>
+
+		<div layout:fragment="javascript">
+			<script th:src="@{/assets/pages/cla/ccla/sign.js}" type="text/javascript"></script>
+		</div>
+	</body>
+</html>

@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.pivotal.cla.webdriver.pages.ViewCclaPage;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -43,12 +44,23 @@ import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.service.github.PullRequestStatus;
 import io.pivotal.cla.webdriver.pages.SignCclaPage;
 import io.pivotal.cla.webdriver.pages.SignCclaPage.Form;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 
 @WithSigningUser
 public class CclaControllerTests extends BaseWebDriverTests {
 
 	@Test
+	@WithAnonymousUser
 	public void view() {
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+
+		ViewCclaPage signPage = ViewCclaPage.go(getDriver(), cla.getName());
+
+		assertThat(signPage.getCorporate()).isEqualTo(cla.getCorporateContent().getHtml());
+	}
+
+	@Test
+	public void signForm() {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 
 		SignCclaPage signPage = SignCclaPage.go(getDriver(), cla.getName());
@@ -58,7 +70,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 	}
 
 	@Test
-	public void viewSupersedingCla() {
+	public void signFormSupersedingCla() {
 		ContributorLicenseAgreement springCla = DataUtils.createSpringCla();
 		springCla.setSupersedingCla(cla);
 		when(mockClaRepository.findByNameAndPrimaryTrue(springCla.getName())).thenReturn(springCla);
@@ -71,7 +83,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 	}
 
 	@Test
-	public void viewSigned() throws Exception {
+	public void signFormSigned() throws Exception {
 		List<String> organizations = Arrays.asList(corporateSignature.getGitHubOrganization());
 		User user = WithSigningUserFactory.create();
 		when(mockGitHub.getOrganizations(user.getGitHubLogin())).thenReturn(organizations);

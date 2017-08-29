@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import io.pivotal.cla.webdriver.pages.ViewIclaPage;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -42,12 +43,23 @@ import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.service.github.PullRequestStatus;
 import io.pivotal.cla.webdriver.pages.SignIclaPage;
 import io.pivotal.cla.webdriver.pages.SignIclaPage.Form;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 
 @WithSigningUser
 public class IclaControllerTests extends BaseWebDriverTests {
 
 	@Test
+	@WithAnonymousUser
 	public void view() {
+		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+
+		ViewIclaPage signPage = ViewIclaPage.go(getDriver(), cla.getName());
+
+		assertThat(signPage.getIndividualCla()).isEqualTo(cla.getIndividualContent().getHtml());
+	}
+
+	@Test
+	public void signForm() {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 
 		SignIclaPage signPage = SignIclaPage.go(getDriver(), cla.getName());
@@ -58,7 +70,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 	}
 
 	@Test
-	public void viewSupersedingCla() {
+	public void signFormSupersedingCla() {
 		ContributorLicenseAgreement springCla = DataUtils.createSpringCla();
 		springCla.setSupersedingCla(cla);
 		when(mockClaRepository.findByNameAndPrimaryTrue(springCla.getName())).thenReturn(springCla);
@@ -71,7 +83,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 	}
 
 	@Test
-	public void viewAlreadySigned() {
+	public void signFormAlreadySigned() {
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockIndividualSignatureRepository.findSignaturesFor(any(), eq(WithSigningUserFactory.create()),eq(cla.getName()))).thenReturn(Arrays.asList(individualSignature));
 

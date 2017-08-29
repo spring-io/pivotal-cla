@@ -25,6 +25,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -65,6 +66,21 @@ public class IclaController {
 		model.put("cla", cla);
 
 		return "cla/icla/sign";
+	}
+
+
+	@RequestMapping("/view/{claName}/icla")
+	public String view(@PathVariable String claName, Map<String, Object> model) {
+		ContributorLicenseAgreement cla = clas.findByNameAndPrimaryTrue(claName);
+		if(cla == null) {
+			throw new ResourceNotFoundException();
+		}
+		if(cla.getSupersedingCla() != null) {
+			cla = cla.getSupersedingCla();
+		}
+		model.put("cla", cla);
+
+		return "cla/icla/view";
 	}
 
 	@RequestMapping(value = "/sign/{claName}/icla", method = RequestMethod.POST)

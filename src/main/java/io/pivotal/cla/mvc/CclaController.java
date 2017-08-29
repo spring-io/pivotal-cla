@@ -25,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -79,6 +81,23 @@ public class CclaController {
 		model.put("cla", cla);
 
 		return "cla/ccla/sign";
+	}
+
+	@GetMapping("/view/{claName}/ccla")
+	public String view(@PathVariable String claName,
+			Map<String, Object> model) throws Exception {
+		ContributorLicenseAgreement cla = clas.findByNameAndPrimaryTrue(claName);
+
+		if(cla == null) {
+			throw new ResourceNotFoundException();
+		}
+		if(cla.getSupersedingCla() != null) {
+			cla = cla.getSupersedingCla();
+		}
+
+		model.put("cla", cla);
+
+		return "cla/ccla/view";
 	}
 
 	@RequestMapping(value = "/sign/{claName}/ccla", method = RequestMethod.POST)

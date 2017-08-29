@@ -69,6 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 				.mvcMatchers("/login/**", "/", "/about", "/faq").permitAll()
+				.mvcMatchers("/view/**").permitAll()
 				.mvcMatchers("/webjars/**", "/assets/**").permitAll()
 				.mvcMatchers("/github/hooks/**").permitAll()
 				.mvcMatchers("/admin","/admin/cla/link/**","/admin/help/**").hasRole("ADMIN")

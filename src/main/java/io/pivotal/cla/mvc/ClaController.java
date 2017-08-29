@@ -20,6 +20,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -46,7 +47,7 @@ public class ClaController {
 			throw new ResourceNotFoundException();
 		}
 
-		boolean signed = claService.hasSigned(user, claName);
+		boolean signed = user != null && claService.hasSigned(user, claName);
 
 		model.put("repositoryId",repositoryId);
 		model.put("pullRequestId", pullRequestId);
@@ -55,5 +56,9 @@ public class ClaController {
 		return "index";
 	}
 
+	@GetMapping("/view/{claName}")
+	public String viewIndex(@ModelAttribute ClaRequest claRequest, Map<String,Object> model) throws Exception {
+		return signIndex(null, claRequest, model);
+	}
 
 }
