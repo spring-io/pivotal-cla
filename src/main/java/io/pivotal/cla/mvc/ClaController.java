@@ -15,19 +15,17 @@
  */
 package io.pivotal.cla.mvc;
 
-import java.util.Map;
-
+import io.pivotal.cla.data.ContributorLicenseAgreement;
+import io.pivotal.cla.data.User;
+import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
+import io.pivotal.cla.service.ClaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import io.pivotal.cla.data.ContributorLicenseAgreement;
-import io.pivotal.cla.data.User;
-import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
-import io.pivotal.cla.service.ClaService;
+import java.util.Map;
 
 @Controller
 public class ClaController {
@@ -36,7 +34,7 @@ public class ClaController {
 	@Autowired
 	ClaService claService;
 
-	@RequestMapping("/sign/{claName}")
+	@GetMapping("/sign/{claName}")
 	public String signIndex(@AuthenticationPrincipal User user, @ModelAttribute ClaRequest claRequest,
 			Map<String, Object> model) throws Exception {
 		String claName = claRequest.getClaName();

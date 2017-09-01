@@ -15,21 +15,21 @@
  */
 package io.pivotal.cla.mvc;
 
-import java.util.Map;
-
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.Map;
 
 @Controller
 public class HomeController {
 
-	@RequestMapping("/")
+	@GetMapping("/")
 	public String home(Map<String,Object> model) throws Exception {
 		model.put("claName", "pivotal");
 		return "index";
 	}
 
-	@RequestMapping(value="/",params="logout")
+	@GetMapping(value="/",params="logout")
 	public String logoutSuccess(Map<String,Object> model) throws Exception {
 		model.put("claName", "pivotal");
 		model.put("successMessage", "You have been signed out.");

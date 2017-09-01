@@ -15,22 +15,6 @@
  */
 package io.pivotal.cla.mvc;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.User;
@@ -40,6 +24,20 @@ import io.pivotal.cla.service.ClaPullRequestStatusRequest;
 import io.pivotal.cla.service.ClaService;
 import io.pivotal.cla.service.CorporateSignatureInfo;
 import io.pivotal.cla.service.github.GitHubApi;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class CclaController {
@@ -100,7 +98,7 @@ public class CclaController {
 		return "cla/ccla/view";
 	}
 
-	@RequestMapping(value = "/sign/{claName}/ccla", method = RequestMethod.POST)
+	@PostMapping("/sign/{claName}/ccla")
 	public String signCla(@AuthenticationPrincipal User user, @Valid SignCorporateClaForm signCorporateClaForm, BindingResult result, Map<String, Object> model, RedirectAttributes redirect) throws Exception {
 		ContributorLicenseAgreement cla = clas.findOne(signCorporateClaForm.getClaId());
 		List<String> currentUserGitHubOrganizations = gitHub.getOrganizations(user.getGitHubLogin());

@@ -15,21 +15,6 @@
  */
 package io.pivotal.cla.mvc;
 
-import java.util.Date;
-import java.util.Map;
-
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
@@ -37,6 +22,19 @@ import io.pivotal.cla.data.repository.ContributorLicenseAgreementRepository;
 import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.service.ClaPullRequestStatusRequest;
 import io.pivotal.cla.service.ClaService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
+import java.util.Date;
+import java.util.Map;
 
 @Controller
 public class IclaController {
@@ -47,7 +45,7 @@ public class IclaController {
 	@Autowired
 	ClaService claService;
 
-	@RequestMapping("/sign/{claName}/icla")
+	@GetMapping("/sign/{claName}/icla")
 	public String claForm(@AuthenticationPrincipal User user, @ModelAttribute SignClaForm signClaForm,
 			Map<String, Object> model) {
 		String claName = signClaForm.getClaName();
@@ -69,7 +67,7 @@ public class IclaController {
 	}
 
 
-	@RequestMapping("/view/{claName}/icla")
+	@GetMapping("/view/{claName}/icla")
 	public String view(@PathVariable String claName, Map<String, Object> model) {
 		ContributorLicenseAgreement cla = clas.findByNameAndPrimaryTrue(claName);
 		if(cla == null) {
@@ -83,7 +81,7 @@ public class IclaController {
 		return "cla/icla/view";
 	}
 
-	@RequestMapping(value = "/sign/{claName}/icla", method = RequestMethod.POST)
+	@PostMapping("/sign/{claName}/icla")
 	public String signCla(@AuthenticationPrincipal User user, @Valid SignClaForm signClaForm, BindingResult result, Map<String, Object> model, RedirectAttributes redirect) throws Exception {
 		String claName = signClaForm.getClaName();
 		Integer pullRequestId = signClaForm.getPullRequestId();

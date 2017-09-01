@@ -16,7 +16,7 @@
 package io.pivotal.cla.mvc;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * @author Rob Winch
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class AboutController {
-	@RequestMapping("/about")
+	@GetMapping("/about")
 	public String about() {
 		return "about";
 	}

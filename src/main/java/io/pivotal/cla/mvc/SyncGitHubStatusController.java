@@ -1,24 +1,23 @@
 package io.pivotal.cla.mvc;
 
-import java.util.Optional;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.data.repository.UserRepository;
 import io.pivotal.cla.service.ClaPullRequestStatusRequest;
 import io.pivotal.cla.service.ClaService;
 import io.pivotal.cla.service.github.GitHubApi;
 import org.eclipse.egit.github.core.PullRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Optional;
+import java.util.Set;
 
 @Controller
 public class SyncGitHubStatusController {
@@ -29,12 +28,12 @@ public class SyncGitHubStatusController {
 	@Autowired
 	UserRepository users;
 
-	@RequestMapping(value = "/sync/{claName}", method = RequestMethod.GET)
+	@GetMapping("/sync/{claName}")
 	public String syncForm(@ModelAttribute ClaRequest claRequest) throws Exception {
 		return "sync/form";
 	}
 
-	@RequestMapping(value = "/sync/{claName}", method = RequestMethod.POST)
+	@PostMapping("/sync/{claName}")
 	public String sync(@AuthenticationPrincipal User currentUser, @ModelAttribute ClaRequest claRequest, RedirectAttributes redirect) throws Exception {
 
 		Assert.hasText(claRequest.getRepositoryId(), "RepositoryId must not be empty");

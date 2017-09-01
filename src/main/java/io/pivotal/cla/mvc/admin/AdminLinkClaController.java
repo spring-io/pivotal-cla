@@ -15,29 +15,27 @@
  */
 package io.pivotal.cla.mvc.admin;
 
-import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.service.MigratePullRequestStatusRequest;
 import io.pivotal.cla.service.github.ContributingUrlsResponse;
 import io.pivotal.cla.service.github.CreatePullRequestHookRequest;
+import io.pivotal.cla.service.github.GitHubApi;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rob Winch
@@ -47,7 +45,7 @@ import io.pivotal.cla.service.github.CreatePullRequestHookRequest;
 public class AdminLinkClaController extends AdminClaController {
 	private static final String ACCESS_TOKENS_URL = "https://github.com/settings/applications";
 
-	@RequestMapping("/admin/cla/link")
+	@GetMapping("/admin/cla/link")
 	public String linkClaForm(@AuthenticationPrincipal User user, Map<String, Object> model) throws Exception {
 		model.put("linkClaForm", new LinkClaForm());
 		model.put("licenses", findPrimaryClas());
@@ -56,7 +54,7 @@ public class AdminLinkClaController extends AdminClaController {
 		return "admin/cla/link";
 	}
 
-	@RequestMapping(value = "/admin/cla/link", method = RequestMethod.POST)
+	@PostMapping("/admin/cla/link")
 	public String linkCla(@AuthenticationPrincipal User user, HttpServletRequest request, Map<String, Object> model, @Valid LinkClaForm linkClaForm,
 			BindingResult result, RedirectAttributes attrs) throws Exception {
 		if (result.hasErrors()) {
@@ -108,7 +106,7 @@ public class AdminLinkClaController extends AdminClaController {
 		return "redirect:/admin/cla/link";
 	}
 
-	@RequestMapping(value = "/admin/cla/link/migrate", method = RequestMethod.POST)
+	@PostMapping("/admin/cla/link/migrate")
 	public String updatePullRequestStatuses(@AuthenticationPrincipal User user, @ModelAttribute UpdatePullRequestStatusesForm updatePullRequestStatusesForm, HttpServletRequest request) throws Exception {
 		String claName = updatePullRequestStatusesForm.getClaName();
 		String urlEncodedClaName = URLEncoder.encode(claName, "UTF-8");

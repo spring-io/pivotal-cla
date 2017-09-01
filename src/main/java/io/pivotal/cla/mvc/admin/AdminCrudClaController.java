@@ -15,22 +15,21 @@
  */
 package io.pivotal.cla.mvc.admin;
 
-import java.util.Map;
-
-import javax.validation.Valid;
-
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.MarkdownContent;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.mvc.ResourceNotFoundException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.validation.Valid;
+import java.util.Map;
 
 /**
  * @author Rob Winch
@@ -40,18 +39,18 @@ import io.pivotal.cla.mvc.ResourceNotFoundException;
 @PreAuthorize("hasRole('CLA_AUTHOR')")
 public class AdminCrudClaController extends AdminClaController {
 
-	@RequestMapping("/admin/cla/")
+	@GetMapping("/admin/cla/")
 	public String listClas(Map<String, Object> model) throws Exception {
 		model.put("clas", findAllClas());
 		return "admin/cla/index";
 	}
 
-	@RequestMapping("/admin/cla/create")
+	@GetMapping("/admin/cla/create")
 	public String createClaForm(Map<String, Object> model) throws Exception {
 		return claForm(new ClaForm(), model);
 	}
 
-	@RequestMapping("/admin/cla/{claId}/edit")
+	@GetMapping("/admin/cla/{claId}/edit")
 	public String editClaForm(@PathVariable long claId, Map<String, Object> model) throws Exception {
 		ContributorLicenseAgreement cla = claRepo.findOne(claId);
 		return claForm(cla, model);
@@ -67,7 +66,7 @@ public class AdminCrudClaController extends AdminClaController {
 		return "admin/cla/form";
 	}
 
-	@RequestMapping(value = "/admin/cla", method = RequestMethod.POST)
+	@PostMapping("/admin/cla")
 	public String saveCla(@AuthenticationPrincipal User user, @Valid ClaForm claForm, BindingResult result, Map<String, Object> model)
 			throws Exception {
 		boolean primary = claForm.isPrimary();
@@ -111,7 +110,7 @@ public class AdminCrudClaController extends AdminClaController {
 		return "redirect:/admin/cla/?success";
 	}
 
-	@RequestMapping(value = "/admin/cla/{claId}", method = RequestMethod.DELETE)
+	@DeleteMapping("/admin/cla/{claId}")
 	public String delete(@AuthenticationPrincipal User user, @PathVariable long claId) {
 		claRepo.delete(claId);
 		return "redirect:/admin/cla/?success";

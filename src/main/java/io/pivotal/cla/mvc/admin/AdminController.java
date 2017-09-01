@@ -17,7 +17,7 @@ package io.pivotal.cla.mvc.admin;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * @author Rob Winch
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
-	@RequestMapping("/admin")
+	@GetMapping("/admin")
 	public String admin() {
 		return "redirect:/admin/cla/link";
 	}
