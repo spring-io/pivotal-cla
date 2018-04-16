@@ -53,6 +53,6 @@ public class AdminListClaTests extends BaseWebDriverTests {
 		AdminListClasPage deletePage = row.delete();
 		deletePage.assertAt();
 
-		verify(mockClaRepository).delete(cla.getId());
+		verify(mockClaRepository).deleteById(cla.getId());
 	}
 }

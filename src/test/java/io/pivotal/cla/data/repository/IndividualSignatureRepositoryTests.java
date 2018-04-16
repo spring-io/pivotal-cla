@@ -15,12 +15,13 @@
  */
 package io.pivotal.cla.data.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Collections;
-
-import javax.transaction.Transactional;
-
+import io.pivotal.cla.data.ContributorLicenseAgreement;
+import io.pivotal.cla.data.DataUtils;
+import io.pivotal.cla.data.IndividualSignature;
+import io.pivotal.cla.data.User;
+import io.pivotal.cla.junit.JpaTests;
+import io.pivotal.cla.service.ClaService;
+import io.pivotal.cla.test.context.SystemDataActiveProfiles;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -31,13 +32,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import io.pivotal.cla.data.ContributorLicenseAgreement;
-import io.pivotal.cla.data.DataUtils;
-import io.pivotal.cla.data.IndividualSignature;
-import io.pivotal.cla.data.User;
-import io.pivotal.cla.junit.JpaTests;
-import io.pivotal.cla.service.ClaService;
-import io.pivotal.cla.test.context.SystemDataActiveProfiles;
+import java.util.Collections;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Rob Winch
@@ -46,7 +43,6 @@ import io.pivotal.cla.test.context.SystemDataActiveProfiles;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @TestPropertySource(locations="/application-test.properties")
-@Transactional
 @SystemDataActiveProfiles
 @Category(JpaTests.class)
 public class IndividualSignatureRepositoryTests {

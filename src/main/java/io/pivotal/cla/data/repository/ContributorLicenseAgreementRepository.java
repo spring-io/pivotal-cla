@@ -24,6 +24,10 @@ import io.pivotal.cla.data.ContributorLicenseAgreement;
 public interface ContributorLicenseAgreementRepository
 		extends PagingAndSortingRepository<ContributorLicenseAgreement, Long> {
 
+	default ContributorLicenseAgreement findOne(Long id) {
+		return findById(id).orElse(null);
+	}
+
 	ContributorLicenseAgreement findByNameAndPrimaryTrue(String name);
 
 	List<ContributorLicenseAgreement> findByPrimaryTrue();

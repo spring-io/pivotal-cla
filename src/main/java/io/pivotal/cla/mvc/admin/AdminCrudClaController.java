@@ -112,7 +112,7 @@ public class AdminCrudClaController extends AdminClaController {
 
 	@DeleteMapping("/admin/cla/{claId}")
 	public String delete(@AuthenticationPrincipal User user, @PathVariable long claId) {
-		claRepo.delete(claId);
+		claRepo.deleteById(claId);
 		return "redirect:/admin/cla/?success";
 	}
 }

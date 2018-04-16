@@ -154,7 +154,7 @@ public class AuthenticationTests extends BaseWebDriverTests {
 		when(mockGitHub.getCurrentUser(any(CurrentUserRequest.class))).thenAnswer(new Answer<User>() {
 			@Override
 			public User answer(InvocationOnMock invocation) throws Throwable {
-				CurrentUserRequest request = invocation.getArgumentAt(0, CurrentUserRequest.class);
+				CurrentUserRequest request = invocation.getArgument(0);
 				User currentUser = WithAdminUserFactory.create();
 				currentUser.setAdmin(request.isRequestAdminAccess());
 				return currentUser;

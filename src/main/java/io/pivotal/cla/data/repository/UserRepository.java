@@ -15,10 +15,12 @@
  */
 package io.pivotal.cla.data.repository;
 
-import org.springframework.data.repository.CrudRepository;
-
 import io.pivotal.cla.data.User;
+import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<User, String> {
 
+	default User findOne(String id) {
+		return findById(id).orElse(null);
+	}
 }

@@ -21,4 +21,7 @@ import io.pivotal.cla.data.AccessToken;
 
 public interface AccessTokenRepository extends CrudRepository<AccessToken, String> {
 
+	default AccessToken findOne(String id) {
+		return findById(id).orElse(null);
+	}
 }

@@ -15,75 +15,54 @@
  */
 package io.pivotal.cla.config;
 
-import javax.sql.DataSource;
-
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.cloud.Cloud;
 import org.springframework.cloud.CloudFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.util.Assert;
+
+import javax.sql.DataSource;
 
 /**
  * @author Mark Paluch
+ * @author Rob Winch
  */
-public abstract class DatabaseConfig {
-
-	@Bean
-	public abstract DataSource dataSource();
-
-	protected void configureDataSource(org.apache.tomcat.jdbc.pool.DataSource dataSource) {
-		dataSource.setMaxActive(20);
-		dataSource.setMaxIdle(8);
-		dataSource.setMinIdle(8);
-		dataSource.setTestOnBorrow(true);
-		dataSource.setTestOnReturn(false);
-	}
-}
 
 @Configuration
 @Profile(GitHubClaProfiles.LOCAL)
-class LocalDatabaseConfig extends DatabaseConfig {
+class LocalDatabaseConfig {
 
 	@Bean
 	public DataSource dataSource() {
-		org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
-
+		HikariDataSource dataSource = new HikariDataSource();
 		dataSource.setDriverClassName("org.h2.Driver");
-		dataSource.setUrl("jdbc:h2:mem:pivotalcla;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
+		dataSource.setJdbcUrl("jdbc:h2:mem:pivotalcla;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
 		dataSource.setUsername("sa");
 		dataSource.setPassword("");
-		dataSource.setValidationQuery("SELECT 1");
-
-		configureDataSource(dataSource);
-
 		return dataSource;
 	}
 }
 
 @Configuration
 @Profile(GitHubClaProfiles.LOCAL_MYSQL)
-class LocalMysqlDatabaseConfig extends DatabaseConfig {
+class LocalMysqlDatabaseConfig {
 
 	@Bean
 	public DataSource dataSource() {
-		org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
+		HikariDataSource dataSource = new HikariDataSource();
 
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-		dataSource.setUrl("jdbc:mysql://localhost:3306/pivotalcla");
+		dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/pivotalcla");
 		dataSource.setUsername("spring");
 		dataSource.setPassword("password");
-		dataSource.setValidationQuery("SELECT 1");
-
-		configureDataSource(dataSource);
-
 		return dataSource;
 	}
 }
 
 @Configuration
 @Profile(GitHubClaProfiles.CLOUDFOUNDRY)
-class CloudFoundryDatabaseConfig extends DatabaseConfig {
+class CloudFoundryDatabaseConfig {
 
 	@Bean
 	public Cloud cloud() {
@@ -92,13 +71,6 @@ class CloudFoundryDatabaseConfig extends DatabaseConfig {
 
 	@Bean
 	public DataSource dataSource() {
-
-		DataSource service = cloud().getSingletonServiceConnector(DataSource.class, null);
-		Assert.isInstanceOf(org.apache.tomcat.jdbc.pool.DataSource.class, service);
-		org.apache.tomcat.jdbc.pool.DataSource dataSource = (org.apache.tomcat.jdbc.pool.DataSource) service;
-
-		dataSource.setValidationQuery("/* PING */ SELECT 1");
-		configureDataSource(dataSource);
-		return dataSource;
+		return cloud().getSingletonServiceConnector(DataSource.class, null);
 	}
 }

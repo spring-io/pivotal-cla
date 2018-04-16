@@ -260,7 +260,7 @@ public class GitHubHooksControllerTests extends BaseWebDriverTests {
 		when(mockTokenRepo.findOne("rwinch/176_test"))
 			.thenReturn(new AccessToken("rwinch/176_test", "mock_access_token_value"));
 		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("organization"));
-		when(mockCorporateSignatureRepository.findSignature(anyString(), anySet(), anyCollectionOf(String.class))).thenReturn(corporateSignature);
+		when(mockCorporateSignatureRepository.findSignature(anyString(), any(), anyCollection())).thenReturn(corporateSignature);
 
 		mockMvc.perform(hookRequest().header("X-GitHub-Event", GithubEvents.PULL_REQUEST).content(getPayload("pull_request.json")))
 			.andExpect(status().isOk());
