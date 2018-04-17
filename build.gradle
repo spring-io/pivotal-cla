@@ -41,9 +41,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-devtools')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.boot:spring-boot-starter-data-redis') {
-		exclude module: 'jedis'
-	}
+	compile('org.springframework.boot:spring-boot-starter-data-redis')
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect')
 	compile('org.springframework.boot:spring-boot-starter-security')
@@ -61,7 +59,6 @@ dependencies {
 	compile('org.projectlombok:lombok:1.16.8')
 	compile('org.flywaydb:flyway-core:4.0')
 	compile('mysql:mysql-connector-java:5.1.38')
-	compile('biz.paluch.redis:lettuce:4.3.3.Final')
 	testCompile('org.springframework.boot:spring-boot-configuration-processor')
 	testCompile('org.springframework.boot:spring-boot-devtools')
 	testCompile('org.springframework.security:spring-security-test')
