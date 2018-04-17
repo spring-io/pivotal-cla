@@ -40,11 +40,6 @@ public class SessionConfig {
 		CloudFactory cloudFactory = new CloudFactory();
 		Cloud cloud = cloudFactory.getCloud();
 		RedisConnectionFactory connectionFactory = cloud.getSingletonServiceConnector(RedisConnectionFactory.class, null);
-
-		if(connectionFactory instanceof LettuceConnectionFactory){
-			((LettuceConnectionFactory) connectionFactory).setShutdownTimeout(0);
-		}
-
 		return connectionFactory;
 	}
 
