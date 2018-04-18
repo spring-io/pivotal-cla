@@ -38,7 +38,7 @@ after_success:
       ./ci/scripts/cf-push.sh pivotal-cla-production $CLIENT_ID $CLIENT_SECRET $TOKEN_SECRET $TRAVIS_BUILD_NUMBER-$TRAVIS_COMMIT
     fi
 
-after_failure: cat $HOME/build/pivotalsoftware/pivotal-cla/build/reports/*/classes/*.html
+after_failure: cat $PWD/build/reports/tests/*/classes/*.html
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
