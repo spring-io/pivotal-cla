@@ -26,6 +26,7 @@ script:
   - |
     if [[ "${TRAVIS_PULL_REQUEST}" = "false" && $TRAVIS_BRANCH == 'master' && $TRAVIS_SECURE_ENV_VARS == 'true' ]] ; then
       ./ci/scripts/install-cf.sh
+      export PATH=$PATH:$PWD
       cf login -a $CF_ENDPOINT -o $CF_ORGANIZATION -s $CF_SPACE -u $CF_USERNAME -p $CF_PASSWORD
       cf delete pivotal-cla-staging -f
       cf delete-service pivotal-cla-mysql-staging -f
