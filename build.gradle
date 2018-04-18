@@ -17,8 +17,6 @@ apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply from: "gradle/test.gradle"
-apply from: "gradle/workaround.gradle"
-apply from: "gradle/deploy.gradle"
 
 version = '0.0.1-SNAPSHOT'
 
