@@ -11,11 +11,6 @@ jdk:
 os:
   - linux
 
-env:
-  - CF_ENDPOINT='api.run.pivotal.io'
-  - CF_ORGANIZATION='pivotal-cla'
-  - CF_SPACE='production'
-
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
@@ -24,6 +19,9 @@ before_script:
   - mysql -uroot -e "grant all on pivotalcla.* to 'spring'";
 
 script:
+  - CF_ENDPOINT='api.run.pivotal.io'
+  - CF_ORGANIZATION='pivotal-cla'
+  - CF_SPACE='production'
   - ./gradlew check -x smokeTest
   - |
     if [[ "${TRAVIS_PULL_REQUEST}" = "false" && $TRAVIS_BRANCH == 'master' && $TRAVIS_SECURE_ENV_VARS == 'true' ]] ; then
