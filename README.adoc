@@ -78,7 +78,7 @@ If you are running, the default URL is at http://localhost:8080/
 
 == Cloud Foundry
 
-Deploying the application to Cloud Foundry can be performed as part of the build using the http://docs.run.pivotal.io/buildpacks/java/build-tool-int.html#gradle[Cloud Foundry Gradle plugin].
+Deploying the application to Cloud Foundry can be performed using the https://docs.cloudfoundry.org/cf-cli/[Cloud Foundry CLI].
 It's set up for TravisCI and manual deployment mode.
 
 === Required Properties
@@ -92,17 +92,14 @@ Deployment scripts for `pivotal-cla` require a set of properties to be deployed.
 * `security.oauth2.pivotal-cla.tokenSecret`: A Personal Access Token with public_repo scope
 * For manual deployment only: `space`: Name of the space
 
-=== Variants (aka. Blue/Green-Deployment)
+=== Zero-downtime Deploys
 
-Production and Staging have blue/green deployment set up. That's done by setting the `variants` property of the http://docs.run.pivotal.io/buildpacks/java/build-tool-int.html#gradle[Cloud Foundry Gradle plugin].
-Setting `variants` causes `cfDeploy` to check which variant is active and deploy to the inactive variant. The deployment
-task switches blue/green instances using `cfSwapDeployed` once the application is deployed and started.
-
-To recover from a failed swapping or deployment, it's required to unmap application routes and re-trigger deployment.
+Deployment is done with zero-downtime using a strategy similar to the https://github.com/contraband/autopilot[autopiolot plugin].
+The application is deployed to multiple application names and if successful, the old application name is removed.
 
 === TravisCI
 
-TravisCI builds for the `master` branch get deployed to production. Builds for branches starting with `staging-` get deployed to the staging space.
+TravisCI builds for the `master` branch get deployed to production.
 The build is set up to provide deployment properties as environment variables:
 
 * `CF_USERNAME`
@@ -111,26 +108,27 @@ The build is set up to provide deployment properties as environment variables:
 * `CLIENT_SECRET`
 * `TOKEN_SECRET`
 
-=== Manual Deployment with Gradle
+=== Manual Deployment with Cloud Foundry CLI
 
-Manual deployment with Gradle can be performed by invoking Gradle directly from the command line:
+Manual deployment with https://docs.cloudfoundry.org/cf-cli/[Cloud Foundry CLI] can be done after https://docs.cloudfoundry.org/cf-cli/use-cli-plugins.html#plugin-install[installing it].
 
-[source,bash]
-----
-$ ./gradlew assemble deploy -Pspace=<space>
-----
-
-The manual deployment with Gradle defaults to pivotal as organization and requires `space` to be provided.
-It activates the `cloudfoundry` profile which requires a MySQL database and a Redis instance.
-
-=== Manual Deployment with `cf push`
-
-You can deploy `pivotal-cla` using `cf push`. This mode is isolated from any organization and space preferences.
+First log into Cloud Foundry.
+For example:
 
 [source,bash]
 ----
-$ cf push -p build/libs/pivotal-cla-<version>.jar
+$ cf login -a api.run.pivotal.io -o pivotal-cla -s production -u $CF_USERNAME -p $CF_PASSWORD
 ----
+
+Pushing to Cloud Foundry activates the `cloudfoundry` profile which requires a MySQL database and a Redis instance.
+You can perform a zero-downtime deploy to Cloud Foundry using the included cf-push.sh script.
+For example:
+
+[source,bash]
+----
+$ ./ci/scripts/cf-push.sh pivotal-cla-production $CLIENT_ID $CLIENT_SECRET $TOKEN_SECRET $TRAVIS_BUILD_NUMBER-$TRAVIS_COMMIT
+----
+
 
 == Profiles
 
