@@ -55,7 +55,7 @@ security.oauth2.pivotal-cla.tokenSecret=A Personal Access Token with public_repo
 == Setup ngrok
 
 If you are needing to test receiving GitHub events, you will probably want to setup https://ngrok.com/#download[ngrok].
-If there is no need to test reciving the GitHub events from GitHub, then you can skip this step.
+If there is no need to test receiving the GitHub events from GitHub, then you can skip this step.
 
 = Running the Application
 
@@ -99,7 +99,7 @@ The application is deployed to multiple application names and if successful, the
 
 === TravisCI
 
-TravisCI builds for the `master` branch get deployed to production.
+TravisCI builds the `master` branch and deploys to production.
 The build is set up to provide deployment properties as environment variables:
 
 * `CF_USERNAME`
@@ -134,6 +134,6 @@ $ ./ci/scripts/cf-push.sh pivotal-cla-production $CLIENT_ID $CLIENT_SECRET $TOKE
 
 `pivotal-cla` uses two profiles to distinguish between running modes:
 
-* `local` (enabled by default): Use a H2 in-memory database
-* `cloudfoundry`: Use a MySQL database, Spring Session and Spring Data Redis. All connectors are obtained using Spring Cloud.
+* `local` (enabled by default): Uses a H2 in-memory database
+* `cloudfoundry`: Uses a MySQL database, Spring Session and Spring Data Redis. All connectors are obtained using Spring Cloud.
 
