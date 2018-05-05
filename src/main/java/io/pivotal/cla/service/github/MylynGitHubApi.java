@@ -390,7 +390,7 @@ public class MylynGitHubApi implements GitHubApi {
 		org.eclipse.egit.github.core.User currentGitHubUser = getCurrentGitHubUser(accessToken);
 
 		User user = new User();
-		user.setName(currentGitHubUser.getName());
+		user.setFullName(currentGitHubUser.getName());
 		user.setAccessToken(accessToken);
 		user.setAvatarUrl(currentGitHubUser.getAvatarUrl());
 		user.setEmails(new TreeSet<>(verifiedEmails));

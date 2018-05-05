@@ -48,6 +48,7 @@ dependencies {
 	compile('org.springframework.cloud:spring-cloud-spring-service-connector')
  	compile('org.springframework.cloud:spring-cloud-cloudfoundry-connector')
 	compile('org.springframework.session:spring-session-data-redis')
+	compile('org.springframework.security:spring-security-oauth2-client')
 	compile('org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5')
 	compile('org.webjars:webjars-locator-core')
 	compile('org.webjars:bootstrap:3.3.6')

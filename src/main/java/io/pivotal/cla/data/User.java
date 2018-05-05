@@ -40,7 +40,8 @@ public class User implements Serializable {
 	@Column(name = "github_login")
 	String gitHubLogin;
 
-	String name;
+	@Column(name = "name")
+	String fullName;
 
 	String accessToken;
 
