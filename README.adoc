@@ -52,6 +52,34 @@ security.oauth2.main.clientSecret=Value from Client Secret
 security.oauth2.pivotal-cla.tokenSecret=A Personal Access Token with public_repo scope
 ----
 
+== Configure properties for OAuth 2.0 Login
+
+This application uses the https://docs.spring.io/spring-security/site/docs/5.0.0.RELEASE/reference/htmlsingle/#jc-oauth2login[OAuth 2.0 Login] feature in Spring Security 5.
+
+Modify *application-local.properties* and append the following properties:
+
+.src/main/resources/application-local.properties
+[source]
+----
+security.oauth2.main.clientId=Value from Client ID
+security.oauth2.main.clientSecret=Value from Client Secret
+security.oauth2.pivotal-cla.tokenSecret=A Personal Access Token with public_repo scope
+
+spring.security.oauth2.client.registration.cla-user.provider=github
+spring.security.oauth2.client.registration.cla-user.clientId=${security.oauth2.main.clientId}
+spring.security.oauth2.client.registration.cla-user.clientSecret=${security.oauth2.main.clientSecret}
+spring.security.oauth2.client.registration.cla-user.redirectUriTemplate={baseUrl}/login/oauth2/github
+spring.security.oauth2.client.registration.cla-user.scope=user:email
+spring.security.oauth2.client.registration.cla-user.clientName=GitHub
+
+spring.security.oauth2.client.registration.cla-admin.provider=github
+spring.security.oauth2.client.registration.cla-admin.clientId=${security.oauth2.main.clientId}
+spring.security.oauth2.client.registration.cla-admin.clientSecret=${security.oauth2.main.clientSecret}
+spring.security.oauth2.client.registration.cla-admin.redirectUriTemplate={baseUrl}/login/oauth2/github
+spring.security.oauth2.client.registration.cla-admin.scope=user:email, repo:status, admin:repo_hook, admin:org_hook, read:org
+spring.security.oauth2.client.registration.cla-admin.clientName=GitHub Admin
+----
+
 == Setup ngrok
 
 If you are needing to test receiving GitHub events, you will probably want to setup https://ngrok.com/#download[ngrok].
