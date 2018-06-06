@@ -36,18 +36,13 @@ import org.eclipse.egit.github.core.service.PullRequestService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.pivotal.cla.config.ClaOAuthConfig;
-import io.pivotal.cla.config.OAuthClientCredentials;
-import io.pivotal.cla.data.User;
 import io.pivotal.cla.egit.github.core.ContextCommitStatus;
 import io.pivotal.cla.egit.github.core.Email;
 import io.pivotal.cla.egit.github.core.EventsRepositoryHook;
@@ -59,7 +54,6 @@ import io.pivotal.cla.egit.github.core.service.EmailService;
 import io.pivotal.cla.egit.github.core.service.WithPermissionsRepositoryService;
 import io.pivotal.cla.mvc.util.UrlBuilder;
 import io.pivotal.cla.service.MigratePullRequestStatusRequest;
-import lombok.Data;
 import lombok.SneakyThrows;
 
 /**
@@ -69,7 +63,6 @@ import lombok.SneakyThrows;
 @Component
 public class MylynGitHubApi implements GitHubApi {
 
-	private static final String AUTHORIZE_URI = "login/oauth/access_token";
 	public final static String CONTRIBUTING_FILE = "CONTRIBUTING";
 	public final static String ADMIN_MAIL_SUFFIX = "@pivotal.io";
 	public final static Pattern PULL_REQUEST_CALLBACK_PATTERN = Pattern.compile(".*" + UrlBuilder.pullRequestHookCallbackPath("") + "([a-zA-Z0-9\\-\\s\\%\\+]*)(\\?.*)?");
@@ -85,14 +78,12 @@ public class MylynGitHubApi implements GitHubApi {
 	public final static String FREQUENTLY_ASKED_QUESTIONS = "frequently asked questions";
 
 	final ClaOAuthConfig oauthConfig;
-	final String authorizeUrl;
 	final RestTemplate rest = new RestTemplate();
 
 	@Autowired
 	public MylynGitHubApi(ClaOAuthConfig oauthConfig) {
 		super();
 		this.oauthConfig = oauthConfig;
-		this.authorizeUrl = oauthConfig.getGitHubBaseUrl() + AUTHORIZE_URI;
 	}
 
 	@Override
@@ -380,51 +371,10 @@ public class MylynGitHubApi implements GitHubApi {
 		return service.getComments(pullRequestId.getRepositoryId(), pullRequestId.getId());
 	}
 
-	public User getCurrentUser(CurrentUserRequest request) {
-		AccessTokenRequest tokenRequest = new AccessTokenRequest();
-		tokenRequest.setCredentials(oauthConfig.getMain());
-		tokenRequest.setOauthParams(request.getOauthParams());
-		String accessToken = getToken(tokenRequest);
-
-		Set<String> verifiedEmails = getVerifiedEmails(accessToken);
-		org.eclipse.egit.github.core.User currentGitHubUser = getCurrentGitHubUser(accessToken);
-
-		User user = new User();
-		user.setFullName(currentGitHubUser.getName());
-		user.setAccessToken(accessToken);
-		user.setAvatarUrl(currentGitHubUser.getAvatarUrl());
-		user.setEmails(new TreeSet<>(verifiedEmails));
-		user.setGitHubLogin(currentGitHubUser.getLogin());
-		user.setAdminAccessRequested(request.isRequestAdminAccess());
-		boolean isAdmin = request.isRequestAdminAccess() && hasAdminEmail(user);
-		user.setAdmin(isAdmin);
-		if(isAdmin) {
-			boolean isClaAuthor = isAuthor(user.getGitHubLogin(), accessToken);
-			user.setClaAuthor(isClaAuthor);
-		}
-		return user;
-	}
-
 	public Set<String> getVerifiedEmails(String accessToken) {
 		EmailService emailService = EmailService.forOAuth(accessToken, oauthConfig);
 		return emailService.getEmails().stream().filter(e -> e.isVerified())
 				.map(Email::getEmail).collect(Collectors.toSet());
-	}
-
-	private String getToken(AccessTokenRequest request) {
-		OAuthAccessTokenParams oauthParams = request.getOauthParams();
-		Map<String, String> params = new HashMap<String, String>();
-		OAuthClientCredentials credentials = request.getCredentials();
-
-		params.put("client_id", credentials.getClientId());
-		params.put("client_secret", credentials.getClientSecret());
-		params.put("code", oauthParams.getCode());
-		params.put("state", oauthParams.getState());
-		params.put("redirect_url", oauthParams.getCallbackUrl());
-
-		ResponseEntity<AccessTokenResponse> token = rest.postForEntity(this.authorizeUrl, params, AccessTokenResponse.class);
-
-		return token.getBody().getAccessToken();
 	}
 
 	@SneakyThrows
@@ -441,22 +391,6 @@ public class MylynGitHubApi implements GitHubApi {
 		OrganizationService orgs = new OrganizationService(createClient(oauthConfig.getPivotalClaAccessToken()));
 		List<org.eclipse.egit.github.core.User> organizations = orgs.getOrganizations(username);
 		return organizations.stream().map(o -> o.getLogin()).sorted(String.CASE_INSENSITIVE_ORDER).collect(Collectors.toList());
-	}
-
-	private boolean hasAdminEmail(User user) {
-		return user.getEmails().stream().anyMatch(e -> e.endsWith(ADMIN_MAIL_SUFFIX));
-	}
-
-	private boolean isAuthor(String username, String accessToken) {
-		try {
-			ResponseEntity<String> entity = rest.getForEntity(oauthConfig.getGitHubApiBaseUrl() + "/teams/{id}/memberships/{username}?access_token={token}", String.class, "2006839", username, accessToken);
-			return entity.getStatusCode().value() == 200;
-		} catch(HttpClientErrorException e) {
-			if(e.getStatusCode() == HttpStatus.NOT_FOUND) {
-				return false;
-			}
-			throw e;
-		}
 	}
 
 	@Override
@@ -641,15 +575,5 @@ public class MylynGitHubApi implements GitHubApi {
 		hook.setName("web");
 		hook.setConfig(config);
 		return hook;
-	}
-
-	@Data
-	private  static class AccessTokenResponse {
-		@JsonProperty("access_token")
-		String accessToken;
-		@JsonProperty("token_type")
-		String tokenType;
-		String scope;
-
 	}
 }

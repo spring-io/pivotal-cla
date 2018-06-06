@@ -15,27 +15,20 @@
  */
 package io.pivotal.cla.webdriver;
 
-import static org.mockito.Matchers.any;
+import io.pivotal.cla.security.WithSigningUser;
+import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
+import org.junit.Test;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import org.junit.Test;
-
-import io.pivotal.cla.data.User;
-import io.pivotal.cla.security.WithSigningUser;
-import io.pivotal.cla.security.WithSigningUserFactory;
-import io.pivotal.cla.service.github.CurrentUserRequest;
-import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 
 public class AccessDeniedTests extends BaseWebDriverTests {
 
 	@Test
 	@WithSigningUser(requestedAdmin = true)
 	public void adminForbiddenForUserRequestedAdmin() throws Exception {
-		User user = WithSigningUserFactory.create();
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
-		when(mockGitHub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
 
 		String url = AdminLinkClaPage.url();
 
@@ -46,9 +39,7 @@ public class AccessDeniedTests extends BaseWebDriverTests {
 	@Test
 	@WithSigningUser
 	public void adminRedirectForUserNotRequestedAdmin() throws Exception {
-		User user = WithSigningUserFactory.create();
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
-		when(mockGitHub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
 
 		String url = AdminLinkClaPage.url();
 

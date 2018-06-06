@@ -43,10 +43,6 @@ public class UrlBuilder {
 		this.request = request;
 	}
 
-	public String callbackUrl() {
-		return path("/login/oauth2/github").build();
-	}
-
 	public String authorizationUrl(String registrationId) {
 		return path("/oauth2/authorization/" + registrationId).build();
 	}

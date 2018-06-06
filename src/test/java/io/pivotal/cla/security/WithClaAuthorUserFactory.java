@@ -16,7 +16,6 @@
 package io.pivotal.cla.security;
 
 import io.pivotal.cla.data.User;
-import io.pivotal.cla.security.Login.UserAuthentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
