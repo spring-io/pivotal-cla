@@ -105,7 +105,7 @@ public class MylynGitHubApiITests {
 		assertThat(user.getAvatarUrl()).isEqualTo("https://avatars.githubusercontent.com/u/362503?v=3");
 		assertThat(user.getEmails()).containsOnly("rob@example.com");
 		assertThat(user.getGitHubLogin()).isEqualTo("rwinch");
-		assertThat(user.getName()).isEqualTo("Rob Winch");
+		assertThat(user.getFullName()).isEqualTo("Rob Winch");
 		assertThat(user.isAdminAccessRequested()).isTrue();
 		assertThat(user.isAdmin()).isFalse();
 
@@ -149,7 +149,7 @@ public class MylynGitHubApiITests {
 		assertThat(user.getAvatarUrl()).isEqualTo("https://avatars.githubusercontent.com/u/362503?v=3");
 		assertThat(user.getEmails()).containsOnly("rob@example.com","rob@pivotal.io");
 		assertThat(user.getGitHubLogin()).isEqualTo("rwinch");
-		assertThat(user.getName()).isEqualTo("Rob Winch");
+		assertThat(user.getFullName()).isEqualTo("Rob Winch");
 		assertThat(user.isAdminAccessRequested()).isTrue();
 		assertThat(user.isAdmin()).isTrue();
 		assertThat(user.isClaAuthor()).isTrue();
@@ -194,7 +194,7 @@ public class MylynGitHubApiITests {
 		assertThat(user.getAvatarUrl()).isEqualTo("https://avatars.githubusercontent.com/u/362503?v=3");
 		assertThat(user.getEmails()).containsOnly("rob@example.com","rob@pivotal.io");
 		assertThat(user.getGitHubLogin()).isEqualTo("rwinch");
-		assertThat(user.getName()).isEqualTo("Rob Winch");
+		assertThat(user.getFullName()).isEqualTo("Rob Winch");
 		assertThat(user.isAdminAccessRequested()).isTrue();
 		assertThat(user.isAdmin()).isTrue();
 		assertThat(user.isClaAuthor()).isFalse();
@@ -239,7 +239,7 @@ public class MylynGitHubApiITests {
 		assertThat(user.getAvatarUrl()).isEqualTo("https://avatars.githubusercontent.com/u/362503?v=3");
 		assertThat(user.getEmails()).containsOnly("rob@example.com");
 		assertThat(user.getGitHubLogin()).isEqualTo("rwinch");
-		assertThat(user.getName()).isEqualTo("Rob Winch");
+		assertThat(user.getFullName()).isEqualTo("Rob Winch");
 		assertThat(user.isAdminAccessRequested()).isFalse();
 		assertThat(user.isAdmin()).isFalse();
 

@@ -15,23 +15,6 @@
  */
 package io.pivotal.cla.webdriver;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.springframework.security.test.context.support.WithAnonymousUser;
-
 import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.WithSigningUser;
@@ -41,22 +24,61 @@ import io.pivotal.cla.webdriver.pages.AboutPage;
 import io.pivotal.cla.webdriver.pages.SignCclaPage;
 import io.pivotal.cla.webdriver.pages.SignClaPage;
 import io.pivotal.cla.webdriver.pages.SignIclaPage;
+import okhttp3.mockwebserver.EnqueueRequests;
+import okhttp3.mockwebserver.EnqueueResourcesMockWebServer;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithSigningUser
 public class ClaControllerTests extends BaseWebDriverTests {
+
+	@Rule
+	public EnqueueResourcesMockWebServer server = new EnqueueResourcesMockWebServer();
+
+	private ClientRegistration claUserRegistration = ClientRegistration.withRegistrationId("cla-user")
+			.clientId("client-main-id-123")
+			.clientSecret("client-main-secret-abc")
+			.clientAuthenticationMethod(ClientAuthenticationMethod.BASIC)
+			.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+			.redirectUriTemplate("http://localhost/login/oauth2/github")
+			.scope("user:email")
+			.authorizationUri("https://github.com/login/oauth/authorize")
+			.tokenUri(server.getServer().url("/login/oauth/access_token").toString())
+			.userInfoUri(server.getServer().url("/user").toString())
+			.userNameAttributeName("id")
+			.clientName("GitHub")
+			.build();
 
 	@Before
 	public void setup() {
 		super.setup();
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
+		when(clientRegistrationRepository.findByRegistrationId(claUserRegistration.getRegistrationId())).thenReturn(claUserRegistration);
 	}
 
 	@Test
 	@WithAnonymousUser
+	@EnqueueRequests({"getAccessToken", "getUserInfo"})
 	public void viewSignedWithRepositoryIdAndPullRequestIdNewUser() throws Exception {
 		String repositoryId = "spring-projects/spring-security";
 		User signingUser = WithSigningUserFactory.create();
-		when(mockGitHub.getCurrentUser(any())).thenReturn(signingUser);
+		when(mockGitHub.getVerifiedEmails(any())).thenReturn(signingUser.getEmails());
 		when(mockGitHub.getShaForPullRequest(any(PullRequestStatus.class))).thenReturn("abc123");
 		when(mockIndividualSignatureRepository.findSignaturesFor(any(), eq(signingUser),eq(cla.getName()))).thenReturn(Arrays.asList(individualSignature));
 		when(mockIndividualSignatureRepository.findSignaturesFor(any(),eq(signingUser))).thenReturn(Arrays.asList(individualSignature));

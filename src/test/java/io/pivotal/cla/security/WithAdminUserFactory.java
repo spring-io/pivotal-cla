@@ -15,14 +15,16 @@
  */
 package io.pivotal.cla.security;
 
-import java.util.Collections;
-
+import io.pivotal.cla.data.User;
+import io.pivotal.cla.security.Login.UserAuthentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 
-import io.pivotal.cla.data.User;
-import io.pivotal.cla.security.Login.UserAuthentication;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WithAdminUserFactory implements WithSecurityContextFactory<WithAdminUser> {
 
@@ -36,11 +38,17 @@ public class WithAdminUserFactory implements WithSecurityContextFactory<WithAdmi
 	}
 
 	public static User create() {
-		User user = new User();
+		String login = "rwinch";
+		String avatarUrl = "https://avatars.githubusercontent.com/u/362503?v=3";
+		Map<String, Object> attributes = new HashMap<>();
+		attributes.put("id", "1234");
+		attributes.put("login", login);
+		attributes.put("avatar_url", avatarUrl);
+		GitHubOAuth2User user = new GitHubOAuth2User(AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ADMIN"), attributes);
+		user.setGitHubLogin(login);
 		user.setAccessToken("mocked_access_token");
-		user.setAvatarUrl("https://avatars.githubusercontent.com/u/362503?v=3");
+		user.setAvatarUrl(avatarUrl);
 		user.setEmails(Collections.singleton("rob@pivotal.io"));
-		user.setGitHubLogin("rwinch");
 		user.setAdmin(true);
 		return user;
 	}
