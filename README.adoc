@@ -78,7 +78,7 @@ If you are running, the default URL is at http://localhost:8080/
 
 == Cloud Foundry
 
-Deploying the application to Cloud Foundry can be performed as part of the build using the [Cloud Foundry Gradle plugin](http://docs.run.pivotal.io/buildpacks/java/build-tool-int.html#gradle).
+Deploying the application to Cloud Foundry can be performed as part of the build using the [Cloud Foundry Gradle plugin](https://docs.run.pivotal.io/buildpacks/java/build-tool-int.html#gradle).
 It's set up for TravisCI and manual deployment mode.
 
 === Required Properties
@@ -94,7 +94,7 @@ Deployment scripts for `pivotal-cla` require a set of properties to be deployed.
 
 === Variants (aka. Blue/Green-Deployment)
 
-Production and Staging have blue/green deployment set up. That's done by setting the `variants` property of the [Cloud Foundry Gradle plugin](http://docs.run.pivotal.io/buildpacks/java/build-tool-int.html#gradle).
+Production and Staging have blue/green deployment set up. That's done by setting the `variants` property of the [Cloud Foundry Gradle plugin](https://docs.run.pivotal.io/buildpacks/java/build-tool-int.html#gradle).
 Setting `variants` causes `cfDeploy` to check which variant is active and deploy to the inactive variant. The deployment
 task switches blue/green instances using `cfSwapDeployed` once the application is deployed and started.
 

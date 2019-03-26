@@ -23,7 +23,7 @@ X-XSS-Protection: 1; mode=block
 
 <!DOCTYPE html>
 <html lang="en" class="">
-  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# object: http://ogp.me/ns/object# article: http://ogp.me/ns/article# profile: http://ogp.me/ns/profile#">
+  <head prefix="og: http://ogp.me/# fb: https://graph.facebook.com/schema/og/# object: https://graph.facebook.com/schema/og/object# article: https://graph.facebook.com/schema/og/article# profile: https://graph.facebook.com/schema/og/profile#">
     <meta charset='utf-8'>
 
     <link crossorigin="anonymous" href="https://assets-cdn.github.com/assets/frameworks-54aeed08c47ba4f0908a16861703c64db9718fe942a5b26c4c36572c0ace5563.css" media="all" rel="stylesheet" />
