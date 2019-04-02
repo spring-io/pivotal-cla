@@ -5,6 +5,7 @@ import io.pivotal.cla.data.repository.UserRepository;
 import io.pivotal.cla.service.ClaPullRequestStatusRequest;
 import io.pivotal.cla.service.ClaService;
 import io.pivotal.cla.service.github.GitHubApi;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.egit.github.core.PullRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Controller
+@Slf4j
 public class SyncGitHubStatusController {
 	@Autowired
 	ClaService claService;
@@ -35,7 +37,7 @@ public class SyncGitHubStatusController {
 
 	@PostMapping("/sync/{claName}")
 	public String sync(@AuthenticationPrincipal User currentUser, @ModelAttribute ClaRequest claRequest, RedirectAttributes redirect) throws Exception {
-
+		log.debug("Sync for request {}", claRequest);
 		Assert.hasText(claRequest.getRepositoryId(), "RepositoryId must not be empty");
 		Assert.isTrue(claRequest.getPullRequestId() != null && claRequest.getPullRequestId() > 0,
 				"PullRequest Id must be greater 0");
@@ -60,6 +62,7 @@ public class SyncGitHubStatusController {
 						"Pull-request %s#%s does not exist",
 						claRequest.getRepositoryId(), claRequest.getPullRequestId())));
 
+		log.debug("Got pull request {}", pullRequest);
 		ClaPullRequestStatusRequest updatePullRequest = claRequest
 				.createUpdatePullRequestStatus(pullRequest.getUser().getLogin());
 		updatePullRequest.getCommitStatus().setPullRequestState(pullRequest.getState());
@@ -74,6 +77,7 @@ public class SyncGitHubStatusController {
 		if (updatePullRequest != null) {
 			updatePullRequest.getCommitStatus().setAdmin(currentUser.isAdmin());
 			claService.savePullRequestStatus(updatePullRequest);
+			log.debug("Updating Pull Request ");
 		}
 
 		String repositoryOwner = repositoryParts[0];

@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.egit.github.core.PullRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +28,7 @@ import io.pivotal.cla.service.github.PullRequestStatus;
 import lombok.SneakyThrows;
 
 @Component
+@Slf4j
 public class ClaService {
 	final GitHubApi gitHub;
 	final AccessTokenRepository accessTokenRepository;
@@ -57,6 +59,7 @@ public class ClaService {
 		if(commitStatus.getAccessToken() == null) {
 			AccessToken accessToken = accessTokenRepository.findOne(commitStatus.getRepoId());
 			if(accessToken == null) {
+				log.debug("No token for {}", commitStatus.getRepoId());
 				return;
 			}
 			String token = accessToken.getToken();
@@ -71,6 +74,7 @@ public class ClaService {
 		}
 		if(commitStatus.getSuccess() == null) {
 			boolean hasSigned = hasSigned(gitHubLogin, claName);
+			log.debug("commit status is null, so defaulting to {}", hasSigned);
 			commitStatus.setSuccess(hasSigned);
 		}
 		gitHub.save(commitStatus);
@@ -79,6 +83,7 @@ public class ClaService {
 	public IndividualSignature findIndividualSignaturesFor(User user, String claName) {
 		PageRequest pageable = new PageRequest(0, 1);
 		List<IndividualSignature> results = individualSignatureRepository.findSignaturesFor(pageable, user, claName);
+		log.debug("Individual signature for user {} and cla {} found {}", user, claName, !results.isEmpty());
 		return results.isEmpty() ? null : results.get(0);
 	}
 
@@ -89,7 +94,10 @@ public class ClaService {
 				? contributorLicenseAgreementRepository.findByNameAndPrimaryTrue(claName)
 				: corporateSignature.getCla();
 
-		return new CorporateSignatureInfo(contributorLicenseAgreement, corporateSignature, gitHubOrganizations);
+		CorporateSignatureInfo result = new CorporateSignatureInfo(contributorLicenseAgreement, corporateSignature, gitHubOrganizations);
+
+		log.debug("Corp signature for user {} and cla {} found {}", user, claName, result);
+		return result;
 	}
 
 	@SneakyThrows
