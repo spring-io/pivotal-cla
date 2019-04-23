@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,8 +43,8 @@ public class UrlBuilder {
 		this.request = request;
 	}
 
-	public String callbackUrl() {
-		return path("/login/oauth2/github").build();
+	public String authorizationUrl(String registrationId) {
+		return path("/oauth2/authorization/" + registrationId).build();
 	}
 
 	public UrlBuilder param(String name, String value) {

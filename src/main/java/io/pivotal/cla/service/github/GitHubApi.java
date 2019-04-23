@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import io.pivotal.cla.data.User;
 import io.pivotal.cla.egit.github.core.PullRequestId;
 import io.pivotal.cla.service.MigratePullRequestStatusRequest;
 import org.eclipse.egit.github.core.PullRequest;
@@ -47,8 +46,6 @@ public interface GitHubApi {
 	List<String> findRepositoryNamesWithAdminPermission(String accessToken);
 
 	List<String> createPullRequestHooks(CreatePullRequestHookRequest request);
-
-	User getCurrentUser(CurrentUserRequest request);
 
 	Set<String> getVerifiedEmails(String accessToken);
 

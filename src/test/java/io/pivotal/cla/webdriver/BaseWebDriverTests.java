@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.htmlunit.webdriver.MockMvcHtmlUnitDriverBuilder;
@@ -57,6 +58,8 @@ public abstract class BaseWebDriverTests {
 	protected AccessTokenRepository mockTokenRepo;
 	@MockBean
 	protected UserRepository mockUserRepo;
+	@MockBean
+	protected ClientRegistrationRepository clientRegistrationRepository;
 
 	protected WebDriver driver;
 

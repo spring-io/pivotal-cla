@@ -30,7 +30,7 @@ public class MocksConfig {
 
 		@RequestMapping("/login/oauth/authorize")
 		public String response(@RequestParam String state) {
-			return "redirect:https://localhost/login/oauth2/github?code=abc&state=" + state;
+			return "redirect:http://localhost/login/oauth2/github?code=abc&state=" + state;
 		}
 	}
 }

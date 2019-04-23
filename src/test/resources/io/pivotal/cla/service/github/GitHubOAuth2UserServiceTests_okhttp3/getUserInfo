@@ -1,0 +1,4 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+
+{"id":"1234", "login":"rwinch", "name":"Rob Winch", "avatar_url":"https://avatars.githubusercontent.com/u/362503?v=3"}

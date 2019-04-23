@@ -70,7 +70,7 @@ public class CclaController {
 		}
 
 		signCorporateClaForm.setSigned(signed != null);
-		signCorporateClaForm.setName(user.getName());
+		signCorporateClaForm.setName(user.getFullName());
 		signCorporateClaForm.setClaId(cla.getId());
 		signCorporateClaForm.setRepositoryId(repositoryId);
 		signCorporateClaForm.setPullRequestId(pullRequestId);

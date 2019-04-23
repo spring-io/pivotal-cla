@@ -59,7 +59,7 @@ public class IclaController {
 			cla = cla.getSupersedingCla();
 		}
 		signClaForm.setSigned(signed != null);
-		signClaForm.setName(user.getName());
+		signClaForm.setName(user.getFullName());
 		signClaForm.setClaId(cla.getId());
 		model.put("cla", cla);
 
