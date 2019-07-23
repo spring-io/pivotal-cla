@@ -38,7 +38,7 @@ X-RateLimit-Remaining: 4999
     "html_url": "https://github.com/octocat/Hello-World/commit/6dcb09b5b57875f334f61aebed695e2e4193db5e#commitcomment-1",
     "url": "https://api.github.com/repos/octocat/Hello-World/comments/1",
     "id": 1,
-    "body": "That's an ObViOuS FiX",
+    "body": "@pivotal-issuemaster That's an ObViOuS FiX",
     "path": "file1.txt",
     "position": 4,
     "line": 14,

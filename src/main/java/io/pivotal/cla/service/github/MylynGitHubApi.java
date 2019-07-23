@@ -144,9 +144,11 @@ public class MylynGitHubApi implements GitHubApi {
 
 	/**
 	 * Returns whether the pull-request is marked as obvious fix by having an issue/review comment stating it's an obvious fix.
+	 * Pull-request comments and review comments MUST start by pinging the CLA user for them to be taken into consideration.
 	 * @param pullRequestId
 	 * @param comments
-	 * @param claUserLogin  @return
+	 * @param claUserLogin
+	 * @return
 	 * @param pullRequestBody
 	 */
 	private boolean isObviousFix(PullRequestId pullRequestId, List<Comment> comments, String claUserLogin, String pullRequestBody) {
@@ -175,6 +177,7 @@ public class MylynGitHubApi implements GitHubApi {
 		Optional<? extends Comment> obviousFixComment = comments.stream() //
 				.filter(comment -> comment.getUser() != null && !claUserLogin.equals(comment.getUser().getLogin())) //
 				.filter(comment -> hasObviousFix(comment.getBody())) //
+				.filter(comment -> comment.getBody().startsWith("@" + claUserLogin + " ")) //
 				.findFirst();
 
 		return obviousFixComment.isPresent();
