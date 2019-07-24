@@ -31,7 +31,7 @@ X-RateLimit-Remaining: 4999
       "type": "User",
       "site_admin": false
     },
-    "body": "@pivotal-issuemaster That's an obvious fix",
+    "body": "@pivotal-issuemaster This is an obvious fix",
     "created_at": "2011-04-14T16:00:49Z",
     "updated_at": "2011-04-14T16:00:49Z",
     "html_url": "https://github.com/octocat/Hello-World/pull/1#discussion-diff-1",
