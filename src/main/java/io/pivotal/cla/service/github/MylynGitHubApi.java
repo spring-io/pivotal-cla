@@ -74,15 +74,15 @@ public class MylynGitHubApi implements GitHubApi {
 	public final static String ADMIN_MAIL_SUFFIX = "@pivotal.io";
 	public final static Pattern PULL_REQUEST_CALLBACK_PATTERN = Pattern.compile(".*" + UrlBuilder.pullRequestHookCallbackPath("") + "([a-zA-Z0-9\\-\\s\\%\\+]*)(\\?.*)?");
 
-	public final static String CONTRIBUTOR_LICENSE_AGREEMENT = "Contributor License Agreement";
-	public final static String THIS_PR_CONTAINS_AN_OBVIOUS_FIX = "This Pull Request contains an obvious fix";
-	public final static String OBVIOUS_FIX_CLA_NOT_REQUIRED = String.format(
+	public final static String CONTRIBUTOR_LICENSE_AGREEMENT      = "Contributor License Agreement";
+	public final static String THIS_PR_CONTAINS_AN_OBVIOUS_FIX    = "This Pull Request contains an obvious fix";
+	public final static String OBVIOUS_FIX_CLA_NOT_REQUIRED       = String.format(
 			"%s. Signing the %s is not necessary.", THIS_PR_CONTAINS_AN_OBVIOUS_FIX, CONTRIBUTOR_LICENSE_AGREEMENT);
-	public final static String THANK_YOU = "Thank you for signing the";
-	public final static String PLEASE_SIGN = "Please sign the";
-	public final static String OBVIOUS_FIX = "obvious fix";
+	public final static String THANK_YOU                          = "Thank you for signing the";
+	public final static String PLEASE_SIGN                        = "Please sign the";
+	public final static String OBVIOUS_FIX_SENTENCE               = "this is an obvious fix";
 	public final static String TO_MANUALLY_SYNCHRONIZE_THE_STATUS = "to manually synchronize the status of this Pull Request";
-	public final static String FREQUENTLY_ASKED_QUESTIONS = "frequently asked questions";
+	public final static String FREQUENTLY_ASKED_QUESTIONS         = "frequently asked questions";
 
 	final ClaOAuthConfig oauthConfig;
 	final String authorizeUrl;
@@ -153,31 +153,33 @@ public class MylynGitHubApi implements GitHubApi {
 	 */
 	private boolean isObviousFix(PullRequestId pullRequestId, List<Comment> comments, String claUserLogin, String pullRequestBody) {
 
-		if (hasObviousFix(pullRequestBody)) {
+		String obviousFixFullTrigger = "@" + claUserLogin + " " + OBVIOUS_FIX_SENTENCE;
+		obviousFixFullTrigger = obviousFixFullTrigger.toLowerCase(Locale.US);
+
+		if (hasObviousFix(pullRequestBody, obviousFixFullTrigger)) {
 			return true;
 		}
 
-		if (hasObviousFixComment(comments, claUserLogin)) {
+		if (hasObviousFixComment(comments, claUserLogin, obviousFixFullTrigger)) {
 			return true;
 		}
 
-		if (hasObviousFixComment(getComments(pullRequestId, getPullRequestService()), claUserLogin)) {
+		if (hasObviousFixComment(getComments(pullRequestId, getPullRequestService()), claUserLogin, obviousFixFullTrigger)) {
 			return true;
 		}
 
 		return false;
 	}
 
-	private boolean hasObviousFix(String text) {
-		return text != null && text.toLowerCase(Locale.US).contains(OBVIOUS_FIX);
+	private boolean hasObviousFix(String text, String obviousFixTrigger) {
+		return text != null && text.toLowerCase(Locale.US).contains(obviousFixTrigger);
 	}
 
-	private boolean hasObviousFixComment(Collection<? extends Comment> comments, String claUserLogin) {
+	private boolean hasObviousFixComment(Collection<? extends Comment> comments, String claUserLogin, String trigger) {
 
 		Optional<? extends Comment> obviousFixComment = comments.stream() //
 				.filter(comment -> comment.getUser() != null && !claUserLogin.equals(comment.getUser().getLogin())) //
-				.filter(comment -> hasObviousFix(comment.getBody())) //
-				.filter(comment -> comment.getBody().startsWith("@" + claUserLogin + " ")) //
+				.filter(comment -> hasObviousFix(comment.getBody(), trigger)) //
 				.findFirst();
 
 		return obviousFixComment.isPresent();
