@@ -23,19 +23,12 @@ script:
   - CF_ORGANIZATION='pivotal-cla'
   - CF_SPACE='production'
   - ./gradlew check -x smokeTest
+after_success:
   - |
     if [[ "${TRAVIS_PULL_REQUEST}" = "false" && $TRAVIS_BRANCH == 'master' && $TRAVIS_SECURE_ENV_VARS == 'true' ]] ; then
       ./ci/scripts/install-cf.sh
       export PATH=$PATH:$PWD
       cf login -a $CF_ENDPOINT -o $CF_ORGANIZATION -s $CF_SPACE -u $CF_USERNAME -p $CF_PASSWORD
-      cf delete pivotal-cla-staging -f
-      cf delete-service pivotal-cla-mysql-staging -f
-      cf create-service p-mysql 100mb pivotal-cla-mysql-staging
-      ./ci/scripts/cf-push.sh pivotal-cla-staging $STAGING_CLIENT_ID $STAGING_CLIENT_SECRET $TOKEN_SECRET $TRAVIS_BUILD_NUMBER-$TRAVIS_COMMIT
-      ./gradlew smokeTest -PsmokeTest.linkUser.password=$STAGING_LINK_USER_PASSWORD -PsmokeTest.linkUser.token=$STAGING_LINK_USER_TOKEN -PsmokeTest.signUser.password=$STAGING_SIGN_USER_PASSWORD -PsmokeTest.signUser.token=$STAGING_SIGN_USER_TOKEN --stacktrace
-    fi
-after_success:
-    if [[ "${TRAVIS_PULL_REQUEST}" = "false" && $TRAVIS_BRANCH == 'master' && $TRAVIS_SECURE_ENV_VARS == 'true' ]] ; then
       ./ci/scripts/cf-push.sh pivotal-cla-production $CLIENT_ID $CLIENT_SECRET $TOKEN_SECRET $TRAVIS_BUILD_NUMBER-$TRAVIS_COMMIT
     fi
 
