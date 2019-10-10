@@ -310,7 +310,7 @@ public class GitHubHooksControllerTests extends BaseWebDriverTests {
 
 			private String getSignature(MockHttpServletRequest request)
 					throws IOException, UnsupportedEncodingException, Exception {
-				String body = IOUtils.toString(request.getReader());
+				String body = new String(request.getContentAsByteArray());
 				String signature = oauth.create(body, accessToken.getToken());
 				return signature;
 			}
