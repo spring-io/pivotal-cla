@@ -26,10 +26,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 
 import io.pivotal.cla.webdriver.pages.BasePage;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
 
 public class AdminListClasPage extends BasePage {
 
@@ -45,13 +41,11 @@ public class AdminListClasPage extends BasePage {
 			if(cols.isEmpty()) {
 				return (Row) null;
 			}
-			return Row.builder()
-					.driver(getDriver())
-					.name(cols.get(0).getText())
-					.description(cols.get(1).getText())
-					.edit(cols.get(2).findElement(By.cssSelector("a")))
-					.delete(cols.get(3).findElement(By.cssSelector("input[type=\"submit\"]")))
-					.build();
+			String name = cols.get(0).getText();
+			String description = cols.get(1).getText();
+			WebElement edit = cols.get(2).findElement(By.cssSelector("a"));
+			WebElement delete = cols.get(3).findElement(By.cssSelector("input[type=\"submit\"]"));
+			return new Row(name, description, delete, edit, driver);
 		})
 		.filter( e-> e != null)
 		.collect(Collectors.toList());
@@ -75,17 +69,21 @@ public class AdminListClasPage extends BasePage {
 		return PageFactory.initElements(driver, AdminListClasPage.class);
 	}
 
-	@Data
-	@Builder
-	public static class Row {
+	public class Row {
 		final String name;
 		final String description;
-		@Getter(AccessLevel.PRIVATE)
 		final WebElement delete;
-		@Getter(AccessLevel.PRIVATE)
 		final WebElement edit;
-		@Getter(AccessLevel.PRIVATE)
 		final WebDriver driver;
+
+		private Row(String name, String description, WebElement delete, WebElement edit,
+				WebDriver driver) {
+			this.name = name;
+			this.description = description;
+			this.delete = delete;
+			this.edit = edit;
+			this.driver = driver;
+		}
 
 		public AdminEditClaPage edit() {
 			edit.click();
@@ -95,6 +93,26 @@ public class AdminListClasPage extends BasePage {
 		public AdminListClasPage delete() {
 			delete.click();
 			return PageFactory.initElements(getDriver(), AdminListClasPage.class);
+		}
+
+		public String getName() {
+			return this.name;
+		}
+
+		public String getDescription() {
+			return this.description;
+		}
+
+		public WebElement getDelete() {
+			return this.delete;
+		}
+
+		public WebElement getEdit() {
+			return this.edit;
+		}
+
+		public WebDriver getDriver() {
+			return this.driver;
 		}
 	}
 }

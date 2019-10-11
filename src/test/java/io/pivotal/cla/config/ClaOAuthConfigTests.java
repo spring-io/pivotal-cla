@@ -22,7 +22,6 @@ import java.lang.reflect.Modifier;
 import org.junit.Before;
 import org.junit.Test;
 
-import lombok.Lombok;
 
 /**
  * @author Rob Winch
@@ -58,15 +57,5 @@ public class ClaOAuthConfigTests {
 		config.setScheme("http");
 		config.setPort(1234);
 		assertThat(config.getGitHubBaseUrl()).isEqualTo("http://github.com:1234/");
-	}
-
-	@Test
-	public void checkMemberAccess() {
-		// this test is only necessary because Lombok
-		// ensure we fail if Lombok is removed
-		@SuppressWarnings("unused")
-		Lombok lombok = null;
-
-		assertThat(ClaOAuthConfig.class.getDeclaredFields()).extracting(f-> Modifier.isPrivate(f.getModifiers())).doesNotContain(false);
 	}
 }

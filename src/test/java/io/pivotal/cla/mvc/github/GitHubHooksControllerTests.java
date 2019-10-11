@@ -17,8 +17,6 @@ package io.pivotal.cla.mvc.github;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
-import static org.mockito.Matchers.anySet;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -29,7 +27,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -48,7 +45,6 @@ import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.service.github.GitHubApi;
 import io.pivotal.cla.service.github.PullRequestStatus;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
-import lombok.SneakyThrows;
 
 public class GitHubHooksControllerTests extends BaseWebDriverTests {
 
@@ -285,8 +281,7 @@ public class GitHubHooksControllerTests extends BaseWebDriverTests {
 			.andExpect(status().isBadRequest());
 	}
 
-	@SneakyThrows
-	private byte[] getPayload(String id) {
+	private byte[] getPayload(String id) throws IOException {
 		try (InputStream is = getClass().getClassLoader().getResourceAsStream(getClass().getSimpleName() + "/" + id)) {
 			return StreamUtils.copyToByteArray(is);
 		}

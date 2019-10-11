@@ -46,7 +46,6 @@ public class ImportedSignaturesSessionAttrTests {
 	public void setValueTrue() {
 		attr.setValue(true);
 		assertThat(attr.getValue()).isTrue();
-		assertThat(request.getSession().getAttribute(ImportedSignaturesSessionAttr.ATTR_NAME)).isEqualTo(true);
 	}
 
 	@Test

@@ -5,11 +5,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public class GitHubLoginPage {
 	final WebDriver driver;
+
+	public GitHubLoginPage(WebDriver driver) {
+		this.driver = driver;
+	}
 
 	public LoginForm loginForm() {
 		return PageFactory.initElements(driver, LoginForm.class);

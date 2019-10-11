@@ -24,21 +24,19 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.util.concurrent.TimeUnit;
 
-import lombok.experimental.PackagePrivate;
-
 /**
  * @author Rob Winch
  */
 class MockResponseParser {
 	static final String HEADER_PREFIX = "OkHttp-";
 
-	@PackagePrivate // visible for testing
+	// visible for testing
 	static final String THROTTLE_BODY_HEADER_NAME = HEADER_PREFIX + "ThrottleBody";
 
-	@PackagePrivate // visible for testing
+	// visible for testing
 	static final String CHUNKED_BODY_HEADER_NAME = HEADER_PREFIX + "ChunkedBody";
 
-	@PackagePrivate // visible for testing
+	// visible for testing
 	static final String BODY_DELAY_HEADER_NAME = HEADER_PREFIX + "BodyDelay";
 
 	MockResponse createResponse(InputStream in) throws IOException {

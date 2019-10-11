@@ -15,10 +15,6 @@
  */
 package io.pivotal.cla.mvc.support;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.lang.reflect.Method;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.MethodParameter;
@@ -26,6 +22,10 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
+
+import java.lang.reflect.Method;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Rob Winch
@@ -68,8 +68,10 @@ public class ImportedSignaturesSessionAttrResolverTests {
 	@Test
 	public void resolveArgumentTrue() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.getSession().setAttribute(ImportedSignaturesSessionAttr.ATTR_NAME, true);
 		NativeWebRequest webRequest = new ServletWebRequest(request);
+		ImportedSignaturesSessionAttr attr = new ImportedSignaturesSessionAttr(
+				webRequest);
+		attr.setValue(true);
 		MethodParameter parameter = new MethodParameter(method, 0);
 
 		ImportedSignaturesSessionAttr resolved = (ImportedSignaturesSessionAttr) resolver.resolveArgument(parameter, null, webRequest, null);

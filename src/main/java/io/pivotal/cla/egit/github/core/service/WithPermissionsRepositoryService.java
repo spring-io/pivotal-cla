@@ -28,9 +28,13 @@ public class WithPermissionsRepositoryService extends RepositoryService {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List<WithPermissionsRepository> getPermissionRepositories() throws IOException {
-		List result = getRepositories();
-		return result;
+	public List<WithPermissionsRepository> getPermissionRepositories() {
+		try {
+			List result = getRepositories();
+			return result;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**

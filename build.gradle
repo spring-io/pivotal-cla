@@ -55,7 +55,6 @@ dependencies {
 	compile('org.webjars.bower:select2:4.0.3')
 	compile('com.h2database:h2')
 	compile('net.sourceforge.nekohtml:nekohtml')
-	compile('org.projectlombok:lombok:1.16.8')
 	compile('org.flywaydb:flyway-core')
 	compile('mysql:mysql-connector-java:5.1.38')
 	testCompile('org.springframework.boot:spring-boot-configuration-processor')
