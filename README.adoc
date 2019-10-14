@@ -71,6 +71,9 @@ $ ./gradlew bootRun
 This mode enables the `local` profile which uses H2 for the in-memory database and Redis for storing sessions.
 Redis *must* be started locally on port `6379`.
 
+NOTE: To start a docker image for Redis and MySQL invoke `./ci/scripts/start-services.sh`.
+The docker images can be shutdown using `./ci/scripts/stop-services.sh`.
+
 === Open the Application
 
 You can open the application at a context root of "/".
