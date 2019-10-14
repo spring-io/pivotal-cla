@@ -22,7 +22,7 @@ script:
   - CF_ENDPOINT='api.run.pivotal.io'
   - CF_ORGANIZATION='pivotal-cla'
   - CF_SPACE='production'
-  - ./gradlew check -x smokeTest
+  - ./gradlew check
 after_success:
   - |
     if [[ "${TRAVIS_PULL_REQUEST}" = "false" && $TRAVIS_BRANCH == 'master' && $TRAVIS_SECURE_ENV_VARS == 'true' ]] ; then
