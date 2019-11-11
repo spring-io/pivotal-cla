@@ -12,9 +12,7 @@ os:
   - linux
 
 before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - "sh -e .ci/scripts/start-services.sh"
+  - "sh -e ./ci/scripts/start-services.sh"
 
 script:
   - CF_ENDPOINT='api.run.pivotal.io'
