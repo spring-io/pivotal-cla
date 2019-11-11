@@ -82,7 +82,7 @@ If you are running, the default URL is at http://localhost:8080/
 == Cloud Foundry
 
 Deploying the application to Cloud Foundry can be performed using the https://docs.cloudfoundry.org/cf-cli/[Cloud Foundry CLI].
-It's set up for TravisCI and manual deployment mode.
+It is set up for TravisCI and manual deployment mode.
 
 === Required Properties
 
