@@ -1,8 +1,6 @@
 language: java
 
 services:
-  - redis
-  - mysql
   - docker
 
 jdk:
