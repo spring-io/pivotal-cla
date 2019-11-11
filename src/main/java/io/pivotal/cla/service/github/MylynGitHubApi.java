@@ -118,9 +118,16 @@ public class MylynGitHubApi implements GitHubApi {
 		GitHubClient client = createClient(accessToken);
 		String claUserLogin = getGitHubClaUserLogin();
 		List<Comment> comments = getComments(pullRequestId, getIssueService());
-		boolean obviousFix = isObviousFix(pullRequestId, comments, claUserLogin, commitStatus.getPullRequestBody());
+		boolean obviousFix = isWhitelistBot(commitStatus.getGitHubUsername()) || isObviousFix(pullRequestId, comments, claUserLogin, commitStatus.getPullRequestBody());
 		ContextCommitStatus status = createCommitStatusIfNecessary(pullRequestId, commitStatus, hasSignedCla, obviousFix, client);
 		createOrUpdatePullRequestComment(pullRequestId, commitStatus, hasSignedCla, obviousFix, status, comments, claUserLogin);
+	}
+
+	private boolean isWhitelistBot(String githubUsername) {
+		if ("dependabot-preview".equals(githubUsername)) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
