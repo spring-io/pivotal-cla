@@ -26,6 +26,7 @@ if cf start $APP_NAME ; then
   cf delete $VENERABLE_APP_NAME -f
 else
   # the app failed to start so delete the newly deployed app and rename old app back
+  cf logs $APP_NAME --recent
   cf delete $APP_NAME -f
   cf rename $VENERABLE_APP_NAME $APP_NAME
 fi
