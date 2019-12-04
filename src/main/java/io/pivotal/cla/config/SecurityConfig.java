@@ -53,7 +53,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		AuthenticationEntryPoint entryPoint = entryPoint();
 		AdminRequestedAccessDeniedHandler accessDeniedHandler = new AdminRequestedAccessDeniedHandler(entryPoint);
-		http.requiresChannel().requestMatchers(request -> request.getHeader("x-forwarded-port") != null).requiresSecure().and().exceptionHandling().authenticationEntryPoint(entryPoint).accessDeniedHandler(accessDeniedHandler).and().csrf().ignoringAntMatchers("/github/hooks/**").and().authorizeRequests().requestMatchers(CorsUtils::isPreFlightRequest).permitAll().mvcMatchers("/login/**", "/", "/about", "/faq").permitAll().mvcMatchers("/view/**").permitAll().mvcMatchers("/webjars/**", "/assets/**").permitAll().mvcMatchers("/github/hooks/**").permitAll().mvcMatchers("/admin", "/admin/cla/link/**", "/admin/help/**").hasRole("ADMIN").mvcMatchers("/admin/**", "/manage/**").hasRole("CLA_AUTHOR").anyRequest().authenticated().and().logout().logoutSuccessUrl("/?logout");
+		// @formatter:off
+		http
+			.requiresChannel()
+				.requestMatchers(request -> request.getHeader("x-forwarded-port") != null).requiresSecure()
+				.and()
+			.exceptionHandling()
+				.authenticationEntryPoint(entryPoint)
+				.accessDeniedHandler(accessDeniedHandler)
+				.and()
+			.csrf()
+				.ignoringAntMatchers("/github/hooks/**")
+				.and()
+			.authorizeRequests()
+				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+				.mvcMatchers("/login/**", "/", "/about", "/faq").permitAll()
+				.mvcMatchers("/view/**").permitAll()
+				.mvcMatchers("/webjars/**", "/assets/**").permitAll()
+				.mvcMatchers("/github/hooks/**").permitAll()
+				.mvcMatchers("/admin", "/admin/cla/link/**", "/admin/help/**").hasRole("ADMIN")
+				.mvcMatchers("/admin/**", "/manage/**").hasRole("CLA_AUTHOR")
+				.anyRequest().authenticated()
+				.and()
+			.logout()
+				.logoutSuccessUrl("/?logout");
+		// @formatter:on
 	}
 
 
