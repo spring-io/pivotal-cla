@@ -34,6 +34,7 @@
 								<ul class="dropdown-menu">
 									<li><a id="link" th:href="@{/admin/cla/link}">Link to CLA</a></li>
 									<li th:if="${isClaAuthor}"><a id="manage" th:href="@{/admin/cla/}">Manage CLAs</a></li>
+									<li th:if="${isClaAuthor}"><a id="lookup" th:href="@{/admin/lookup/}">Lookup Signature</a></li>
 									<li><a id="admin-help" th:href="@{/admin/help}">Help</a></li>
 								</ul>
 							</li>

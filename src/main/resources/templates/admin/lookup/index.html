@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layouts/main">
+<head>
+    <title>Lookup CLA</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <form th:action="@{/admin/lookup/find}" th:object="${user}" method="get">
+        <div class="form-group" th:classAppend="${#fields.hasErrors('gitHubLogin')}? 'has-error'">
+            <label class="control-label" for="gitHubLogin">GitHub Login</label>
+            <input type="text" class="form-control" th:field="*{gitHubLogin}" placeholder="(i.e. rwinch)">
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('gitHubLogin')}" id="err-name">
+                <p th:errors="*{gitHubLogin}">Input is incorrect</p>
+            </div>
+        </div>
+        <div class="form-group" th:classAppend="${#fields.hasErrors('emails')}? 'has-error'">
+            <label class="control-label" for="emails">Emails</label>
+            <input type="text" class="form-control" th:field="*{emails}" placeholder="(i.e. rwinch@example.com)">
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('emails')}" id="err-name">
+                <p th:errors="*{emails}">Input is incorrect</p>
+            </div>
+        </div>
+        <button id="create-submit" type="submit" class="btn btn-success">Find Signature</button>
+    </form>
+    <div th:if="${ccla != null}">
+        <h2>CCLA</h2>
+        <div th:text="${ccla}"></div>
+    </div>
+    <div th:if="${icla != null}">
+        <h2>ICLA</h2>
+        <div th:text="${icla}"></div>
+    </div>
+</div>
+</body>
+</html>
