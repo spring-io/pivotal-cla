@@ -21,6 +21,13 @@ repositories {
 	mavenCentral()
 }
 
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+}
+
 jar {
 	exclude('application-local.properties')
 }
@@ -47,6 +54,7 @@ dependencies {
 	compile('net.sourceforge.nekohtml:nekohtml')
 	compile('org.flywaydb:flyway-core')
 	compile('mysql:mysql-connector-java:5.1.48')
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testCompile('org.springframework.boot:spring-boot-configuration-processor')
 	testCompile('org.springframework.boot:spring-boot-devtools')
 	testCompile('org.springframework.security:spring-security-test')
