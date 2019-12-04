@@ -24,12 +24,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.concurrent.Executors;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.concurrent.DelegatingSecurityContextExecutor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.htmlunit.webdriver.MockMvcHtmlUnitDriverBuilder;
 
@@ -154,7 +157,8 @@ public class AdminLinkClaTests extends BaseWebDriverTests {
 	@WithSigningUser
 	@Test
 	public void methodSecurity() {
-		WebDriver driver = MockMvcHtmlUnitDriverBuilder.webAppContextSetup(wac).build();
+		HtmlUnitDriver driver = MockMvcHtmlUnitDriverBuilder.webAppContextSetup(wac).build();
+		driver.setExecutor(new DelegatingSecurityContextExecutor(Executors.newSingleThreadExecutor()));
 
 		assertThatThrownBy(() -> { AdminLinkClaPage.to(driver); }).hasRootCauseExactlyInstanceOf(AccessDeniedException.class);
 	}

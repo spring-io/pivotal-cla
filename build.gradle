@@ -51,14 +51,14 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-devtools')
 	testCompile('org.springframework.security:spring-security-test')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
-	testCompile('net.sourceforge.htmlunit:htmlunit:2.25')
-	testCompile('org.seleniumhq.selenium:htmlunit-driver:2.25')
-	testCompile('org.seleniumhq.selenium:selenium-api:3.5.2')
-	testCompile('org.seleniumhq.selenium:selenium-remote-driver:3.5.2')
-	testCompile('org.seleniumhq.selenium:selenium-support:3.5.2')
+	testCompile('net.sourceforge.htmlunit:htmlunit')
+	testCompile('org.seleniumhq.selenium:htmlunit-driver')
+	testCompile('org.seleniumhq.selenium:selenium-api')
+	testCompile('org.seleniumhq.selenium:selenium-remote-driver')
+	testCompile('org.seleniumhq.selenium:selenium-support')
 	testCompile('org.assertj:assertj-core')
 	testCompile('com.squareup.okhttp3:mockwebserver')
-	testCompile('org.testcontainers:selenium:1.4.2')
+	testCompile('org.testcontainers:selenium:1.12.4')
 }
 
 

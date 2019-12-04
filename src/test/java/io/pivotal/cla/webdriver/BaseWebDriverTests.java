@@ -17,12 +17,15 @@ package io.pivotal.cla.webdriver;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.concurrent.Executors;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.concurrent.DelegatingSecurityContextExecutor;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.htmlunit.webdriver.MockMvcHtmlUnitDriverBuilder;
@@ -69,10 +72,12 @@ public abstract class BaseWebDriverTests {
 
 	@Before
 	public void setup() {
-		driver = MockMvcHtmlUnitDriverBuilder
+		HtmlUnitDriver driver = MockMvcHtmlUnitDriverBuilder
 				.mockMvcSetup(mockMvc)
 				.useMockMvcForHosts("github.com")
 				.build();
+		driver.setExecutor(new DelegatingSecurityContextExecutor(Executors.newSingleThreadExecutor()));
+		this.driver = driver;
 
 		MarkdownContent corporate = new MarkdownContent();
 		corporate.setMarkdown("# Corporate");
