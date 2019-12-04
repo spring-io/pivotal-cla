@@ -153,17 +153,17 @@ public class CorporateSignatureRepositoryTests {
 
 	@Test
 	public void findSignaturesNotFoundOrganization() {
-		assertThat(signatures.findSignatures(new PageRequest(0, 1), Arrays.asList("notorganization"), user.getEmails())).isEmpty();
+		assertThat(signatures.findSignatures(PageRequest.of(0, 1), Arrays.asList("notorganization"), user.getEmails())).isEmpty();
 	}
 
 	@Test
 	public void findSignatures() {
-		assertThat(signatures.findSignatures(new PageRequest(0, 1), Arrays.asList("notorganization", signature.getGitHubOrganization()), user.getEmails())).isNotNull();
+		assertThat(signatures.findSignatures(PageRequest.of(0, 1), Arrays.asList("notorganization", signature.getGitHubOrganization()), user.getEmails())).isNotNull();
 	}
 
 	@Test
 	public void findSignaturesSupersedingCla() {
-		assertThat(signatures.findSignatures(new PageRequest(0, 1), Arrays.asList("notorganization", signature.getGitHubOrganization()), user.getEmails())).isNotNull();
+		assertThat(signatures.findSignatures(PageRequest.of(0, 1), Arrays.asList("notorganization", signature.getGitHubOrganization()), user.getEmails())).isNotNull();
 	}
 
 	@Test
@@ -171,7 +171,7 @@ public class CorporateSignatureRepositoryTests {
 		CorporateSignature springSignature = createSignature(springCla, user);
 		signatures.save(springSignature);
 
-		assertThat(signatures.findSignatures(new PageRequest(0, 4), Arrays.asList(signature.getGitHubOrganization(), springSignature.getGitHubOrganization()), user.getEmails())).hasSize(2);
+		assertThat(signatures.findSignatures(PageRequest.of(0, 4), Arrays.asList(signature.getGitHubOrganization(), springSignature.getGitHubOrganization()), user.getEmails())).hasSize(2);
 	}
 
 	@Test
@@ -182,7 +182,7 @@ public class CorporateSignatureRepositoryTests {
 
 		emailSignature = signatures.save(emailSignature);
 
-		assertThat(signatures.findSignatures(new PageRequest(0, 1), Arrays.asList("notorganization"), user.getEmails())).hasSize(1);
+		assertThat(signatures.findSignatures(PageRequest.of(0, 1), Arrays.asList("notorganization"), user.getEmails())).hasSize(1);
 	}
 
 	/**
@@ -196,7 +196,7 @@ public class CorporateSignatureRepositoryTests {
 
 		emailSignature = signatures.save(emailSignature);
 
-		assertThat(signatures.findSignatures(new PageRequest(0, 1), Arrays.asList("notorganization"), null)).isEmpty();
+		assertThat(signatures.findSignatures(PageRequest.of(0, 1), Arrays.asList("notorganization"), null)).isEmpty();
 	}
 
 	@Test
@@ -207,7 +207,7 @@ public class CorporateSignatureRepositoryTests {
 
 		emailSignature = signatures.save(emailSignature);
 
-		assertThat(signatures.findSignatures(new PageRequest(0, 1), Arrays.asList("notorganization"), Collections.emptyList())).isEmpty();
+		assertThat(signatures.findSignatures(PageRequest.of(0, 1), Arrays.asList("notorganization"), Collections.emptyList())).isEmpty();
 	}
 
 	@Test
@@ -218,7 +218,7 @@ public class CorporateSignatureRepositoryTests {
 
 		emailSignature = signatures.save(emailSignature);
 
-		assertThat(signatures.findSignatures(new PageRequest(0, 1), Arrays.asList(), null)).isEmpty();
+		assertThat(signatures.findSignatures(PageRequest.of(0, 1), Arrays.asList(), null)).isEmpty();
 	}
 
 	private static CorporateSignature createSignature(ContributorLicenseAgreement cla, User user) {

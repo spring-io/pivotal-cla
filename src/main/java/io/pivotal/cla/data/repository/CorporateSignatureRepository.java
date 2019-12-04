@@ -40,7 +40,7 @@ public interface CorporateSignatureRepository extends CrudRepository<CorporateSi
 	}
 
 	default CorporateSignature findSignature(String claName, Collection<String> organizations, Collection<String> emails) {
-		PageRequest pageable = new PageRequest(0, 1);
+		PageRequest pageable = PageRequest.of(0, 1);
 		List<String> emailDomains = emails == null || emails.isEmpty() ? EMPTY_LIST_FOR_QUERY : emails.stream().map( e-> e.substring(e.lastIndexOf("@") + 1)).collect(Collectors.toList());
 		organizations = organizations.isEmpty() ? EMPTY_LIST_FOR_QUERY : organizations;
 		List<CorporateSignature> results = findSignatures(pageable, claName, organizations, emailDomains);

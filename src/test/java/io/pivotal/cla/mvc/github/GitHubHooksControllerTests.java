@@ -16,8 +16,6 @@
 package io.pivotal.cla.mvc.github;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -168,7 +166,7 @@ public class GitHubHooksControllerTests extends BaseWebDriverTests {
 		mockMvc.perform(hookRequest().header("X-GitHub-Event", GithubEvents.PULL_REQUEST).content(getPayload("issue.json")))
 			.andExpect(status().isBadRequest());
 
-		verifyZeroInteractions(mockGitHub);
+		verifyNoInteractions(mockGitHub);
 	}
 
 	@Test

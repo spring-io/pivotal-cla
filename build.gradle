@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.1.9.RELEASE'
+	id 'org.springframework.boot' version '2.2.1.RELEASE'
 }
 
 apply plugin: 'java'
@@ -57,7 +57,7 @@ dependencies {
 	testCompile('org.seleniumhq.selenium:selenium-remote-driver:3.5.2')
 	testCompile('org.seleniumhq.selenium:selenium-support:3.5.2')
 	testCompile('org.assertj:assertj-core')
-	testCompile('com.squareup.okhttp3:mockwebserver:3.1.2')
+	testCompile('com.squareup.okhttp3:mockwebserver')
 	testCompile('org.testcontainers:selenium:1.4.2')
 }
 

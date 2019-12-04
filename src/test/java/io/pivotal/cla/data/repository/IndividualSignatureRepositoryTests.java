@@ -126,21 +126,21 @@ public class IndividualSignatureRepositoryTests {
 
 	@Test
 	public void findAllSignaturesForUserGitHubLoginAndEmails() {
-		assertThat(signatures.findSignaturesFor(new PageRequest(0, 1), user)).isNotNull();
+		assertThat(signatures.findSignaturesFor(PageRequest.of(0, 1), user)).isNotNull();
 	}
 
 	@Test
 	public void findAllSignaturesForUserEmailOnly() {
 		user.setGitHubLogin("notfound" + user.getGitHubLogin());
 
-		assertThat(signatures.findSignaturesFor(new PageRequest(0, 1), user)).isNotNull();
+		assertThat(signatures.findSignaturesFor(PageRequest.of(0, 1), user)).isNotNull();
 	}
 
 	@Test
 	public void findAllSignaturesForUserGitHubLoginOnly() {
 		user.setEmails(Collections.emptySet());
 
-		assertThat(signatures.findSignaturesFor(new PageRequest(0, 1), user)).isNotNull();
+		assertThat(signatures.findSignaturesFor(PageRequest.of(0, 1), user)).isNotNull();
 	}
 
 	private static IndividualSignature createSignature(ContributorLicenseAgreement cla, User user) {

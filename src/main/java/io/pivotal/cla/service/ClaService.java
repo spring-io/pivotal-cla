@@ -72,7 +72,7 @@ public class ClaService {
 	}
 
 	public IndividualSignature findIndividualSignaturesFor(User user, String claName) {
-		PageRequest pageable = new PageRequest(0, 1);
+		PageRequest pageable = PageRequest.of(0, 1);
 		List<IndividualSignature> results = individualSignatureRepository.findSignaturesFor(pageable, user, claName);
 		log.debug("Individual signature for user {} and cla {} found {}", user, claName, !results.isEmpty());
 		return results.isEmpty() ? null : results.get(0);

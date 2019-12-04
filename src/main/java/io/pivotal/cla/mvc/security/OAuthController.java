@@ -75,11 +75,11 @@ public class OAuthController {
 		users.save(user);
 		Authentication authentication = Login.loginAs(user);
 		if (isNewUser) {
-			List<IndividualSignature> individualSignatures = individual.findSignaturesFor(new PageRequest(0, 1), user);
+			List<IndividualSignature> individualSignatures = individual.findSignaturesFor(PageRequest.of(0, 1), user);
 			boolean signed = !individualSignatures.isEmpty();
 			if (!signed) {
 				List<String> organizations = gitHub.getOrganizations(user.getGitHubLogin());
-				signed = !corporate.findSignatures(new PageRequest(0, 1), organizations, user.getEmails()).isEmpty();
+				signed = !corporate.findSignatures(PageRequest.of(0, 1), organizations, user.getEmails()).isEmpty();
 			}
 			if (signed) {
 				importedSignaturesAttr.setValue(true);
