@@ -105,7 +105,7 @@ public class ClaService {
 		}
 	}
 
-	private boolean hasSigned(String gitHubLogin, String claName) {
+	public boolean hasSigned(String gitHubLogin, String claName) {
 		User user = userRepository.findOne(gitHubLogin);
 		if (user == null) {
 			user = new User();

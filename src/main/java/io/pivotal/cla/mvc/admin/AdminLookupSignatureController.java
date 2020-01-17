@@ -1,14 +1,12 @@
 package io.pivotal.cla.mvc.admin;
 
-import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.service.ClaService;
-import io.pivotal.cla.service.CorporateSignatureInfo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
@@ -30,13 +28,9 @@ public class AdminLookupSignatureController {
 	}
 
 	@GetMapping("/admin/lookup/find")
-	String lookup(@ModelAttribute User user, Map<String, Object> model) {
-		String claName = "pivotal";
-		IndividualSignature indivSignature = this.clas
-				.findIndividualSignaturesFor(user, claName);
-		CorporateSignatureInfo corpSignature = this.clas.findCorporateSignatureInfoFor(claName, user);
-		model.put("ccla", corpSignature);
-		model.put("icla", indivSignature);
+	String lookup(@RequestParam String claName, @RequestParam String gitHubLogin, Map<String, Object> model) {
+		boolean signed = this.clas.hasSigned(gitHubLogin, claName);
+		model.put("signed", signed);
 		return "admin/lookup/index";
 	}
 }
