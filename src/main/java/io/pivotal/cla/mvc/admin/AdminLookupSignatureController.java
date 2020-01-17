@@ -23,13 +23,14 @@ public class AdminLookupSignatureController {
 	}
 
 	@GetMapping("/admin/lookup")
-	String index(@ModelAttribute User user) {
+	String index(@ModelAttribute LookupForm lookupForm) {
+		lookupForm.setClaName("pivotal"); // default value
 		return "admin/lookup/index";
 	}
 
 	@GetMapping("/admin/lookup/find")
-	String lookup(@RequestParam String claName, @RequestParam String gitHubLogin, Map<String, Object> model) {
-		boolean signed = this.clas.hasSigned(gitHubLogin, claName);
+	String lookup(@ModelAttribute LookupForm lookupForm, Map<String, Object> model) {
+		boolean signed = this.clas.hasSigned(lookupForm.getGitHubLogin(), lookupForm.getClaName());
 		model.put("signed", signed);
 		return "admin/lookup/index";
 	}

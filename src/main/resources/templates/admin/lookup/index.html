@@ -6,7 +6,7 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <form th:action="@{/admin/lookup/find}" th:object="${user}" method="get">
+    <form th:action="@{/admin/lookup/find}" th:object="${lookupForm}" method="get">
         <div class="form-group" th:classAppend="${#fields.hasErrors('gitHubLogin')}? 'has-error'">
             <label class="control-label" for="gitHubLogin">GitHub Login</label>
             <input type="text" class="form-control" th:field="*{gitHubLogin}" placeholder="(i.e. rwinch)">
@@ -16,7 +16,7 @@
         </div>
         <div class="form-group" th:classAppend="${#fields.hasErrors('claName')}? 'has-error'">
             <label class="control-label" for="claName">Cla Name</label>
-            <input type="text" class="form-control" th:field="*{claName}" value="pivotal">
+            <input type="text" class="form-control" th:field="*{claName}">
             <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('claName')}" id="err-claName">
                 <p th:errors="*{claName}">Input is incorrect</p>
             </div>
