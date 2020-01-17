@@ -71,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.mvcMatchers("/view/**").permitAll()
 				.mvcMatchers("/webjars/**", "/assets/**").permitAll()
 				.mvcMatchers("/github/hooks/**").permitAll()
-				.mvcMatchers("/admin", "/admin/cla/link/**", "/admin/help/**").hasRole("ADMIN")
+				.mvcMatchers("/admin", "/admin/lookup/**", "/admin/cla/link/**", "/admin/help/**").hasRole("ADMIN")
 				.mvcMatchers("/admin/**", "/manage/**").hasRole("CLA_AUTHOR")
 				.anyRequest().authenticated()
 				.and()
