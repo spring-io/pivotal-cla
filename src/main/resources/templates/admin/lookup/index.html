@@ -6,6 +6,10 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <div th:if="${signed != null}">
+        <div class="alert alert-success" th:if="${signed}">The user has signed the CLA</div>
+        <div  class="alert alert-warning" th:if="${!signed}">The user has not signed the CLA</div>
+    </div>
     <form th:action="@{/admin/lookup/find}" th:object="${lookupForm}" method="get">
         <div class="form-group" th:classAppend="${#fields.hasErrors('gitHubLogin')}? 'has-error'">
             <label class="control-label" for="gitHubLogin">GitHub Login</label>
@@ -23,10 +27,6 @@
         </div>
         <button id="create-submit" type="submit" class="btn btn-success">Find Signature</button>
     </form>
-    <div th:if="${signed != null}">
-        <div th:if="${signed}">The user has signed the CLA</div>
-        <div th:if="${!signed}">The user has not signed the CLA</div>
-    </div>
 </div>
 </body>
 </html>
