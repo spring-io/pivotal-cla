@@ -4,10 +4,12 @@ import io.pivotal.cla.data.User;
 import io.pivotal.cla.service.ClaService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 /**
@@ -29,7 +31,10 @@ public class AdminLookupSignatureController {
 	}
 
 	@GetMapping("/admin/lookup/find")
-	String lookup(@ModelAttribute LookupForm lookupForm, Map<String, Object> model) {
+	String lookup(@Valid LookupForm lookupForm, BindingResult result, Map<String, Object> model) {
+		if (result.hasErrors()) {
+			return "admin/lookup/index";
+		}
 		boolean signed = this.clas.hasSigned(lookupForm.getGitHubLogin(), lookupForm.getClaName());
 		model.put("signed", signed);
 		return "admin/lookup/index";

@@ -1,11 +1,15 @@
 package io.pivotal.cla.mvc.admin;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * @author Rob Winch
  */
 public class LookupForm {
+	@NotEmpty(message = "This is required.")
 	private String gitHubLogin;
 
+	@NotEmpty(message = "This is required.")
 	private String claName;
 
 	public String getGitHubLogin() {

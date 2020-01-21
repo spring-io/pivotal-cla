@@ -18,6 +18,7 @@ package io.pivotal.cla.webdriver.pages;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
+import io.pivotal.cla.webdriver.pages.admin.AdminLookupSignaturePage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -57,6 +58,9 @@ public abstract class BasePage {
 
 	@FindBy(id = "successMessage")
 	WebElement successMessage;
+
+	@FindBy(id = "lookup")
+	WebElement lookup;
 
 	protected BasePage(WebDriver driver) {
 		this.driver = driver;
@@ -173,6 +177,12 @@ public abstract class BasePage {
 		adminMenu();
 		manage.click();
 		return PageFactory.initElements(driver, AdminListClasPage.class);
+	}
+
+	public AdminLookupSignaturePage lookup() {
+		adminMenu();
+		lookup.click();
+		return PageFactory.initElements(driver, AdminLookupSignaturePage.class);
 	}
 
 	protected void userMenu() {
