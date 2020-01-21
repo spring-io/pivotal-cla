@@ -14,7 +14,7 @@ import java.util.Map;
  * @author Rob Winch
  */
 @Controller
-@PreAuthorize("hasRole('CLA_ADMIN')")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminLookupSignatureController {
 	final ClaService clas;
 
