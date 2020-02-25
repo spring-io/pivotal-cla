@@ -63,7 +63,8 @@ import io.pivotal.cla.service.MigratePullRequestStatusRequest;
  */
 @Component
 public class MylynGitHubApi implements GitHubApi {
-	private static final Set<String> ALLOWED_BOTS = new HashSet<>(Arrays.asList("dependabot-preview", "dependabot-preview[bot]"));
+	private static final Set<String> ALLOWED_BOTS = new HashSet<>(Arrays.asList("dependabot-preview", "dependabot-preview[bot]",
+			"dependabot", "dependabot[bot]"));
 	private static final String AUTHORIZE_URI = "login/oauth/access_token";
 	public static final String CONTRIBUTING_FILE = "CONTRIBUTING";
 	public static final String ADMIN_MAIL_SUFFIX = "@pivotal.io";
@@ -119,12 +120,12 @@ public class MylynGitHubApi implements GitHubApi {
 		GitHubClient client = createClient(accessToken);
 		String claUserLogin = getGitHubClaUserLogin();
 		List<Comment> comments = getComments(pullRequestId, getIssueService());
-		boolean obviousFix = isWhitelistBot(commitStatus.getGitHubUsername()) || isObviousFix(pullRequestId, comments, claUserLogin, commitStatus.getPullRequestBody());
+		boolean obviousFix = isAllowedBot(commitStatus.getGitHubUsername()) || isObviousFix(pullRequestId, comments, claUserLogin, commitStatus.getPullRequestBody());
 		ContextCommitStatus status = createCommitStatusIfNecessary(pullRequestId, commitStatus, hasSignedCla, obviousFix, client);
 		createOrUpdatePullRequestComment(pullRequestId, commitStatus, hasSignedCla, obviousFix, status, comments, claUserLogin);
 	}
 
-	private boolean isWhitelistBot(String githubUsername) {
+	private boolean isAllowedBot(String githubUsername) {
 		return ALLOWED_BOTS.contains(githubUsername);
 	}
 
