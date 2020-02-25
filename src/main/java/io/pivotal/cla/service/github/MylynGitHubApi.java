@@ -63,6 +63,7 @@ import io.pivotal.cla.service.MigratePullRequestStatusRequest;
  */
 @Component
 public class MylynGitHubApi implements GitHubApi {
+	private static final Set<String> ALLOWED_BOTS = new HashSet<>(Arrays.asList("dependabot-preview", "dependabot-preview[bot]"));
 	private static final String AUTHORIZE_URI = "login/oauth/access_token";
 	public static final String CONTRIBUTING_FILE = "CONTRIBUTING";
 	public static final String ADMIN_MAIL_SUFFIX = "@pivotal.io";
@@ -124,10 +125,7 @@ public class MylynGitHubApi implements GitHubApi {
 	}
 
 	private boolean isWhitelistBot(String githubUsername) {
-		if ("dependabot-preview".equals(githubUsername)) {
-			return true;
-		}
-		return false;
+		return ALLOWED_BOTS.contains(githubUsername);
 	}
 
 	/**
