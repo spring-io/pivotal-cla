@@ -13,6 +13,7 @@ try {
 		stage('Build') {
 			node {
 				checkout scm
+				sh "./ci/scripts/start-services.sh"
 				try {
 					withEnv(["JAVA_HOME=${ tool 'jdk8' }"]) {
 						sh "./gradlew clean assemble check --no-daemon --stacktrace"
