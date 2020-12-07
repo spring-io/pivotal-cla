@@ -22,7 +22,7 @@ try {
 						withCredentials([usernamePassword(credentialsId: 'onecloud-svc_spring_builds', passwordVariable: 'CF_PASSWORD', usernameVariable: 'CF_USERNAME')]) {
 							sh "./cf login -a api.sc2-04-pcf1-system.oc.vmware.com -o pivotal-cla -s prod -u '$CF_USERNAME' -p '$CF_PASSWORD'"
 						}
-						withCredentials([string(credentialsId: 'pivotal-cla-personal_access_token', variable: 'ISSUEMASTER_PERSONAL_ACCESS_TOKEN')]) {
+						withCredentials([string(credentialsId: 'pivotal-cla-personal_access_token', variable: 'TOKEN_SECRET')]) {
 							withCredentials([usernamePassword(credentialsId: 'pivotal-cla-client_id', passwordVariable: 'CLIENT_SECRET', usernameVariable: 'CLIENT_ID')]) {
 								sh "./ci/scripts/cf-push.sh pivotal-cla $CLIENT_ID $CLIENT_SECRET $TOKEN_SECRET ${currentBuild.number}-$GIT_COMMIT"
 							}
