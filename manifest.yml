@@ -20,3 +20,14 @@ applications:
     SPRING_PROFILES_ACTIVE: cloudfoundry
   routes:
   - route: cla.pivotal.io
+- name: pivotal-cla
+  memory: 1G
+  instances: 2
+  timeout: 180
+  services:
+    - pivotal-cla-mysql-production
+    - pivotal-cla-redis-production
+  env:
+    SPRING_PROFILES_ACTIVE: cloudfoundry
+  routes:
+    - route: cla.pivotal.io
