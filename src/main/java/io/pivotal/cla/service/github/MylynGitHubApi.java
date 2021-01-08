@@ -16,6 +16,7 @@
 package io.pivotal.cla.service.github;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,6 +36,7 @@ import org.eclipse.egit.github.core.service.PullRequestService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -385,8 +387,10 @@ public class MylynGitHubApi implements GitHubApi {
 	}
 
 	private boolean isAuthor(String username, String accessToken) {
+		URI uri = rest.getUriTemplateHandler().expand(oauthConfig.getGitHubApiBaseUrl() + "/teams/{id}/memberships/{username}", "2006839", username);
+		RequestEntity<Void> request = RequestEntity.get(uri).headers(h -> h.setBearerAuth(accessToken)).build();
 		try {
-			ResponseEntity<String> entity = rest.getForEntity(oauthConfig.getGitHubApiBaseUrl() + "/teams/{id}/memberships/{username}?access_token={token}", String.class, "2006839", username, accessToken);
+			ResponseEntity<String> entity = rest.exchange(request, String.class);
 			return entity.getStatusCode().value() == 200;
 		} catch (HttpClientErrorException e) {
 			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
