@@ -30,4 +30,4 @@ applications:
   env:
     SPRING_PROFILES_ACTIVE: cloudfoundry
   routes:
-    - route: cla-test.pivotal.io
+    - route: cla.pivotal.io
