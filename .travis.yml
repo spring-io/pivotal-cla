@@ -13,18 +13,7 @@ before_script:
   - "sh -e ./ci/scripts/start-services.sh"
 
 script:
-  - CF_ENDPOINT='api.run.pivotal.io'
-  - CF_ORGANIZATION='pivotal-cla'
-  - CF_SPACE='production'
   - ./gradlew check
-after_success:
-  - |
-    if [[ "${TRAVIS_PULL_REQUEST}" = "false" && $TRAVIS_BRANCH == 'master' && $TRAVIS_SECURE_ENV_VARS == 'true' ]] ; then
-      ./ci/scripts/install-cf.sh
-      export PATH=$PATH:$PWD
-      cf login -a $CF_ENDPOINT -o $CF_ORGANIZATION -s $CF_SPACE -u $CF_USERNAME -p $CF_PASSWORD
-      ./ci/scripts/cf-push.sh pivotal-cla-production $CLIENT_ID $CLIENT_SECRET $TOKEN_SECRET $TRAVIS_BUILD_NUMBER-$TRAVIS_COMMIT
-    fi
 
 after_failure: cat $PWD/build/reports/tests/*/classes/*.html
 
