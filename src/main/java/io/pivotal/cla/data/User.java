@@ -50,6 +50,17 @@ public class User implements Serializable {
 	public User() {
 	}
 
+	public User(User user) {
+		this.gitHubLogin = user.gitHubLogin;
+		this.name = user.name;
+		this.accessToken = user.accessToken;
+		this.avatarUrl = user.avatarUrl;
+		this.emails = user.emails;
+		this.admin = user.admin;
+		this.claAuthor = user.claAuthor;
+		this.adminAccessRequested = user.adminAccessRequested;
+	}
+
 	public String getGitHubLogin() {
 		return this.gitHubLogin;
 	}
