@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layouts/main">
+<head>
+    <title>Sign ICLA</title>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+
+    <form id="sign-form" th:action="@{/admin/sign/icla}" method="post" th:object="${signIClaForm}">
+        <div class="form-group" th:classAppend="${#fields.hasErrors('claId')}? 'has-error'">
+            <label for="claId">
+                CLA ID <a th:href="@{/admin/cla/}">(Find CLA ID)</a>
+            </label>
+            <input class="form-control"  type="text" th:field="*{claId}"/>
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('claId')}" id="err-claId">
+                <p th:errors="*{claId}">Input is incorrect</p>
+            </div>
+        </div>
+        <div class="form-group" th:classAppend="${#fields.hasErrors('name')}? 'has-error'">
+        <label for="name">
+            Name
+        </label>
+        <input class="form-control"  type="text" th:field="*{name}"/>
+        <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('name')}" id="err-name">
+            <p th:errors="*{name}">Input is incorrect</p>
+        </div>
+    </div>
+        <div class="form-group" th:classAppend="${#fields.hasErrors('email')}? 'has-error'">
+            <label for="email">
+                Email
+            </label>
+
+            <input class="form-control"  type="text" th:field="*{email}"/>
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('email')}" id="err-email">
+                <p th:errors="*{email}">Input is incorrect</p>
+            </div>
+        </div>
+        <div class="form-group" th:classAppend="${#fields.hasErrors('mailingAddress')}? 'has-error'">
+            <label for="mailingAddress">
+                Mailing Address (optional)
+            </label>
+            <input class="form-control" type="text" th:field="*{mailingAddress}"/>
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('mailingAddress')}" id="err-mailingAddress">
+                <p th:errors="*{mailingAddress}">Input is incorrect</p>
+            </div>
+        </div>
+        <div class="form-group" th:classAppend="${#fields.hasErrors('country')}? 'has-error'">
+            <label for="country">
+                Country (optional)
+            </label>
+            <input class="form-control" type="text" th:field="*{country}"/>
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('country')}" id="err-country">
+                <p th:errors="*{country}">Input is incorrect</p>
+            </div>
+        </div>
+        <div class="form-group" th:classAppend="${#fields.hasErrors('telephone')}? 'has-error'">
+            <label for="telephone">
+                Telephone (optional)
+            </label>
+            <input class="form-control" type="text" th:field="*{telephone}"/>
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('telephone')}" id="err-telephone">
+                <p th:errors="*{telephone}">Input is incorrect</p>
+            </div>
+        </div>
+
+        <button id="sign" type="submit" class="btn btn-success">Sign on Behalf of User</button>
+    </form>
+</div>
+</body>
+</html>
