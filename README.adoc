@@ -1,4 +1,4 @@
-image:https://travis-ci.org/pivotalsoftware/pivotal-cla.svg?branch=master["Build Status", link="https://travis-ci.org/pivotalsoftware/pivotal-cla"]
+image:https://travis-ci.org/pivotalsoftware/pivotal-cla.svg?branch=main["Build Status", link="https://travis-ci.org/pivotalsoftware/pivotal-cla"]
 
 This tool is intended to allow managing GitHub Contributor License Agreements.
 
@@ -102,7 +102,7 @@ The application is deployed to multiple application names and if successful, the
 
 === TravisCI
 
-TravisCI builds the `master` branch and deploys to production.
+TravisCI builds the `main` branch and deploys to production.
 The build is set up to provide deployment properties as environment variables:
 
 * `CF_USERNAME`

@@ -1348,9 +1348,9 @@ public class MylynGitHubApiITests {
 		ContributingUrlsResponse urls = service.getContributingUrls(repositoryIds);
 
 		assertThat(urls.getAsciidoc()).containsExactly(
-				server.getServerUrl() + "/spring-projects/has-adoc/edit/master/CONTRIBUTING.adoc",
-				server.getServerUrl() + "/spring-projects/no-contributor/new/master?filename=CONTRIBUTING.adoc");
-		assertThat(urls.getMarkdown()).containsOnly(server.getServerUrl() + "/spring-projects/has-md/edit/master/CONTRIBUTING.md");
+				server.getServerUrl() + "/spring-projects/has-adoc/edit/main/CONTRIBUTING.adoc",
+				server.getServerUrl() + "/spring-projects/no-contributor/new/main?filename=CONTRIBUTING.adoc");
+		assertThat(urls.getMarkdown()).containsOnly(server.getServerUrl() + "/spring-projects/has-md/edit/main/CONTRIBUTING.md");
 
 		SerializingConverter converter = new SerializingConverter();
 		// ensure we can serialize the result as it is placed in FlashMap

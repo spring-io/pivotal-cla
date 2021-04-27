@@ -75,7 +75,7 @@
 	  "type": "User",
 	  "site_admin": false
 	},
-	"body": "<!-- \r\nThank you for proposing a pull request. This template will guide you through the essential steps necessary for a pull request.\r\nMake sure that:\r\n\r\n- [ ] You have read the [Spring Data contribution guidelines](https://github.com/spring-projects/spring-data-build/blob/master/CONTRIBUTING.adoc).\r\n- [ ] There is a ticket in the bug tracker for the project in our JIRA.\r\n- [ ] You use the code formatters provided [here](https://github.com/spring-projects/spring-data-build/tree/master/etc/ide) and have them applied to your changes. Don’t submit any formatting related changes.\r\n- [ ] You submit test cases (unit or integration tests) that back your changes.\r\n- [ ] You added yourself as author in the headers of the classes you touched. Amend the date range in the Apache license header if needed. For new types, add the license header (copy from another file and set the current year only).\r\n- [ ] You provide your full name and an email address registered with your GitHub account. If you’re a first-time submitter, make sure you have completed the [Contributor’s License Agreement form](https://support.springsource.com/spring_committer_signup).\r\n-->\r\n",
+	"body": "<!-- \r\nThank you for proposing a pull request. This template will guide you through the essential steps necessary for a pull request.\r\nMake sure that:\r\n\r\n- [ ] You have read the [Spring Data contribution guidelines](https://github.com/spring-projects/spring-data-build/blob/main/CONTRIBUTING.adoc).\r\n- [ ] There is a ticket in the bug tracker for the project in our JIRA.\r\n- [ ] You use the code formatters provided [here](https://github.com/spring-projects/spring-data-build/tree/master/etc/ide) and have them applied to your changes. Don’t submit any formatting related changes.\r\n- [ ] You submit test cases (unit or integration tests) that back your changes.\r\n- [ ] You added yourself as author in the headers of the classes you touched. Amend the date range in the Apache license header if needed. For new types, add the license header (copy from another file and set the current year only).\r\n- [ ] You provide your full name and an email address registered with your GitHub account. If you’re a first-time submitter, make sure you have completed the [Contributor’s License Agreement form](https://support.springsource.com/spring_committer_signup).\r\n-->\r\n",
 	"created_at": "2016-06-24T10:39:19Z",
 	"updated_at": "2016-07-12T21:13:59Z",
 	"closed_at": null,
@@ -199,12 +199,12 @@
 		"forks": 0,
 		"open_issues": 1,
 		"watchers": 0,
-		"default_branch": "master"
+		"default_branch": "main"
 	  }
 	},
 	"base": {
-	  "label": "rwinch:master",
-	  "ref": "master",
+	  "label": "rwinch:main",
+	  "ref": "main",
 	  "sha": "87a0ccc3579fdf72f340ecb7a47f6b485e5d7197",
 	  "user": {
 		"login": "robwinch",
@@ -311,7 +311,7 @@
 		"forks": 0,
 		"open_issues": 1,
 		"watchers": 0,
-		"default_branch": "master"
+		"default_branch": "main"
 	  }
 	},
 	"_links": {
@@ -427,7 +427,7 @@
 	"forks": 0,
 	"open_issues": 1,
 	"watchers": 0,
-	"default_branch": "master"
+	"default_branch": "main"
   },
   "sender": {
 	"login": "robwinch",

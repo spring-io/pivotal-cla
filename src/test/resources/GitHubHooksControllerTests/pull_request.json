@@ -45,8 +45,8 @@
         "comments_url": "https://api.github.com/repos/rwinch/176_test/issues/2/comments",
         "statuses_url": "https://api.github.com/repos/rwinch/176_test/statuses/a6befb598a35c1c206e1bf7bbb3018f4403b9610",
         "head": {
-            "label": "robwinch:master",
-            "ref": "master",
+            "label": "robwinch:main",
+            "ref": "main",
             "sha": "a6befb598a35c1c206e1bf7bbb3018f4403b9610",
             "user": {
                 "login": "robwinch",
@@ -152,12 +152,12 @@
                 "forks": 0,
                 "open_issues": 0,
                 "watchers": 0,
-                "default_branch": "master"
+                "default_branch": "main"
             }
         },
         "base": {
-            "label": "rwinch:master",
-            "ref": "master",
+            "label": "rwinch:main",
+            "ref": "main",
             "sha": "ee95fe926e8bf1b1ff144c6adec37e999c154302",
             "user": {
                 "login": "rwinch",
@@ -263,7 +263,7 @@
                 "forks": 1,
                 "open_issues": 1,
                 "watchers": 0,
-                "default_branch": "master"
+                "default_branch": "main"
             }
         },
         "_links": {
@@ -388,7 +388,7 @@
         "forks": 1,
         "open_issues": 1,
         "watchers": 0,
-        "default_branch": "master"
+        "default_branch": "main"
     },
     "sender": {
         "login": "robwinch",
