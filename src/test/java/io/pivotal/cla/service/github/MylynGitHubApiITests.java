@@ -677,7 +677,7 @@ public class MylynGitHubApiITests {
 		commitStatus.setFaqUrl("https://cla.pivotal.io/about");
 		commitStatus.setAccessToken(accessToken);
 		commitStatus.setPullRequestState("open");
-		commitStatus.setPullRequestBody("Oh and by the way @pivotal-issuemaster this IS an obvious fix");
+		commitStatus.setPullRequestBody("Oh and by the way @pivotal-cla this IS an obvious fix");
 
 		service.save(commitStatus);
 

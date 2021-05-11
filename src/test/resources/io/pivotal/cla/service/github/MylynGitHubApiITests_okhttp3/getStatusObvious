@@ -13,7 +13,7 @@ X-RateLimit-Remaining: 4999
     "url": "https://api.github.com/repos/octocat/Hello-World/statuses/1",
     "context": "ci/pivotal-cla",
     "creator": {
-      "login": "pivotal-issuemaster",
+      "login": "pivotal-cla",
       "id": 1,
       "avatar_url": "https://github.com/images/error/octocat_happy.gif",
       "gravatar_id": "",

@@ -44,7 +44,7 @@ X-XSS-Protection: 1; mode=block
     "html_url": "https://github.com/rwinch",
     "id": 362503,
     "location": null,
-    "login": "pivotal-issuemaster",
+    "login": "pivotal-cla",
     "name": "Rob Winch",
     "organizations_url": "https://api.github.com/users/rwinch/orgs",
     "owned_private_repos": 0,
