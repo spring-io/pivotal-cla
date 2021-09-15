@@ -98,16 +98,6 @@ Deployment scripts for `pivotal-cla` require a set of properties to be deployed.
 Deployment is done with zero-downtime using a strategy similar to the https://github.com/contraband/autopilot[autopiolot plugin].
 The application is deployed to multiple application names and if successful, the old application name is removed.
 
-=== TravisCI
-
-TravisCI builds the `main` branch and deploys to production.
-The build is set up to provide deployment properties as environment variables:
-
-* `CF_USERNAME`
-* `CF_PASSWORD`
-* `CLIENT_ID`
-* `CLIENT_SECRET`
-* `TOKEN_SECRET`
 
 === Manual Deployment with Cloud Foundry CLI
 
