@@ -728,6 +728,28 @@ public class MylynGitHubApiITests {
 			"getStatusNone",
 			"saveStatus",
 			"createComment"})
+	public void saveObviousFixMergifyBot() throws Exception {
+		saveObviousFixForUsername("mergify[bot]");
+	}
+
+	@Test
+	@EnqueueRequests({
+			"getUserPivotalIssueMaster",
+			"getIssueCommentsNoComments",
+			"getStatusNone",
+			"saveStatus",
+			"createComment"})
+	public void saveObviousFixMergify() throws Exception {
+		saveObviousFixForUsername("mergify");
+	}
+
+	@Test
+	@EnqueueRequests({
+			"getUserPivotalIssueMaster",
+			"getIssueCommentsNoComments",
+			"getStatusNone",
+			"saveStatus",
+			"createComment"})
 	public void saveObviousFixDependabot() throws Exception {
 		saveObviousFixForUsername("dependabot");
 	}

@@ -66,7 +66,7 @@ import io.pivotal.cla.service.MigratePullRequestStatusRequest;
 @Component
 public class MylynGitHubApi implements GitHubApi {
 	private static final Set<String> ALLOWED_BOTS = new HashSet<>(Arrays.asList("dependabot-preview", "dependabot-preview[bot]",
-			"dependabot", "dependabot[bot]", "github-actions[bot]", "pfs-ci-gitbot"));
+			"dependabot", "dependabot[bot]", "github-actions[bot]", "pfs-ci-gitbot", "mergify[bot]", "mergify"));
 	private static final String AUTHORIZE_URI = "login/oauth/access_token";
 	public static final String CONTRIBUTING_FILE = "CONTRIBUTING";
 	public static final String ADMIN_MAIL_SUFFIX = "@pivotal.io";
