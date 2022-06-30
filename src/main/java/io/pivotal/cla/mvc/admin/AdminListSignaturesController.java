@@ -17,7 +17,9 @@
 package io.pivotal.cla.mvc.admin;
 
 import io.pivotal.cla.data.CorporateSignature;
+import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.repository.CorporateSignatureRepository;
+import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,13 +32,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminListSignaturesController {
     final CorporateSignatureRepository cclas;
 
-    public AdminListSignaturesController(CorporateSignatureRepository cclas) {
+    final IndividualSignatureRepository iclas;
+
+    public AdminListSignaturesController(CorporateSignatureRepository cclas, IndividualSignatureRepository iclas) {
         this.cclas = cclas;
+        this.iclas = iclas;
     }
 
     @GetMapping("/admin/signatures/ccla")
     Iterable<CorporateSignature> cclas() {
         Iterable<CorporateSignature> cclas = this.cclas.findAll();
         return cclas;
+    }
+
+    @GetMapping("/admin/signatures/icla")
+    Iterable<IndividualSignature> iclas() {
+        Iterable<IndividualSignature> iclas = this.iclas.findAll();
+        return iclas;
     }
 }
