@@ -184,7 +184,8 @@ public class MylynGitHubApi implements GitHubApi {
 		status.setUrl(commitStatus.getUrl());
 		status.setTargetUrl(status.getUrl());
 		List<ContextCommitStatus> statuses = commitService.getContextStatuses(pullRequestId.getRepositoryId(), commitStatus.getSha());
-		if (!statuses.stream().anyMatch(s -> matches(status, s))) {
+		ContextCommitStatus firstContextStatus = statuses.stream().filter(s -> s.getContext().equals(status.getContext())).findFirst().orElse(null);
+		if (firstContextStatus == null || !matches(status, firstContextStatus)) {
 			commitService.createStatus(pullRequestId.getRepositoryId(), commitStatus.getSha(), status);
 		}
 		return status;
