@@ -1388,7 +1388,7 @@ public class MylynGitHubApiITests {
 
 		String html = service.markdownToHtml(accessToken, markdown);
 
-		assertThat(html).isEqualTo("<p>Hello world <a href=\"http://github.com/github/linguist/issues/1\" class=\"issue-link\" title=\"This is a simple issue\">github/linguist#1</a> <strong>cool</strong>, and <a href=\"http://github.com/github/gollum/issues/1\" class=\"issue-link\" title=\"This is another issue\">#1</a>!</p>");
+		assertThat(html).isEqualTo("<p>Hello world <a href=\"https://github.com/github/linguist/issues/1\" class=\"issue-link\" title=\"This is a simple issue\">github/linguist#1</a> <strong>cool</strong>, and <a href=\"https://github.com/github/gollum/issues/1\" class=\"issue-link\" title=\"This is another issue\">#1</a>!</p>");
 	}
 
 	@Test

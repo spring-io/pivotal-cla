@@ -44,7 +44,7 @@ public class ClaOAuthConfigTests {
 	public void getGitHubApiBaseUrlCustomSchemePort() {
 		config.setScheme("http");
 		config.setPort(1234);
-		assertThat(config.getGitHubApiBaseUrl()).isEqualTo("http://api.github.com:1234/");
+		assertThat(config.getGitHubApiBaseUrl()).isEqualTo("https://api.github.com:1234/");
 	}
 
 	@Test
@@ -56,6 +56,6 @@ public class ClaOAuthConfigTests {
 	public void getGitHubBaseUrlCustomSchemePort() {
 		config.setScheme("http");
 		config.setPort(1234);
-		assertThat(config.getGitHubBaseUrl()).isEqualTo("http://github.com:1234/");
+		assertThat(config.getGitHubBaseUrl()).isEqualTo("https://github.com:1234/");
 	}
 }
