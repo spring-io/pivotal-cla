@@ -19,18 +19,18 @@ import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.data.IndividualSignature;
 import io.pivotal.cla.data.User;
-import io.pivotal.cla.junit.JpaTests;
 import io.pivotal.cla.service.ClaService;
-import io.pivotal.cla.test.context.SystemDataActiveProfiles;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import io.pivotal.cla.service.github.GitHubApi;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Collections;
 
@@ -40,11 +40,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Rob Winch
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(locations="/application-test.properties")
-@SystemDataActiveProfiles
-@Category(JpaTests.class)
+@Testcontainers
+@Import({MysqlConfiguration.class, ClaService.class})
 public class IndividualSignatureRepositoryTests {
 
 	@Autowired
@@ -56,6 +56,9 @@ public class IndividualSignatureRepositoryTests {
 	@Autowired
 	ClaService claService;
 
+	@MockBean
+	GitHubApi gitHubApi;
+
 	ContributorLicenseAgreement cla;
 
 	ContributorLicenseAgreement springCla;
@@ -64,7 +67,7 @@ public class IndividualSignatureRepositoryTests {
 
 	User user;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		user = DataUtils.createUser();
 

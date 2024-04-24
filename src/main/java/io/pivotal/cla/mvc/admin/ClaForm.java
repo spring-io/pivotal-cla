@@ -15,8 +15,8 @@
  */
 package io.pivotal.cla.mvc.admin;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.util.StringUtils;
 import io.pivotal.cla.data.ContributorLicenseAgreement;

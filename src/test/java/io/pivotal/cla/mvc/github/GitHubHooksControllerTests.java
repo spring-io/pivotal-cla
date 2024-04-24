@@ -25,10 +25,13 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
-import org.junit.Before;
-import org.junit.Test;
+import io.pivotal.cla.security.GitHubSignature;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
@@ -38,23 +41,23 @@ import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.egit.github.core.PullRequestId;
 import io.pivotal.cla.egit.github.core.event.GithubEvents;
-import io.pivotal.cla.security.GitHubSignature;
 import io.pivotal.cla.security.WithSigningUserFactory;
 import io.pivotal.cla.service.github.GitHubApi;
 import io.pivotal.cla.service.github.PullRequestStatus;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
 
+@Import(GitHubSignature.class)
 public class GitHubHooksControllerTests extends BaseWebDriverTests {
 
 	AccessToken accessToken;
 
 	@Autowired
-	GitHubSignature oauth;
-
-	@Autowired
 	GitHubApi gitHubApiMock;
 
-	@Before
+	@Autowired
+	GitHubSignature oauth;
+
+	@BeforeEach
 	public void setupAccessToken() {
 		accessToken = new AccessToken(AccessToken.CLA_ACCESS_TOKEN_ID, "GitHubHooksControllerTests_access_token");
 		when(mockTokenRepo.findOne(AccessToken.CLA_ACCESS_TOKEN_ID)).thenReturn(accessToken);

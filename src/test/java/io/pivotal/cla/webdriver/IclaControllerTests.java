@@ -16,10 +16,10 @@
 package io.pivotal.cla.webdriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import io.pivotal.cla.webdriver.pages.ViewIclaPage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import io.pivotal.cla.data.AccessToken;
@@ -274,7 +274,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 			.sign(SignIclaPage.class);
 
 		signPage.assertAt();
-		verifyZeroInteractions(mockGitHub);
+		verifyNoInteractions(mockGitHub);
 	}
 
 	@Test
@@ -309,7 +309,7 @@ public class IclaControllerTests extends BaseWebDriverTests {
 		assertThat(signature.getTelephone()).isEqualTo(form.getTelephone());
 		assertThat(signature.getDateOfSignature()).isCloseTo(new Date(), TimeUnit.SECONDS.toMillis(5));
 
-		verifyZeroInteractions(mockGitHub);
+		verifyNoInteractions(mockGitHub);
 	}
 
 	@Test

@@ -15,30 +15,27 @@
  */
 package okhttp3.mockwebserver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Rob Winch
  *
  */
 public class MockResponseParserTest {
-    @Rule
-    public ExpectedException thrown= ExpectedException.none();
-
 	MockResponseParser parser;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		parser = new MockResponseParser();
 	}
@@ -66,24 +63,27 @@ public class MockResponseParserTest {
 		assertEquals("application/json", response.getHeaders().get("Content-Type"));
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public void nullInputStream() throws IOException {
-		parser.createResponse(null);
+		assertThatIllegalArgumentException().isThrownBy(() -> parser.createResponse(null));
 	}
 
-	@Test(expected=EOFException.class)
+	@Test
 	public void empty() throws IOException {
-		parser.createResponse(input("empty"));
+		assertThatExceptionOfType(EOFException.class)
+				.isThrownBy(() -> parser.createResponse(input("empty")));
 	}
 
-	@Test(expected=EOFException.class)
+	@Test
 	public void onlyStatus() throws IOException {
-		parser.createResponse(input("onlyStatus"));
+		assertThatExceptionOfType(EOFException.class)
+				.isThrownBy(() -> parser.createResponse(input("onlyStatus")));
 	}
 
-	@Test(expected=EOFException.class)
+	@Test
 	public void noEmptyLine() throws IOException {
-		parser.createResponse(input("noEmptyLine"));
+		assertThatExceptionOfType(EOFException.class)
+				.isThrownBy(() -> parser.createResponse(input("noEmptyLine")));
 	}
 
 	@Test
@@ -137,34 +137,38 @@ public class MockResponseParserTest {
 
 	@Test
 	public void throttleBodyInvalidFormatMissingPart() throws IOException {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("OkHttp-ThrottleBody expected to be in format <long bytesPerPeriod>;<long period>;<TimeUnit unit> but got '12345;67890'");
+		String expectedMessage = "OkHttp-ThrottleBody expected to be in format <long bytesPerPeriod>;<long period>;<TimeUnit unit> but got '12345;67890'";
 
-		parser.createResponse(input("throttleBodyInvalidFormatMissingPart"));
+		assertThatIllegalArgumentException()
+				.isThrownBy(() -> parser.createResponse(input("throttleBodyInvalidFormatMissingPart")))
+				.withMessage(expectedMessage);
 	}
 
 	@Test
 	public void throttleBodyInvalidFormatBytesPerPeriodNotLong() throws IOException {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("OkHttp-ThrottleBody expected to be in format <long bytesPerPeriod>;<long period>;<TimeUnit unit> but got 'invalid;67890;SECONDS'");
+		String expectedMessage = "OkHttp-ThrottleBody expected to be in format <long bytesPerPeriod>;<long period>;<TimeUnit unit> but got 'invalid;67890;SECONDS'";
 
-		parser.createResponse(input("throttleBodyInvalidFormatBytesPerPeriodNotLong"));
+		assertThatIllegalArgumentException()
+				.isThrownBy(() -> parser.createResponse(input("throttleBodyInvalidFormatBytesPerPeriodNotLong")))
+				.withMessage(expectedMessage);
 	}
 
 	@Test
 	public void throttleBodyInvalidFormatPeriodNotLong() throws IOException {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("OkHttp-ThrottleBody expected to be in format <long bytesPerPeriod>;<long period>;<TimeUnit unit> but got '12345;invalid;SECONDS'");
+		String expectedMesssage = "OkHttp-ThrottleBody expected to be in format <long bytesPerPeriod>;<long period>;<TimeUnit unit> but got '12345;invalid;SECONDS'";
 
-		parser.createResponse(input("throttleBodyInvalidFormatPeriodNotLong"));
+		assertThatIllegalArgumentException()
+				.isThrownBy(() -> parser.createResponse(input("throttleBodyInvalidFormatPeriodNotLong")))
+				.withMessageContaining(expectedMesssage);
 	}
 
 	@Test
 	public void throttleBodyInvalidFormatInvalidUnit() throws IOException {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("OkHttp-ThrottleBody expected to be in format <long bytesPerPeriod>;<long period>;<TimeUnit unit> but got '12345;67890;invalid'");
+		String expectedMessage = "OkHttp-ThrottleBody expected to be in format <long bytesPerPeriod>;<long period>;<TimeUnit unit> but got '12345;67890;invalid'";
 
-		parser.createResponse(input("throttleBodyInvalidFormatInvalidUnit"));
+		assertThatIllegalArgumentException()
+				.isThrownBy(() -> parser.createResponse(input("throttleBodyInvalidFormatInvalidUnit")))
+				.withMessage(expectedMessage);
 	}
 
 	@Test
@@ -179,10 +183,11 @@ public class MockResponseParserTest {
 
 	@Test
 	public void chunkedBodyInvalidFormatNotInt() throws IOException {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("OkHttp-ChunkedBody expected to be in format <int maxChunkSize> but got 'invalid'");
+		String expectedMessage = "OkHttp-ChunkedBody expected to be in format <int maxChunkSize> but got 'invalid'";
 
-		parser.createResponse(input("chunkedBodyInvalidFormatNotInt"));
+		assertThatIllegalArgumentException()
+				.isThrownBy(() -> parser.createResponse(input("chunkedBodyInvalidFormatNotInt")))
+				.withMessage(expectedMessage);
 	}
 
 	@Test
@@ -203,18 +208,20 @@ public class MockResponseParserTest {
 
 	@Test
 	public void bodyDelayInvalidFormatInvalidUnit() throws IOException {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("OkHttp-BodyDelay expected to be in format <long delay>;<TimeUnit unit> but got '123;invalid'");
+		String expectedMessage = "OkHttp-BodyDelay expected to be in format <long delay>;<TimeUnit unit> but got '123;invalid'";
 
-		parser.createResponse(input("bodyDelayInvalidFormatInvalidUnit"));
+		assertThatIllegalArgumentException()
+				.isThrownBy(() -> parser.createResponse(input("bodyDelayInvalidFormatInvalidUnit")))
+				.withMessage(expectedMessage);
 	}
 
 	@Test
 	public void bodyDelayInvalidFormatInvalidDelay() throws IOException {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("OkHttp-BodyDelay expected to be in format <long delay>;<TimeUnit unit> but got 'invalid;SECONDS'");
+		String expectedMessage = "OkHttp-BodyDelay expected to be in format <long delay>;<TimeUnit unit> but got 'invalid;SECONDS'";
 
-		parser.createResponse(input("bodyDelayInvalidFormatInvalidDelay"));
+		assertThatIllegalArgumentException()
+				.isThrownBy(() -> parser.createResponse(input("bodyDelayInvalidFormatInvalidDelay")))
+				.withMessage(expectedMessage);
 	}
 
 	private InputStream input(String name) {

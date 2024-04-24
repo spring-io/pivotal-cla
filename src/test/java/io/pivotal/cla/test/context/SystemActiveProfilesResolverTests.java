@@ -17,8 +17,8 @@ package io.pivotal.cla.test.context;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
 /**
@@ -28,7 +28,7 @@ import org.springframework.test.context.ActiveProfiles;
 public class SystemActiveProfilesResolverTests {
 	SystemActiveProfilesResolver resolver;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		resolver = new SystemActiveProfilesResolver();
 	}

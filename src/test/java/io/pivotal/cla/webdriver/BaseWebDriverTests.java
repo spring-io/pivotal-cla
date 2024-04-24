@@ -19,14 +19,17 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.concurrent.Executors;
 
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import io.pivotal.cla.security.GitHubSignature;
+import io.pivotal.cla.security.ImportSecurity;
+import io.pivotal.cla.service.ClaService;
+import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.concurrent.DelegatingSecurityContextExecutor;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.htmlunit.webdriver.MockMvcHtmlUnitDriverBuilder;
 import org.springframework.web.context.WebApplicationContext;
@@ -42,8 +45,9 @@ import io.pivotal.cla.data.repository.IndividualSignatureRepository;
 import io.pivotal.cla.data.repository.UserRepository;
 import io.pivotal.cla.service.github.GitHubApi;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebDriverContext
+@WebMvcTest
+@ImportSecurity
+@Import(ClaService.class)
 public abstract class BaseWebDriverTests {
 	@Autowired
 	protected WebApplicationContext wac;
@@ -70,7 +74,7 @@ public abstract class BaseWebDriverTests {
 	protected IndividualSignature individualSignature;
 	protected CorporateSignature corporateSignature;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		HtmlUnitDriver driver = MockMvcHtmlUnitDriverBuilder
 				.mockMvcSetup(mockMvc)

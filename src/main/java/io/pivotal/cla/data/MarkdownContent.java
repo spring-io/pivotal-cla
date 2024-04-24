@@ -15,8 +15,8 @@
  */
 package io.pivotal.cla.data;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Lob;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Lob;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**

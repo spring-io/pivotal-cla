@@ -17,10 +17,8 @@ package io.pivotal.cla.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Modifier;
-
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 /**
@@ -30,7 +28,7 @@ import org.junit.Test;
 public class ClaOAuthConfigTests {
 	ClaOAuthConfig config;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		config = new ClaOAuthConfig();
 	}

@@ -16,14 +16,14 @@
 package io.pivotal.cla.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.pivotal.cla.data.AccessToken;
 import io.pivotal.cla.data.repository.AccessTokenRepository;
@@ -32,7 +32,7 @@ import io.pivotal.cla.data.repository.AccessTokenRepository;
  * @author Rob Winch
  *
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class GitHubSignatureTests {
 	@Mock
 	AccessTokenRepository mockAccessTokens;
@@ -41,7 +41,7 @@ public class GitHubSignatureTests {
 
 	AccessToken token;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		gitHubSignature = new GitHubSignature(mockAccessTokens);
 		token = new AccessToken();

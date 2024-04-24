@@ -20,7 +20,7 @@ import io.pivotal.cla.service.ClaService;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;
 import io.pivotal.cla.webdriver.pages.admin.AdminLookupSignaturePage;
 import io.pivotal.cla.webdriver.pages.admin.AdminLookupSignaturePage.FindSignatureForm;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -19,17 +19,20 @@ import io.pivotal.cla.data.ContributorLicenseAgreement;
 import io.pivotal.cla.data.CorporateSignature;
 import io.pivotal.cla.data.DataUtils;
 import io.pivotal.cla.data.User;
-import io.pivotal.cla.junit.JpaTests;
-import io.pivotal.cla.test.context.SystemDataActiveProfiles;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,11 +43,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Rob Winch
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(locations="/application-test.properties")
-@SystemDataActiveProfiles
-@Category(JpaTests.class)
+@Testcontainers
+@Import(MysqlConfiguration.class)
 public class CorporateSignatureRepositoryTests {
 
 	@Autowired
@@ -61,7 +64,7 @@ public class CorporateSignatureRepositoryTests {
 
 	User user;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		user = DataUtils.createUser();
 
@@ -227,4 +230,5 @@ public class CorporateSignatureRepositoryTests {
 		signature.setEmail(user.getEmails().iterator().next());
 		return signature;
 	}
+
 }

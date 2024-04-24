@@ -15,24 +15,24 @@
  */
 package okhttp3.mockwebserver;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-
-import org.junit.Rule;
-import org.junit.Test;
-
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Rob Winch
  *
  */
+@ExtendWith(EnqueueRequestsExtension.class)
 public class EnqueueResourcesMockWebServerITest {
-	@Rule
+
 	public EnqueueResourcesMockWebServer server = new EnqueueResourcesMockWebServer();
 
 	@Test

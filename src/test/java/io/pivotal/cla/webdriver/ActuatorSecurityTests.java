@@ -18,7 +18,19 @@ package io.pivotal.cla.webdriver;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.actuate.autoconfigure.beans.BeansEndpointAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.endpoint.EndpointAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.endpoint.web.ServletEndpointManagementContextConfiguration;
+import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.endpoint.web.servlet.WebMvcEndpointManagementContextConfiguration;
+import org.springframework.boot.actuate.autoconfigure.web.server.ManagementContextAutoConfiguration;
+import org.springframework.boot.autoconfigure.*;
+import org.springframework.boot.context.TypeExcludeFilter;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
+import org.springframework.core.Ordered;
 import org.springframework.http.MediaType;
 
 import io.pivotal.cla.security.WithAdminUser;
@@ -29,6 +41,7 @@ import io.pivotal.cla.security.WithSigningUser;
  * @author Rob Winch
  *
  */
+@ImportAutoConfiguration({EndpointAutoConfiguration.class, WebEndpointAutoConfiguration.class, BeansEndpointAutoConfiguration.class, ManagementContextAutoConfiguration.class})
 public class ActuatorSecurityTests extends BaseWebDriverTests {
 
 	@Test

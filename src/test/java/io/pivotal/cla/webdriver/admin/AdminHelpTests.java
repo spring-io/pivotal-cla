@@ -15,7 +15,7 @@
  */
 package io.pivotal.cla.webdriver.admin;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.pivotal.cla.security.WithAdminUser;
 import io.pivotal.cla.webdriver.BaseWebDriverTests;

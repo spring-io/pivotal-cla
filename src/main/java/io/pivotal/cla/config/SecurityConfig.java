@@ -17,20 +17,24 @@ package io.pivotal.cla.config;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint;
@@ -43,41 +47,49 @@ import org.springframework.web.cors.CorsUtils;
 import io.pivotal.cla.data.User;
 import io.pivotal.cla.security.GitHubAuthenticationEntryPoint;
 
+@Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	@Autowired
-	private ClaOAuthConfig oauthConfig;
+public class SecurityConfig {
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	private final ClaOAuthConfig oauthConfig;
+
+	public SecurityConfig(ClaOAuthConfig oauthConfig) {
+		this.oauthConfig = oauthConfig;
+	}
+
+	@Bean
+	DefaultSecurityFilterChain springSecurity(HttpSecurity http) throws Exception {
 		AuthenticationEntryPoint entryPoint = entryPoint();
 		AdminRequestedAccessDeniedHandler accessDeniedHandler = new AdminRequestedAccessDeniedHandler(entryPoint);
 		// @formatter:off
 		http
-			.requiresChannel()
+			.requiresChannel(channel -> channel
 				.requestMatchers(request -> request.getHeader("x-forwarded-port") != null).requiresSecure()
-				.and()
-			.exceptionHandling()
+			)
+			.exceptionHandling(exceptions -> exceptions
 				.authenticationEntryPoint(entryPoint)
 				.accessDeniedHandler(accessDeniedHandler)
-				.and()
-			.csrf()
-				.ignoringAntMatchers("/github/hooks/**")
-				.and()
-			.authorizeRequests()
+			)
+			.csrf(csrf -> csrf
+				.ignoringRequestMatchers("/github/hooks/**")
+			)
+			.authorizeHttpRequests(requests -> requests
+				.requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole("CLA_AUTHOR")
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-				.mvcMatchers("/login/**", "/", "/about", "/faq").permitAll()
-				.mvcMatchers("/view/**").permitAll()
-				.mvcMatchers("/webjars/**", "/assets/**").permitAll()
-				.mvcMatchers("/github/hooks/**").permitAll()
-				.mvcMatchers("/admin", "/admin/lookup/**", "/admin/cla/link/**", "/admin/help/**").hasRole("ADMIN")
-				.mvcMatchers("/admin/**", "/manage/**").hasRole("CLA_AUTHOR")
+				.requestMatchers("/login/**", "/", "/about", "/faq").permitAll()
+				.requestMatchers("/view/**").permitAll()
+				.requestMatchers("/webjars/**", "/assets/**").permitAll()
+				.requestMatchers("/github/hooks/**").permitAll()
+				.requestMatchers("/admin", "/admin/lookup/**", "/admin/cla/link/**", "/admin/help/**").hasRole("ADMIN")
+				.requestMatchers("/admin/**", "/manage/**").hasRole("CLA_AUTHOR")
 				.anyRequest().authenticated()
-				.and()
-			.logout()
-				.logoutSuccessUrl("/?logout");
+			)
+			.logout(logout -> logout
+				.logoutSuccessUrl("/?logout")
+			);
 		// @formatter:on
+		return http.build();
 	}
 
 

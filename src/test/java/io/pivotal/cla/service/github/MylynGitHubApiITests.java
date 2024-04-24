@@ -15,42 +15,40 @@
  */
 package io.pivotal.cla.service.github;
 
-import static org.assertj.core.api.Assertions.*;
+import io.pivotal.cla.config.ClaOAuthConfig;
+import io.pivotal.cla.config.OAuthClientCredentials;
+import io.pivotal.cla.data.User;
+import okhttp3.mockwebserver.EnqueueRequests;
+import okhttp3.mockwebserver.EnqueueRequestsExtension;
+import okhttp3.mockwebserver.EnqueueResourcesMockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.serializer.support.SerializingConverter;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.core.serializer.support.SerializingConverter;
-
-import io.pivotal.cla.config.ClaOAuthConfig;
-import io.pivotal.cla.config.OAuthClientCredentials;
-import io.pivotal.cla.data.User;
-import okhttp3.mockwebserver.EnqueueRequests;
-import okhttp3.mockwebserver.EnqueueResourcesMockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Rob Winch
  * @author Mark Paluch
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith({ MockitoExtension.class, EnqueueRequestsExtension.class })
 public class MylynGitHubApiITests {
-	@Rule
 	public final EnqueueResourcesMockWebServer server = new EnqueueResourcesMockWebServer();
 
 	ClaOAuthConfig oauthConfig;
 
 	MylynGitHubApi service;
 
-	@Before
+	@BeforeEach
 	public void setup() throws IOException {
 
 		OAuthClientCredentials credentials = new OAuthClientCredentials();
@@ -1247,7 +1245,7 @@ public class MylynGitHubApiITests {
 		"getStatusNone",
 		"saveStatus"
 	})
-	@Ignore
+	@Disabled
 	public void saveFailureNoCommentsPullRequestClosed() throws Exception {
 		String accessToken = "access-token-123";
 
@@ -1273,7 +1271,7 @@ public class MylynGitHubApiITests {
 		"getStatusNone",
 		"saveStatus"
 	})
-	@Ignore
+	@Disabled
 	public void saveFailureNoCommentsPullRequestUnknownState() throws Exception {
 		String accessToken = "access-token-123";
 

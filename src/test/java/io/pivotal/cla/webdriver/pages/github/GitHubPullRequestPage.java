@@ -12,6 +12,8 @@ import com.google.common.base.Predicate;
 
 import io.pivotal.cla.webdriver.pages.SignClaPage;
 
+import java.time.Duration;
+
 /**
  * Represents a Pull Request Page. For example:
  *
@@ -66,7 +68,7 @@ public class GitHubPullRequestPage {
 	}
 
 	private void waitForText(String text) {
-		new WebDriverWait(driver, 60).until(input -> getBodyText(input).contains(text));
+		new WebDriverWait(driver, Duration.ofSeconds(60)).until(input -> getBodyText(input).contains(text));
 	}
 
 	private String getBodyText(WebDriver driver) {

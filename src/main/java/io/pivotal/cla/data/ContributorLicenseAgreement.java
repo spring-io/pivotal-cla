@@ -16,23 +16,25 @@
 package io.pivotal.cla.data;
 
 import java.util.Date;
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.OneToOne;
-import javax.persistence.Version;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Version;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 public class ContributorLicenseAgreement {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@NotEmpty(message = "This is required")
 	private String name;
@@ -62,12 +64,12 @@ public class ContributorLicenseAgreement {
 	@Lob
 	@NotNull(message = "This is required")
 	@Valid
-	@AttributeOverrides({@AttributeOverride(name = "markdown", column = @Column(name = "individual_markdown")), @AttributeOverride(name = "html", column = @Column(name = "individual_html"))})
+	@AttributeOverrides({@AttributeOverride(name = "markdown", column = @Column(name = "individual_markdown", columnDefinition = "longtext")), @AttributeOverride(name = "html", column = @Column(name = "individual_html", columnDefinition = "longtext"))})
 	private MarkdownContent individualContent;
 	@Lob
 	@Valid
 	@NotNull(message = "This is required")
-	@AttributeOverrides({@AttributeOverride(name = "markdown", column = @Column(name = "corporate_markdown")), @AttributeOverride(name = "html", column = @Column(name = "corporate_html"))})
+	@AttributeOverrides({@AttributeOverride(name = "markdown", column = @Column(name = "corporate_markdown", columnDefinition = "longtext")), @AttributeOverride(name = "html", column = @Column(name = "corporate_html", columnDefinition = "longtext"))})
 	private MarkdownContent corporateContent;
 
 	public ContributorLicenseAgreement() {

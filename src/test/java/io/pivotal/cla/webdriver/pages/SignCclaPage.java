@@ -81,7 +81,7 @@ public class SignCclaPage extends BasePage {
 	}
 
 	public static SignCclaPage go(WebDriver driver, String cla, String repositoryId, long pullRequestId) {
-		get(driver, url(cla) + "/?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId);
+		get(driver, url(cla) + "?repositoryId="+repositoryId+"&pullRequestId="+pullRequestId);
 		return PageFactory.initElements(driver, SignCclaPage.class);
 	}
 

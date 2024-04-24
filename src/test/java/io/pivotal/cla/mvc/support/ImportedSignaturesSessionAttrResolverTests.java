@@ -15,8 +15,8 @@
  */
 package io.pivotal.cla.mvc.support;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.util.ReflectionUtils;
@@ -37,7 +37,7 @@ public class ImportedSignaturesSessionAttrResolverTests {
 
 	ImportedSignaturesSessionAttrResolver resolver;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		resolver = new ImportedSignaturesSessionAttrResolver();
 		method = ReflectionUtils.findMethod(ImportedSignaturesSessionAttrResolverTests.class, "methodParameter", ImportedSignaturesSessionAttr.class, Object.class);

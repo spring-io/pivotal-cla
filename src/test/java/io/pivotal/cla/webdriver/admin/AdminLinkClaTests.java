@@ -17,19 +17,18 @@ package io.pivotal.cla.webdriver.admin;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.concurrent.Executors;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.concurrent.DelegatingSecurityContextExecutor;
@@ -50,7 +49,7 @@ import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 @WithAdminUser
 public class AdminLinkClaTests extends BaseWebDriverTests {
 
-	@Before
+	@BeforeEach
 	public void claFormData() throws Exception {
 		when(mockClaRepository.findByPrimaryTrue()).thenReturn(Arrays.asList(cla,cla));
 		when(mockGitHub.findRepositoryNamesWithAdminPermission(anyString())).thenReturn(Arrays.asList("test/this"));

@@ -16,8 +16,8 @@
 package io.pivotal.cla.webdriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,9 +27,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import io.pivotal.cla.MocksConfig;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.TestSecurityContextHolder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 
 import io.pivotal.cla.data.AccessToken;
@@ -43,9 +46,10 @@ import io.pivotal.cla.webdriver.pages.SignClaPage;
 import io.pivotal.cla.webdriver.pages.SignIclaPage;
 
 @WithSigningUser
+@Import(MocksConfig.class)
 public class ClaControllerTests extends BaseWebDriverTests {
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		super.setup();
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
@@ -54,6 +58,7 @@ public class ClaControllerTests extends BaseWebDriverTests {
 	@Test
 	@WithAnonymousUser
 	public void viewSignedWithRepositoryIdAndPullRequestIdNewUser() throws Exception {
+		TestSecurityContextHolder.clearContext(); // FIXME: This is a work around for bug with AnonymousAuthenticationToken in test security context clears out any new values.
 		String repositoryId = "spring-projects/spring-security";
 		User signingUser = WithSigningUserFactory.create();
 		when(mockGitHub.getCurrentUser(any())).thenReturn(signingUser);

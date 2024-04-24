@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import io.pivotal.cla.data.ContributorLicenseAgreement;
@@ -200,7 +200,7 @@ public class EditAdminClaTests extends BaseWebDriverTests {
 
 	@Test
 	public void editClaSuccessPrimaryExistingButSameId() {
-		cla.setId(new Long(1L));
+		cla.setId(Long.valueOf(1L));
 		when(mockClaRepository.findByNameAndPrimaryTrue(cla.getName())).thenReturn(cla);
 		when(mockClaRepository.findAll()).thenReturn(Arrays.asList(cla));
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);

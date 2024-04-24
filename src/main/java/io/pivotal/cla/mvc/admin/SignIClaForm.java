@@ -18,8 +18,8 @@ package io.pivotal.cla.mvc.admin;
 import io.pivotal.cla.mvc.ClaRequest;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotNull;
 
 public class SignIClaForm extends ClaRequest {
 	@NotEmpty(message = "This is required")

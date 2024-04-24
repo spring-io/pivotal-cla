@@ -17,8 +17,8 @@ package io.pivotal.cla.mvc.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 
@@ -31,7 +31,7 @@ public class ImportedSignaturesSessionAttrTests {
 
 	MockHttpServletRequest request;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		request = new MockHttpServletRequest();
 		attr = new ImportedSignaturesSessionAttr(new ServletWebRequest(request));

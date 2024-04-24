@@ -16,15 +16,13 @@
 package okhttp3.mockwebserver;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
 
 /**
  * Allows externalizing queued responses using classpath resources. This is
@@ -97,94 +95,52 @@ import org.junit.runners.model.Statement;
  *
  * @author Rob Winch
  */
-public final class EnqueueResourcesMockWebServer {
-	final QueueDispatcher dispatcher;
+public final class EnqueueRequestsExtension implements BeforeEachCallback, AfterEachCallback {
 
-	final MockWebServer server;
+	@Override
+	public void beforeEach(ExtensionContext extensionContext) throws Exception {
+		Class<?> testClass = extensionContext.getRequiredTestClass();
+		Object testInstance = extensionContext.getRequiredTestInstance();
 
-	public EnqueueResourcesMockWebServer() {
-		dispatcher = new QueueDispatcher();
-		server = new MockWebServer();
-		server.setDispatcher(dispatcher);
+		findEnqueueResourcesMockWebServerMembers(testClass, testInstance)
+			.forEach(server -> {
+				try {
+					server.getServer().start();
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				Method method = extensionContext.getRequiredTestMethod();
+				server.enqueue(testClass, method);
+			});
+
+
 	}
 
-	final MockResponseParser parser = new MockResponseParser();
+	@Override
+	public void afterEach(ExtensionContext extensionContext) throws Exception {
+		Class<?> testClass = extensionContext.getRequiredTestClass();
+		Object testInstance = extensionContext.getRequiredTestInstance();
 
-	public MockResponse peek() {
-		return dispatcher.peek();
+		findEnqueueResourcesMockWebServerMembers(testClass, testInstance)
+				.forEach(server -> {
+					try {
+						server.getServer().shutdown();
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+				});
 	}
 
-	public MockWebServer getServer() {
-		return server;
-	}
-
-	public String getServerUrl() {
-		return "http://" + server.getHostName()+ ":" + server.getPort();
-	}
-
-	void enqueue(Class<?> testClass, Method testMethod) {
-		EnqueueRequests toEnqueue = testMethod.getAnnotation(EnqueueRequests.class);
-		if(toEnqueue != null) {
-			enqueue(testClass, toEnqueue);
-		} else {
-			enqueueDefault(testClass, testMethod);
-		}
-	}
-
-	private void enqueue(Class<?> testClass, EnqueueRequests toEnqueue) {
-		String[] resources = toEnqueue.value();
-		for(String resource : resources) {
-			if(!resource.startsWith("/")) {
-				resource = "/"+ (testClass.getName().replaceAll("\\.", "/")) + "_okhttp3/" + resource;
-			}
-			MockResponse response = getResponse(resource);
-			if(response == null) {
-				throw new IllegalStateException("Couldn't load " + resource);
-			}
-			server.enqueue(response);
-		}
-	}
-
-	private void enqueueDefault(Class<?> testClass, Method testMethod) {
-		String resourceBaseName = getResourceBaseName(testClass, testMethod);
-
-		for (int i = 1; i < Integer.MAX_VALUE; i++) {
-			String resourceName = resourceBaseName + i;
-
-			MockResponse response = getResponse(resourceName);
-			if (response == null) {
-				server.enqueue(tooManyRequests(resourceName));
-				break;
-			}
-			server.enqueue(response);
-		}
-	}
-
-	private MockResponse tooManyRequests(String resourceName) {
-		MockResponse result = new MockResponse();
-		result.setStatus("HTTP/1.1 400 Bad Request");
-		result.setBody("You have made too many requests. Reduce your requests or provide a resource at "+resourceName);
-		return result;
-	}
-
-	private MockResponse getResponse(String resourceName) {
-		InputStream in = input(resourceName);
-		if (in == null) {
-			return null;
-		}
-		try {
-			return parser.createResponse(in);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	private InputStream input(String name) {
-		return getClass().getResourceAsStream(name);
-	}
-
-	private String getResourceBaseName(Class<?> testClass, Method testMethod) {
-		return "/"+(testClass.getName() + "_okhttp3/" + testMethod.getName() + "/")
-				.replaceAll("\\.", "/");
+	private static Stream<EnqueueResourcesMockWebServer> findEnqueueResourcesMockWebServerMembers(Class<?> testClass, Object testInstance) {
+		return Arrays.stream(testClass.getDeclaredFields())
+				.filter(f -> f.getType().equals(EnqueueResourcesMockWebServer.class))
+				.map(f -> {
+					try {
+						f.setAccessible(true);
+						return (EnqueueResourcesMockWebServer) f.get(testInstance);
+					} catch (IllegalArgumentException | IllegalAccessException e) {
+						throw new RuntimeException(e);
+					}
+				});
 	}
 }

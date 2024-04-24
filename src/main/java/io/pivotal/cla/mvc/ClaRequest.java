@@ -15,7 +15,7 @@
  */
 package io.pivotal.cla.mvc;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import io.pivotal.cla.mvc.util.UrlBuilder;

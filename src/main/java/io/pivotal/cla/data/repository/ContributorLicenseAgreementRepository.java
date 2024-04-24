@@ -17,12 +17,13 @@ package io.pivotal.cla.data.repository;
 
 import java.util.List;
 
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import io.pivotal.cla.data.ContributorLicenseAgreement;
 
 public interface ContributorLicenseAgreementRepository
-		extends PagingAndSortingRepository<ContributorLicenseAgreement, Long> {
+		extends PagingAndSortingRepository<ContributorLicenseAgreement, Long>, CrudRepository<ContributorLicenseAgreement, Long> {
 
 	default ContributorLicenseAgreement findOne(Long id) {
 		return findById(id).orElse(null);

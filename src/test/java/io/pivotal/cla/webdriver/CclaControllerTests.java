@@ -16,9 +16,9 @@
 package io.pivotal.cla.webdriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.pivotal.cla.webdriver.pages.ViewCclaPage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import io.pivotal.cla.data.AccessToken;
@@ -455,7 +455,7 @@ public class CclaControllerTests extends BaseWebDriverTests {
 		when(mockClaRepository.findOne(cla.getId())).thenReturn(cla);
 		when(mockGitHub.getOrganizations(anyString())).thenReturn(Arrays.asList("spring","pivotal"));
 		when(mockGitHub.getShaForPullRequest(any(PullRequestStatus.class))).thenReturn("abc123");
-		when(mockCorporateSignatureRepository.findSignature(anyString(), anyCollectionOf(String.class), anyCollectionOf(String.class))).thenReturn(null,corporateSignature);
+		when(mockCorporateSignatureRepository.findSignature(anyString(), anyCollection(), anyCollection())).thenReturn(null,corporateSignature);
 		when(mockTokenRepo.findOne(repositoryId)).thenReturn(new AccessToken(repositoryId, "access-token-123"));
 
 		int pullRequestId = 2;

@@ -1,6 +1,6 @@
 package io.pivotal.cla.mvc.admin;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 
 /**
  * @author Rob Winch

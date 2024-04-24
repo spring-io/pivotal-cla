@@ -7,6 +7,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
+
 public class GitHubAuthorizePage {
 	final WebDriver driver;
 
@@ -24,7 +26,7 @@ public class GitHubAuthorizePage {
 	}
 
 	private void waitToBeClickable(By selector) {
-		WebDriverWait wait = new WebDriverWait(driver, 60);
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
 		wait.until(ExpectedConditions.elementToBeClickable(selector));
 	}
 

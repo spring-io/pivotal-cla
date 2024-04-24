@@ -16,9 +16,9 @@
 package io.pivotal.cla.webdriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anySet;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anySet;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,11 +28,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Test;
+import io.pivotal.cla.MocksConfig;
+import io.pivotal.cla.security.ImportSecurity;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.test.context.TestSecurityContextHolder;
 import org.springframework.util.MultiValueMap;
@@ -49,6 +52,7 @@ import io.pivotal.cla.service.github.OAuthAccessTokenParams;
 import io.pivotal.cla.webdriver.pages.SignClaPage;
 import io.pivotal.cla.webdriver.pages.admin.AdminLinkClaPage;
 
+@Import(MocksConfig.class)
 public class AuthenticationTests extends BaseWebDriverTests {
 
 	@Autowired
@@ -133,6 +137,7 @@ public class AuthenticationTests extends BaseWebDriverTests {
 		when(mockGitHub.getCurrentUser(any(CurrentUserRequest.class))).thenReturn(user);
 
 		AdminLinkClaPage admin = AdminLinkClaPage.to(driver);
+		System.out.println(driver.getCurrentUrl());
 		admin.assertAt();
 
 		ArgumentCaptor<CurrentUserRequest> userCaptor = ArgumentCaptor.forClass(CurrentUserRequest.class);

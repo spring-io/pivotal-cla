@@ -29,7 +29,7 @@ import io.pivotal.cla.data.repository.AccessTokenRepository;
 /**
  * @author Rob Winch
  */
-@Component
+@Component("gitHubSignature")
 public class GitHubSignature {
 	private static final String SIGNATURE_PREFIX = "sha1=";
 	private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";

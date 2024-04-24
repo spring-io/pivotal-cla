@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.Map;
 
 /**
@@ -24,7 +24,7 @@ public class AdminLookupSignatureController {
 		this.clas = clas;
 	}
 
-	@GetMapping("/admin/lookup")
+	@GetMapping("/admin/lookup/")
 	String index(@ModelAttribute LookupForm lookupForm) {
 		lookupForm.setClaName("pivotal"); // default value
 		return "admin/lookup/index";
