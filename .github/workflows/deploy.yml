@@ -1,0 +1,63 @@
+name: Deploy
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+env:
+  SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+  SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+  SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+  SECURITY_OAUTH2_MAIN_CLIENTID: ${{ secrets.SECURITY_OAUTH2_MAIN_CLIENTID }}
+  SECURITY_OAUTH2_MAIN_CLIENTSECRET: ${{ secrets.SECURITY_OAUTH2_MAIN_CLIENTSECRET }}
+  SECURITY_OAUTH2_PIVOTALCLA_TOKENSECRET: ${{ secrets.SECURITY_OAUTH2_PIVOTALCLA_TOKENSECRET }}
+  AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_SPRING_IO }}
+  AZURE_SERVICE_NAME: spring-io
+  AZURE_RESOURCE_GROUP: spring-io
+  AZURE_PROJECT_NAME: cla-pivotal-io
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/actions/checkout/tags
+      - name: Checkout
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # 4.1.4
+      # https://github.com/actions/setup-java/tags
+      - name: Set up JDK 17
+        uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # 4.2.1
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+      # https://github.com/gradle/actions/tags
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@db19848a5fa7950289d3668fb053140cf3028d43 # 3.3.2
+      - name: Build with Gradle
+        uses: gradle/actions/setup-gradle@db19848a5fa7950289d3668fb053140cf3028d43 # 3.3.2
+        with:
+          arguments: build
+      # https://github.com/Azure/login/tags
+      - name: Set up Azure
+        uses: azure/login@6b2456866fc08b011acb422a92a4aa20e2c4de32 # 2.1.0
+        with:
+          creds: ${{ env.AZURE_CREDENTIALS }}
+      - name: Set up Azure Spring Extension
+        run: az extension add --name spring
+      - name: Create app
+        run: |
+          az spring app create \
+          --name "$AZURE_PROJECT_NAME" \
+          --resource-group "$AZURE_RESOURCE_GROUP" \
+          --instance-count 2 \
+          --assign-endpoint true \
+          --service "$AZURE_SERVICE_NAME"
+        continue-on-error: true
+      - name: Deploy
+        run: |
+          az spring app deploy \
+            --name "$AZURE_PROJECT_NAME" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --build-env BP_JVM_VERSION=17 \
+            --service "$AZURE_SERVICE_NAME" \
+            --env "SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}" "SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}" "SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}" "SECURITY_OAUTH2_MAIN_CLIENTID=${SECURITY_OAUTH2_MAIN_CLIENTID}" "SECURITY_OAUTH2_MAIN_CLIENTSECRET=${SECURITY_OAUTH2_MAIN_CLIENTSECRET}" "SECURITY_OAUTH2_PIVOTALCLA_TOKENSECRET=${SECURITY_OAUTH2_PIVOTALCLA_TOKENSECRET}"\
+            --artifact-path ./build/libs/pivotal-cla-0.0.1-SNAPSHOT.jar
