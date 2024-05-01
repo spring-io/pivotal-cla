@@ -43,15 +43,6 @@ jobs:
           creds: ${{ env.AZURE_CREDENTIALS }}
       - name: Set up Azure Spring Extension
         run: az extension add --name spring
-      - name: Create app
-        run: |
-          az spring app create \
-          --name "$AZURE_PROJECT_NAME" \
-          --resource-group "$AZURE_RESOURCE_GROUP" \
-          --instance-count 2 \
-          --assign-endpoint true \
-          --service "$AZURE_SERVICE_NAME"
-        continue-on-error: true
       - name: Deploy
         run: |
           az spring app deploy \
