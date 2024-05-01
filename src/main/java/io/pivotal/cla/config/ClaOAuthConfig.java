@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "security.oauth2")
 public class ClaOAuthConfig {
-	@Value("${security.oauth2.pivotal-cla.tokenSecret}")
+	@Value("${security.oauth2.pivotal-cla.token-secret}")
 	private String pivotalClaAccessToken;
 	private OAuthClientCredentials main;
 	private String scheme = "https";
