@@ -35,7 +35,7 @@ jobs:
       - name: Build with Gradle
         uses: gradle/actions/setup-gradle@db19848a5fa7950289d3668fb053140cf3028d43 # 3.3.2
         with:
-          arguments: build
+          arguments: assemble -x check
       # https://github.com/Azure/login/tags
       - name: Set up Azure
         uses: azure/login@6b2456866fc08b011acb422a92a4aa20e2c4de32 # 2.1.0
