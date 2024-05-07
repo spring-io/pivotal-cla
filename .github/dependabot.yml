@@ -1,0 +1,17 @@
+version: 2
+updates:
+  - package-ecosystem: gradle
+    target-branch: main
+    directory: /
+    schedule:
+      interval: daily
+      time: '03:00'
+      timezone: Etc/UTC
+    labels:
+      - 'type: dependency-upgrade'
+    ignore:
+      - dependency-name: org.webjars*
+      - dependency-name: mysql:mysql-connector-java
+        update-types:
+          - version-update:semver-major
+          - version-update:semver-minor
