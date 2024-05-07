@@ -1,0 +1,10 @@
+[libraries]
+egit-github-core = 'org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5'
+webjars-bootstrap = 'org.webjars:bootstrap:3.3.6'
+webjars-jquery = 'org.webjars:jquery:1.11.3'
+webjars-select2 = 'org.webjars.bower:select2:4.0.3'
+mysql-connector = 'mysql:mysql-connector-java:8.0.33'
+
+[plugins]
+springBoot = 'org.springframework.boot:3.2.5'
+gitProperties = 'com.gorylenko.gradle-git-properties:2.4.1'

@@ -1,6 +1,6 @@
 plugins {
-	id 'org.springframework.boot' version '3.2.5'
-	id "com.gorylenko.gradle-git-properties" version "2.4.1"
+	alias(libs.plugins.springBoot)
+	alias(libs.plugins.gitProperties)
 }
 
 apply plugin: 'java'
@@ -41,15 +41,15 @@ dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-actuator')
 	implementation('org.springframework.boot:spring-boot-starter-validation')
 	implementation('org.springframework.session:spring-session-jdbc')
-	implementation('org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5')
+	implementation(libs.egit.github.core)
 	implementation('org.webjars:webjars-locator-core')
-	implementation('org.webjars:bootstrap:3.3.6')
-	implementation('org.webjars:jquery:1.11.3')
-	implementation('org.webjars.bower:select2:4.0.3')
+	implementation(libs.webjars.bootstrap)
+	implementation(libs.webjars.jquery)
+	implementation(libs.webjars.select2)
 	implementation('net.sourceforge.nekohtml:nekohtml')
 	implementation('org.flywaydb:flyway-core')
 	implementation('org.flywaydb:flyway-mysql')
-	implementation('mysql:mysql-connector-java:8.0.33')
+	implementation(libs.mysql.connector)
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testImplementation('org.springframework.boot:spring-boot-testcontainers')
 	testImplementation('org.testcontainers:junit-jupiter')
