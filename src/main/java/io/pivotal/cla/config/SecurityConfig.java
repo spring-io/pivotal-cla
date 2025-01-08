@@ -77,7 +77,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests(requests -> requests
 				.requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole("CLA_AUTHOR")
 				.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-				.requestMatchers("/login/**", "/", "/about", "/faq").permitAll()
+				.requestMatchers("/login/**", "/", "/about", "/faq", "/error").permitAll()
 				.requestMatchers("/view/**").permitAll()
 				.requestMatchers("/webjars/**", "/assets/**").permitAll()
 				.requestMatchers("/github/hooks/**").permitAll()
