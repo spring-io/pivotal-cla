@@ -86,6 +86,7 @@ public class GitHubHooksController {
 		}
 		Gson gson = GsonUtils.createGson();
 		RepositoryAware payload = gson.fromJson(body, PAYLOAD_TYPES.get(githubEvent));
+		System.out.println("Received the GitHub Event '" + githubEvent + "' for cla '" + cla + "' from the repository '" + payload.getRepository() +"'");
 		PullRequest pullRequest = getPullRequest(payload);
 		if (pullRequest == null) {
 			return ResponseEntity.badRequest().body("Not related to a Pull request");
